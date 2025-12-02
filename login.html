@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Login Apuestas</title>
+    <style>
+        body { font-family: Arial; background:#070b4a; display:flex; justify-content:center; align-items:center; height:100vh; }
+        .login { background: white; padding: 20px; border-radius: 10px; width: 300px; }
+        input { width: 100%; padding: 10px; margin: 10px 0; }
+        button { width:100%; padding:10px; background:black; color:white; border:none; cursor:pointer; }
+    </style>
+</head>
+<body>
+
+<div class="login">
+    <h2>Iniciar Sesión</h2>
+    <input type="text" id="usuario" placeholder="Usuario" required>
+    <input type="password" id="password" placeholder="Contraseña" required>
+    <button onclick="login()">Entrar</button>
+    <p id="respuesta"></p>
+</div>
+
+<script>
+function login() {
+    let datos = new FormData();
+    datos.append("usuario", document.getElementById("usuario").value);
+    datos.append("password", document.getElementById("password").value);
+
+    fetch("login.php", {
+        method: "POST",
+        body: datos
+    })
+    .then(res => res.text())
+    .then(data => {
+        if(data.trim() === "OK"){
+            window.location = "panel.php";
+        } else {
+            document.getElementById("respuesta").innerHTML = data;
+        }
+    });
+}
+</script>
+
+</body>
+</html>
