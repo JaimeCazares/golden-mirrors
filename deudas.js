@@ -4,18 +4,22 @@ const editarBtn = document.getElementById("editarBtn");
 
 let modoEditar = false;
 
-// 🔹 Cargar estado guardado al iniciar
+// 🔹 Cargar estado desde la base de datos
 document.addEventListener("DOMContentLoaded", () => {
-  const estadoGuardado = JSON.parse(localStorage.getItem("deudasPagadas")) || [];
-  const deudas = lista.querySelectorAll("li");
+  fetch("obtenerDeudas.php")
+    .then(res => res.json())
+    .then(data => {
+      const deudas = lista.querySelectorAll("li");
 
-  deudas.forEach((li) => {
-    if (estadoGuardado.includes(li.textContent)) {
-      li.classList.add("pagada");
-    }
-  });
+      deudas.forEach(li => {
+        const nombre = li.textContent.split("=")[0].trim();
+        if (data[nombre] == 1) {
+          li.classList.add("pagada");
+        }
+      });
 
-  actualizarTotal();
+      actualizarTotal();
+    });
 });
 
 // 🔹 Cambiar modo edición
@@ -30,25 +34,33 @@ lista.addEventListener("click", (e) => {
   if (!modoEditar || e.target.tagName !== "LI") return;
 
   e.target.classList.toggle("pagada");
-  guardarEstado();
+
+  guardarEstado(e.target);
   actualizarTotal();
 });
 
-// 🔹 Guardar estado actual en localStorage
-function guardarEstado() {
-  const deudasPagadas = Array.from(lista.querySelectorAll(".pagada")).map(
-    (li) => li.textContent
-  );
-  localStorage.setItem("deudasPagadas", JSON.stringify(deudasPagadas));
+// 🔹 Guardar una sola deuda en la BD
+function guardarEstado(li) {
+  const nombre = li.textContent.split("=")[0].trim();
+  const pagada = li.classList.contains("pagada") ? 1 : 0;
+
+  const datos = new FormData();
+  datos.append("nombre", nombre);
+  datos.append("pagada", pagada);
+
+  fetch("guardarDeuda.php", {
+    method: "POST",
+    body: datos
+  });
 }
 
-// 🔹 Actualizar total dinámicamente
+// 🔹 Calcular total restante
 function actualizarTotal() {
   const deudas = lista.querySelectorAll("li");
   let total = 0;
   let pagadas = 0;
 
-  deudas.forEach((li) => {
+  deudas.forEach(li => {
     const monto = parseInt(li.dataset.monto);
     if (!li.classList.contains("pagada")) {
       total += monto;

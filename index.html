@@ -1,6 +1,9 @@
 <!DOCTYPE html>
 <html>
 <head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" href="login.css">
+
     <title>Login Apuestas</title>
     <style>
         body { font-family: Arial; background:#070b4a; display:flex; justify-content:center; align-items:center; height:100vh; }
@@ -32,12 +35,30 @@ function login() {
     .then(res => res.text())
     .then(data => {
         if(data.trim() === "OK"){
-            window.location = "panel.php";
+            window.location = "menu.html";
         } else {
             document.getElementById("respuesta").innerHTML = data;
         }
     });
 }
+</script>
+
+<script>
+// ENTER en usuario → saltar a contraseña
+document.getElementById("usuario").addEventListener("keypress", function(event) {
+    if (event.key === "Enter") {
+        event.preventDefault();
+        document.getElementById("password").focus();
+    }
+});
+
+// ENTER en contraseña → hacer login
+document.getElementById("password").addEventListener("keypress", function(event) {
+    if (event.key === "Enter") {
+        event.preventDefault();
+        login();
+    }
+});
 </script>
 
 </body>

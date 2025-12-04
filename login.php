@@ -26,4 +26,3 @@ if ($resultado->num_rows === 1) {
 } else {
     echo "El usuario no existe";
 }
-?>
