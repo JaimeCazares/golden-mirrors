@@ -35,7 +35,7 @@ function login() {
     .then(res => res.text())
     .then(data => {
         if(data.trim() === "OK"){
-            window.location = "menu.html";
+            window.location = "index.html";
         } else {
             document.getElementById("respuesta").innerHTML = data;
         }
