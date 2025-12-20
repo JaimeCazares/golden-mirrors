@@ -4,7 +4,7 @@ session_start();
 $conexion = new mysqli(
     "mysql.hostinger.com",
     "u717657264_dorado",
-    "Jaimecazares7",
+    "Cazares710.",
     "u717657264_dorado"
 );
 
