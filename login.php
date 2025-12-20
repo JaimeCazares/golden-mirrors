@@ -1,12 +1,17 @@
 <?php
+ini_set('display_errors', 1);
+ini_set('display_startup_errors', 1);
+error_reporting(E_ALL);
+
 session_start();
 
 $conexion = new mysqli(
-    "mysql.hostinger.com",
+    "auth-db526.hstgr.io",
     "u717657264_dorado",
     "Cazares710.",
-    "u717657264_dorado"
+    "u717657264_golden"
 );
+
 
 if ($conexion->connect_error) {
     die("Error conexión DB");
