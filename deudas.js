@@ -1,3 +1,12 @@
+// 🔴 Conexión al servidor WebSocket
+const socket = io("http://localhost:3000");
+
+// 🔴 Cuando OTRO dispositivo actualiza deudas
+socket.on("actualizar_deudas", () => {
+  cargarDeudas();
+});
+
+// 🔹 Elementos del DOM
 const lista = document.getElementById("listaDeudas");
 const totalEl = document.getElementById("totalDeuda");
 const editarBtn = document.getElementById("editarBtn");
@@ -6,6 +15,11 @@ let modoEditar = false;
 
 // 🔹 Cargar estado desde la base de datos
 document.addEventListener("DOMContentLoaded", () => {
+  cargarDeudas();
+});
+
+// 🔹 Función para cargar deudas (la reutilizamos)
+function cargarDeudas() {
   fetch("obtenerDeudas.php")
     .then(res => res.json())
     .then(data => {
@@ -15,12 +29,14 @@ document.addEventListener("DOMContentLoaded", () => {
         const nombre = li.textContent.split("=")[0].trim();
         if (data[nombre] == 1) {
           li.classList.add("pagada");
+        } else {
+          li.classList.remove("pagada");
         }
       });
 
       actualizarTotal();
     });
-});
+}
 
 // 🔹 Cambiar modo edición
 editarBtn.addEventListener("click", () => {
@@ -29,7 +45,7 @@ editarBtn.addEventListener("click", () => {
   editarBtn.classList.toggle("modo-listo", modoEditar);
 });
 
-// 🔹 Marcar/desmarcar deudas
+// 🔹 Marcar / desmarcar deudas
 lista.addEventListener("click", (e) => {
   if (!modoEditar || e.target.tagName !== "LI") return;
 
@@ -39,7 +55,7 @@ lista.addEventListener("click", (e) => {
   actualizarTotal();
 });
 
-// 🔹 Guardar una sola deuda en la BD
+// 🔹 Guardar una sola deuda en la BD + emitir evento
 function guardarEstado(li) {
   const nombre = li.textContent.split("=")[0].trim();
   const pagada = li.classList.contains("pagada") ? 1 : 0;
@@ -51,6 +67,10 @@ function guardarEstado(li) {
   fetch("guardarDeuda.php", {
     method: "POST",
     body: datos
+  })
+  .then(() => {
+    // 🔥 AVISAR A TODOS LOS DISPOSITIVOS
+    socket.emit("deuda_actualizada");
   });
 }
 

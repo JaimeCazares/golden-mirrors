@@ -1,21 +1,12 @@
 <?php
 $conexion = new mysqli("localhost", "root", "", "golden");
 
-if ($conexion->connect_error) {
-    die("Error de conexión: " . $conexion->connect_error);
-}
+$usuario = "admin";
+$pass_plano = "1234";
 
-$usuario = "admin";  // cámbialo
-$pass_plano = "1234"; // cámbialo
-$pass_hash = password_hash($pass_plano, PASSWORD_DEFAULT);
+$sql = "INSERT INTO usuarios (usuario, password) VALUES ('$usuario', '$pass_plano')";
 
-$sql = "INSERT INTO usuarios (usuario, password) VALUES ('$usuario', '$pass_hash')";
+$conexion->query($sql);
 
-if ($conexion->query($sql) === TRUE) {
-    echo "Usuario creado correctamente.";
-} else {
-    echo "Error: " . $conexion->error;
-}
-
-$conexion->close();
+echo "Usuario creado simple.";
 ?>
