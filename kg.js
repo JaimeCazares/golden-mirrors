@@ -1,9 +1,10 @@
-document.querySelectorAll('#listaPesos li').forEach(peso => {
-  peso.addEventListener('click', () => {
-    document.querySelectorAll('#listaPesos li')
-      .forEach(p => p.classList.remove('seleccionado'));
+const pesos = document.querySelectorAll('#listaPesos li');
+const pesoActual = document.getElementById('pesoActual');
 
+pesos.forEach(peso => {
+  peso.addEventListener('click', () => {
+    pesos.forEach(p => p.classList.remove('seleccionado'));
     peso.classList.add('seleccionado');
-    console.log('Peso:', peso.dataset.peso, 'kg');
+    pesoActual.textContent = peso.dataset.peso + ' kg';
   });
 });

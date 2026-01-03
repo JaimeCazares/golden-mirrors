@@ -897,66 +897,101 @@ input:focus {
 #histLigaSelect{
   background: #00b4d8;
 }
-/* ⚖️ Barra de peso */
-.peso-bar {
+/* ⚖️ Contenedor de pesos (CLON de deudas) */
+.pesos-container {
   position: fixed;
-  top: 8px;
+  top: 10px;
   left: 50%;
   transform: translateX(-50%);
-  display: flex;
+  background: rgba(15, 15, 30, 0.85);
+  border-radius: 10px;
+  padding: 10px 14px;
+  color: white;
+  font-size: 13px;
+  z-index: 9998;
+  display: grid;
+  grid-template-columns: repeat(4, auto) 1fr;
+  column-gap: 10px;
+  row-gap: 6px;
   align-items: center;
-  gap: 8px;
-  background: rgba(15, 15, 30, 0.9);
-  padding: 6px 12px;
-  border-radius: 12px;
+  box-shadow: 0 0 12px rgba(0, 180, 255, 0.15);
   backdrop-filter: blur(8px);
-  box-shadow: 0 0 12px rgba(0, 200, 255, 0.15);
-  z-index: 9997;
 }
 
-/* Título */
-.peso-title,
-.peso-unit {
-  font-size: 12px;
-  opacity: 0.7;
-  white-space: nowrap;
-}
-
-/* Lista horizontal */
+/* Lista de pesos */
 #listaPesos {
   list-style: none;
-  display: flex;
-  gap: 6px;
   padding: 0;
   margin: 0;
+  grid-column: 1 / span 4;
+  display: grid;
+  grid-template-columns: repeat(4, auto);
+  column-gap: 8px;
+  row-gap: 6px;
 }
 
-/* Chip de peso */
+/* Botones de peso */
 #listaPesos li {
-  min-width: 34px;
-  text-align: center;
   cursor: pointer;
   user-select: none;
-  font-size: 12px;
-  padding: 4px 6px;
+  background: linear-gradient(145deg, #2d7cff, #1c3f99);
+  color: #fff;
+  padding: 2px 8px;
   border-radius: 6px;
-  background: linear-gradient(145deg, #2a3a6a, #1a2445);
-  color: #cfe8ff;
-  box-shadow: 0 0 4px rgba(0, 150, 255, 0.2);
-  transition: all 0.2s ease;
+  box-shadow: 0 0 6px rgba(0, 120, 255, 0.5);
+  transition: all 0.25s ease;
+  font-weight: 500;
+  text-align: center;
+  font-size: 12px;
 }
 
-/* Hover */
 #listaPesos li:hover {
-  transform: translateY(-1px);
-  box-shadow: 0 0 6px rgba(0, 180, 255, 0.6);
+  transform: scale(1.06);
+  box-shadow: 0 0 8px rgba(80, 160, 255, 0.9);
 }
 
-/* Seleccionado */
+/* Peso seleccionado */
 #listaPesos li.seleccionado {
-  background: linear-gradient(145deg, #00ff99, #00b36b);
-  color: #002b1a;
+  background: linear-gradient(145deg, #00ff99, #00a35c);
   box-shadow: 0 0 8px rgba(0, 255, 150, 0.8);
-  transform: scale(1.08);
+  text-decoration: none;
 }
+
+/* Indicador a la derecha */
+#pesoActual {
+  grid-column: 5;
+  grid-row: 1 / span 2;
+  font-weight: bold;
+  text-align: center;
+  background: linear-gradient(145deg, #00c3ff, #007aa8);
+  color: #022;
+  padding: 6px 10px;
+  border-radius: 8px;
+  box-shadow: 0 0 8px rgba(0, 200, 255, 0.7);
+  font-size: 13px;
+  align-self: start;
+  justify-self: end;
+}
+
+/* ✏️ Botón editar */
+#editarPesoBtn {
+  position: fixed;
+  top: 10px;
+  left: calc(50% + 260px);
+  background: linear-gradient(145deg, #1c2541, #0f172a);
+  color: white;
+  border: none;
+  padding: 6px 8px;
+  border-radius: 50%;
+  cursor: pointer;
+  font-size: 16px;
+  transition: all 0.25s ease;
+  box-shadow: 0 0 6px rgba(255, 255, 255, 0.15);
+  z-index: 10000;
+}
+
+#editarPesoBtn:hover {
+  transform: scale(1.1);
+}
+
 
