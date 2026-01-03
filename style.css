@@ -897,57 +897,66 @@ input:focus {
 #histLigaSelect{
   background: #00b4d8;
 }
-/* ⚖️ Contenedor de pesos */
-.pesos-container {
+/* ⚖️ Barra de peso */
+.peso-bar {
   position: fixed;
-  top: 10px;
+  top: 8px;
   left: 50%;
   transform: translateX(-50%);
-  background: rgba(15, 15, 30, 0.85);
-  border-radius: 10px;
-  padding: 10px 14px;
-  color: white;
-  font-size: 13px;
-  z-index: 9998;
-  box-shadow: 0 0 12px rgba(0, 255, 255, 0.1);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: rgba(15, 15, 30, 0.9);
+  padding: 6px 12px;
+  border-radius: 12px;
   backdrop-filter: blur(8px);
+  box-shadow: 0 0 12px rgba(0, 200, 255, 0.15);
+  z-index: 9997;
 }
 
-/* Lista de pesos */
+/* Título */
+.peso-title,
+.peso-unit {
+  font-size: 12px;
+  opacity: 0.7;
+  white-space: nowrap;
+}
+
+/* Lista horizontal */
 #listaPesos {
   list-style: none;
+  display: flex;
+  gap: 6px;
   padding: 0;
   margin: 0;
-  display: grid;
-  grid-template-columns: repeat(8, auto);
-  column-gap: 8px;
 }
 
-/* Cada peso */
+/* Chip de peso */
 #listaPesos li {
+  min-width: 34px;
+  text-align: center;
   cursor: pointer;
   user-select: none;
-  background: linear-gradient(145deg, #3c7cff, #244bb0);
-  color: #fff;
-  padding: 4px 10px;
-  border-radius: 6px;
-  box-shadow: 0 0 6px rgba(60, 124, 255, 0.4);
-  transition: all 0.25s ease;
-  font-weight: 500;
-  text-align: center;
   font-size: 12px;
+  padding: 4px 6px;
+  border-radius: 6px;
+  background: linear-gradient(145deg, #2a3a6a, #1a2445);
+  color: #cfe8ff;
+  box-shadow: 0 0 4px rgba(0, 150, 255, 0.2);
+  transition: all 0.2s ease;
 }
 
 /* Hover */
 #listaPesos li:hover {
-  transform: scale(1.08);
-  box-shadow: 0 0 8px rgba(100, 160, 255, 0.9);
+  transform: translateY(-1px);
+  box-shadow: 0 0 6px rgba(0, 180, 255, 0.6);
 }
 
-/* ✅ Peso seleccionado */
+/* Seleccionado */
 #listaPesos li.seleccionado {
-  background: linear-gradient(145deg, #00ff99, #009966);
+  background: linear-gradient(145deg, #00ff99, #00b36b);
+  color: #002b1a;
   box-shadow: 0 0 8px rgba(0, 255, 150, 0.8);
-  color: #fff;
-  transform: scale(1.1);
+  transform: scale(1.08);
 }
+
