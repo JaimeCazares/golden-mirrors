@@ -5,46 +5,46 @@
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>Registro de Partidos</title>
 <link rel="stylesheet" href="style.css?v=123">
+<link rel="stylesheet" href="kg/kg.css">
+<link rel="stylesheet" href="deuda/deuda.css">
 
 </head>
 <body>
   
-  <div class="pesos-container">
-  <ul id="listaPesos">
-    <li data-peso="75">75 kg</li>
-    <li data-peso="80">80 kg</li>
-    <li data-peso="85">85 kg</li>
-    <li data-peso="90">90 kg</li>
-    <li data-peso="95">95 kg</li>
-    <li data-peso="100">100 kg</li>
-    <li data-peso="105">105 kg</li>
-    <li data-peso="110">110 kg</li>
-  </ul>
+  <div id="kg-wrapper"></div>
+  
+  <script>
+  // Cargar el HTML de kg
+  fetch('kg/kg.html')
+    .then(res => res.text())
+    .then(html => {
+      document.getElementById('kg-wrapper').innerHTML = html;
+    })
+    .then(() => {
+      // Después de cargar el HTML, cargar el JS
+      const script = document.createElement('script');
+      script.src = 'kg/kg.js';
+      document.body.appendChild(script);
+    });
 
-  <div id="pesoSeleccionado">PESO</div>
-  <button id="editarPesoBtn">✏️</button>
-</div>
+</script>
+<div id="deuda-wrapper"></div>
+  
+  <script>
+// Cargar el HTML de deuda
+  fetch('deuda/deuda.html')
+    .then(res => res.text())
+    .then(html => {
+      document.getElementById('deuda-wrapper').innerHTML = html;
+    })
+    .then(() => {
+      // Después de cargar el HTML, cargar el JS
+      const script = document.createElement('script');
+      script.src = 'deuda/deuda.js';
+      document.body.appendChild(script);
+    });
+</script>
 
-
-
-
-  <div class="deudas-container">
-  <ul id="listaDeudas">
-    <li data-monto="1000">Stori = $1000</li>
-    <li data-monto="2000">Undostres = $2000</li>
-    <li data-monto="2000">Plata = $2000</li>
-    <li data-monto="3000">Mercado Pago = $3000</li>
-    <li data-monto="3000">Mercado Libre = $3000</li>
-    <li data-monto="7000">Nu = $7000</li>
-    <li data-monto="7000">Rappi = $7000</li>  
-    <li data-monto="20000">BBVA = $20000</li>
-  </ul>
-
-  <div id="totalDeuda">TOTAL = $45000</div>
-  <button id="editarBtn">✏️</button>
-</div>
-
-<h1>📊 Registro de Partidos</h1>
 <h1>📊 Registro de Partidos</h1>
 <button id="abrirModalBtn">➕ Nuevo registro</button>
 <button id="abrirHistorialBtn">📜 Historial</button>
@@ -198,7 +198,6 @@
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script src="https://cdn.socket.io/4.7.2/socket.io.min.js"></script>
 <script src="script.js"></script>
-<script src="deudas.js"></script>
 <script src="apuestas.js"></script>
 <script src="historialRegistros.js"></script>
 <!-- Contenedor del modal -->

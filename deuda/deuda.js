@@ -14,13 +14,12 @@ const editarBtn = document.getElementById("editarBtn");
 let modoEditar = false;
 
 // 🔹 Cargar estado desde la base de datos
-document.addEventListener("DOMContentLoaded", () => {
-  cargarDeudas();
-});
+cargarDeudas();
+
 
 // 🔹 Función para cargar deudas (la reutilizamos)
 function cargarDeudas() {
-  fetch("obtenerDeudas.php")
+  fetch("deuda/obtenerDeudas.php")
     .then(res => res.json())
     .then(data => {
       const deudas = lista.querySelectorAll("li");
@@ -64,13 +63,13 @@ function guardarEstado(li) {
   datos.append("nombre", nombre);
   datos.append("pagada", pagada);
 
-  fetch("guardarDeuda.php", {
+  fetch("deuda/guardarDeuda.php", {
     method: "POST",
     body: datos
   })
   .then(() => {
     // 🔥 AVISAR A TODOS LOS DISPOSITIVOS
-    socket.emit("deuda_actualizada");
+    socket.emit("actualizar_deudas");
   });
 }
 

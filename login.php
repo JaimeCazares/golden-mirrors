@@ -5,16 +5,37 @@ error_reporting(E_ALL);
 
 session_start();
 
-$conexion = new mysqli(
-    "localhost",                // ✅ HOST CORRECTO
-    "u717657264_golden",         // ✅ USUARIO MYSQL
-    "Cazares710.",               // ✅ CONTRASEÑA
-    "u717657264_golden"          // ✅ BASE DE DATOS
-);
+/* =========================
+   CONEXIÓN SEGÚN ENTORNO
+   ========================= */
+
+if ($_SERVER['SERVER_NAME'] === 'localhost') {
+    // 🔹 XAMPP (LOCAL)
+    $conexion = new mysqli(
+        "localhost",
+        "root",
+        "",
+        "golden",
+        3307
+    );
+} else {
+    // 🔹 HOSTINGER (PRODUCCIÓN)
+    $conexion = new mysqli(
+        "localhost",
+        "u717657264_golden",
+        "Cazares710.",
+        "u717657264_golden",
+        3306
+    );
+}
 
 if ($conexion->connect_error) {
     die("Error conexión DB: " . $conexion->connect_error);
 }
+
+/* =========================
+   LOGIN
+   ========================= */
 
 $usuario  = $_POST["usuario"] ?? "";
 $password = $_POST["password"] ?? "";

@@ -1,14 +1,11 @@
 /* Fuente moderna (Inter) */
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&display=swap');
 
-* {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-    font-family: 'Inter', sans-serif;
-}
+/* =========================
+   CONTEXTO LOGIN
+   ========================= */
 
-body {
+.login-page {
     height: 100vh;
     display: flex;
     justify-content: center;
@@ -17,6 +14,14 @@ body {
     background-size: 400% 400%;
     animation: gradientMove 10s ease infinite;
     padding: 20px;
+}
+
+/* Reset SOLO dentro del login */
+.login-page * {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Inter', sans-serif;
 }
 
 /* Animación del fondo */
@@ -44,7 +49,8 @@ body {
     to   { opacity: 1; transform: translateY(0); }
 }
 
-h2 {
+/* Título */
+.login h2 {
     text-align: center;
     margin-bottom: 20px;
     font-weight: 600;
@@ -52,7 +58,7 @@ h2 {
 }
 
 /* Inputs */
-input {
+.login input {
     width: 100%;
     padding: 14px;
     margin: 12px 0;
@@ -64,13 +70,13 @@ input {
     transition: 0.2s ease;
 }
 
-input:focus {
+.login input:focus {
     background: white;
     box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.4);
 }
 
 /* Botón */
-button {
+.login button {
     width: 100%;
     padding: 14px;
     margin-top: 10px;
@@ -84,14 +90,14 @@ button {
     transition: 0.25s ease;
 }
 
-button:hover {
+.login button:hover {
     background: #1f2937;
     transform: translateY(-2px);
     box-shadow: 0 6px 20px rgba(0, 0, 0, 0.35);
 }
 
 /* Mensajes */
-#respuesta {
+.login #respuesta {
     margin-top: 15px;
     text-align: center;
     color: #ffbfbf;
