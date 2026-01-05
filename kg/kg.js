@@ -1,6 +1,13 @@
-document.addEventListener("DOMContentLoaded", () => {
+function initKg() {
+
   const listaPesos = document.querySelectorAll("#listaPesos li");
   const pesoSeleccionado = document.getElementById("pesoSeleccionado");
+  const editarBtn = document.getElementById("editarPesoBtn");
+
+  if (!listaPesos.length || !pesoSeleccionado || !editarBtn) {
+    console.error("❌ Elementos de kg no encontrados");
+    return;
+  }
 
   listaPesos.forEach(li => {
     li.addEventListener("click", () => {
@@ -8,11 +15,10 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   });
 
-  const editarBtn = document.getElementById("editarPesoBtn");
   editarBtn.addEventListener("click", () => {
     const nuevoPeso = prompt("Ingrese nuevo peso:");
     if (nuevoPeso && !isNaN(nuevoPeso)) {
       pesoSeleccionado.textContent = nuevoPeso + " kg";
     }
   });
-});
+}

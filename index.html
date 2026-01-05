@@ -1,49 +1,53 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>Registro de Partidos</title>
-<link rel="stylesheet" href="style.css?v=123">
-<link rel="stylesheet" href="kg/kg.css">
-<link rel="stylesheet" href="deuda/deuda.css">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Registro de Partidos</title>
 
+  <!-- CSS -->
+  <link rel="stylesheet" href="style.css?v=1.0.0">
+  <link rel="stylesheet" href="kg/kg.css?v=1.0.0">
+  <link rel="stylesheet" href="deuda/deuda.css?v=1.0.0">
 </head>
-<body>
-  
-  <div id="kg-wrapper"></div>
-  
-  <script>
-  // Cargar el HTML de kg
-  fetch('kg/kg.html')
-    .then(res => res.text())
-    .then(html => {
-      document.getElementById('kg-wrapper').innerHTML = html;
-    })
-    .then(() => {
-      // Después de cargar el HTML, cargar el JS
-      const script = document.createElement('script');
-      script.src = 'kg/kg.js';
-      document.body.appendChild(script);
-    });
 
+<body>
+
+<script src="https://cdn.socket.io/4.7.2/socket.io.min.js"></script>
+
+  <!-- ===== MODULOS DINAMICOS ===== -->
+  <div id="kg-wrapper"></div>
+  <div id="deuda-wrapper"></div>
+
+  <!-- ===== CARGA KG ===== -->
+ <script>
+fetch('kg/kg.html', { cache: 'no-store' })
+  .then(res => res.text())
+  .then(html => {
+    document.getElementById('kg-wrapper').innerHTML = html;
+    const script = document.createElement('script');
+    script.src = 'kg/kg.js?v=' + Date.now();
+    script.onload = () => initKg(); // 🔥 CLAVE
+    document.body.appendChild(script);
+  });
 </script>
-<div id="deuda-wrapper"></div>
-  
+
+
+
+  <!-- ===== CARGA DEUDA ===== -->
   <script>
-// Cargar el HTML de deuda
-  fetch('deuda/deuda.html')
-    .then(res => res.text())
-    .then(html => {
-      document.getElementById('deuda-wrapper').innerHTML = html;
-    })
-    .then(() => {
-      // Después de cargar el HTML, cargar el JS
-      const script = document.createElement('script');
-      script.src = 'deuda/deuda.js';
-      document.body.appendChild(script);
-    });
+fetch('deuda/deuda.html', { cache: 'no-store' })
+  .then(res => res.text())
+  .then(html => {
+    document.getElementById('deuda-wrapper').innerHTML = html;
+    const script = document.createElement('script');
+    script.src = 'deuda/deuda.js?v=' + Date.now();
+    script.onload = () => initDeuda(); // 🔥 CLAVE
+    document.body.appendChild(script);
+  });
 </script>
+
+
 
 <h1>📊 Registro de Partidos</h1>
 <button id="abrirModalBtn">➕ Nuevo registro</button>
@@ -143,8 +147,6 @@
 </div>
 
 </div>
-
-
   <!-- Ventana de registro -->
   <div id="ap_ventana">
     <h2>Registrar Apuesta</h2>
@@ -195,11 +197,6 @@
   </div>
 </div>
 
-<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-<script src="https://cdn.socket.io/4.7.2/socket.io.min.js"></script>
-<script src="script.js"></script>
-<script src="apuestas.js"></script>
-<script src="historialRegistros.js"></script>
 <!-- Contenedor del modal -->
 <div id="detalleModal" class="modal-overlay" style="display:none;">
   <div class="modal">
@@ -209,6 +206,13 @@
   </div>
 </div>
 
+<!-- ===== SOCKET + LIBRERIAS ===== -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js" defer></script>
+
+  <!-- ===== SCRIPTS PRINCIPALES ===== -->
+  <script src="script.js?v=1.0.0" defer></script>
+  <script src="apuestas.js?v=1.0.0" defer></script>
+  <script src="historialRegistros.js?v=1.0.0" defer></script>
 
 </body>
 </html>
