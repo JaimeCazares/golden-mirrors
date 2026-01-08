@@ -13,7 +13,7 @@ if ($esLocal) {
 } else {
     $servername = "srv526.hstgr.io"; // ⚠️ esto lo vamos a verificar
     $username   = "u717657264_golden";
-    $password   = "AQUI_TU_PASSWORD";
+    $password   = "Jaimecazares7.";
     $database   = "u717657264_golden";
 }
 
