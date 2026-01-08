@@ -23,7 +23,7 @@ if ($_SERVER['SERVER_NAME'] === 'localhost') {
     $conexion = new mysqli(
         "localhost",
         "u717657264_golden",
-        "Cazares710.",
+        "Jaimecazares7.",
         "u717657264_golden",
         3306
     );
