@@ -1,6 +1,7 @@
 <?php
 // 🔐 SESIÓN UNIFICADA
-require_once __DIR__ . '/session_init.php';
+session_start();
+
 
 /* =========================
    CONEXIÓN SEGÚN ENTORNO
@@ -64,11 +65,9 @@ if ($resultado->num_rows === 1) {
             $_SESSION["rol"] = 'admin';
             echo "INDEX";
         }
-
     } else {
         echo "Contraseña incorrecta";
     }
-
 } else {
     echo "El usuario no existe";
 }
