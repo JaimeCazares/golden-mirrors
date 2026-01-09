@@ -6,21 +6,12 @@ const folioSpan = document.getElementById("folioCupon");
 
 let total = 0;
 
-/* =========================
-   CUPÓN OCULTO AL INICIO
-   ========================= */
 cuponOverlay.style.display = "none";
 
-/* =========================
-   CERRAR CUPÓN
-   ========================= */
 cerrarCupon.onclick = () => {
   cuponOverlay.style.display = "none";
 };
 
-/* =========================
-   CARGAR AHORROS
-   ========================= */
 fetch("obtener_ahorro.php")
   .then(res => res.json())
   .then(retos => {
@@ -28,16 +19,18 @@ fetch("obtener_ahorro.php")
     retos.forEach(reto => {
 
       let marcadasActuales = Number(reto.marcadas);
-      let restantes = reto.total_veces - marcadasActuales;
-      total += marcadasActuales * reto.monto;
+      let totalVeces = Number(reto.total_veces);
+      let restantes = totalVeces - marcadasActuales;
+
+      total += marcadasActuales * Number(reto.monto);
 
       const grupo = document.createElement("div");
       grupo.className = "grupo";
 
-      /* =========================
-         COMPLETADO DESDE BD
-         ========================= */
-      if (marcadasActuales === reto.total_veces) {
+      /* 🔥 BLINDAJE REAL */
+      const estaCompletado = marcadasActuales >= totalVeces && totalVeces > 0;
+
+      if (estaCompletado) {
         grupo.classList.add("completado");
       }
 
@@ -46,9 +39,9 @@ fetch("obtener_ahorro.php")
       header.innerHTML = `
         <span>$${reto.monto}</span>
         <span id="rest-${reto.monto}">
-          ${marcadasActuales === reto.total_veces
+          ${estaCompletado
             ? "COMPLETADO 💚"
-            : `Restantes: ${restantes} de ${reto.total_veces} ▼`}
+            : `Restantes: ${restantes} de ${totalVeces} ▼`}
         </span>
       `;
 
@@ -61,56 +54,44 @@ fetch("obtener_ahorro.php")
           checks.style.display === "flex" ? "none" : "flex";
       };
 
-      for (let i = 0; i < reto.total_veces; i++) {
+      for (let i = 0; i < totalVeces; i++) {
         const check = document.createElement("input");
         check.type = "checkbox";
-        if (i < marcadasActuales) check.checked = true;
+        check.checked = i < marcadasActuales;
 
         check.onchange = () => {
 
           marcadasActuales =
             [...checks.children].filter(c => c.checked).length;
 
-          restantes = reto.total_veces - marcadasActuales;
+          restantes = totalVeces - marcadasActuales;
 
-          /* =========================
-             RECALCULAR TOTAL
-             ========================= */
           total = 0;
           document.querySelectorAll(".checks").forEach(grp => {
             const monto = Number(grp.dataset.monto);
-            const count =
-              [...grp.children].filter(c => c.checked).length;
+            const count = [...grp.children].filter(c => c.checked).length;
             total += monto * count;
           });
 
           totalSpan.textContent = `$${total.toLocaleString()}`;
 
-          const restSpan =
-            document.getElementById(`rest-${reto.monto}`);
+          const restSpan = document.getElementById(`rest-${reto.monto}`);
 
-          /* =========================
-             COMPLETADO REAL
-             ========================= */
-          if (restantes === 0) {
-
+          if (marcadasActuales >= totalVeces) {
             grupo.classList.add("completado");
             restSpan.textContent = "COMPLETADO 💚";
 
-            /* MOSTRAR CUPÓN SOLO AL COMPLETAR */
             folioSpan.textContent = "";
             cuponOverlay.style.display = "flex";
 
             fetch("guardar_cupon.php", {
               method: "POST",
-              headers: {
-                "Content-Type": "application/x-www-form-urlencoded"
-              },
+              headers: { "Content-Type": "application/x-www-form-urlencoded" },
               body: `monto=${reto.monto}`
             })
               .then(r => r.json())
               .then(d => {
-                if (d && d.folio) {
+                if (d?.folio) {
                   folioSpan.textContent = `– Folio: ${d.folio}`;
                 }
               });
@@ -118,7 +99,7 @@ fetch("obtener_ahorro.php")
           } else {
             grupo.classList.remove("completado");
             restSpan.textContent =
-              `Restantes: ${restantes} de ${reto.total_veces} ▼`;
+              `Restantes: ${restantes} de ${totalVeces} ▼`;
           }
 
           guardar(reto.monto, marcadasActuales);
@@ -135,9 +116,6 @@ fetch("obtener_ahorro.php")
     totalSpan.textContent = `$${total.toLocaleString()}`;
   });
 
-/* =========================
-   GUARDAR AHORRO
-   ========================= */
 function guardar(monto, marcadas) {
   const datos = new FormData();
   datos.append("monto", monto);
