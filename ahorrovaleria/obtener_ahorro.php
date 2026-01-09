@@ -6,18 +6,11 @@ if (!isset($_SESSION['usuario'])) {
     exit;
 }
 
-
 /* =========================
    CONEXIÓN SEGÚN ENTORNO
    ========================= */
 if ($_SERVER['SERVER_NAME'] === 'localhost') {
-    $conexion = new mysqli(
-        "localhost",
-        "root",
-        "",
-        "golden",
-        3307
-    );
+    $conexion = new mysqli("localhost", "root", "", "golden", 3307);
 } else {
     $conexion = new mysqli(
         "localhost",
@@ -33,25 +26,19 @@ if ($conexion->connect_error) {
     exit;
 }
 
-/* =========================
-   OBTENER AHORRO
-   ========================= */
-$usuario = $_SESSION['usuario'];
+$usuario  = $_SESSION['usuario'];
+$monto    = intval($_POST['monto'] ?? 0);
+$marcadas = intval($_POST['marcadas'] ?? 0);
 
-$result = $conexion->prepare(
-    "SELECT monto, total_veces, marcadas 
-     FROM ahorro 
-     WHERE usuario = ?"
-);
-$result->bind_param("s", $usuario);
-$result->execute();
+/* INSERT O UPDATE */
+$sql = "
+INSERT INTO ahorro (usuario, monto, marcadas)
+VALUES (?, ?, ?)
+ON DUPLICATE KEY UPDATE marcadas = VALUES(marcadas)
+";
 
-$res = $result->get_result();
-$data = [];
+$stmt = $conexion->prepare($sql);
+$stmt->bind_param("sii", $usuario, $monto, $marcadas);
+$stmt->execute();
 
-while ($row = $res->fetch_assoc()) {
-    $data[] = $row;
-}
-
-header('Content-Type: application/json');
-echo json_encode($data);
+echo "OK";
