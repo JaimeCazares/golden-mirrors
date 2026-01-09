@@ -4,22 +4,22 @@
 
 body {
   margin: 0;
-  height: 100vh;
+  min-height: 100dvh; /* 👈 altura REAL en móvil */
   background: linear-gradient(135deg, #ffd6e8, #e0c3fc);
   font-family: 'Poppins', sans-serif;
   display: flex;
   justify-content: center;
-  align-items: flex-start; /* 👈 arriba, no centro */
+  align-items: flex-start;
 }
 
 /* CONTENEDOR */
 .contenedor {
   background: #fff;
-  border-radius: 20px;
-  padding: 16px;
+  border-radius: 18px;
+  padding: 14px;
   width: 100%;
   max-width: 1100px;
-  height: 100vh; /* 👈 ocupa todo */
+  min-height: 100dvh; /* 👈 clave */
   display: flex;
   flex-direction: column;
   box-shadow: 0 10px 30px rgba(0,0,0,0.15);
@@ -27,18 +27,29 @@ body {
 
 /* TITULO */
 h1 {
-  text-align: center;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 6px;
+  margin: 4px 0;
   color: #c94f7c;
-  margin: 6px 0 4px;
-  font-size: 1.6rem;
-  line-height: 1.2; /* 👈 evita que el emoji caiga */
-  white-space: nowrap; /* 👈 todo en una línea */
+}
+
+.titulo-texto {
+  font-size: 1.5rem;
+  line-height: 1;
+}
+
+.titulo-emoji {
+  font-size: 1.4rem;
+  line-height: 1;
+  display: inline-flex; /* 👈 evita salto */
 }
 
 /* SUBTEXTO */
 p {
   text-align: center;
-  margin: 0 0 8px;
+  margin: 0 0 6px;
   font-size: 0.95rem;
 }
 
@@ -48,8 +59,8 @@ p {
   padding: 8px;
   border-radius: 12px;
   text-align: center;
-  font-size: 17px;
-  margin-bottom: 10px;
+  font-size: 16px;
+  margin-bottom: 8px;
   flex-shrink: 0;
 }
 
@@ -58,18 +69,16 @@ p {
   flex: 1;
   display: grid;
   grid-template-columns: repeat(3, 1fr);
-  gap: 12px;
-  overflow-y: auto; /* 👈 scroll SOLO aquí */
-  padding-bottom: 20px; /* 👈 espacio para desplegar */
+  gap: 10px;
+  overflow-y: auto;
+  padding-bottom: 24px; /* 👈 aire abajo */
 }
 
 /* TARJETA */
 .grupo {
   background: #fdf1f7;
   border-radius: 14px;
-  padding: 12px;
-  display: flex;
-  flex-direction: column;
+  padding: 10px;
 }
 
 /* HEADER */
@@ -80,12 +89,12 @@ p {
   cursor: pointer;
   font-weight: bold;
   color: #c94f7c;
-  font-size: 0.95rem;
+  font-size: 0.9rem;
 }
 
 /* CHECKS */
 .checks {
-  margin-top: 10px;
+  margin-top: 8px;
   display: none;
   gap: 6px;
   flex-wrap: wrap;
@@ -95,24 +104,28 @@ p {
   transform: scale(1.25);
 }
 
-/* 📱 TABLET */
+/* TABLET */
 @media (max-width: 1024px) {
   .lista {
     grid-template-columns: repeat(2, 1fr);
   }
 }
 
-/* 📱 CELULAR */
+/* CELULAR */
 @media (max-width: 600px) {
 
-  h1 {
-    font-size: 1.4rem;
+  .titulo-texto {
+    font-size: 1.35rem;
+  }
+
+  .titulo-emoji {
+    font-size: 1.3rem;
   }
 
   .lista {
     grid-template-columns: 1fr;
-    gap: 10px;
-    padding-bottom: 30px;
+    gap: 8px;
+    padding-bottom: 32px;
   }
 
   .checks {
