@@ -1,21 +1,31 @@
 <?php
 require_once __DIR__ . '/../conexion.php';
 
-/* obtener último folio */
-$res = $conn->query("SELECT MAX(folio) AS ultimo FROM cupones");
+$monto = intval($_POST['monto'] ?? 0);
+
+if ($monto <= 0) {
+    exit;
+}
+
+// 🔎 Ver si ya existe cupón para este monto
+$check = $conexion->query("
+  SELECT id 
+  FROM cupones 
+  WHERE monto = $monto
+  LIMIT 1
+");
+
+if ($check && $check->num_rows > 0) {
+    exit; // ya existe → no duplicar
+}
+
+// 📌 Obtener siguiente folio
+$res = $conexion->query("SELECT MAX(folio) AS max_folio FROM cupones");
 $row = $res->fetch_assoc();
-$folio = ($row['ultimo'] ?? 0) + 1;
+$folio = ($row['max_folio'] ?? 0) + 1;
 
-/* datos */
-$monto = intval($_POST['monto']);
-
-/* guardar */
-$stmt = $conn->prepare(
-  "INSERT INTO cupones (folio, monto) VALUES (?, ?)"
-);
-$stmt->bind_param("ii", $folio, $monto);
-$stmt->execute();
-
-echo json_encode([
-  "folio" => $folio
-]);
+// 💾 Guardar cupón
+$conexion->query("
+  INSERT INTO cupones (monto, folio)
+  VALUES ($monto, $folio)
+");
