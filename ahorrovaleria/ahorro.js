@@ -34,12 +34,19 @@ fetch("obtener_ahorro.php")
       const grupo = document.createElement("div");
       grupo.className = "grupo";
 
+      /* =========================
+         COMPLETADO DESDE BD
+         ========================= */
+      if (marcadasActuales === reto.total_veces) {
+        grupo.classList.add("completado");
+      }
+
       const header = document.createElement("div");
       header.className = "grupo-header";
       header.innerHTML = `
         <span>$${reto.monto}</span>
         <span id="rest-${reto.monto}">
-          ${restantes === 0
+          ${marcadasActuales === reto.total_veces
             ? "COMPLETADO 💚"
             : `Restantes: ${restantes} de ${reto.total_veces} ▼`}
         </span>
@@ -66,7 +73,9 @@ fetch("obtener_ahorro.php")
 
           restantes = reto.total_veces - marcadasActuales;
 
-          /* recalcular total */
+          /* =========================
+             RECALCULAR TOTAL
+             ========================= */
           total = 0;
           document.querySelectorAll(".checks").forEach(grp => {
             const monto = Number(grp.dataset.monto);
@@ -84,16 +93,14 @@ fetch("obtener_ahorro.php")
              COMPLETADO REAL
              ========================= */
           if (restantes === 0) {
-            console.log("🔥 COMPLETADO → CUPÓN");
 
             grupo.classList.add("completado");
             restSpan.textContent = "COMPLETADO 💚";
 
-            /* MOSTRAR CUPÓN SIEMPRE */
+            /* MOSTRAR CUPÓN SOLO AL COMPLETAR */
             folioSpan.textContent = "";
             cuponOverlay.style.display = "flex";
 
-            /* GUARDAR CUPÓN (NO BLOQUEA UI) */
             fetch("guardar_cupon.php", {
               method: "POST",
               headers: {
