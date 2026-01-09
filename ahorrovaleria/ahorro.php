@@ -40,7 +40,7 @@ if ($_SESSION['rol'] !== 'novia') {
 
   <<div id="cuponOverlay" class="cupon-overlay" style="display:none;">
     <div class="cupon">
-      <h2>🎟️ CUPÓN</h2>
+      <h2>🎟️ CUPÓN <span id="folioCupon"></span></h2>
       <p>
         Cupón válido para coger 😈❤️<br><br>
         <strong>Duración:</strong><br>

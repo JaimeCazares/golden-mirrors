@@ -2,11 +2,12 @@ const lista = document.getElementById("listaAhorro");
 const totalSpan = document.getElementById("total");
 const cuponOverlay = document.getElementById("cuponOverlay");
 const cerrarCupon = document.getElementById("cerrarCupon");
+const folioSpan = document.getElementById("folioCupon");
 
 let total = 0;
 
 /* =========================
-   FORZAR CUPÓN OCULTO AL CARGAR
+   FORZAR CUPÓN OCULTO
    ========================= */
 if (cuponOverlay) {
   cuponOverlay.style.display = "none";
@@ -89,9 +90,11 @@ fetch("obtener_ahorro.php")
           const restSpan =
             document.getElementById(`rest-${reto.monto}`);
 
-          /* ===== COMPLETADO ===== */
-          if (marcadasAntes < reto.total_veces &&
-              marcadasActuales === reto.total_veces) {
+          /* ===== TRANSICIÓN A COMPLETADO ===== */
+          if (
+            marcadasAntes < reto.total_veces &&
+            marcadasActuales === reto.total_veces
+          ) {
 
             grupo.classList.add("completado");
             grupo.style.backgroundColor = "#e6f8ec";
@@ -101,12 +104,21 @@ fetch("obtener_ahorro.php")
 
             restSpan.textContent = "COMPLETADO 💚";
 
-            /* ===== CUPÓN (solo una vez) ===== */
-            const key = `cupon-${reto.monto}`;
-            if (!localStorage.getItem(key)) {
-              cuponOverlay.style.display = "flex";
-              localStorage.setItem(key, "mostrado");
-            }
+            /* ===== GUARDAR CUPÓN EN BD ===== */
+            fetch("guardar_cupon.php", {
+              method: "POST",
+              headers: {
+                "Content-Type": "application/x-www-form-urlencoded"
+              },
+              body: `monto=${reto.monto}`
+            })
+              .then(res => res.json())
+              .then(data => {
+                if (folioSpan) {
+                  folioSpan.textContent = `– Folio: ${data.folio}`;
+                }
+                cuponOverlay.style.display = "flex";
+              });
 
           } else if (marcadasActuales < reto.total_veces) {
 
@@ -134,7 +146,7 @@ fetch("obtener_ahorro.php")
   });
 
 /* =========================
-   GUARDAR EN BD
+   GUARDAR AHORRO EN BD
    ========================= */
 function guardar(monto, marcadas) {
   const datos = new FormData();
