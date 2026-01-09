@@ -132,4 +132,23 @@ p {
     justify-content: space-between;
   }
 }
+/* =========================
+   RETO COMPLETADO
+   ========================= */
+.grupo.completado {
+  background: #e6f8ec;
+  border: 2px solid #6fcf97;
+}
+
+.grupo.completado .grupo-header {
+  color: #2f8f5b;
+}
+
+.grupo.completado .grupo-header span:last-child {
+  font-weight: bold;
+}
+
+.grupo.completado .checks {
+  opacity: 0.85;
+}
 

@@ -14,12 +14,18 @@ fetch("obtener_ahorro.php")
       const grupo = document.createElement("div");
       grupo.className = "grupo";
 
+      if (restantes === 0) {
+        grupo.classList.add("completado");
+      }
+
       const header = document.createElement("div");
       header.className = "grupo-header";
       header.innerHTML = `
         <span>$${reto.monto}</span>
         <span id="rest-${reto.monto}">
-          Restantes: ${restantes} de ${reto.total_veces} ▼
+          ${restantes === 0 
+            ? "COMPLETADO 💚" 
+            : `Restantes: ${restantes} de ${reto.total_veces} ▼`}
         </span>
       `;
 
@@ -49,8 +55,17 @@ fetch("obtener_ahorro.php")
           });
 
           totalSpan.textContent = `$${total.toLocaleString()}`;
-          document.getElementById(`rest-${reto.monto}`).textContent =
-            `Restantes: ${restantes} de ${reto.total_veces} ▼`;
+
+          const restSpan = document.getElementById(`rest-${reto.monto}`);
+
+          if (restantes === 0) {
+            grupo.classList.add("completado");
+            restSpan.textContent = "COMPLETADO 💚";
+          } else {
+            grupo.classList.remove("completado");
+            restSpan.textContent =
+              `Restantes: ${restantes} de ${reto.total_veces} ▼`;
+          }
 
           guardar(reto.monto, marcadas);
         };
