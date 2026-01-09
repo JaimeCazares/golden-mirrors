@@ -14,6 +14,11 @@ if ($_SESSION['rol'] !== 'novia') {
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Mi ahorro 💖</title>
   <link rel="stylesheet" href="ahorro.css?v=3">
+  <link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#ff69b4">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+
 </head>
 
 <body>
