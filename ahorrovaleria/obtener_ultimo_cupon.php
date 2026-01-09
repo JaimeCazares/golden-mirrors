@@ -1,12 +1,14 @@
 <?php
 require_once __DIR__ . '/../conexion.php';
 
-$res = $conn->query(
-  "SELECT folio FROM cupones ORDER BY id DESC LIMIT 1"
+header('Content-Type: application/json');
+
+$res = $conexion->query(
+    "SELECT folio FROM cupones ORDER BY id DESC LIMIT 1"
 );
 
 if ($row = $res->fetch_assoc()) {
-  echo json_encode($row);
+    echo json_encode($row);
 } else {
-  echo json_encode(["folio" => null]);
+    echo json_encode(["folio" => null]);
 }
