@@ -114,11 +114,15 @@ fetch("obtener_ahorro.php")
             })
               .then(res => res.json())
               .then(data => {
-  if (data.ok && folioSpan) {
-    folioSpan.textContent = `– Folio: ${data.folio}`;
-    cuponOverlay.style.display = "flex";
-  }
+  folioSpan.textContent = `– Folio: ${data.folio}`;
+  cuponOverlay.style.display = "flex";
+})
+.catch(() => {
+  // aunque falle el fetch, mostrar cupón
+  folioSpan.textContent = "";
+  cuponOverlay.style.display = "flex";
 });
+
 
 
           } else if (marcadasActuales < reto.total_veces) {
