@@ -1,5 +1,3 @@
-alert("JS CARGADO");
-
 const lista = document.getElementById("listaAhorro");
 const totalSpan = document.getElementById("total");
 const cuponOverlay = document.getElementById("cuponOverlay");
