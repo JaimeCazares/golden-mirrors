@@ -1,4 +1,6 @@
 <?php
+file_put_contents(__DIR__ . '/debug.txt', "ENTRO\n", FILE_APPEND);
+
 require_once __DIR__ . '/../session_init.php';
 
 if (!isset($_SESSION['usuario'])) {
