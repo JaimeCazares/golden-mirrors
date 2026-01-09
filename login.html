@@ -3,7 +3,6 @@
 <head>
     <meta charset="UTF-8">
     <title>Login Apuestas</title>
-
     <link rel="stylesheet" href="login.css">
 </head>
 
@@ -29,11 +28,21 @@ function login() {
     })
     .then(res => res.text())
     .then(data => {
-        if(data.trim() === "OK"){
-            window.location = "index.html";
-        } else {
-            document.getElementById("respuesta").innerHTML = data;
+        data = data.trim();
+
+        if (data === "INDEX") {
+            window.location.href = "index.html";
+        } 
+        else if (data === "AHORRO") {
+            window.location.href = "ahorrovaleria/ahorro.php";
+        } 
+        else {
+            document.getElementById("respuesta").innerText = data;
         }
+    })
+    .catch(err => {
+        document.getElementById("respuesta").innerText = "Error de conexión";
+        console.error(err);
     });
 }
 </script>

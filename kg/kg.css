@@ -125,14 +125,8 @@
   border-radius: 8px;
 }
 
-/* BOTÓN HISTORIAL 📊 */
 .btn-historial {
   position: absolute;
-
-  /* 🔗 anclado al botón azul */
-  top: calc(100% + 6px);   /* justo debajo del contenedor */
-  right: 14px;             /* alineado con el botón azul */
-
   background: transparent;
   border: none;
   font-size: 22px;
@@ -147,5 +141,18 @@
   opacity: 1;
   transform: scale(1.1);
 }
+.acciones-fotos {
+  display: flex;
+  gap: 6px;
+  margin-top: 6px;
+}
 
-
+.acciones-fotos button {
+  font-size: 11px;
+  padding: 3px 6px;
+  border-radius: 6px;
+  border: none;
+  cursor: pointer;
+  background: linear-gradient(145deg, #5f9cff, #3c6be0);
+  color: white;
+}

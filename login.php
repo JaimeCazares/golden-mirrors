@@ -47,14 +47,24 @@ $stmt->execute();
 $resultado = $stmt->get_result();
 
 if ($resultado->num_rows === 1) {
+
     $user = $resultado->fetch_assoc();
 
     if ($password === $user["password"]) {
+
         $_SESSION["usuario"] = $usuario;
-        echo "OK";
+
+        // 🔹 REDIRECCIONES
+        if ($usuario === 'vale') {
+            echo "AHORRO"; // novia
+        } else {
+            echo "INDEX"; // tú
+        }
+
     } else {
         echo "Contraseña incorrecta";
     }
+
 } else {
     echo "El usuario no existe";
 }

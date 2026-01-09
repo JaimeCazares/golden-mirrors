@@ -10,13 +10,14 @@
     <li data-peso="110">110 kg</li>
   </ul>
 
-  <!-- BOTÓN AZUL (PESO ACTUAL / EDITABLE) -->
+  <!-- BOTÓN AZUL -->
   <div id="pesoSeleccionado">PESO</div>
 </div>
-  <!-- BOTÓN HISTORIAL -->
-  <button id="verHistorialKg" class="btn-historial">📊</button>
 
-<!-- MODAL HISTORIAL -->
+<!-- BOTÓN HISTORIAL -->
+<button id="verHistorialKg" class="btn-historial">📊</button>
+
+<!-- MODAL -->
 <div id="modalKg" class="modal" style="display:none;">
   <div class="modal-content">
     <span id="cerrarKgModal" class="close">&times;</span>
@@ -27,8 +28,21 @@
     <hr>
 
     <h3>➕ Nuevo registro</h3>
-    <input type="number" step="0.01" id="nuevoPeso" placeholder="Peso (kg)">
-    <input type="file" id="fotoPeso" accept="image/*">
-    <button id="guardarPesoHistorial">Guardar</button>
+
+    <!-- FORM -->
+    <form id="formHistorialKg">
+      <input type="number" step="0.01" id="nuevoPeso" placeholder="Peso (kg)" required>
+
+      <label>📸 Foto frente</label>
+      <input type="file" id="fotoFrente" accept="image/*">
+
+      <label>📸 Foto lado</label>
+      <input type="file" id="fotoLado" accept="image/*">
+
+      <label>📸 Foto atrás</label>
+      <input type="file" id="fotoAtras" accept="image/*">
+
+      <button type="button" id="guardarPesoHistorial">Guardar</button>
+    </form>
   </div>
 </div>

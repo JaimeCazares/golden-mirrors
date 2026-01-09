@@ -1,8 +1,5 @@
 function initKg() {
 
-  // =========================
-  // ELEMENTOS
-  // =========================
   const listaPesos = document.querySelectorAll("#listaPesos li");
   const pesoSeleccionado = document.getElementById("pesoSeleccionado");
 
@@ -12,19 +9,31 @@ function initKg() {
 
   const historialKgLista = document.getElementById("historialKgLista");
   const nuevoPeso = document.getElementById("nuevoPeso");
-  const fotoPeso = document.getElementById("fotoPeso");
-  const guardarPesoHistorial = document.getElementById("guardarPesoHistorial");
 
-  if (!pesoSeleccionado || !listaPesos.length) {
-    console.error("❌ Elementos KG no encontrados");
-    return;
-  }
+  const fotoFrente = document.getElementById("fotoFrente");
+  const fotoLado   = document.getElementById("fotoLado");
+  const fotoAtras  = document.getElementById("fotoAtras");
+
+  const guardarPesoHistorial = document.getElementById("guardarPesoHistorial");
 
   let modoEdicion = false;
   let pesoActual = 0;
 
   // =========================
-  // CARGAR PESO ACTUAL
+  // POSICIÓN BOTÓN HISTORIAL
+  // =========================
+  function posicionarBotonHistorial() {
+    const ref = pesoSeleccionado.getBoundingClientRect();
+    btnHistorial.style.left = ref.left + window.scrollX + "px";
+    btnHistorial.style.top  = ref.bottom + window.scrollY + 6 + "px";
+  }
+
+  posicionarBotonHistorial();
+  window.addEventListener("resize", posicionarBotonHistorial);
+  window.addEventListener("scroll", posicionarBotonHistorial);
+
+  // =========================
+  // PESO ACTUAL
   // =========================
   fetch("kg/obtenerKg.php", { cache: "no-store" })
     .then(res => res.json())
@@ -36,9 +45,6 @@ function initKg() {
       actualizarIndicador();
     });
 
-  // =========================
-  // EDITAR PESO ACTUAL
-  // =========================
   pesoSeleccionado.addEventListener("click", () => {
     if (modoEdicion) return;
     modoEdicion = true;
@@ -49,7 +55,6 @@ function initKg() {
 
     const input = document.getElementById("inputPeso");
     input.focus();
-    input.select();
 
     input.addEventListener("keydown", e => {
       if (e.key === "Enter") guardarPesoActual(input.value);
@@ -104,7 +109,7 @@ function initKg() {
   }
 
   // =========================
-  // MODAL HISTORIAL
+  // MODAL
   // =========================
   btnHistorial.addEventListener("click", () => {
     modalKg.style.display = "flex";
@@ -115,12 +120,8 @@ function initKg() {
     modalKg.style.display = "none";
   });
 
-  window.addEventListener("click", e => {
-    if (e.target === modalKg) modalKg.style.display = "none";
-  });
-
   // =========================
-  // CARGAR HISTORIAL
+  // HISTORIAL
   // =========================
   function cargarHistorialKg() {
     historialKgLista.innerHTML = "Cargando...";
@@ -134,22 +135,25 @@ function initKg() {
         }
 
         historialKgLista.innerHTML = data.map(item => `
-          <div class="item-historial">
+          <div class="card-historial">
             <strong>Semana ${item.semana}</strong><br>
             📅 ${item.fecha}<br>
-            ⚖️ ${item.peso} kg<br>
-            ${item.foto ? `<img src="${item.foto}" class="foto-peso">` : ""}
+            ⚖️ ${item.peso} kg
+            <div>
+              ${item.foto_frente ? `<button onclick="verFoto('${item.foto_frente}')">📸 Frente</button>` : ""}
+              ${item.foto_lado   ? `<button onclick="verFoto('${item.foto_lado}')">📸 Lado</button>` : ""}
+              ${item.foto_atras  ? `<button onclick="verFoto('${item.foto_atras}')">📸 Atrás</button>` : ""}
+            </div>
           </div>
         `).join("");
       });
   }
 
   // =========================
-  // GUARDAR NUEVO REGISTRO
+  // GUARDAR REGISTRO
   // =========================
   guardarPesoHistorial.addEventListener("click", () => {
     const peso = parseFloat(nuevoPeso.value);
-
     if (!peso || isNaN(peso)) {
       alert("Ingresa un peso válido");
       return;
@@ -157,20 +161,34 @@ function initKg() {
 
     const datos = new FormData();
     datos.append("peso", peso);
-    if (fotoPeso.files[0]) {
-      datos.append("foto", fotoPeso.files[0]);
-    }
+
+    if (fotoFrente.files[0]) datos.append("foto_frente", fotoFrente.files[0]);
+    if (fotoLado.files[0])   datos.append("foto_lado", fotoLado.files[0]);
+    if (fotoAtras.files[0])  datos.append("foto_atras", fotoAtras.files[0]);
 
     fetch("kg/guardarHistorialKg.php", {
       method: "POST",
       body: datos
     })
-      .then(res => res.json())
-      .then(() => {
-        nuevoPeso.value = "";
-        fotoPeso.value = "";
-        cargarHistorialKg();
-      });
-  });
+    .then(res => res.json())
+    .then(resp => {
+      if (!resp.ok) {
+        alert("❌ Error al guardar");
+        return;
+      }
 
+      alert("✅ Registro guardado");
+      nuevoPeso.value = "";
+      fotoFrente.value = "";
+      fotoLado.value = "";
+      fotoAtras.value = "";
+      cargarHistorialKg();
+    });
+  });
 }
+
+function verFoto(ruta) {
+  window.open(ruta, "_blank");
+}
+
+document.addEventListener("DOMContentLoaded", initKg);
