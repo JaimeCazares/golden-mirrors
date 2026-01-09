@@ -7,20 +7,23 @@ const folioSpan = document.getElementById("folioCupon");
 let total = 0;
 
 /* =========================
-   FORZAR CUPÓN OCULTO
+   SEGURIDAD BÁSICA
    ========================= */
-if (cuponOverlay) {
-  cuponOverlay.style.display = "none";
+if (!lista || !totalSpan || !cuponOverlay || !folioSpan) {
+  console.error("FALTAN ELEMENTOS DEL DOM");
 }
+
+/* =========================
+   CUPÓN OCULTO AL INICIO
+   ========================= */
+cuponOverlay.style.display = "none";
 
 /* =========================
    CERRAR CUPÓN
    ========================= */
-if (cerrarCupon) {
-  cerrarCupon.onclick = () => {
-    cuponOverlay.style.display = "none";
-  };
-}
+cerrarCupon.onclick = () => {
+  cuponOverlay.style.display = "none";
+};
 
 /* =========================
    CARGAR AHORROS
@@ -31,7 +34,7 @@ fetch("obtener_ahorro.php")
 
     retos.forEach(reto => {
 
-      let marcadasActuales = reto.marcadas;
+      let marcadasActuales = Number(reto.marcadas);
       let restantes = reto.total_veces - marcadasActuales;
       total += marcadasActuales * reto.monto;
 
@@ -79,7 +82,7 @@ fetch("obtener_ahorro.php")
           /* ===== recalcular total ===== */
           total = 0;
           document.querySelectorAll(".checks").forEach(grp => {
-            const monto = grp.dataset.monto;
+            const monto = Number(grp.dataset.monto);
             const count =
               [...grp.children].filter(c => c.checked).length;
             total += monto * count;
@@ -90,21 +93,21 @@ fetch("obtener_ahorro.php")
           const restSpan =
             document.getElementById(`rest-${reto.monto}`);
 
-          /* ===== TRANSICIÓN A COMPLETADO ===== */
+          /* ===== COMPLETADO ===== */
           if (
             marcadasAntes < reto.total_veces &&
             marcadasActuales === reto.total_veces
           ) {
+            console.log("COMPLETADO → MOSTRAR CUPÓN");
 
             grupo.classList.add("completado");
-            grupo.style.backgroundColor = "#e6f8ec";
-            grupo.style.border = "2px solid #6fcf97";
-            grupo.style.boxShadow =
-              "0 6px 14px rgba(47, 143, 91, 0.25)";
-
             restSpan.textContent = "COMPLETADO 💚";
 
-            /* ===== GUARDAR CUPÓN EN BD ===== */
+            /* ===== MOSTRAR CUPÓN (SIN DEPENDER DE PHP) ===== */
+            folioSpan.textContent = "";
+            cuponOverlay.style.display = "flex";
+
+            /* ===== GUARDAR CUPÓN EN BD (NO BLOQUEA UI) ===== */
             fetch("guardar_cupon.php", {
               method: "POST",
               headers: {
@@ -112,26 +115,18 @@ fetch("obtener_ahorro.php")
               },
               body: `monto=${reto.monto}`
             })
-              .then(res => res.json())
-              .then(data => {
-  folioSpan.textContent = `– Folio: ${data.folio}`;
-  cuponOverlay.style.display = "flex";
-})
-.catch(() => {
-  // aunque falle el fetch, mostrar cupón
-  folioSpan.textContent = "";
-  cuponOverlay.style.display = "flex";
-});
-
-
+              .then(r => r.json())
+              .then(d => {
+                if (d && d.folio) {
+                  folioSpan.textContent = `– Folio: ${d.folio}`;
+                }
+              })
+              .catch(err => {
+                console.warn("Cupón no guardado, UI sigue:", err);
+              });
 
           } else if (marcadasActuales < reto.total_veces) {
-
             grupo.classList.remove("completado");
-            grupo.style.backgroundColor = "";
-            grupo.style.border = "";
-            grupo.style.boxShadow = "";
-
             restSpan.textContent =
               `Restantes: ${restantes} de ${reto.total_veces} ▼`;
           }
@@ -148,10 +143,13 @@ fetch("obtener_ahorro.php")
     });
 
     totalSpan.textContent = `$${total.toLocaleString()}`;
+  })
+  .catch(err => {
+    console.error("ERROR CARGANDO AHORROS:", err);
   });
 
 /* =========================
-   GUARDAR AHORRO EN BD
+   GUARDAR AHORRO
    ========================= */
 function guardar(monto, marcadas) {
   const datos = new FormData();
