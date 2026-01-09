@@ -1,44 +1,83 @@
-<?php
-require_once __DIR__ . '/../session_init.php';
+alert("ahorro.js cargado");
 
-if (!isset($_SESSION['usuario'])) {
-    http_response_code(403);
-    exit;
+const lista = document.getElementById("listaAhorro");
+const totalSpan = document.getElementById("total");
+
+let total = 0;
+
+/* CARGAR DATOS */
+fetch("obtener_ahorro.php")
+  .then(res => res.json())
+  .then(retos => {
+
+    retos.forEach(reto => {
+      let restantes = reto.total_veces - reto.marcadas;
+      total += reto.marcadas * reto.monto;
+
+      const grupo = document.createElement("div");
+      grupo.className = "grupo";
+
+      const header = document.createElement("div");
+      header.className = "grupo-header";
+      header.innerHTML = `
+        <span>$${reto.monto}</span>
+        <span id="rest-${reto.monto}">
+          Restantes: ${restantes} ▼
+        </span>
+      `;
+
+      const checks = document.createElement("div");
+      checks.className = "checks";
+
+      header.onclick = () => {
+        checks.style.display = checks.style.display === "flex" ? "none" : "flex";
+      };
+
+      for (let i = 0; i < reto.total_veces; i++) {
+        const check = document.createElement("input");
+        check.type = "checkbox";
+
+        if (i < reto.marcadas) check.checked = true;
+
+        check.onchange = () => {
+          let marcadas = [...checks.children].filter(c => c.checked).length;
+          restantes = reto.total_veces - marcadas;
+
+          total = 0;
+          document.querySelectorAll(".checks").forEach(grp => {
+            const monto = grp.dataset.monto;
+            const count = [...grp.children].filter(c => c.checked).length;
+            total += monto * count;
+          });
+
+          totalSpan.textContent = `$${total.toLocaleString()}`;
+          document.getElementById(`rest-${reto.monto}`).textContent =
+            `Restantes: ${restantes} ▼`;
+
+          guardar(reto.monto, marcadas);
+        };
+
+        checks.appendChild(check);
+      }
+
+      checks.dataset.monto = reto.monto;
+
+      grupo.appendChild(header);
+      grupo.appendChild(checks);
+      lista.appendChild(grupo);
+    });
+
+    totalSpan.textContent = `$${total.toLocaleString()}`;
+  });
+
+/* GUARDAR EN BD */
+function guardar(monto, marcadas) {
+  const datos = new FormData();
+  datos.append("monto", monto);
+  datos.append("marcadas", marcadas);
+
+  fetch("guardar_ahorro.php", {
+    method: "POST",
+    body: datos
+  });
 }
-
-/* =========================
-   CONEXIÓN SEGÚN ENTORNO
-   ========================= */
-if ($_SERVER['SERVER_NAME'] === 'localhost') {
-    $conexion = new mysqli("localhost", "root", "", "golden", 3307);
-} else {
-    $conexion = new mysqli(
-        "localhost",
-        "u717657264_golden",
-        "Jaimecazares7.",
-        "u717657264_golden",
-        3306
-    );
-}
-
-if ($conexion->connect_error) {
-    http_response_code(500);
-    exit;
-}
-
-$usuario  = $_SESSION['usuario'];
-$monto    = intval($_POST['monto'] ?? 0);
-$marcadas = intval($_POST['marcadas'] ?? 0);
-
-/* INSERT O UPDATE */
-$sql = "
-INSERT INTO ahorro (usuario, monto, marcadas)
-VALUES (?, ?, ?)
-ON DUPLICATE KEY UPDATE marcadas = VALUES(marcadas)
-";
-
-$stmt = $conexion->prepare($sql);
-$stmt->bind_param("sii", $usuario, $monto, $marcadas);
-$stmt->execute();
-
-echo "OK";
