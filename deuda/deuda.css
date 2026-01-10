@@ -111,46 +111,48 @@
   box-shadow: 0 0 8px rgba(0, 255, 100, 0.6);
 }
 
-/* --- RESPONSIVE PARA DEUDAS --- */
+/* --- RESPONSIVE: Deudas (Barra Superior) --- */
 @media (max-width: 600px) {
   .deudas-container {
-    width: 90%; /* Ocupa casi todo el ancho */
-    max-width: none;
-    left: 5%; /* Centrado horizontalmente */
-    top: 5px; /* Más pegado arriba */
-    grid-template-columns: 1fr auto; /* Solo dos columnas: lista y total */
-    font-size: 11px;
-    padding: 8px;
-    z-index: 9999;
+    width: 94%;           /* Ocupa casi todo el ancho */
+    left: 3%;             /* Centrado (3% izq + 94% ancho + 3% der = 100%) */
+    top: 5px;             /* Bien pegado arriba */
+    padding: 8px 5px;     /* Menos relleno */
+    
+    /* Reorganizar en 2 columnas: Lista a la izq, Total a la der */
+    grid-template-columns: 1fr auto; 
+    gap: 5px;
   }
 
-  /* Ajustar la lista interna */
+  /* La lista de bolitas */
   #listaDeudas {
-    grid-template-columns: repeat(3, 1fr); /* 3 columnas forzadas pero pequeñas */
-    grid-column: 1; /* Ocupa la primera columna del contenedor */
+    display: flex;        /* Usar Flex para que se acomoden solas */
+    flex-wrap: wrap;      /* Si no caben, bajan de línea */
+    gap: 4px;
+    grid-column: 1;       /* Columna izquierda */
+    justify-content: flex-start;
   }
 
   #listaDeudas li {
-    font-size: 10px;
-    padding: 2px 4px;
-    white-space: nowrap; /* Evita que el texto se rompa */
-    overflow: hidden;
-    text-overflow: ellipsis;
+    font-size: 10px;      /* Texto más pequeño */
+    padding: 3px 6px;
   }
 
-  /* El total se va abajo o al lado, más pequeño */
+  /* El cuadro de Total */
   #totalDeuda {
-    grid-column: 2; /* Segunda columna del contenedor */
-    grid-row: 1;
+    grid-column: 2;       /* Columna derecha */
+    grid-row: 1;          /* Misma fila que la lista */
     font-size: 11px;
-    padding: 4px 6px;
+    padding: 4px 8px;
+    white-space: nowrap;  /* Que no se rompa el texto */
   }
 
-  /* Mover el botón editar para que no estorbe */
+  /* El botón de lápiz (Editar) */
   #editarBtn {
-    position: absolute; /* Ya no fixed, sino relativo al contenedor */
-    top: -5px;
-    right: -10px;
-    left: auto; /* Anular el left fijo */
+    /* Lo metemos dentro/pegado al contenedor para que no flote perdido */
+    position: absolute;   
+    top: 35px;            /* Justo debajo del cuadro */
+    right: 0;             /* Pegado a la derecha */
+    left: auto;           /* Quitamos el left fijo de PC */
   }
 }
