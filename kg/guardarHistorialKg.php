@@ -1,82 +1,36 @@
 <?php
-ini_set('display_errors', 1);
-error_reporting(E_ALL);
-
+ini_set('display_errors', 0);
 require_once "../conexion.php";
+header('Content-Type: application/json');
 
-if (!isset($_POST['peso'])) {
-    http_response_code(400);
-    echo json_encode(["ok" => false, "error" => "Peso no recibido"]);
+if (!isset($_POST['peso']) || empty($_POST['peso'])) {
+    echo json_encode(["ok" => false, "error" => "No se recibió el peso"]);
     exit;
 }
 
 $peso  = floatval($_POST['peso']);
 $fecha = date("Y-m-d");
 
-/* ===============================
-   CALCULAR SEMANA
-================================ */
-$res = $conexion->query(
-    "SELECT fecha FROM peso_historial ORDER BY fecha ASC LIMIT 1"
-);
+$res = $conexion->query("SELECT MAX(semana) as ultima FROM peso_historial");
+$row = $res->fetch_assoc();
+$semana = ($row['ultima'] !== null) ? intval($row['ultima']) + 1 : 0;
 
-if ($res && $res->num_rows > 0) {
-    $row = $res->fetch_assoc();
-    $fechaInicial = new DateTime($row['fecha']);
-} else {
-    $fechaInicial = new DateTime($fecha);
-}
-
-$fechaActual = new DateTime($fecha);
-$dias   = $fechaInicial->diff($fechaActual)->days;
-$semana = floor($dias / 7);
-
-/* ===============================
-   FUNCIÓN GUARDAR FOTO
-================================ */
 function guardarFoto($campo) {
-    if (empty($_FILES[$campo]['name'])) {
-        return null;
-    }
-
+    if (!isset($_FILES[$campo]) || $_FILES[$campo]['error'] !== UPLOAD_ERR_OK) return null;
     $dir = "../uploads/peso/";
-    if (!is_dir($dir)) {
-        mkdir($dir, 0777, true);
-    }
-
-    $nombre = time() . "_" . $campo . "_" . basename($_FILES[$campo]['name']);
-    $ruta   = $dir . $nombre;
-
-    if (!move_uploaded_file($_FILES[$campo]['tmp_name'], $ruta)) {
-        return null;
-    }
-
-    return "uploads/peso/" . $nombre;
+    if (!is_dir($dir)) mkdir($dir, 0777, true);
+    $ext = pathinfo($_FILES[$campo]['name'], PATHINFO_EXTENSION);
+    $nombre = time() . "_" . $campo . "_" . uniqid() . "." . $ext;
+    if (move_uploaded_file($_FILES[$campo]['tmp_name'], $dir . $nombre)) return "uploads/peso/" . $nombre;
+    return null;
 }
 
-$fotoFrente = guardarFoto("foto_frente");
-$fotoLado   = guardarFoto("foto_lado");
-$fotoAtras  = guardarFoto("foto_atras");
+$f1 = guardarFoto("foto_frente"); $f2 = guardarFoto("foto_lado"); $f3 = guardarFoto("foto_atras");
 
-/* ===============================
-   INSERTAR
-================================ */
-$stmt = $conexion->prepare(
-    "INSERT INTO peso_historial
-    (peso, fecha, semana, foto_frente, foto_lado, foto_atras)
-    VALUES (?, ?, ?, ?, ?, ?)"
-);
+$stmt = $conexion->prepare("INSERT INTO peso_historial (peso, fecha, semana, foto_frente, foto_lado, foto_atras) VALUES (?, ?, ?, ?, ?, ?)");
+$stmt->bind_param("dsisss", $peso, $fecha, $semana, $f1, $f2, $f3);
 
-$stmt->bind_param(
-    "dsisss",
-    $peso,
-    $fecha,
-    $semana,
-    $fotoFrente,
-    $fotoLado,
-    $fotoAtras
-);
+if ($stmt->execute()) echo json_encode(["ok" => true, "semana_guardada" => $semana]);
+else echo json_encode(["ok" => false, "error" => $conexion->error]);
 
-$stmt->execute();
-
-echo json_encode(["ok" => true]);
+$stmt->close(); $conexion->close();

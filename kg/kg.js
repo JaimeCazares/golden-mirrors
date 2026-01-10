@@ -1,194 +1,264 @@
 function initKg() {
-
   const listaPesos = document.querySelectorAll("#listaPesos li");
   const pesoSeleccionado = document.getElementById("pesoSeleccionado");
-
   const btnHistorial = document.getElementById("verHistorialKg");
   const modalKg = document.getElementById("modalKg");
   const cerrarKgModal = document.getElementById("cerrarKgModal");
-
   const historialKgLista = document.getElementById("historialKgLista");
   const nuevoPeso = document.getElementById("nuevoPeso");
-
-  const fotoFrente = document.getElementById("fotoFrente");
-  const fotoLado   = document.getElementById("fotoLado");
-  const fotoAtras  = document.getElementById("fotoAtras");
-
   const guardarPesoHistorial = document.getElementById("guardarPesoHistorial");
+  const formHistorial = document.getElementById("formHistorialKg");
 
-  let modoEdicion = false;
   let pesoActual = 0;
+  let cacheRegistros = [];
+  let bloquearGuardado = false;
 
-  // =========================
-  // POSICIÓN BOTÓN HISTORIAL
-  // =========================
-  function posicionarBotonHistorial() {
+  // --- NOTIFICACIONES ---
+  function mostrarIndicador(mensaje, tipo) {
+    const c = document.getElementById("mensajeRegistro");
+    if (!c) return;
+    c.textContent = mensaje;
+    c.className = tipo === "success" ? "msg-exito" : "msg-error";
+    c.style.display = "block";
+    setTimeout(() => { c.style.display = "none"; }, 4000);
+  }
+
+  // --- CARGAR CUADRÍCULA ---
+  function cargarHistorialKg() {
+    historialKgLista.innerHTML = "";
+    fetch("kg/obtenerHistorialKg.php", { cache: "no-store" })
+      .then(res => res.json())
+      .then(registros => {
+        // Ordenamos por semana ascendente (0, 1, 2...) para asegurar lógica correcta
+        cacheRegistros = registros.sort((a, b) => parseInt(a.semana) - parseInt(b.semana));
+        
+        const datosSemana = {};
+        registros.forEach(r => { datosSemana[r.semana] = r; });
+
+        for (let i = 0; i <= 51; i++) {
+          const btn = document.createElement("div");
+          const data = datosSemana[i];
+          btn.className = data ? "semana-btn completada" : "semana-btn pendiente";
+          btn.innerHTML = `<b>${i}</b><span>${data ? data.peso : '-'}</span>`;
+          if (data) btn.onclick = () => mostrarDetalleSemana(data);
+          historialKgLista.appendChild(btn);
+        }
+      });
+  }
+
+  // --- VISOR DE SEMANA INDIVIDUAL (3 FOTOS) ---
+  function mostrarDetalleSemana(data) {
+    const v = document.createElement("div");
+    v.id = "visorActivo"; 
+    v.className = "visor-fotos-overlay";
+    v.innerHTML = `
+      <div class="visor-content">
+        <span class="close-visor" onclick="this.parentElement.parentElement.remove()">&times;</span>
+        <h3 style="text-align:center; color:#00e0ff; margin:0">Semana ${data.semana}</h3>
+        <p style="text-align:center; font-size:11px; margin-bottom:10px">⚖️ ${data.peso} kg | 📅 ${data.fecha}</p>
+        <div class="fotos-row">
+          <div class="foto-box"><span>Frente</span><img src="${data.foto_frente || ''}" onclick="zoomImagen(this.src)" onerror="this.src='img/no-photo.png'"></div>
+          <div class="foto-box"><span>Lado</span><img src="${data.foto_lado || ''}" onclick="zoomImagen(this.src)" onerror="this.src='img/no-photo.png'"></div>
+          <div class="foto-box"><span>Atrás</span><img src="${data.foto_atras || ''}" onclick="zoomImagen(this.src)" onerror="this.src='img/no-photo.png'"></div>
+        </div>
+      </div>`;
+    document.body.appendChild(v);
+  }
+
+  // --- BOTÓN PROGRESO (TODAS LAS SEMANAS, 3 FOTOS CADA UNA) ---
+  document.getElementById("btnVerTodo").onclick = () => {
+    if (cacheRegistros.length === 0) return;
+    const v = document.createElement("div");
+    v.id = "visorEspecial"; 
+    v.className = "visor-fotos-overlay";
+    
+    // Generamos el HTML con las 3 fotos por cada registro
+    const contenidoHTML = cacheRegistros.map(r => `
+      <div style="border-bottom:1px solid #333; padding:15px 0;">
+        <p style="font-size:14px; font-weight:bold; text-align:center; color:#ddd; margin-bottom:8px;">
+            Semana ${r.semana} (${r.peso} kg)
+        </p>
+        <div class="fotos-row">
+          <div class="foto-box"><span>Frente</span><img src="${r.foto_frente || ''}" onclick="zoomImagen(this.src)" onerror="this.src='img/no-photo.png'"></div>
+          <div class="foto-box"><span>Lado</span><img src="${r.foto_lado || ''}" onclick="zoomImagen(this.src)" onerror="this.src='img/no-photo.png'"></div>
+          <div class="foto-box"><span>Atrás</span><img src="${r.foto_atras || ''}" onclick="zoomImagen(this.src)" onerror="this.src='img/no-photo.png'"></div>
+        </div>
+      </div>
+    `).join('');
+
+    v.innerHTML = `
+      <div class="visor-content" style="max-height:85vh; overflow-y:auto;">
+        <span class="close" onclick="this.parentElement.parentElement.remove()">&times;</span>
+        <h3 style="text-align:center; color:#00e0ff; position:sticky; top:0; background:#1a1a2e; padding:10px; border-bottom:1px solid #333;">Evolución Completa</h3>
+        ${contenidoHTML}
+      </div>`;
+    document.body.appendChild(v);
+  };
+
+  // --- BOTÓN COMPARAR (ANTES Y DESPUÉS, 3 FOTOS CADA UNO) ---
+  document.getElementById("btnAntesDespues").onclick = () => {
+    if (cacheRegistros.length < 1) return; // Necesitamos al menos 1 registro
+
+    // Lógica corregida: 
+    // "Antes" es el primer elemento del array ordenado (Semana 0 o la menor).
+    // "Después" es el último elemento del array ordenado (Semana actual/mayor).
+    const antes = cacheRegistros[0]; 
+    const despues = cacheRegistros[cacheRegistros.length - 1];
+
+    const v = document.createElement("div");
+    v.id = "visorEspecial"; 
+    v.className = "visor-fotos-overlay";
+    v.innerHTML = `
+      <div class="visor-content" style="max-height:90vh; overflow-y:auto;">
+        <span class="close" onclick="this.parentElement.parentElement.remove()">&times;</span>
+        <h3 style="text-align:center; color:#00e0ff; margin-bottom:15px;">Comparativa</h3>
+        
+        <h4 style="text-align:center; color:#aaa; margin-bottom:5px;">ANTES: Semana ${antes.semana} (${antes.peso}kg)</h4>
+        <div class="fotos-row" style="margin-bottom:20px;">
+          <div class="foto-box"><span>Frente</span><img src="${antes.foto_frente || ''}" onclick="zoomImagen(this.src)" onerror="this.src='img/no-photo.png'"></div>
+          <div class="foto-box"><span>Lado</span><img src="${antes.foto_lado || ''}" onclick="zoomImagen(this.src)" onerror="this.src='img/no-photo.png'"></div>
+          <div class="foto-box"><span>Atrás</span><img src="${antes.foto_atras || ''}" onclick="zoomImagen(this.src)" onerror="this.src='img/no-photo.png'"></div>
+        </div>
+
+        <hr style="border:0; border-top:1px dashed #333; margin:10px 0;">
+
+        <h4 style="text-align:center; color:#4df572; margin-bottom:5px;">AHORA: Semana ${despues.semana} (${despues.peso}kg)</h4>
+        <div class="fotos-row">
+          <div class="foto-box"><span>Frente</span><img src="${despues.foto_frente || ''}" onclick="zoomImagen(this.src)" onerror="this.src='img/no-photo.png'"></div>
+          <div class="foto-box"><span>Lado</span><img src="${despues.foto_lado || ''}" onclick="zoomImagen(this.src)" onerror="this.src='img/no-photo.png'"></div>
+          <div class="foto-box"><span>Atrás</span><img src="${despues.foto_atras || ''}" onclick="zoomImagen(this.src)" onerror="this.src='img/no-photo.png'"></div>
+        </div>
+
+      </div>`;
+    document.body.appendChild(v);
+  };
+
+  // --- GUARDAR ---
+  guardarPesoHistorial.onclick = function(e) {
+    e.preventDefault(); 
+    if (bloquearGuardado) return;
+    const pVal = parseFloat(nuevoPeso.value);
+    if (!pVal) { mostrarIndicador("⚠️ Peso inválido", "error"); return; }
+    
+    bloquearGuardado = true; 
+    guardarPesoHistorial.disabled = true;
+    
+    fetch("kg/guardarHistorialKg.php", { method: "POST", body: new FormData(formHistorial) })
+    .then(res => res.json()).then(resp => {
+      if (resp.ok) { 
+          mostrarIndicador("✅ Guardado!", "success"); 
+          formHistorial.reset(); 
+          resetFileInputs(); 
+          cargarHistorialKg(); 
+      }
+      else { mostrarIndicador("❌ " + resp.error, "error"); }
+    }).finally(() => { bloquearGuardado = false; guardarPesoHistorial.disabled = false; });
+  };
+
+  // --- ESCAPE (Cierre Jerárquico) ---
+  document.onkeydown = function(e) {
+    if (e.key === "Escape") {
+      const zoom = document.getElementById("imgZoomOverlay");
+      const especial = document.getElementById("visorEspecial");
+      const visor = document.getElementById("visorActivo");
+      
+      if (zoom) zoom.remove();
+      else if (especial) especial.remove();
+      else if (visor) visor.remove();
+      else if (modalKg.style.display === "flex") { 
+          modalKg.style.display = "none"; 
+          btnHistorial.style.display = "block"; 
+          fixBtnPos(); 
+      }
+    }
+  };
+
+  function fixBtnPos() {
     const ref = pesoSeleccionado.getBoundingClientRect();
     btnHistorial.style.left = ref.left + window.scrollX + "px";
     btnHistorial.style.top  = ref.bottom + window.scrollY + 6 + "px";
   }
 
-  posicionarBotonHistorial();
-  window.addEventListener("resize", posicionarBotonHistorial);
-  window.addEventListener("scroll", posicionarBotonHistorial);
+  btnHistorial.onclick = () => { modalKg.style.display = "flex"; btnHistorial.style.display = "none"; cargarHistorialKg(); };
+  cerrarKgModal.onclick = () => { modalKg.style.display = "none"; btnHistorial.style.display = "block"; fixBtnPos(); };
 
-  // =========================
-  // PESO ACTUAL
-  // =========================
-  fetch("kg/obtenerKg.php", { cache: "no-store" })
-    .then(res => res.json())
-    .then(data => {
-      pesoActual = parseFloat(data.peso) || 0;
-      if (pesoActual > 0) {
-        pesoSeleccionado.textContent = pesoActual.toFixed(2) + " kg";
-      }
-      actualizarIndicador();
-    });
-
-  pesoSeleccionado.addEventListener("click", () => {
-    if (modoEdicion) return;
-    modoEdicion = true;
-
-    pesoSeleccionado.innerHTML = `
-      <input type="number" step="0.01" id="inputPeso" value="${pesoActual || ""}">
-    `;
-
-    const input = document.getElementById("inputPeso");
-    input.focus();
-
-    input.addEventListener("keydown", e => {
-      if (e.key === "Enter") guardarPesoActual(input.value);
-    });
-
-    input.addEventListener("blur", () => guardarPesoActual(input.value));
-  });
-
-  listaPesos.forEach(li => {
-    li.addEventListener("mousedown", e => {
-      if (!modoEdicion) return;
-      e.preventDefault();
-      guardarPesoActual(li.dataset.peso);
-    });
-  });
-
-  function guardarPesoActual(valor) {
-    valor = parseFloat(valor);
-
-    if (!valor || isNaN(valor)) {
-      pesoSeleccionado.textContent = "PESO";
-      pesoActual = 0;
-    } else {
-      pesoActual = valor;
+  // Barra superior de pesos
+  listaPesos.forEach(li => { li.onclick = () => { 
+      pesoActual = parseFloat(li.dataset.peso);
       pesoSeleccionado.textContent = pesoActual.toFixed(2) + " kg";
-
-      const datos = new FormData();
-      datos.append("peso", pesoActual);
-
-      fetch("kg/guardarKg.php", {
-        method: "POST",
-        body: datos
-      });
-    }
-
-    modoEdicion = false;
-    actualizarIndicador();
-  }
+      const d = new FormData(); d.append("peso", pesoActual);
+      fetch("kg/guardarKg.php", { method: "POST", body: d });
+      actualizarIndicador();
+  }; });
 
   function actualizarIndicador() {
     listaPesos.forEach(li => {
       li.classList.remove("superior", "actual");
-      const pesoLi = parseFloat(li.dataset.peso);
-      if (!pesoActual) return;
-
-      if (Math.round(pesoLi) === Math.round(pesoActual)) {
-        li.classList.add("actual");
-      } else if (pesoLi > pesoActual) {
-        li.classList.add("superior");
-      }
+      const p = parseFloat(li.dataset.peso);
+      if (Math.round(p) === Math.round(pesoActual)) li.classList.add("actual");
+      else if (p > pesoActual) li.classList.add("superior");
     });
   }
 
-  // =========================
-  // MODAL
-  // =========================
-  btnHistorial.addEventListener("click", () => {
-    modalKg.style.display = "flex";
-    cargarHistorialKg();
-  });
+  pesoSeleccionado.onclick = () => {
+    if (modoEdicion) return; modoEdicion = true;
+    pesoSeleccionado.innerHTML = `<input type="number" step="0.01" id="inputPeso" value="${pesoActual || ""}">`;
+    const input = document.getElementById("inputPeso");
+    input.focus();
+    input.onkeydown = (e) => { if (e.key === "Enter") { guardarPesoActual(input.value); modoEdicion=false; } };
+    input.onblur = () => { guardarPesoActual(input.value); modoEdicion=false; };
+  };
 
-  cerrarKgModal.addEventListener("click", () => {
-    modalKg.style.display = "none";
-  });
+  function guardarPesoActual(valor) {
+      pesoActual = parseFloat(valor);
+      pesoSeleccionado.textContent = pesoActual.toFixed(2) + " kg";
+      actualizarIndicador();
+  }
 
-  // =========================
-  // HISTORIAL
-  // =========================
-  function cargarHistorialKg() {
-    historialKgLista.innerHTML = "Cargando...";
+  // --- CONFIGURACIÓN INPUTS ARCHIVOS (TEXTO CAMBIANTE) ---
+  function setupFileInputs() {
+      ['Frente', 'Lado', 'Atras'].forEach(tipo => {
+          const input = document.getElementById('foto' + tipo);
+          const labelSpan = document.getElementById('fileName' + tipo);
+          if(!input) return;
+          const container = input.closest('.upload-item-cool');
 
-    fetch("kg/obtenerHistorialKg.php", { cache: "no-store" })
-      .then(res => res.json())
-      .then(data => {
-        if (!data.length) {
-          historialKgLista.innerHTML = "<p>Sin registros</p>";
-          return;
-        }
-
-        historialKgLista.innerHTML = data.map(item => `
-          <div class="card-historial">
-            <strong>Semana ${item.semana}</strong><br>
-            📅 ${item.fecha}<br>
-            ⚖️ ${item.peso} kg
-            <div>
-              ${item.foto_frente ? `<button onclick="verFoto('${item.foto_frente}')">📸 Frente</button>` : ""}
-              ${item.foto_lado   ? `<button onclick="verFoto('${item.foto_lado}')">📸 Lado</button>` : ""}
-              ${item.foto_atras  ? `<button onclick="verFoto('${item.foto_atras}')">📸 Atrás</button>` : ""}
-            </div>
-          </div>
-        `).join("");
+          input.addEventListener('change', function(e) {
+              if (this.files && this.files.length > 0) {
+                  labelSpan.textContent = this.files[0].name;
+                  container.classList.add('active');
+              } else {
+                  labelSpan.textContent = "Sin archivo";
+                  container.classList.remove('active');
+              }
+          });
       });
   }
 
-  // =========================
-  // GUARDAR REGISTRO
-  // =========================
-  guardarPesoHistorial.addEventListener("click", () => {
-    const peso = parseFloat(nuevoPeso.value);
-    if (!peso || isNaN(peso)) {
-      alert("Ingresa un peso válido");
-      return;
-    }
+  function resetFileInputs() {
+      ['Frente', 'Lado', 'Atras'].forEach(tipo => {
+          const labelSpan = document.getElementById('fileName' + tipo);
+          const input = document.getElementById('foto' + tipo);
+          if(labelSpan) labelSpan.textContent = "Sin archivo";
+          if(input) input.closest('.upload-item-cool').classList.remove('active');
+      });
+  }
+  
+  setupFileInputs();
 
-    const datos = new FormData();
-    datos.append("peso", peso);
-
-    if (fotoFrente.files[0]) datos.append("foto_frente", fotoFrente.files[0]);
-    if (fotoLado.files[0])   datos.append("foto_lado", fotoLado.files[0]);
-    if (fotoAtras.files[0])  datos.append("foto_atras", fotoAtras.files[0]);
-
-    fetch("kg/guardarHistorialKg.php", {
-      method: "POST",
-      body: datos
-    })
-    .then(res => res.json())
-    .then(resp => {
-      if (!resp.ok) {
-        alert("❌ Error al guardar");
-        return;
-      }
-
-      alert("✅ Registro guardado");
-      nuevoPeso.value = "";
-      fotoFrente.value = "";
-      fotoLado.value = "";
-      fotoAtras.value = "";
-      cargarHistorialKg();
-    });
+  fetch("kg/obtenerKg.php", { cache: "no-store" }).then(res=>res.json()).then(data=>{
+    pesoActual = parseFloat(data.peso) || 0;
+    if (pesoActual > 0) pesoSeleccionado.textContent = pesoActual.toFixed(2) + " kg";
+    actualizarIndicador(); fixBtnPos();
   });
 }
 
-function verFoto(ruta) {
-  window.open(ruta, "_blank");
+function zoomImagen(src) {
+    if(!src || src.includes("undefined") || src === "") return;
+    const overlay = document.createElement("div");
+    overlay.id = "imgZoomOverlay"; overlay.className = "img-zoom-overlay";
+    overlay.innerHTML = `<img src="${src}" class="img-zoom-content">`;
+    document.body.appendChild(overlay);
+    overlay.onclick = () => overlay.remove();
 }
-
 document.addEventListener("DOMContentLoaded", initKg);

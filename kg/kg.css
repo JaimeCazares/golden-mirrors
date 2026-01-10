@@ -1,158 +1,131 @@
-.pesos-container {
-  position: relative;
-  top: 10px;
-  left: 50%;
-  transform: translateX(-50%);
-  background: rgba(15, 15, 30, 0.85);
-  border-radius: 10px;
-  padding: 10px 14px;
-  color: white;
-  font-size: 13px;
-  z-index: 9999;
+/* --- CONTENEDOR PESOS SUPERIOR (SIN CAMBIOS) --- */
+.pesos-container { position: relative; top: 10px; left: 50%; transform: translateX(-50%); background: rgba(15, 15, 30, 0.85); border-radius: 10px; padding: 10px 14px; color: white; z-index: 9999; display: grid; grid-template-columns: repeat(4, auto) 1fr; column-gap: 10px; row-gap: 6px; max-width: 700px; backdrop-filter: blur(8px); box-shadow: 0 0 12px rgba(0, 200, 255, 0.15); }
+#listaPesos { list-style: none; display: flex; gap: 8px; grid-column: 1 / span 4; padding: 0; margin: 0; }
+#listaPesos li { cursor: pointer; background: linear-gradient(145deg, #555555, #333333); padding: 2px 8px; border-radius: 6px; font-size: 12px; transition: transform 0.2s; }
+#listaPesos li:hover { transform: scale(1.06); }
+#listaPesos li.actual, #listaPesos li.superior { background: linear-gradient(270deg, #6a5cff, #c77dff, #ff8fab, #80ffdb, #6a5cff); background-size: 400% 400%; animation: rainbowMove 6s ease infinite; font-weight: 600; }
+@keyframes rainbowMove { 0%{background-position:0% 50%} 50%{background-position:100% 50%} 100%{background-position:0% 50%} }
+#pesoSeleccionado { grid-column: 5; background: linear-gradient(145deg, #00e0ff, #0088a8); color: #022; padding: 6px 10px; border-radius: 8px; font-size: 13px; font-weight: bold; cursor: pointer; text-align: center; }
+#pesoSeleccionado input { width: 50px; background: transparent; border: none; color: #022; font-weight: bold; text-align: center; outline: none; }
 
-  display: grid;
-  grid-template-columns: repeat(4, auto) 1fr;
-  column-gap: 10px;
-  row-gap: 6px;
-  align-items: center;
+/* --- MODAL --- */
+.btn-historial { position: absolute; background: transparent; border: none; font-size: 22px; cursor: pointer; z-index: 10000; }
+#modalKg { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); z-index: 10001; display: none; justify-content: center; align-items: center; }
 
-  box-shadow: 0 0 12px rgba(0, 200, 255, 0.15);
-  backdrop-filter: blur(8px);
-  max-width: 700px;
+.modal-content { 
+  background: #1a1a2e; padding: 20px; border-radius: 12px; 
+  width: 95%; max-width: 500px; 
+  position: relative; color: white; border: 1px solid #30475e;
 }
 
-#listaPesos {
-  list-style: none;
-  padding: 0;
-  margin: 0;
+.grid-semanas-header { text-align: center; color: #00e0ff; margin-bottom: 10px; font-weight: bold; font-size: 16px; }
 
-  grid-column: 1 / span 4;
-
-  display: flex;
-  flex-direction: row;
-  gap: 8px;
-  flex-wrap: nowrap;   /* 🔥 todos en una sola fila */
-}
-
-#pesoSeleccionado {
-  grid-column: 5;
-  grid-row: 1 / span 3;
-  font-weight: bold;
-  text-align: center;
-  background: linear-gradient(145deg, #00e0ff, #0088a8);
-  color: #022;
-  padding: 6px 10px;
+/* --- GRID DE SEMANAS (SIN SCROLL) --- */
+#historialKgLista { 
+  display: grid; 
+  grid-template-columns: repeat(10, 1fr); 
+  gap: 5px; 
+  padding: 10px;
+  background: rgba(0,0,0,0.2); 
   border-radius: 8px;
-  box-shadow: 0 0 8px rgba(0, 220, 255, 0.7);
-  font-size: 13px;
-  align-self: start;
-  justify-self: end;
-  cursor: pointer;
-  position: relative;
-}
-#pesoSeleccionado input {
-  width: 42px;          /* 👈 pequeño */
-  border: none;
-  outline: none;
-  background: transparent;
-  color: #022;
-  font-weight: bold;
-  font-size: 13px;
-  text-align: center;
-  padding: 0;
+  margin-bottom: 10px;
+  height: auto;
+  overflow: visible;
 }
 
-/* botones de peso normales (gris) */
-#listaPesos li {
-  cursor: pointer;
-  user-select: none;
-  background: linear-gradient(145deg, #555555, #333333);
-  color: #fff;
-  padding: 2px 8px;
-  border-radius: 6px;
-  box-shadow: 0 0 4px rgba(0,0,0,0.3);
-  transition: background 0.2s ease, transform 0.2s ease;
-  font-weight: 500;
-  text-align: center;
-  font-size: 12px;
-}
-@keyframes rainbowMove {
-  0%   { background-position: 0% 50%; }
-  50%  { background-position: 100% 50%; }
-  100% { background-position: 0% 50%; }
+.semana-btn { display: flex; flex-direction: column; align-items: center; justify-content: center; aspect-ratio: 1/1; border-radius: 4px; cursor: pointer; font-size: 9px; transition: 0.2s; }
+.semana-btn b { font-size: 11px; }
+.semana-btn span { font-size: 7px; display: block; margin-top: -2px; }
+.semana-btn.pendiente { background: #252535; color: #555; border: 1px solid rgba(255,255,255,0.05); }
+.semana-btn.completada { background: #00e0ff; color: #022; font-weight: bold; }
+
+/* --- FILA DE BOTONES Y TITULO EN UNA SOLA LINEA --- */
+.fila-linea-unica {
+    display: flex !important;
+    justify-content: space-between !important;
+    align-items: center !important;
+    width: 100% !important;
+    /* Aumenté el margen inferior para "subirlos" visualmente */
+    margin-bottom: 25px; 
+    gap: 10px;
 }
 
-/* pesos mayores Y peso actual */
-#listaPesos li.superior,
-#listaPesos li.actual {
-  background: linear-gradient(145deg, #4da6ff, #2d6cdf);
-  color: #fff;
+.titulo-central-registro {
+    font-size: 14px; color: #ccc; margin: 0 !important; padding: 0; white-space: nowrap; font-weight: bold;
 }
 
-/* hover */
-#listaPesos li:hover {
-  transform: scale(1.06);
+.btn-accion-lateral {
+    background: #1f2a44; color: #00e0ff; border: 1px solid #00e0ff44;
+    padding: 6px 12px; border-radius: 6px; font-size: 10px; cursor: pointer; font-weight: bold;
+    min-width: 80px; transition: all 0.2s;
+}
+.btn-accion-lateral:hover { background: #00e0ff; color: #1a1a2e; box-shadow: 0 0 8px rgba(0, 224, 255, 0.5); }
+
+/* --- FORMULARIO --- */
+#nuevoPeso { width: 100%; padding: 10px; background: #0f0f1e; border: 1px solid #333; color: white; border-radius: 6px; margin-bottom: 15px; text-align: center; font-size: 14px; }
+
+/* --- NUEVO DISEÑO COOL PARA INPUTS DE ARCHIVO --- */
+.upload-grid-modern {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
 }
 
-@keyframes rainbowMove {
-  0%   { background-position: 0% 50%; }
-  50%  { background-position: 100% 50%; }
-  100% { background-position: 0% 50%; }
+.upload-item-cool {
+    position: relative;
 }
 
-/* pesos mayores Y peso actual */
-#listaPesos li.superior,
-#listaPesos li.actual {
-  background: linear-gradient(
-    270deg,
-    #6a5cff,   /* azul */
-    #c77dff,   /* lila */
-    #ff8fab,   /* rosa */
-    #80ffdb,   /* verde agua */
-    #6a5cff
-  );
-  background-size: 400% 400%;
-  animation: rainbowMove 6s ease infinite;
-
-  color: #fff;
-  font-weight: 600;
-  box-shadow: 0 0 6px rgba(120, 120, 255, 0.4);
-}
-.card-historial {
-  background: rgba(255,255,255,0.05);
-  padding: 8px;
-  margin-bottom: 6px;
-  border-radius: 8px;
+/* Escondemos el input feo original */
+.upload-item-cool input[type="file"] {
+    position: absolute;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    opacity: 0;
+    cursor: pointer;
+    z-index: 2;
 }
 
-.btn-historial {
-  position: absolute;
-  background: transparent;
-  border: none;
-  font-size: 22px;
-  cursor: pointer;
-
-  opacity: 0.6;
-  transition: 0.2s;
-  z-index: 10000;
+/* Diseñamos el label para que parezca un botón cool */
+.upload-item-cool label {
+    display: flex;
+    align-items: center;
+    background: rgba(0, 224, 255, 0.05);
+    border: 1px dashed #00e0ff66; /* Borde punteado neón */
+    padding: 10px 12px;
+    border-radius: 8px;
+    transition: all 0.3s ease;
 }
 
-.btn-historial:hover {
-  opacity: 1;
-  transform: scale(1.1);
-}
-.acciones-fotos {
-  display: flex;
-  gap: 6px;
-  margin-top: 6px;
+.upload-item-cool:hover label {
+    background: rgba(0, 224, 255, 0.15);
+    border-color: #00e0ff;
+    box-shadow: 0 0 10px rgba(0, 224, 255, 0.2);
 }
 
-.acciones-fotos button {
-  font-size: 11px;
-  padding: 3px 6px;
-  border-radius: 6px;
-  border: none;
-  cursor: pointer;
-  background: linear-gradient(145deg, #5f9cff, #3c6be0);
-  color: white;
+.upload-item-cool .icon { font-size: 14px; margin-right: 8px; }
+.upload-item-cool .label-text { color: #00e0ff; font-weight: bold; font-size: 12px; flex-grow: 1; }
+.upload-item-cool .file-name { color: #777; font-size: 10px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 120px; }
+
+/* Si hay archivo seleccionado (se controla con JS añadiendo clase 'active') */
+.upload-item-cool.active label {
+    background: rgba(40, 167, 69, 0.1);
+    border-color: #28a745;
 }
+.upload-item-cool.active .file-name { color: #4df572; }
+
+
+#guardarPesoHistorial { width: 100%; padding: 12px; margin-top: 20px; background: #00e0ff; border: none; border-radius: 8px; font-weight: bold; cursor: pointer; color: #022; font-size: 14px; transition: 0.2s; }
+#guardarPesoHistorial:hover { box-shadow: 0 0 15px rgba(0, 224, 255, 0.5); }
+
+/* --- EXTRAS --- */
+#mensajeRegistro { text-align: center; padding: 8px; margin-bottom: 10px; border-radius: 4px; display: none; font-size: 12px; }
+.msg-exito { background: rgba(40, 167, 69, 0.2); color: #4df572; border: 1px solid #28a745; }
+.msg-error { background: rgba(220, 53, 69, 0.2); color: #ff5c6c; border: 1px solid #dc3545; }
+
+.visor-fotos-overlay { position: fixed; top:0; left:0; width:100%; height:100%; background: rgba(0,0,0,0.95); z-index: 10005; display: flex; justify-content: center; align-items: center; }
+.visor-content { background: #1a1a2e; padding: 20px; border-radius: 15px; width: 95%; max-width: 600px; position: relative; }
+.fotos-row { display: flex; gap: 8px; margin-top: 10px; justify-content: center; }
+.foto-box img { width: 100%; height: 110px; object-fit: cover; border-radius: 6px; border: 1px solid #333; cursor: zoom-in; }
+.close, .close-visor { cursor: pointer; color: white; float: right; font-size: 20px; }
+.img-zoom-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.98); z-index: 10100; display: flex; justify-content: center; align-items: center; }
+.img-zoom-content { max-width: 95%; max-height: 95%; border-radius: 10px; }
