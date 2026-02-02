@@ -1,7 +1,12 @@
-/* --- BLOQUEO SCROLL --- */
-body { overflow: hidden !important; height: 100vh; width: 100vw; margin: 0; }
+/* --- BLOQUEO SCROLL PANTALLA PRINCIPAL --- */
+body { 
+    overflow: hidden !important; 
+    height: 100vh; 
+    width: 100vw; 
+    margin: 0; 
+}
 
-/* --- ESTILOS GENERALES --- */
+/* --- ESTILOS GENERALES (CONTENEDOR VERDE) --- */
 .pesos-container { 
     position: absolute; top: 10px; right: 10px; 
     background: rgba(15, 15, 30, 0.9); border-radius: 10px; 
@@ -54,14 +59,15 @@ body { overflow: hidden !important; height: 100vh; width: 100vw; margin: 0; }
 .fases-numbers span:nth-child(3) { left: 63.5%; }
 .fases-numbers span:nth-child(4) { left: 78.5%; }
 
-/* --- MODAL ADAPTATIVO: EL JEFE (NIVEL 10000) --- */
+/* --- MODAL ADAPTATIVO (HISTORIAL PRINCIPAL) --- */
+/* Este NO se toca, se queda sin scroll y tapando todo */
 #modalKg { 
     position: fixed; top: 0; left: 0; width: 100%; height: 100%; 
     background: rgba(0,0,0,0.85); 
     backdrop-filter: blur(5px); 
     
-    /* CAMBIO FINAL: Z-INDEX 10000. Tapa a todo lo que esté en nivel 1 */
-    z-index: 10000 !important; 
+    /* NIVEL 2000: Tapa a Deudas(10) y Menu(10) */
+    z-index: 2000 !important; 
     
     display: none; justify-content: center; align-items: center; 
     padding: 20px; box-sizing: border-box; 
@@ -70,11 +76,16 @@ body { overflow: hidden !important; height: 100vh; width: 100vw; margin: 0; }
 
 .modal-content { 
     background: #1a1a2e; 
-    padding: 20px 25px; border-radius: 16px; 
+    padding: 20px 25px; 
+    border-radius: 16px; 
     width: 95%; max-width: 500px; color: white; border: 1px solid #30475e; position: relative;
     max-height: 90vh; height: auto; 
+    
     display: flex; flex-direction: column; justify-content: flex-start;
+    
+    /* SIN SCROLL EN EL MODAL PRINCIPAL */
     overflow: hidden !important; 
+    
     box-shadow: 0 0 30px rgba(0,0,0,0.8);
 }
 
@@ -95,24 +106,21 @@ body { overflow: hidden !important; height: 100vh; width: 100vw; margin: 0; }
     cursor: pointer; font-weight: bold; flex-shrink: 0;
 }
 
-/* GRID SEMANAS - CORRECCIÓN ZOOM */
+/* GRID SEMANAS (HISTORIAL) - CORRECCIÓN DE RECORTE */
 .close { position: absolute; top: 15px; right: 20px; font-size: 24px; cursor: pointer; opacity: 0.7; z-index: 10;}
 .grid-semanas-header { text-align: center; color: #00e0ff; margin-bottom: 5px; font-weight: bold; font-size: 16px; flex-shrink: 0; }
 
 .grid-semanas { 
     display: grid !important; grid-template-columns: repeat(10, 1fr) !important; 
     gap: 3px; 
-    
-    /* FIX: Un poco más de padding y alinear al INICIO para evitar recorte superior */
+    /* Aumenté un pelín el padding para seguridad */
     padding: 5px; 
     background: rgba(0,0,0,0.3); 
     border-radius: 8px; margin-bottom: 5px; 
-    
-    flex: 1; 
-    min-height: 0; 
+    flex: 1; min-height: 0; 
     overflow-y: auto; 
     
-    /* MAGIA: Alineación START evita que el contenido se corte arriba si no cabe */
+    /* AQUÍ ESTÁ EL ARREGLO: 'start' evita que se corte arriba */
     align-content: start !important; 
 }
 .grid-semanas::-webkit-scrollbar { width: 0px; }
@@ -138,7 +146,7 @@ body { overflow: hidden !important; height: 100vh; width: 100vw; margin: 0; }
 .file-name { color: #888; font-size: 10px; }
 #guardarPesoHistorial { width: 100%; padding: 10px; margin-top: 10px; background: #00e0ff; border: none; border-radius: 8px; font-weight: bold; cursor: pointer; color: #022; font-size: 13px; text-transform: uppercase; flex-shrink: 0; }
 
-/* RESPONSIVE */
+/* RESPONSIVE MOBILE */
 @media (max-width: 600px) {
     .pesos-container { position: fixed; top: 140px; left: 50%; transform: translateX(-50%); width: 94%; display: flex; flex-direction: column; height: auto; padding: 10px; gap: 10px; box-sizing: border-box; }
     #listaPesos { display: grid; grid-template-columns: repeat(4, 1fr); gap: 5px; width: 100%; }
@@ -148,17 +156,71 @@ body { overflow: hidden !important; height: 100vh; width: 100vw; margin: 0; }
     .btn-mini, #pesoSeleccionado { flex: 1; width: auto; }
 }
 
-/* VISOR DE FOTOS */
+/* =========================================
+   MODAL DE PROGRESO (VISOR)
+   ========================================= */
+
+/* CONTENEDOR NEGRO DEL VISOR (Fondo) */
 .modal-fotos-visor { 
-    position: fixed !important; top: 0 !important; left: 0 !important; width: 100vw !important; height: 100vh !important; 
+    position: fixed !important; top: 0 !important; left: 0 !important; 
+    width: 100vw !important; height: 100vh !important; 
+    
+    /* Fondo oscuro + Blur */
     background: rgba(0,0,0,0.95) !important; 
-    z-index: 999999 !important; /* Tope absoluto */
-    display: none; justify-content: center; align-items: center; backdrop-filter: blur(10px); 
+    
+    /* NIVEL SUPERIOR: Tapará al modal principal (2000) */
+    z-index: 999999 !important; 
+    
+    display: none; justify-content: center; align-items: center; 
+    backdrop-filter: blur(10px); 
+    
+    /* FIX: MÁRGENES NEGROS ARRIBA Y ABAJO */
+    /* Este padding crea el espacio obligatorio que pediste */
+    padding: 40px 10px; 
+    box-sizing: border-box;
+    
+    /* Ocultamos scroll en el fondo, lo queremos en la caja */
+    overflow: hidden !important; 
 }
-.modal-content-visor { background: #1a1a2e; padding: 25px; border-radius: 16px; width: 95%; max-width: 650px; border: 1px solid #00e0ff; position: relative; }
+
+/* CAJA DEL VISOR (Donde están las fotos) */
+.modal-content-visor { 
+    background: #1a1a2e; 
+    padding: 25px; 
+    border-radius: 16px; 
+    width: 95%; max-width: 650px; 
+    border: 1px solid #00e0ff; 
+    position: relative; 
+    
+    /* FIX: ALTURA Y SCROLL */
+    /* Altura máxima respetando el padding del padre */
+    max-height: 100%; 
+    
+    /* AQUÍ SE ACTIVA EL SCROLL SOLO PARA EL PROGRESO */
+    overflow-y: auto !important; 
+    
+    /* Para que el scroll funcione bien */
+    display: flex;
+    flex-direction: column;
+}
+
+/* FIX IMÁGENES: Que no se salgan del ancho ni deformen */
+.modal-content-visor img {
+    max-width: 100%;
+    height: auto;
+    border-radius: 6px;
+    margin-bottom: 10px; /* Separación entre fotos */
+}
+
+/* Estilos internos del visor (sin cambios) */
 .galeria-modal-flex { display: flex; justify-content: space-around; gap: 10px; flex-wrap: wrap; }
 .foto-container { flex: 1; min-width: 150px; text-align: center; background: rgba(0,0,0,0.2); padding: 5px; border-radius: 8px; }
 .foto-container img { width: 100%; border-radius: 6px; border: 1px solid #333; margin-top: 5px; object-fit: cover; aspect-ratio: 3/4; }
 .foto-container small { color: #00e0ff; text-transform: uppercase; font-size: 10px; }
 .close-visor { position: absolute; top: 15px; right: 20px; font-size: 30px; color: #fff; cursor: pointer; }
 #modalVerFotos { z-index: 20000 !important; }
+
+/* Scrollbar personalizada para el visor */
+.modal-content-visor::-webkit-scrollbar { width: 6px; }
+.modal-content-visor::-webkit-scrollbar-thumb { background: #00e0ff; border-radius: 4px; }
+.modal-content-visor::-webkit-scrollbar-track { background: rgba(0,0,0,0.2); }
