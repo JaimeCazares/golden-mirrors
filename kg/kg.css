@@ -11,10 +11,8 @@ body {
     position: absolute; top: 10px; right: 10px; 
     background: rgba(15, 15, 30, 0.9); border-radius: 10px; 
     padding: 12px 16px; color: white; 
-    
-    /* NIVEL 10: AL SUELO (Igual que Menu y Deudas) */
-    z-index: 10 !important; 
-    
+    /* NIVEL 20: Igual que el menú */
+    z-index: 20 !important; 
     display: grid; grid-template-columns: 1fr auto; 
     column-gap: 15px; row-gap: 12px; width: 600px; 
     backdrop-filter: blur(10px); 
@@ -60,13 +58,12 @@ body {
 .fases-numbers span:nth-child(4) { left: 78.5%; }
 
 /* --- MODAL ADAPTATIVO (HISTORIAL PRINCIPAL) --- */
-/* Este NO se toca, se queda sin scroll y tapando todo */
 #modalKg { 
     position: fixed; top: 0; left: 0; width: 100%; height: 100%; 
     background: rgba(0,0,0,0.85); 
     backdrop-filter: blur(5px); 
     
-    /* NIVEL 2000: Tapa a Deudas(10) y Menu(10) */
+    /* NIVEL 2000: Tapa a todo lo de nivel 20 */
     z-index: 2000 !important; 
     
     display: none; justify-content: center; align-items: center; 
@@ -80,12 +77,8 @@ body {
     border-radius: 16px; 
     width: 95%; max-width: 500px; color: white; border: 1px solid #30475e; position: relative;
     max-height: 90vh; height: auto; 
-    
     display: flex; flex-direction: column; justify-content: flex-start;
-    
-    /* SIN SCROLL EN EL MODAL PRINCIPAL */
     overflow: hidden !important; 
-    
     box-shadow: 0 0 30px rgba(0,0,0,0.8);
 }
 
@@ -113,14 +106,11 @@ body {
 .grid-semanas { 
     display: grid !important; grid-template-columns: repeat(10, 1fr) !important; 
     gap: 3px; 
-    /* Aumenté un pelín el padding para seguridad */
     padding: 5px; 
     background: rgba(0,0,0,0.3); 
     border-radius: 8px; margin-bottom: 5px; 
     flex: 1; min-height: 0; 
     overflow-y: auto; 
-    
-    /* AQUÍ ESTÁ EL ARREGLO: 'start' evita que se corte arriba */
     align-content: start !important; 
 }
 .grid-semanas::-webkit-scrollbar { width: 0px; }
@@ -164,22 +154,12 @@ body {
 .modal-fotos-visor { 
     position: fixed !important; top: 0 !important; left: 0 !important; 
     width: 100vw !important; height: 100vh !important; 
-    
-    /* Fondo oscuro + Blur */
     background: rgba(0,0,0,0.95) !important; 
-    
-    /* NIVEL SUPERIOR: Tapará al modal principal (2000) */
     z-index: 999999 !important; 
-    
     display: none; justify-content: center; align-items: center; 
     backdrop-filter: blur(10px); 
-    
-    /* FIX: MÁRGENES NEGROS ARRIBA Y ABAJO */
-    /* Este padding crea el espacio obligatorio que pediste */
     padding: 40px 10px; 
     box-sizing: border-box;
-    
-    /* Ocultamos scroll en el fondo, lo queremos en la caja */
     overflow: hidden !important; 
 }
 
@@ -191,15 +171,8 @@ body {
     width: 95%; max-width: 650px; 
     border: 1px solid #00e0ff; 
     position: relative; 
-    
-    /* FIX: ALTURA Y SCROLL */
-    /* Altura máxima respetando el padding del padre */
     max-height: 100%; 
-    
-    /* AQUÍ SE ACTIVA EL SCROLL SOLO PARA EL PROGRESO */
     overflow-y: auto !important; 
-    
-    /* Para que el scroll funcione bien */
     display: flex;
     flex-direction: column;
 }
@@ -209,7 +182,7 @@ body {
     max-width: 100%;
     height: auto;
     border-radius: 6px;
-    margin-bottom: 10px; /* Separación entre fotos */
+    margin-bottom: 10px; 
 }
 
 /* Estilos internos del visor (sin cambios) */
