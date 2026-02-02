@@ -11,115 +11,71 @@ body {
     position: relative;
 }
 
-/* --- GESTIÓN DE VISTAS (TRANSICIONES) --- */
+/* --- GESTIÓN DE VISTAS --- */
 .vista-principal {
-    position: absolute;
-    top: 0; left: 0;
+    position: absolute; top: 0; left: 0;
     width: 100%; height: 100%;
-    overflow-y: auto; /* Scroll interno si el contenido es largo */
-    padding-bottom: 100px; /* Espacio para no tapar el menú */
+    overflow-y: auto; padding-bottom: 100px; 
     box-sizing: border-box;
-    
-    /* Efecto de transición */
-    opacity: 0;
-    visibility: hidden;
+    opacity: 0; visibility: hidden;
     transform: translateY(20px);
     transition: all 0.4s cubic-bezier(0.25, 1, 0.5, 1);
     z-index: 1;
 }
 
 .vista-principal.activa {
-    opacity: 1;
-    visibility: visible;
-    transform: translateY(0);
-    z-index: 5;
+    opacity: 1; visibility: visible;
+    transform: translateY(0); z-index: 5;
 }
 
-/* Ajuste específico para Inicio para que no corte los widgets */
-#vista-inicio {
-    display: flex;
-    flex-direction: column;
-    align-items: center; /* Centrado si es desktop */
-}
+#vista-inicio { display: flex; flex-direction: column; align-items: center; }
+#contenido-modulo { width: 100%; max-width: 600px; margin: 0 auto; padding-top: 20px; }
 
-/* Contenedor para el contenido inyectado */
-#contenido-modulo {
-    width: 100%;
-    max-width: 600px;
-    margin: 0 auto;
-    padding-top: 20px;
-}
-
-/* --- DOCK DE NAVEGACIÓN (Inf. Izquierda) --- */
+/* --- DOCK DE NAVEGACIÓN (NIVEL 1 - EL MÁS BAJO) --- */
 .dock-nav {
     position: fixed;
     bottom: 20px;
     left: 20px;
-    background: rgba(20, 20, 35, 0.9);
-    backdrop-filter: blur(15px);
+    
+    /* Mismo estilo visual que Deudas/Pesos */
+    background: rgba(15, 15, 30, 0.9) !important;
+    backdrop-filter: blur(10px);
     padding: 10px 15px;
-    border-radius: 20px;
-    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 10px !important;
+    border: none !important;
+    
     display: flex;
     gap: 10px;
-    box-shadow: 0 10px 30px rgba(0,0,0,0.5);
-    z-index: 9999;
+    
+    box-shadow: 0 0 15px rgba(0, 200, 255, 0.2) !important;
+    
+    /* CAMBIO FINAL: Z-INDEX 1. Nos aseguramos que esté en el suelo. */
+    z-index: 1 !important; 
 }
 
 .nav-btn {
     background: transparent;
     border: none;
     color: #888;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    cursor: pointer;
-    padding: 8px 12px;
-    border-radius: 12px;
-    transition: all 0.3s ease;
-    min-width: 60px;
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    cursor: pointer; padding: 8px 12px; border-radius: 10px;
+    transition: all 0.3s ease; min-width: 60px;
 }
 
-.nav-btn .icono {
-    font-size: 1.4rem;
-    margin-bottom: 2px;
-    transition: transform 0.2s;
-}
+.nav-btn .icono { font-size: 1.4rem; margin-bottom: 2px; transition: transform 0.2s; }
+.nav-btn .label { font-size: 0.7rem; font-weight: 600; }
 
-.nav-btn .label {
-    font-size: 0.7rem;
-    font-weight: 600;
-}
+.nav-btn:hover { background: rgba(255, 255, 255, 0.05); color: white; }
+.nav-btn:hover .icono { transform: translateY(-3px); }
 
-/* Estado Hover */
-.nav-btn:hover {
-    background: rgba(255,255,255,0.05);
-    color: white;
-}
-
-.nav-btn:hover .icono {
-    transform: translateY(-3px);
-}
-
-/* Estado Activo (Pestaña seleccionada) */
 .nav-btn.activo {
-    background: #00e0ff;
-    color: #0b132b;
-    box-shadow: 0 0 15px rgba(0, 224, 255, 0.4);
+    background: transparent !important; 
+    color: #00e0ff !important; 
+    border: 1px solid #00e0ff !important; 
+    box-shadow: 0 0 10px rgba(0, 224, 255, 0.2) !important; 
 }
+.nav-btn.activo .label { font-weight: 800; }
 
-.nav-btn.activo .label {
-    font-weight: 800;
-}
-
-/* RESPONSIVE: En móviles muy pequeños, centrar el menú */
 @media (max-width: 450px) {
-    .dock-nav {
-        left: 50%;
-        transform: translateX(-50%);
-        bottom: 15px;
-        width: 90%;
-        justify-content: space-around;
-    }
+    .dock-nav { left: 50%; transform: translateX(-50%); bottom: 15px; width: 90%; justify-content: space-around; }
 }
