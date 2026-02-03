@@ -50,15 +50,16 @@
   <script src="script.js?v=2.0"></script>
 
   <script>
-    // Carga inicial de KG
+  // Carga inicial de KG
 fetch('kg/kg.html').then(r => r.text()).then(h => {
     document.getElementById('kg-wrapper').innerHTML = h;
 
-    // --- MAGIA: SACAR EL MODAL DE LA VISTA PARA QUE FLOTE ENCIMA DE TODO ---
+    // --- MAGIA: SACAR AMBOS MODALES PARA QUE FLOTEN ENCIMA DE TODO ---
     const modal = document.getElementById('modalKg');
-    if (modal) {
-        document.body.appendChild(modal); // Lo movemos al final del body
-    }
+    const modalFotos = document.getElementById('modalVerFotos'); // <--- AGREGA ESTO
+
+    if (modal) document.body.appendChild(modal);
+    if (modalFotos) document.body.appendChild(modalFotos); // <--- Y ESTO
     // -----------------------------------------------------------------------
 
     let s = document.createElement('script'); 

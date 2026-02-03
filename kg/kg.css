@@ -202,3 +202,10 @@ body {
 .modal-content-visor::-webkit-scrollbar { width: 6px; }
 .modal-content-visor::-webkit-scrollbar-thumb { background: #00e0ff; border-radius: 4px; }
 .modal-content-visor::-webkit-scrollbar-track { background: rgba(0,0,0,0.2); }
+
+/* --- CORRECCIÓN FINAL EN KG.CSS --- */
+
+/* Antes tenías 20000, cámbialo a 200000 para que gane al 99999 del historial */
+#modalVerFotos { 
+    z-index: 200000 !important; 
+}
