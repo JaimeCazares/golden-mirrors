@@ -51,11 +51,21 @@
 
   <script>
     // Carga inicial de KG
-    fetch('kg/kg.html').then(r=>r.text()).then(h=>{
-        document.getElementById('kg-wrapper').innerHTML=h;
-        let s=document.createElement('script'); s.src='kg/kg.js?v='+Date.now();
-        s.onload=()=>{if(typeof initKg==='function')initKg()}; document.body.appendChild(s);
-    });
+fetch('kg/kg.html').then(r => r.text()).then(h => {
+    document.getElementById('kg-wrapper').innerHTML = h;
+
+    // --- MAGIA: SACAR EL MODAL DE LA VISTA PARA QUE FLOTE ENCIMA DE TODO ---
+    const modal = document.getElementById('modalKg');
+    if (modal) {
+        document.body.appendChild(modal); // Lo movemos al final del body
+    }
+    // -----------------------------------------------------------------------
+
+    let s = document.createElement('script'); 
+    s.src = 'kg/kg.js?v=' + Date.now();
+    s.onload = () => { if (typeof initKg === 'function') initKg() }; 
+    document.body.appendChild(s);
+});
     // Carga inicial de DEUDA
     fetch('deuda/deuda.html').then(r=>r.text()).then(h=>{
         document.getElementById('deuda-wrapper').innerHTML=h;

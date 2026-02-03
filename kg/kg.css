@@ -60,11 +60,16 @@ body {
 /* --- MODAL ADAPTATIVO (HISTORIAL PRINCIPAL) --- */
 #modalKg { 
     position: fixed; top: 0; left: 0; width: 100%; height: 100%; 
-    background: rgba(0,0,0,0.85); 
-    backdrop-filter: blur(5px); 
     
-    /* NIVEL 2000: Tapa a todo lo de nivel 20 */
-    z-index: 2000 !important; 
+    /* CAMBIO: Fondo semitransparente oscuro */
+    background: rgba(0, 0, 0, 0.75); 
+    
+    /* CAMBIO: Blur aumentado a 15px para efecto difuminado fuerte */
+    backdrop-filter: blur(15px); 
+    -webkit-backdrop-filter: blur(15px);
+    
+    /* CAMBIO: Z-index supremo para asegurar que tape el Dock (8) */
+    z-index: 99999 !important; 
     
     display: none; justify-content: center; align-items: center; 
     padding: 20px; box-sizing: border-box; 

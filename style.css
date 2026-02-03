@@ -69,8 +69,7 @@ body {
     box-shadow: 0 0 15px rgba(0, 200, 255, 0.2) !important;
     
     /* --- SOLUCIÓN QUIRÚRGICA --- */
-    /* Z-INDEX 8: Mayor que la vista (5) para que el click funcione. */
-    /* Menor que Deudas (10) y Modal (2000) para que se vea atrás. */
+    /* Z-INDEX 8: Mayor que la vista (5) pero INFERIOR al modal (99999) */
     z-index: 8 !important;
     
     /* Forzar que los clicks funcionen */
