@@ -148,14 +148,21 @@ function initKg() {
         });
     }
 
-    editarBtnKg.onclick = () => {
+   editarBtnKg.onclick = () => {
         if (modoEdicion) {
             const input = document.getElementById("inputPeso");
             if (input) guardarPesoActual(input.value);
         } else {
-            modoEdicion = true; editarBtnKg.innerHTML = "Listo ✅";
+            modoEdicion = true; 
+            editarBtnKg.innerHTML = "Listo ✅";
+            
+            // Creamos el input
             pesoSeleccionado.innerHTML = `<input type="number" step="0.01" id="inputPeso" value="${pesoActual}" style="width:70px; text-align:center;">`;
-            document.getElementById("inputPeso").focus();
+            
+            // --- MAGIA AQUÍ ---
+            const input = document.getElementById("inputPeso");
+            input.focus();  // Pone el cursor en el input
+            input.select(); // <--- ESTO selecciona todo el número automáticamente
         }
     };
 
