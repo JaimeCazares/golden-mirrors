@@ -1,4 +1,18 @@
-.escalera-container { text-align: center; color: white; padding-bottom: 40px; }
+/* CORRECCIÓN: Contenedor que ocupa toda la pantalla y centra el contenido */
+.escalera-container { 
+    height: 100%;
+    width: 100%;
+    text-align: center; 
+    color: white; 
+    /* Quitamos padding-bottom excesivo */
+    padding: 20px; 
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    justify-content: center; /* Centrado Vertical */
+    overflow: hidden; /* Adiós scroll */
+}
+
 .header-escalera { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
 .status-badge { background: #00e0ff; color: black; padding: 4px 8px; border-radius: 4px; font-weight: bold; font-size: 0.8rem; }
 

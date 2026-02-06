@@ -7,7 +7,7 @@ body {
     padding: 0;
     height: 100vh;
     width: 100vw;
-    overflow: hidden;
+    overflow: hidden !important; /* BLOQUEO TOTAL DE SCROLL */
     position: relative;
 }
 
@@ -16,9 +16,13 @@ body {
     position: absolute;
     top: 0; left: 0;
     width: 100%; height: 100%;
-    overflow-y: auto; 
-    padding-bottom: 100px; 
+    /* CORRECCIÓN: Quitamos scroll y padding excesivo */
+    overflow: hidden; 
+    padding-bottom: 0; 
     box-sizing: border-box;
+    display: flex; /* Para controlar el hijo */
+    flex-direction: column;
+    
     opacity: 0;
     visibility: hidden;
     transform: translateY(20px);
@@ -32,31 +36,35 @@ body {
     opacity: 1;
     visibility: visible;
     transform: translateY(0);
-    
     /* NIVEL 5: La capa activa */
     z-index: 5;
 }
 
 #vista-inicio {
+    /* Inicio sí puede tener scroll si hay mucho contenido, pero controlado */
+    overflow-y: auto; 
     display: flex;
     flex-direction: column;
     align-items: center; 
+    padding-bottom: 100px; /* Espacio solo para inicio */
 }
 
 #contenido-modulo {
     width: 100%;
-    max-width: 600px;
+    max-width: 1200px; /* Ancho máximo aumentado para desktops */
     margin: 0 auto;
-    padding-top: 20px;
+    height: 100%; /* Ocupa todo el alto disponible */
+    display: flex;
+    flex-direction: column;
+    overflow: hidden; /* Asegura que el módulo no desborde */
 }
 
-/* --- DOCK DE NAVEGACIÓN (AJUSTE FINAL: NIVEL 8) --- */
+/* --- DOCK DE NAVEGACIÓN --- */
 .dock-nav {
     position: fixed;
     bottom: 20px;
     left: 20px;
     
-    /* Estilo Cristal idéntico */
     background: rgba(15, 15, 30, 0.9) !important;
     backdrop-filter: blur(10px);
     padding: 10px 15px;
@@ -68,11 +76,7 @@ body {
     
     box-shadow: 0 0 15px rgba(0, 200, 255, 0.2) !important;
     
-    /* --- SOLUCIÓN QUIRÚRGICA --- */
-    /* Z-INDEX 8: Mayor que la vista (5) pero INFERIOR al modal (99999) */
     z-index: 8 !important;
-    
-    /* Forzar que los clicks funcionen */
     pointer-events: auto !important;
 }
 
@@ -112,7 +116,7 @@ body {
     transform: translateY(-3px);
 }
 
-/* Activo: Estilo Neón limpio */
+/* Activo */
 .nav-btn.activo {
     background: transparent !important; 
     color: #00e0ff !important; 

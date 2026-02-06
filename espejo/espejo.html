@@ -1,1 +1,96 @@
-"En construcción tío"
+<div class="espejo-wrapper">
+    <div class="dashboard-stats">
+        
+        <div class="stat-card locked">
+            <div class="icon">🔒</div>
+            <div class="info">
+                <small>Invertido</small>
+                <span id="total_invested">$0.00</span>
+            </div>
+        </div>
+
+        <div class="stat-card profit">
+            <div class="icon">📈</div>
+            <div class="info">
+                <small>Ganancia Libre</small>
+                <span id="net_profit">$0.00</span>
+            </div>
+        </div>
+
+        <div class="stat-card wallet">
+            <div class="icon">💰</div>
+            <div class="info">
+                <small>Saldo Actual</small>
+                <span id="user_balance">$0.00</span>
+            </div>
+        </div>
+        
+        <div class="system-status">
+            <small>Sistema:</small>
+            <span id="status_msg">Listo</span>
+        </div>
+    </div>
+
+    <div class="espejo-grid">
+        <div class="card">
+            <div class="card-header">
+                <h3>Local (Newcastle)</h3>
+                <label class="switch">
+                    <input type="checkbox" id="win_l" onchange="actualizarCalculos()">
+                    <span class="slider"></span>
+                </label>
+            </div>
+            <div class="input-group">
+                <label>Inversión Inicial</label>
+                <input type="number" id="base_stake" value="100" oninput="actualizarCalculos()">
+            </div>
+            <div class="input-group">
+                <label>Momio Inicial</label>
+                <input type="number" id="base_odds" value="-250" oninput="actualizarCalculos()">
+            </div>
+            <div class="target-payout">
+                <span>Meta:</span>
+                <strong id="target_return">$140.00</strong>
+            </div>
+            <button class="btn-registrar" onclick="registrarApuesta('local')">Registrar Inicial</button>
+        </div>
+
+        <div class="card">
+            <div class="card-header">
+                <h3>Empate (X)</h3>
+                <label class="switch">
+                    <input type="checkbox" id="win_x" onchange="actualizarCalculos()">
+                    <span class="slider"></span>
+                </label>
+            </div>
+            <div class="input-group">
+                <label>Momio Actual</label>
+                <input type="number" id="odds_x" placeholder="+450" oninput="actualizarCalculos()">
+            </div>
+            <div class="result-box">
+                <label>Cubrir con:</label>
+                <span id="stake_x">$0.00</span>
+            </div>
+            <button class="btn-registrar" onclick="registrarApuesta('empate')">Registrar Cobertura</button>
+        </div>
+
+        <div class="card">
+            <div class="card-header">
+                <h3>Visitante (2)</h3>
+                <label class="switch">
+                    <input type="checkbox" id="win_2" onchange="actualizarCalculos()">
+                    <span class="slider"></span>
+                </label>
+            </div>
+            <div class="input-group">
+                <label>Momio Actual</label>
+                <input type="number" id="odds_2" placeholder="+900" oninput="actualizarCalculos()">
+            </div>
+            <div class="result-box">
+                <label>Cubrir con:</label>
+                <span id="stake_2">$0.00</span>
+            </div>
+            <button class="btn-registrar" onclick="registrarApuesta('visita')">Registrar Cobertura</button>
+        </div>
+    </div>
+</div>
