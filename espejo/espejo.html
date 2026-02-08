@@ -1,6 +1,15 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Golden Mirrors</title>
+    <link rel="stylesheet" href="espejo.css">
+</head>
+<body>
+
 <div class="espejo-wrapper">
     <div class="dashboard-stats">
-        
         <div class="stat-card locked">
             <div class="icon">🔒</div>
             <div class="info">
@@ -8,89 +17,109 @@
                 <span id="total_invested">$0.00</span>
             </div>
         </div>
-
         <div class="stat-card profit">
             <div class="icon">📈</div>
             <div class="info">
-                <small>Ganancia Libre</small>
+                <small>Ganancia</small>
                 <span id="net_profit">$0.00</span>
             </div>
         </div>
-
         <div class="stat-card wallet">
             <div class="icon">💰</div>
             <div class="info">
-                <small>Saldo Actual</small>
+                <small>Bank</small>
                 <span id="user_balance">$0.00</span>
             </div>
         </div>
-        
-        <div class="system-status">
-            <small>Sistema:</small>
-            <span id="status_msg">Listo</span>
+    </div>
+
+    <div id="view_menu" class="menu-container animate-fade">
+        <button class="big-btn btn-add" onclick="cambiarVista('form')">
+            <div class="btn-icon">➕</div>
+            <h3>Agregar</h3>
+        </button>
+
+        <button class="big-btn btn-hist" onclick="cambiarVista('history')">
+            <div class="btn-icon">📜</div>
+            <h3>Historial</h3>
+        </button>
+    </div>
+
+    <div id="view_form" class="content-view hidden">
+        <div class="card form-card">
+            <div class="card-header">
+                <h3>📝 Nuevo</h3>
+                <button class="btn-back" onclick="cambiarVista('menu')">⬅</button>
+            </div>
+            
+            <form id="betForm" onsubmit="event.preventDefault(); registrarApuesta();">
+                <div class="input-group">
+                    <label>Evento</label>
+                    <input type="text" id="bet_event" placeholder="Ej. Real Madrid" required>
+                </div>
+
+                <div class="input-group">
+                    <label>Tipo</label>
+                    <input type="text" id="bet_market" placeholder="Ej. Local" required>
+                </div>
+
+                <div class="row-group">
+                    <div class="input-group">
+                        <label>Monto</label>
+                        <input type="number" id="bet_stake" step="0.01" placeholder="$" required>
+                    </div>
+                    <div class="input-group">
+                        <label>Momio</label>
+                        <input type="number" id="bet_odds" placeholder="-110" required>
+                    </div>
+                </div>
+
+                <div class="input-group">
+                    <label>Estado</label>
+                    <select id="bet_status" class="custom-select">
+                        <option value="pending">⏳ Pendiente</option>
+                        <option value="won">✅ Ganada</option>
+                        <option value="lost">❌ Perdida</option>
+                        <option value="void">🔄 Nula</option>
+                    </select>
+                </div>
+
+                <button type="submit" class="btn-registrar">Guardar</button>
+            </form>
         </div>
     </div>
 
-    <div class="espejo-grid">
-        <div class="card">
+    <div id="view_history" class="content-view hidden">
+        <div class="card history-card">
             <div class="card-header">
-                <h3>Local (Newcastle)</h3>
-                <label class="switch">
-                    <input type="checkbox" id="win_l" onchange="actualizarCalculos()">
-                    <span class="slider"></span>
-                </label>
+                <h3>📜 Historial</h3>
+                <div style="display:flex; gap:10px;">
+                    <button class="btn-sm" onclick="limpiarHistorial()">Borrar</button>
+                    <button class="btn-back" onclick="cambiarVista('menu')">⬅</button>
+                </div>
             </div>
-            <div class="input-group">
-                <label>Inversión Inicial</label>
-                <input type="number" id="base_stake" value="100" oninput="actualizarCalculos()">
+            
+            <div class="table-container">
+                <table class="history-table">
+                    <thead>
+                        <tr>
+                            <th>Evento</th>
+                            <th>Est</th>
+                            <th>$</th>
+                            <th>Gan</th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody id="history_list">
+                        </tbody>
+                </table>
+                <div id="empty_msg" class="empty-state">Sin datos.</div>
             </div>
-            <div class="input-group">
-                <label>Momio Inicial</label>
-                <input type="number" id="base_odds" value="-250" oninput="actualizarCalculos()">
-            </div>
-            <div class="target-payout">
-                <span>Meta:</span>
-                <strong id="target_return">$140.00</strong>
-            </div>
-            <button class="btn-registrar" onclick="registrarApuesta('local')">Registrar Inicial</button>
-        </div>
-
-        <div class="card">
-            <div class="card-header">
-                <h3>Empate (X)</h3>
-                <label class="switch">
-                    <input type="checkbox" id="win_x" onchange="actualizarCalculos()">
-                    <span class="slider"></span>
-                </label>
-            </div>
-            <div class="input-group">
-                <label>Momio Actual</label>
-                <input type="number" id="odds_x" placeholder="+450" oninput="actualizarCalculos()">
-            </div>
-            <div class="result-box">
-                <label>Cubrir con:</label>
-                <span id="stake_x">$0.00</span>
-            </div>
-            <button class="btn-registrar" onclick="registrarApuesta('empate')">Registrar Cobertura</button>
-        </div>
-
-        <div class="card">
-            <div class="card-header">
-                <h3>Visitante (2)</h3>
-                <label class="switch">
-                    <input type="checkbox" id="win_2" onchange="actualizarCalculos()">
-                    <span class="slider"></span>
-                </label>
-            </div>
-            <div class="input-group">
-                <label>Momio Actual</label>
-                <input type="number" id="odds_2" placeholder="+900" oninput="actualizarCalculos()">
-            </div>
-            <div class="result-box">
-                <label>Cubrir con:</label>
-                <span id="stake_2">$0.00</span>
-            </div>
-            <button class="btn-registrar" onclick="registrarApuesta('visita')">Registrar Cobertura</button>
         </div>
     </div>
+
 </div>
+
+<script src="espejo.js"></script>
+</body>
+</html>

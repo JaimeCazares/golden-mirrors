@@ -9,206 +9,221 @@
     --input-bg: #0f172a;
 }
 
-/* RESET LOCAL */
+/* RESET AGRESIVO para pegar todo al borde */
 html, body {
-    margin: 0; padding: 0; 
+    margin: 0 !important; 
+    padding: 0 !important;
     height: 100vh; width: 100vw;
     overflow: hidden; 
     background-color: var(--bg-dark);
+    font-family: 'Segoe UI', sans-serif;
+    color: var(--text-light);
 }
 
-/* CONTENEDOR PRINCIPAL */
+/* --- CONTENEDOR PRINCIPAL --- */
 .espejo-wrapper {
-    max-width: 1200px;
-    margin: 0 auto;
-    padding: 20px;
-    height: 100%;
     width: 100%;
+    height: 100%;
+    
+    /* AQUÍ ESTÁ LA MAGIA: 
+       10px arriba (top)
+       10px izquierda (left) -> IGUAL QUE TU WIDGET DE DEUDAS
+    */
+    padding: 10px 0 0 10px; 
+    margin: 0;
+    
+    box-sizing: border-box;
     display: flex;
     flex-direction: column;
-    gap: 20px;
-    box-sizing: border-box;
-    overflow: hidden; /* Adiós scroll */
+    
+    /* Alineación forzada a la izquierda */
+    align-items: flex-start; 
+    justify-content: flex-start;
+    
+    gap: 15px; 
+    overflow-y: auto;
 }
 
-/* --- 1. BARRA SUPERIOR (DASHBOARD STATS) --- */
+/* --- 1. STATS (Fila Superior) --- */
 .dashboard-stats {
     display: flex;
-    justify-content: flex-start; /* Alineados a la izquierda */
-    gap: 20px;
-    padding: 5px 0;
-    flex-shrink: 0; /* No dejar que se aplasten */
+    flex-wrap: wrap;
+    gap: 10px; 
+    width: 100%;
+    
+    /* Cero márgenes internos para respetar los 10px del wrapper */
+    margin: 0; 
+    padding: 0;
+    
+    justify-content: flex-start;
 }
 
-/* DISEÑO ELEGANTE DE LAS CAJAS SUPERIORES */
 .stat-card {
     background: linear-gradient(145deg, #1e293b, #162030);
-    border: 1px solid #334155;
-    border-radius: 12px;
-    padding: 15px 20px;
-    display: flex;
-    align-items: center;
-    gap: 15px;
-    min-width: 180px; /* Ancho mínimo para que se vean bien */
+    border: 1px solid #334155; 
+    border-radius: 8px; 
+    padding: 8px 12px;  
+    
+    display: flex; 
+    align-items: center; 
+    gap: 10px;
+    
+    /* Tamaño compacto (150px) */
+    width: 150px; 
+    height: 50px; 
+    flex-shrink: 0;
+    
     box-shadow: 0 4px 10px rgba(0,0,0,0.3);
-    position: relative;
-    overflow: hidden;
-}
-
-/* Pequeño brillo en el borde superior */
-.stat-card::before {
-    content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 2px;
-    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
 }
 
 .stat-card .icon { 
-    font-size: 1.5rem; 
-    background: rgba(255,255,255,0.05);
-    padding: 10px;
-    border-radius: 50%;
+    font-size: 0.9rem; 
+    padding: 5px; 
+    border-radius: 50%; 
+    background: rgba(255,255,255,0.05); 
     display: flex; align-items: center; justify-content: center;
 }
 
-.stat-card .info { display: flex; flex-direction: column; }
+.stat-card .info { display: flex; flex-direction: column; justify-content: center; }
+.stat-card small { font-size: 0.6rem; color: #94a3b8; text-transform: uppercase; font-weight: 700; line-height: 1; margin-bottom: 2px; }
+.stat-card span { font-size: 0.9rem; font-weight: 800; color: #fff; line-height: 1; }
 
-.stat-card small { 
-    font-size: 0.7rem; 
-    color: #94a3b8; 
-    text-transform: uppercase; 
-    letter-spacing: 1px; 
-    font-weight: 600;
-}
-
-.stat-card span { 
-    font-size: 1.2rem; 
-    font-weight: 800; 
-    color: #fff; 
-    margin-top: 2px;
-}
-
-/* Colores por tipo */
-.stat-card.locked .icon { color: var(--accent-gold); border: 1px solid rgba(251, 191, 36, 0.3); }
 .stat-card.locked span { color: var(--accent-gold); }
-
-.stat-card.profit .icon { color: var(--success); border: 1px solid rgba(34, 197, 94, 0.3); }
 .stat-card.profit span { color: var(--success); }
-
-.stat-card.wallet .icon { color: var(--neon-blue); border: 1px solid rgba(0, 224, 255, 0.3); }
 .stat-card.wallet span { color: var(--neon-blue); }
+.system-status { display: none; } 
 
-/* Estado del Sistema (Texto a la derecha) */
-.system-status {
-    margin-left: auto; /* Empuja esto al final derecho */
-    display: flex; flex-direction: column; align-items: flex-end; justify-content: center;
+
+/* --- 2. MENÚ DE BOTONES (Compactos y Pegados) --- */
+.menu-container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px; 
+    width: 100%;
+    justify-content: flex-start; 
+    align-items: flex-start;
+    padding: 0; margin: 0;
 }
-.system-status small { font-size: 0.65rem; color: #64748b; }
-.system-status span { font-size: 0.85rem; font-weight: bold; color: #94a3b8; }
+
+.big-btn {
+    background: linear-gradient(145deg, #1e293b, #111827);
+    border: 1px solid #334155;
+    border-radius: 8px;
+    
+    /* Mismo tamaño que las stats */
+    width: 150px; 
+    height: 50px; 
+    padding: 0 12px;
+    
+    cursor: pointer;
+    transition: all 0.2s ease;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+    
+    display: flex;
+    flex-direction: row; 
+    align-items: center;
+    justify-content: flex-start; 
+    text-align: left;
+    gap: 10px;
+    margin: 0; /* Aseguramos cero margen externo */
+}
+
+.big-btn:hover {
+    transform: translateY(-2px);
+    background: #242e42;
+}
+
+.big-btn .btn-icon { 
+    font-size: 1rem; 
+    width: 24px; height: 24px;
+    display: flex; align-items: center; justify-content: center;
+    border-radius: 50%;
+    background: rgba(255,255,255,0.05);
+}
+
+.big-btn h3 { 
+    margin: 0; 
+    font-size: 0.8rem; 
+    color: white; 
+    font-weight: 600; 
+    line-height: 1;
+}
+
+/* Colores */
+.btn-add .btn-icon { color: var(--neon-blue); }
+.btn-add:hover { border-color: var(--neon-blue); }
+.btn-hist .btn-icon { color: var(--accent-gold); }
+.btn-hist:hover { border-color: var(--accent-gold); }
 
 
-/* --- 2. GRID DE TARJETAS (Cuerpo) --- */
-.espejo-grid {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr); /* 3 Columnas idénticas */
-    gap: 20px;
-    flex-grow: 1; 
-    min-height: 0; 
-    align-items: stretch;
+/* --- 3. VISTAS INTERNAS --- */
+.content-view { 
+    width: 100%; 
+    max-width: none; 
+    display: flex; 
+    flex-direction: column; 
+    animation: fadeIn 0.2s ease-in;
+    align-items: flex-start; 
+    padding: 0; margin: 0;
 }
 
 .card {
-    background: var(--card-bg);
-    padding: 20px;
-    border-radius: 16px;
+    background: var(--card-bg); 
+    border-radius: 12px; 
     border: 1px solid #334155;
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
+    padding: 15px; 
     box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+    display: flex; flex-direction: column;
 }
 
-.card-header { 
-    display: flex; justify-content: space-between; align-items: center; 
-    margin-bottom: 15px; border-bottom: 1px solid #334155; padding-bottom: 10px;
-}
-.card h3 { 
-    font-size: 0.9rem; color: #94a3b8; margin: 0; 
-    text-transform: uppercase; letter-spacing: 1px;
-}
+.form-card { width: 100%; max-width: 350px; }
 
-/* Inputs */
-.input-group { margin-bottom: 15px; }
-.input-group label { display: block; font-size: 0.75rem; color: #64748b; margin-bottom: 5px; }
-.input-group input {
-    width: 100%; background: var(--input-bg); border: 1px solid #334155;
-    padding: 12px; border-radius: 8px; color: white; font-weight: bold;
-    font-size: 1rem; box-sizing: border-box; outline: none;
-    transition: border-color 0.3s;
-}
-.input-group input:focus { border-color: var(--neon-blue); background: #131c2e; }
-
-/* Resultados */
-.target-payout {
-    margin-top: 5px; padding-top: 15px; border-top: 1px solid #334155;
+.card-header {
     display: flex; justify-content: space-between; align-items: center;
-}
-.target-payout span { font-size: 0.85rem; color: #94a3b8; }
-.target-payout strong { color: var(--accent-gold); font-size: 1.3rem; }
-
-.result-box { background: var(--input-bg); padding: 15px; border-radius: 8px; text-align: center; }
-.result-box label { font-size: 0.75rem; color: #64748b; display: block; margin-bottom: 5px;}
-.result-box span { display: block; font-size: 1.4rem; font-weight: bold; color: var(--success); }
-
-/* --- 3. SWITCHES (Toggle) --- */
-.switch { position: relative; display: inline-block; width: 40px; height: 22px; }
-.switch input { opacity: 0; width: 0; height: 0; }
-.slider { position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background-color: #334155; transition: .4s; border-radius: 20px; }
-.slider:before { position: absolute; content: ""; height: 16px; width: 16px; left: 3px; bottom: 3px; background-color: white; transition: .4s; border-radius: 50%; }
-input:checked + .slider { background-color: var(--success); }
-input:checked + .slider:before { transform: translateX(18px); }
-
-/* --- 4. BOTONES NEÓN (500 PESOS CSS) --- */
-.btn-registrar {
-    margin-top: 20px;
+    margin-bottom: 15px; border-bottom: 1px solid #334155; padding-bottom: 8px;
     width: 100%;
-    padding: 14px;
-    background: rgba(0, 224, 255, 0.05);
-    border: 1px solid var(--neon-blue);
-    color: var(--neon-blue);
-    font-family: inherit;
-    font-weight: 800;
-    text-transform: uppercase;
-    letter-spacing: 2px;
-    font-size: 0.85rem;
-    border-radius: 10px;
-    cursor: pointer;
-    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-    position: relative;
-    box-shadow: 0 0 10px rgba(0, 224, 255, 0.1);
 }
+.card-header h3 { margin: 0; color: var(--neon-blue); text-transform: uppercase; font-size: 0.8rem; letter-spacing: 1px; }
 
-.btn-registrar:hover {
-    background: var(--neon-blue);
-    color: #0b132b;
-    box-shadow: 0 0 30px rgba(0, 224, 255, 0.6);
-    transform: translateY(-3px);
+.btn-back {
+    background: rgba(255,255,255,0.05); border: 1px solid #475569; color: #fff;
+    padding: 4px 8px; border-radius: 4px; cursor: pointer; font-weight: bold; font-size: 0.7rem;
 }
-.btn-registrar:active { transform: translateY(1px); }
+.btn-back:hover { background: #334155; border-color: #fff; }
 
-/* Estilo Dorado para el botón Local */
-.card:first-child .btn-registrar {
-    border-color: var(--accent-gold);
-    color: var(--accent-gold);
-    background: rgba(251, 191, 36, 0.05);
-    box-shadow: 0 0 10px rgba(251, 191, 36, 0.1);
+.input-group { margin-bottom: 10px; width: 100%; }
+.row-group { display: flex; gap: 10px; width: 100%; }
+.row-group .input-group { flex: 1; }
+.input-group label { display: block; font-size: 0.7rem; color: #94a3b8; margin-bottom: 4px; }
+.input-group input, .custom-select {
+    width: 100%; background: var(--input-bg); border: 1px solid #334155;
+    padding: 8px; border-radius: 6px; color: white; font-weight: bold; font-size: 0.85rem;
+    box-sizing: border-box; outline: none; transition: 0.2s;
 }
-.card:first-child .btn-registrar:hover {
-    background: var(--accent-gold);
-    color: #0b132b;
-    box-shadow: 0 0 30px rgba(251, 191, 36, 0.6);
-}
+.input-group input:focus { border-color: var(--neon-blue); background: #111827; }
 
-/* RESPONSIVE */
-@media (max-width: 900px) {
-    .espejo-grid { grid-template-columns: 1fr; overflow-y: auto; }
-    .dashboard-stats { overflow-x: auto; padding-bottom: 10px; }
+.btn-registrar {
+    width: 100%; padding: 10px; margin-top: 5px;
+    background: var(--neon-blue); color: #0b132b; font-weight: 800; border: none;
+    border-radius: 6px; cursor: pointer; text-transform: uppercase; letter-spacing: 1px; font-size: 0.8rem;
 }
+.btn-registrar:hover { background: #38bdf8; }
+
+.table-container { overflow-x: auto; width: 100%; }
+.history-table { width: 100%; border-collapse: collapse; min-width: 400px; }
+.history-table th { text-align: left; color: #64748b; padding: 8px; border-bottom: 1px solid #334155; font-size: 0.7rem; text-transform: uppercase; }
+.history-table td { padding: 8px; border-bottom: 1px solid #1e293b; font-size: 0.8rem; }
+
+.tag { padding: 3px 6px; border-radius: 10px; font-size: 0.65rem; font-weight: bold; }
+.tag.won { color: #fff; background: var(--success); }
+.tag.lost { color: #fff; background: var(--danger); }
+.tag.pending { color: #fff; background: #f59e0b; }
+.tag.void { color: #fff; background: #64748b; }
+
+.btn-sm { background: transparent; border: 1px solid #ef4444; color: #ef4444; padding: 3px 6px; border-radius: 4px; cursor: pointer; font-size: 0.65rem; }
+.btn-sm:hover { background: #ef4444; color: white; }
+.empty-state { text-align: center; color: #64748b; padding: 20px; margin-top: 10px; font-style: italic; font-size: 0.8rem; }
+
+.hidden { display: none !important; }
+@keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+.animate-fade { animation: fadeIn 0.3s ease-in; }

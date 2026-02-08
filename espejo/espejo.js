@@ -1,80 +1,119 @@
-// Variable global para controlar lo invertido
-let acumuladoInvertido = 0;
+let historialApuestas = [];
 
-function initEspejo() {
-    console.log("Módulo Espejo Inicializado");
-    actualizarCalculos();
-}
+// AL CARGAR: INICIA EN MENU
+document.addEventListener('DOMContentLoaded', () => {
+    actualizarDashboard();
+    cambiarVista('menu'); 
+});
 
-function americanToDecimal(odds) {
-    if (odds > 0) return (odds / 100) + 1;
-    return (100 / Math.abs(odds)) + 1;
-}
+// --- NAVEGACIÓN ---
+function cambiarVista(vista) {
+    const menu = document.getElementById('view_menu');
+    const form = document.getElementById('view_form');
+    const history = document.getElementById('view_history');
 
-// LÓGICA DE REGISTRO
-function registrarApuesta(tipo) {
-    let monto = 0;
+    menu.classList.add('hidden');
+    form.classList.add('hidden');
+    history.classList.add('hidden');
 
-    if (tipo === 'local') {
-        monto = parseFloat(document.getElementById('base_stake').value) || 0;
-    } else if (tipo === 'empate') {
-        // Obtenemos el valor calculado del texto (quitando el signo $)
-        let texto = document.getElementById('stake_x').innerText;
-        monto = parseFloat(texto.replace('$', '')) || 0;
-    } else if (tipo === 'visita') {
-        let texto = document.getElementById('stake_2').innerText;
-        monto = parseFloat(texto.replace('$', '')) || 0;
-    }
-
-    if (monto > 0) {
-        // Sumar al acumulado
-        acumuladoInvertido += monto;
-        
-        // Actualizar UI del Header
-        document.getElementById('total_invested').innerText = `$${acumuladoInvertido.toFixed(2)}`;
-        
-        // Feedback visual (opcional: podrías mostrar una alerta pequeña)
-        const statusMsg = document.getElementById('status_msg');
-        statusMsg.innerText = "Apuesta Registrada";
-        statusMsg.style.color = "var(--accent-gold)";
-        
-        setTimeout(() => {
-            statusMsg.innerText = "Esperando...";
-            statusMsg.style.color = "#94a3b8";
-        }, 2000);
+    if (vista === 'menu') {
+        menu.classList.remove('hidden');
+    } else if (vista === 'form') {
+        form.classList.remove('hidden');
+    } else if (vista === 'history') {
+        history.classList.remove('hidden');
+        renderizarHistorial();
     }
 }
 
-function actualizarCalculos() {
-    const baseStake = parseFloat(document.getElementById('base_stake').value) || 0;
-    const baseOdds = parseFloat(document.getElementById('base_odds').value) || 0;
-    const oddsX = parseFloat(document.getElementById('odds_x').value) || 0;
-    const odds2 = parseFloat(document.getElementById('odds_2').value) || 0;
+// --- LÓGICA DE APUESTAS ---
+function registrarApuesta() {
+    const evento = document.getElementById('bet_event').value;
+    const mercado = document.getElementById('bet_market').value;
+    const stake = parseFloat(document.getElementById('bet_stake').value) || 0;
+    const odds = parseFloat(document.getElementById('bet_odds').value) || 0;
+    const estado = document.getElementById('bet_status').value;
 
-    const targetReturn = baseStake * americanToDecimal(baseOdds);
-    document.getElementById('target_return').innerText = `$${targetReturn.toFixed(2)}`;
+    if (!evento || stake <= 0) return alert("Datos incompletos.");
 
-    const stakeX = oddsX !== 0 ? targetReturn / americanToDecimal(oddsX) : 0;
-    const stake2 = odds2 !== 0 ? targetReturn / americanToDecimal(odds2) : 0;
-    
-    document.getElementById('stake_x').innerText = `$${stakeX.toFixed(2)}`;
-    document.getElementById('stake_2').innerText = `$${stake2.toFixed(2)}`;
+    let decimal = 1;
+    if (odds > 0) decimal = (odds / 100) + 1;
+    else if (odds < 0) decimal = (100 / Math.abs(odds)) + 1;
 
-    // Calculamos ganancia libre basada en el acumulado REAL (lo que has registrado)
-    // O si prefieres, basada en la simulación actual:
-    
-    // NOTA: Para este diseño, la "Ganancia Libre" en el header puede ser dinámica
-    // basada en los momios actuales antes de registrar.
-    
-    let inversionSimulada = baseStake + stakeX + stake2;
-    let gananciaSimulada = targetReturn - inversionSimulada;
+    let ganancia = 0;
+    if (estado === 'won') ganancia = (stake * decimal) - stake;
+    else if (estado === 'lost') ganancia = -stake;
 
-    const netProfitEl = document.getElementById('net_profit');
-    netProfitEl.innerText = `$${gananciaSimulada.toFixed(2)}`;
+    const nuevaApuesta = {
+        id: Date.now(),
+        evento, mercado, stake, odds, ganancia, estado
+    };
+
+    historialApuestas.unshift(nuevaApuesta);
+    document.getElementById('betForm').reset();
+    actualizarDashboard();
     
-    if (gananciaSimulada > 0) {
-        netProfitEl.style.color = "var(--success)";
-    } else {
-        netProfitEl.style.color = "var(--danger)";
+    // Feedback rápido
+    cambiarVista('menu');
+}
+
+function renderizarHistorial() {
+    const lista = document.getElementById('history_list');
+    const emptyMsg = document.getElementById('empty_msg');
+    lista.innerHTML = '';
+
+    if (historialApuestas.length === 0) {
+        emptyMsg.style.display = 'block';
+        return;
+    }
+    emptyMsg.style.display = 'none';
+
+    historialApuestas.forEach(a => {
+        let tagClass = a.estado; 
+        let tagText = a.estado === 'won' ? 'Win' : a.estado === 'lost' ? 'Loss' : a.estado === 'pending' ? 'Pend' : 'Void';
+        let colorGanancia = a.ganancia > 0 ? '#22c55e' : a.ganancia < 0 ? '#ef4444' : '#94a3b8';
+        let signo = a.ganancia > 0 ? '+' : '';
+
+        lista.innerHTML += `
+            <tr>
+                <td><strong>${a.evento}</strong><br><small style="color:#64748b">${a.mercado}</small></td>
+                <td><span class="tag ${tagClass}">${tagText}</span></td>
+                <td>$${a.stake}</td>
+                <td style="color:${colorGanancia}; font-weight:bold;">${signo}$${a.ganancia.toFixed(2)}</td>
+                <td><button onclick="eliminarApuesta(${a.id})" style="border:none;background:none;cursor:pointer;opacity:0.6;">🗑️</button></td>
+            </tr>
+        `;
+    });
+}
+
+function actualizarDashboard() {
+    let total = 0, profit = 0;
+    historialApuestas.forEach(a => {
+        if (a.estado !== 'void') total += a.stake;
+        profit += a.ganancia;
+    });
+
+    // Bank base ficticio
+    const bankInicial = 0; 
+
+    document.getElementById('total_invested').innerText = `$${total.toFixed(2)}`;
+    document.getElementById('net_profit').innerText = `$${profit.toFixed(2)}`;
+    document.getElementById('net_profit').style.color = profit >= 0 ? 'var(--success)' : 'var(--danger)';
+    document.getElementById('user_balance').innerText = `$${(bankInicial + profit).toFixed(2)}`;
+}
+
+function eliminarApuesta(id) {
+    if(confirm("¿Eliminar?")) {
+        historialApuestas = historialApuestas.filter(a => a.id !== id);
+        renderizarHistorial();
+        actualizarDashboard();
+    }
+}
+
+function limpiarHistorial() {
+    if(confirm("¿Borrar Todo?")) {
+        historialApuestas = [];
+        renderizarHistorial();
+        actualizarDashboard();
     }
 }
