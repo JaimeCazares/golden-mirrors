@@ -3,7 +3,7 @@ window.datosDeportivos = {
 
     // --- COMPETICIONES EUROPEAS ---
     "Champions League": {
-        logo: "https://ssl.gstatic.com/onebox/media/sports/logos/YijZbE4UZ_09JrTvBU91fg_64x64.png",
+        logo: "https://upload.wikimedia.org/wikipedia/commons/e/e2/UEFA_Champions_League_logo.png",
         equipos: [
             { nombre: "Paris Saint-Germain", logo: "https://upload.wikimedia.org/wikipedia/en/thumb/a/a7/Paris_Saint-Germain_F.C..svg/1200px-Paris_Saint-Germain_F.C..svg.png" },
             { nombre: "Tottenham Hotspur", logo: "https://upload.wikimedia.org/wikipedia/en/thumb/b/b4/Tottenham_Hotspur.svg/1200px-Tottenham_Hotspur.svg.png" },
