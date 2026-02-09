@@ -25,7 +25,6 @@
   </section>
 
   <nav class="dock-nav">
-      
       <button class="nav-btn activo" onclick="cambiarPestana('inicio')">
           <span class="icono">🏠</span>
           <span class="label">Inicio</span>
@@ -45,34 +44,38 @@
           <span class="icono">📝</span>
           <span class="label">Normales</span>
       </button>
-
   </nav>
 
   <script src="script.js?v=2.0"></script>
+  
+  <script src="espejo/espejo.js?v=1.0"></script> 
 
   <script>
-  // Carga inicial de KG
-fetch('kg/kg.html').then(r => r.text()).then(h => {
-    document.getElementById('kg-wrapper').innerHTML = h;
+    // 1. Carga de KG (Peso)
+    fetch('kg/kg.html').then(r => r.text()).then(h => {
+        document.getElementById('kg-wrapper').innerHTML = h;
 
-    // --- MAGIA: SACAR AMBOS MODALES PARA QUE FLOTEN ENCIMA DE TODO ---
-    const modal = document.getElementById('modalKg');
-    const modalFotos = document.getElementById('modalVerFotos'); // <--- AGREGA ESTO
+        // Mover modales al body para evitar problemas de superposición
+        const modal = document.getElementById('modalKg');
+        const modalFotos = document.getElementById('modalVerFotos');
 
-    if (modal) document.body.appendChild(modal);
-    if (modalFotos) document.body.appendChild(modalFotos); // <--- Y ESTO
-    // -----------------------------------------------------------------------
+        if (modal) document.body.appendChild(modal);
+        if (modalFotos) document.body.appendChild(modalFotos);
 
-    let s = document.createElement('script'); 
-    s.src = 'kg/kg.js?v=' + Date.now();
-    s.onload = () => { if (typeof initKg === 'function') initKg() }; 
-    document.body.appendChild(s);
-});
-    // Carga inicial de DEUDA
-    fetch('deuda/deuda.html').then(r=>r.text()).then(h=>{
-        document.getElementById('deuda-wrapper').innerHTML=h;
-        let s=document.createElement('script'); s.src='deuda/deuda.js?v='+Date.now();
-        s.onload=()=>{if(typeof initDeuda==='function')initDeuda()}; document.body.appendChild(s);
+        // Cargar script de KG
+        let s = document.createElement('script'); 
+        s.src = 'kg/kg.js?v=' + Date.now();
+        s.onload = () => { if (typeof initKg === 'function') initKg() }; 
+        document.body.appendChild(s);
+    });
+
+    // 2. Carga de DEUDA
+    fetch('deuda/deuda.html').then(r => r.text()).then(h => {
+        document.getElementById('deuda-wrapper').innerHTML = h;
+        let s = document.createElement('script'); 
+        s.src = 'deuda/deuda.js?v=' + Date.now();
+        s.onload = () => { if (typeof initDeuda === 'function') initDeuda() }; 
+        document.body.appendChild(s);
     });
   </script>
 

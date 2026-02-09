@@ -9,7 +9,7 @@
     --input-bg: #0f172a;
 }
 
-/* RESET AGRESIVO para pegar todo al borde */
+/* RESET AGRESIVO GLOBAL */
 html, body {
     margin: 0 !important; 
     padding: 0 !important;
@@ -25,20 +25,16 @@ html, body {
     width: 100%;
     height: 100%;
     
-    /* AQUÍ ESTÁ LA MAGIA: 
-       10px arriba (top)
-       10px izquierda (left) -> IGUAL QUE TU WIDGET DE DEUDAS
-    */
-    padding: 10px 0 0 10px; 
-    margin: 0;
+    /* Mantenemos el pegado a la izquierda */
+    padding: 10px 0 0 10px !important; 
+    margin: 0 !important;
     
     box-sizing: border-box;
     display: flex;
     flex-direction: column;
     
-    /* Alineación forzada a la izquierda */
-    align-items: flex-start; 
-    justify-content: flex-start;
+    align-items: flex-start !important; 
+    justify-content: flex-start !important;
     
     gap: 15px; 
     overflow-y: auto;
@@ -48,12 +44,12 @@ html, body {
 .dashboard-stats {
     display: flex;
     flex-wrap: wrap;
-    gap: 10px; 
+    gap: 15px; /* Un poco más de espacio entre cajitas para que respiren */
     width: 100%;
     
-    /* Cero márgenes internos para respetar los 10px del wrapper */
-    margin: 0; 
-    padding: 0;
+    margin: 0 !important; 
+    padding: 0 !important;
+    padding-left: 0 !important;
     
     justify-content: flex-start;
 }
@@ -62,31 +58,35 @@ html, body {
     background: linear-gradient(145deg, #1e293b, #162030);
     border: 1px solid #334155; 
     border-radius: 8px; 
-    padding: 8px 12px;  
+    
+    /* CAMBIO CLAVE: Ajustar tamaño al contenido */
+    width: auto !important;
+    min-width: auto !important;
+    flex: 0 0 auto !important; /* No estirar, no encoger */
+    
+    /* Padding justo para que se vea bien pero no sobre espacio */
+    padding: 8px 15px;  
     
     display: flex; 
     align-items: center; 
     gap: 10px;
     
-    /* Tamaño compacto (150px) */
-    width: 150px; 
-    height: 50px; 
-    flex-shrink: 0;
-    
+    margin-left: 0 !important;
     box-shadow: 0 4px 10px rgba(0,0,0,0.3);
 }
 
 .stat-card .icon { 
-    font-size: 0.9rem; 
-    padding: 5px; 
+    font-size: 1rem; 
+    padding: 6px; 
     border-radius: 50%; 
     background: rgba(255,255,255,0.05); 
     display: flex; align-items: center; justify-content: center;
 }
 
 .stat-card .info { display: flex; flex-direction: column; justify-content: center; }
-.stat-card small { font-size: 0.6rem; color: #94a3b8; text-transform: uppercase; font-weight: 700; line-height: 1; margin-bottom: 2px; }
-.stat-card span { font-size: 0.9rem; font-weight: 800; color: #fff; line-height: 1; }
+
+.stat-card small { font-size: 0.65rem; color: #94a3b8; text-transform: uppercase; font-weight: 700; line-height: 1; margin-bottom: 3px; white-space: nowrap; }
+.stat-card span { font-size: 1rem; font-weight: 800; color: #fff; line-height: 1; white-space: nowrap; }
 
 .stat-card.locked span { color: var(--accent-gold); }
 .stat-card.profit span { color: var(--success); }
@@ -94,15 +94,18 @@ html, body {
 .system-status { display: none; } 
 
 
-/* --- 2. MENÚ DE BOTONES (Compactos y Pegados) --- */
+/* --- 2. MENÚ DE BOTONES (Fila Inferior) --- */
 .menu-container {
     display: flex;
     flex-wrap: wrap;
-    gap: 10px; 
+    gap: 15px; 
     width: 100%;
     justify-content: flex-start; 
     align-items: flex-start;
-    padding: 0; margin: 0;
+    
+    padding: 0 !important; 
+    margin: 0 !important;
+    padding-left: 0 !important;
 }
 
 .big-btn {
@@ -110,10 +113,12 @@ html, body {
     border: 1px solid #334155;
     border-radius: 8px;
     
-    /* Mismo tamaño que las stats */
-    width: 150px; 
-    height: 50px; 
-    padding: 0 12px;
+    /* CAMBIO CLAVE: Tamaño ajustado */
+    width: auto !important;
+    flex: 0 0 auto !important;
+    
+    height: 45px; /* Altura compacta */
+    padding: 0 15px; /* Relleno lateral justo */
     
     cursor: pointer;
     transition: all 0.2s ease;
@@ -125,7 +130,9 @@ html, body {
     justify-content: flex-start; 
     text-align: left;
     gap: 10px;
-    margin: 0; /* Aseguramos cero margen externo */
+    
+    margin: 0 !important; 
+    margin-left: 0 !important;
 }
 
 .big-btn:hover {
@@ -134,7 +141,7 @@ html, body {
 }
 
 .big-btn .btn-icon { 
-    font-size: 1rem; 
+    font-size: 0.9rem; 
     width: 24px; height: 24px;
     display: flex; align-items: center; justify-content: center;
     border-radius: 50%;
@@ -147,6 +154,7 @@ html, body {
     color: white; 
     font-weight: 600; 
     line-height: 1;
+    white-space: nowrap; /* Evita que el texto salte de línea */
 }
 
 /* Colores */
@@ -163,8 +171,10 @@ html, body {
     display: flex; 
     flex-direction: column; 
     animation: fadeIn 0.2s ease-in;
+    
     align-items: flex-start; 
-    padding: 0; margin: 0;
+    padding: 0 !important; 
+    margin: 0 !important;
 }
 
 .card {
@@ -174,6 +184,9 @@ html, body {
     padding: 15px; 
     box-shadow: 0 4px 15px rgba(0,0,0,0.2);
     display: flex; flex-direction: column;
+    /* Dejamos que las tarjetas internas tengan un ancho decente */
+    width: 100%; 
+    max-width: 600px; /* Pero no infinito para que no se vea feo el form */
 }
 
 .form-card { width: 100%; max-width: 350px; }
@@ -227,3 +240,68 @@ html, body {
 .hidden { display: none !important; }
 @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
 .animate-fade { animation: fadeIn 0.3s ease-in; }
+
+/* --- ESTILOS NUEVOS PARA SELECTOR DE EQUIPOS --- */
+
+.league-selector {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 15px;
+    background: #0f172a;
+    padding: 5px;
+    border-radius: 8px;
+    border: 1px solid #334155;
+}
+
+.league-logo {
+    width: 30px; height: 30px;
+    object-fit: contain;
+    opacity: 0; /* Oculto hasta seleccionar */
+    transition: opacity 0.3s;
+}
+
+.match-versus-container {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 5px;
+    margin-bottom: 15px;
+    background: #162030;
+    padding: 10px;
+    border-radius: 10px;
+    border: 1px solid #334155;
+}
+
+.team-box {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 5px;
+}
+
+.team-logo {
+    width: 40px; height: 40px;
+    object-fit: contain;
+    background: rgba(255,255,255,0.05);
+    border-radius: 50%;
+    padding: 2px;
+    opacity: 0;
+    transition: opacity 0.3s;
+}
+
+.vs-divider {
+    font-weight: 900;
+    color: var(--neon-blue);
+    font-size: 0.9rem;
+    font-style: italic;
+}
+
+/* Ajuste a los selects dentro de las cajas de equipos */
+.team-box select {
+    font-size: 0.75rem;
+    text-align: center;
+    padding: 5px;
+    width: 100%;
+}

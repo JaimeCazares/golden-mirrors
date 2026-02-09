@@ -51,12 +51,20 @@ body {
 
 #contenido-modulo {
     width: 100%;
-    max-width: 1200px; /* Ancho máximo aumentado para desktops */
-    margin: 0 auto;
-    height: 100%; /* Ocupa todo el alto disponible */
+    
+    /* CAMBIO: Quitamos el límite de ancho para que ocupe toda la pantalla */
+    max-width: 100% !important; 
+    
+    /* CAMBIO: Quitamos el "auto" para que no se centre, sino que se pegue a la izq */
+    margin: 0 !important; 
+    
+    /* Aseguramos cero relleno */
+    padding: 0 !important;
+
+    height: 100%; 
     display: flex;
     flex-direction: column;
-    overflow: hidden; /* Asegura que el módulo no desborde */
+    overflow: hidden; 
 }
 
 /* --- DOCK DE NAVEGACIÓN --- */

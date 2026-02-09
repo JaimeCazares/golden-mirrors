@@ -1,7 +1,9 @@
-const datosDeportivos = {
-    // --- COMPETICIONES EUROPEAS (Fase de Liga / Europeas) ---
+// espejo/datos.js
+window.datosDeportivos = {
+
+    // --- COMPETICIONES EUROPEAS ---
     "Champions League": {
-        logo: "https://upload.wikimedia.org/wikipedia/commons/thumb/f/f3/UEFA_Champions_League_logo_2.svg/1200px-UEFA_Champions_League_logo_2.svg.png",
+        logo: "https://ssl.gstatic.com/onebox/media/sports/logos/YijZbE4UZ_09JrTvBU91fg_64x64.png",
         equipos: [
             { nombre: "Paris Saint-Germain", logo: "https://upload.wikimedia.org/wikipedia/en/thumb/a/a7/Paris_Saint-Germain_F.C..svg/1200px-Paris_Saint-Germain_F.C..svg.png" },
             { nombre: "Tottenham Hotspur", logo: "https://upload.wikimedia.org/wikipedia/en/thumb/b/b4/Tottenham_Hotspur.svg/1200px-Tottenham_Hotspur.svg.png" },
@@ -36,6 +38,7 @@ const datosDeportivos = {
             { nombre: "Bodo/Glimt", logo: "" }
         ]
     },
+
     "Europa League": {
         logo: "https://upload.wikimedia.org/wikipedia/commons/thumb/6/67/UEFA_Europa_League_logo_%282021%29.svg/1200px-UEFA_Europa_League_logo_%282021%29.svg.png",
         equipos: [
@@ -58,6 +61,7 @@ const datosDeportivos = {
             { nombre: "Midtjylland", logo: "" }
         ]
     },
+
     "Conference League": {
         logo: "https://upload.wikimedia.org/wikipedia/commons/thumb/0/07/UEFA_Conference_League_logo_%282024%29.svg/1200px-UEFA_Conference_League_logo_%282024%29.svg.png",
         equipos: [
@@ -75,8 +79,8 @@ const datosDeportivos = {
             { nombre: "Universitatea Craiova", logo: "" }
         ]
     },
-    
-    // --- LIGAS DOMÉSTICAS (Listas Completas) ---
+
+    // --- LIGAS DOMÉSTICAS ---
     "Premier League": {
         logo: "https://upload.wikimedia.org/wikipedia/en/thumb/f/f2/Premier_League_Logo.svg/1200px-Premier_League_Logo.svg.png",
         equipos: [
@@ -102,6 +106,7 @@ const datosDeportivos = {
             { nombre: "Wolverhampton Wanderers", logo: "" }
         ]
     },
+
     "La Liga": {
         logo: "https://upload.wikimedia.org/wikipedia/commons/thumb/0/0f/LaLiga_logo_2023.svg/1200px-LaLiga_logo_2023.svg.png",
         equipos: [
@@ -126,6 +131,7 @@ const datosDeportivos = {
             { nombre: "Villarreal", logo: "" }
         ]
     },
+
     "Serie A": {
         logo: "https://upload.wikimedia.org/wikipedia/commons/thumb/e/e9/Serie_A_logo_2022.svg/1200px-Serie_A_logo_2022.svg.png",
         equipos: [
@@ -151,6 +157,7 @@ const datosDeportivos = {
             { nombre: "Venezia", logo: "" }
         ]
     },
+
     "Bundesliga": {
         logo: "https://upload.wikimedia.org/wikipedia/en/thumb/d/df/Bundesliga_logo_%282017%29.svg/1200px-Bundesliga_logo_%282017%29.svg.png",
         equipos: [
@@ -170,6 +177,7 @@ const datosDeportivos = {
             { nombre: "Wolfsburg", logo: "" }
         ]
     },
+
     "Ligue 1": {
         logo: "https://upload.wikimedia.org/wikipedia/commons/thumb/5/5e/Ligue_1_%282024%29.svg/1200px-Ligue_1_%282024%29.svg.png",
         equipos: [
@@ -194,213 +202,3 @@ const datosDeportivos = {
         ]
     }
 };
-
-
-window.historialApuestas = window.historialApuestas || [];
-
-// --- NAVEGACIÓN ---
-window.cambiarVista = function(vista) {
-    const menu = document.getElementById('view_menu');
-    const form = document.getElementById('view_form');
-    const history = document.getElementById('view_history');
-
-    if (menu) menu.classList.add('hidden');
-    if (form) form.classList.add('hidden');
-    if (history) history.classList.add('hidden');
-
-    if (vista === 'menu' && menu) menu.classList.remove('hidden');
-    else if (vista === 'form' && form) {
-        form.classList.remove('hidden');
-        window.cargarLigas(); 
-    }
-    else if (vista === 'history' && history) {
-        history.classList.remove('hidden');
-        window.renderizarHistorial();
-    }
-};
-
-// --- CARGA DINÁMICA ---
-window.cargarLigas = function() {
-    const selLiga = document.getElementById('sel_liga');
-    if (selLiga.options.length > 1) return; // Ya cargado
-
-    for (let liga in datosDeportivos) {
-        let opt = document.createElement('option');
-        opt.value = liga;
-        opt.innerText = liga;
-        selLiga.appendChild(opt);
-    }
-};
-
-window.actualizarEquipos = function() {
-    const liga = document.getElementById('sel_liga').value;
-    const imgLiga = document.getElementById('img_liga');
-    const selLocal = document.getElementById('sel_local');
-    const selVisit = document.getElementById('sel_visitante');
-
-    selLocal.innerHTML = '<option value="">Local</option>';
-    selVisit.innerHTML = '<option value="">Visita</option>';
-    document.getElementById('img_local').src = ''; 
-    document.getElementById('img_visit').src = '';
-    document.getElementById('img_local').style.opacity = '0';
-    document.getElementById('img_visit').style.opacity = '0';
-
-    if (liga && datosDeportivos[liga]) {
-        imgLiga.src = datosDeportivos[liga].logo || '';
-        imgLiga.style.opacity = datosDeportivos[liga].logo ? '1' : '0';
-
-        // Ordenar alfabéticamente para facilitar la búsqueda
-        const equiposOrdenados = [...datosDeportivos[liga].equipos].sort((a, b) => a.nombre.localeCompare(b.nombre));
-
-        equiposOrdenados.forEach(eq => {
-            let opt1 = document.createElement('option');
-            opt1.value = eq.nombre;
-            opt1.innerText = eq.nombre;
-            opt1.dataset.logo = eq.logo; 
-            selLocal.appendChild(opt1.cloneNode(true));
-            selVisit.appendChild(opt1); 
-        });
-    } else {
-        imgLiga.style.opacity = '0';
-    }
-};
-
-window.actualizarLogoEquipo = function(tipo) {
-    const sel = document.getElementById(tipo === 'local' ? 'sel_local' : 'sel_visitante');
-    const img = document.getElementById(tipo === 'local' ? 'img_local' : 'img_visit');
-    
-    const opcionSeleccionada = sel.options[sel.selectedIndex];
-    const urlLogo = opcionSeleccionada.getAttribute('data-logo');
-
-    if (urlLogo) {
-        img.src = urlLogo;
-        img.style.opacity = '1';
-    } else {
-        img.style.opacity = '0';
-    }
-};
-
-// --- LOGICA DE REGISTRO ---
-window.registrarApuesta = function() {
-    const liga = document.getElementById('sel_liga').value;
-    const local = document.getElementById('sel_local').value;
-    const visita = document.getElementById('sel_visitante').value;
-    const mercado = document.getElementById('bet_market').value;
-    const stake = parseFloat(document.getElementById('bet_stake').value) || 0;
-    const odds = parseFloat(document.getElementById('bet_odds').value) || 0;
-    const estado = document.getElementById('bet_status').value;
-
-    if (!local || !visita || stake <= 0) return alert("Faltan datos.");
-
-    const eventoTexto = `${local} vs ${visita}`;
-    let decimal = 1;
-    if (odds > 0) decimal = (odds / 100) + 1;
-    else if (odds < 0) decimal = (100 / Math.abs(odds)) + 1;
-
-    let ganancia = 0;
-    if (estado === 'won') ganancia = (stake * decimal) - stake;
-    else if (estado === 'lost') ganancia = -stake;
-
-    const nuevaApuesta = {
-        id: Date.now(),
-        liga, evento: eventoTexto, mercado, stake, odds, ganancia, estado
-    };
-
-    window.historialApuestas.unshift(nuevaApuesta);
-    document.getElementById('betForm').reset();
-    
-    // Limpieza visual
-    document.getElementById('img_liga').style.opacity = '0';
-    document.getElementById('img_local').style.opacity = '0';
-    document.getElementById('img_visit').style.opacity = '0';
-    document.getElementById('sel_local').innerHTML = '<option value="">Local</option>';
-    document.getElementById('sel_visitante').innerHTML = '<option value="">Visita</option>';
-
-    window.actualizarDashboard();
-    window.cambiarVista('menu');
-};
-
-// --- RENDERIZADO Y DASHBOARD ---
-window.renderizarHistorial = function() {
-    const lista = document.getElementById('history_list');
-    const emptyMsg = document.getElementById('empty_msg');
-    
-    if (!lista) return;
-    lista.innerHTML = '';
-
-    if (window.historialApuestas.length === 0) {
-        if (emptyMsg) emptyMsg.style.display = 'block';
-        return;
-    }
-    if (emptyMsg) emptyMsg.style.display = 'none';
-
-    window.historialApuestas.forEach(a => {
-        let tagClass = a.estado; 
-        let tagText = a.estado === 'won' ? 'Win' : a.estado === 'lost' ? 'Loss' : a.estado === 'pending' ? 'Pend' : 'Void';
-        let colorGanancia = a.ganancia > 0 ? '#22c55e' : a.ganancia < 0 ? '#ef4444' : '#94a3b8';
-        let signo = a.ganancia > 0 ? '+' : '';
-
-        // Logo pequeño de liga en historial (si existe en base de datos)
-        let logoLigaUrl = datosDeportivos[a.liga]?.logo || '';
-        let ligaHTML = a.liga ? `
-            <div style="display:flex; align-items:center; gap:4px; margin-bottom:2px;">
-                ${logoLigaUrl ? `<img src="${logoLigaUrl}" style="width:12px;height:12px;">` : ''}
-                <span style="font-size:0.6rem; color:#fbbf24; text-transform:uppercase;">${a.liga}</span>
-            </div>` : '';
-
-        lista.innerHTML += `
-            <tr>
-                <td>
-                    ${ligaHTML}
-                    <strong>${a.evento}</strong>
-                    <br><small style="color:#64748b">${a.mercado}</small>
-                </td>
-                <td><span class="tag ${tagClass}">${tagText}</span></td>
-                <td>$${a.stake}</td>
-                <td style="color:${colorGanancia}; font-weight:bold;">${signo}$${parseFloat(a.ganancia).toFixed(2)}</td>
-                <td><button onclick="window.eliminarApuesta(${a.id})" style="border:none;background:none;cursor:pointer;opacity:0.6;font-size:1.2rem;">🗑️</button></td>
-            </tr>
-        `;
-    });
-};
-
-window.actualizarDashboard = function() {
-    let total = 0, profit = 0;
-    window.historialApuestas.forEach(a => {
-        if (a.estado !== 'void') total += a.stake;
-        profit += a.ganancia;
-    });
-
-    const elInv = document.getElementById('total_invested');
-    const elProf = document.getElementById('net_profit');
-    const elBank = document.getElementById('user_balance');
-
-    if(elInv) elInv.innerText = `$${total.toFixed(2)}`;
-    if(elProf) {
-        elProf.innerText = `$${profit.toFixed(2)}`;
-        elProf.style.color = profit >= 0 ? 'var(--success)' : 'var(--danger)';
-    }
-    if(elBank) elBank.innerText = `$${profit.toFixed(2)}`;
-};
-
-window.eliminarApuesta = function(id) {
-    if(confirm("¿Eliminar apuesta?")) {
-        window.historialApuestas = window.historialApuestas.filter(a => a.id !== id);
-        window.renderizarHistorial();
-        window.actualizarDashboard();
-    }
-};
-
-window.limpiarHistorial = function() {
-    if(confirm("¿Borrar TODO?")) {
-        window.historialApuestas = []; 
-        window.renderizarHistorial(); 
-        window.actualizarDashboard();
-    }
-};
-
-// Inicialización inmediata
-(function init() {
-    window.actualizarDashboard();
-    window.cambiarVista('menu');
-})();
