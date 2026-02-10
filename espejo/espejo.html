@@ -1,5 +1,7 @@
 <div class="espejo-wrapper">
-    <div class="dashboard-stats">
+
+    <div id="view_dashboard" class="dashboard-stats">
+
         <div class="stat-card locked">
             <div class="icon">🔒</div>
             <div class="info">
@@ -39,7 +41,7 @@
         <div class="card form-card">
             <div class="card-header">
                 <h3>🏆 Nuevo Pick</h3>
-                <button class="btn-back" onclick="window.cambiarVista('menu')">⬅</button>
+                <button class="btn-close-modal" onclick="window.cambiarVista('menu')">✖</button>
             </div>
             
             <form id="betForm" onsubmit="event.preventDefault(); window.registrarApuesta();">
@@ -50,7 +52,7 @@
                         <img id="img_liga" src="" class="league-logo" alt="Liga">
                         <select id="sel_liga" class="custom-select" onchange="window.actualizarEquipos()" required>
                             <option value="">Selecciona Liga...</option>
-                            </select>
+                        </select>
                     </div>
                 </div>
 
@@ -132,4 +134,31 @@
             </div>
         </div>
     </div>
+<script>
+    (function() {
+        console.log("⚡ Módulo Espejo cargado directamente.");
+
+        // 1. Verificar si las librerías base están listas
+        if (typeof window.datosDeportivos === 'undefined') {
+            console.warn("Cargando datos.js manualmente...");
+            let s1 = document.createElement('script'); s1.src = 'espejo/datos.js?v=' + Date.now(); document.body.appendChild(s1);
+        }
+        if (typeof window.cambiarVista === 'undefined') {
+             console.warn("Cargando ui.js manualmente...");
+            let s2 = document.createElement('script'); s2.src = 'espejo/ui.js?v=' + Date.now(); document.body.appendChild(s2);
+        }
+        
+        // 2. Esperar un poco y arrancar
+        setTimeout(() => {
+            if (window.initEspejo) {
+                window.initEspejo();
+            } else {
+                // Fallback si initEspejo no existe: arranque manual
+                if (window.cambiarVista) window.cambiarVista('menu');
+                if (window.cargarLigas) window.cargarLigas();
+                if (window.actualizarDashboard) window.actualizarDashboard();
+            }
+        }, 300); // 300ms de gracia
+    })();
+</script>
 </div>

@@ -9,48 +9,41 @@
     --input-bg: #0f172a;
 }
 
-/* RESET AGRESIVO GLOBAL */
+/* --- RESET AGRESIVO GLOBAL --- */
 html, body {
     margin: 0 !important; 
     padding: 0 !important;
-    height: 100vh; width: 100vw;
+    height: 100vh; 
+    width: 100vw;
     overflow: hidden; 
     background-color: var(--bg-dark);
     font-family: 'Segoe UI', sans-serif;
     color: var(--text-light);
 }
 
-/* --- CONTENEDOR PRINCIPAL --- */
+/* --- CONTENEDOR PRINCIPAL (DASHBOARD) --- */
 .espejo-wrapper {
     width: 100%;
     height: 100%;
-    
-    /* Mantenemos el pegado a la izquierda */
     padding: 10px 0 0 10px !important; 
     margin: 0 !important;
-    
     box-sizing: border-box;
     display: flex;
     flex-direction: column;
-    
     align-items: flex-start !important; 
     justify-content: flex-start !important;
-    
     gap: 15px; 
-    overflow-y: auto;
+    overflow-y: auto; 
 }
 
-/* --- 1. STATS (Fila Superior) --- */
+/* --- 1. STATS --- */
 .dashboard-stats {
     display: flex;
     flex-wrap: wrap;
-    gap: 15px; /* Un poco más de espacio entre cajitas para que respiren */
+    gap: 15px;
     width: 100%;
-    
     margin: 0 !important; 
     padding: 0 !important;
-    padding-left: 0 !important;
-    
     justify-content: flex-start;
 }
 
@@ -58,19 +51,13 @@ html, body {
     background: linear-gradient(145deg, #1e293b, #162030);
     border: 1px solid #334155; 
     border-radius: 8px; 
-    
-    /* CAMBIO CLAVE: Ajustar tamaño al contenido */
     width: auto !important;
     min-width: auto !important;
-    flex: 0 0 auto !important; /* No estirar, no encoger */
-    
-    /* Padding justo para que se vea bien pero no sobre espacio */
+    flex: 0 0 auto !important;
     padding: 8px 15px;  
-    
     display: flex; 
     align-items: center; 
     gap: 10px;
-    
     margin-left: 0 !important;
     box-shadow: 0 4px 10px rgba(0,0,0,0.3);
 }
@@ -84,17 +71,14 @@ html, body {
 }
 
 .stat-card .info { display: flex; flex-direction: column; justify-content: center; }
-
 .stat-card small { font-size: 0.65rem; color: #94a3b8; text-transform: uppercase; font-weight: 700; line-height: 1; margin-bottom: 3px; white-space: nowrap; }
 .stat-card span { font-size: 1rem; font-weight: 800; color: #fff; line-height: 1; white-space: nowrap; }
 
 .stat-card.locked span { color: var(--accent-gold); }
 .stat-card.profit span { color: var(--success); }
 .stat-card.wallet span { color: var(--neon-blue); }
-.system-status { display: none; } 
 
-
-/* --- 2. MENÚ DE BOTONES (Fila Inferior) --- */
+/* --- 2. BOTONES MENÚ --- */
 .menu-container {
     display: flex;
     flex-wrap: wrap;
@@ -102,94 +86,59 @@ html, body {
     width: 100%;
     justify-content: flex-start; 
     align-items: flex-start;
-    
     padding: 0 !important; 
     margin: 0 !important;
-    padding-left: 0 !important;
 }
 
 .big-btn {
     background: linear-gradient(145deg, #1e293b, #111827);
     border: 1px solid #334155;
     border-radius: 8px;
-    
-    /* CAMBIO CLAVE: Tamaño ajustado */
     width: auto !important;
     flex: 0 0 auto !important;
-    
-    height: 45px; /* Altura compacta */
-    padding: 0 15px; /* Relleno lateral justo */
-    
+    height: 45px; 
+    padding: 0 15px; 
     cursor: pointer;
     transition: all 0.2s ease;
     box-shadow: 0 4px 10px rgba(0,0,0,0.2);
-    
     display: flex;
     flex-direction: row; 
     align-items: center;
     justify-content: flex-start; 
     text-align: left;
     gap: 10px;
-    
     margin: 0 !important; 
-    margin-left: 0 !important;
 }
 
-.big-btn:hover {
-    transform: translateY(-2px);
-    background: #242e42;
-}
-
+.big-btn:hover { transform: translateY(-2px); background: #242e42; }
 .big-btn .btn-icon { 
-    font-size: 0.9rem; 
-    width: 24px; height: 24px;
+    font-size: 0.9rem; width: 24px; height: 24px;
     display: flex; align-items: center; justify-content: center;
-    border-radius: 50%;
-    background: rgba(255,255,255,0.05);
+    border-radius: 50%; background: rgba(255,255,255,0.05);
 }
+.big-btn h3 { margin: 0; font-size: 0.8rem; color: white; font-weight: 600; line-height: 1; white-space: nowrap; }
 
-.big-btn h3 { 
-    margin: 0; 
-    font-size: 0.8rem; 
-    color: white; 
-    font-weight: 600; 
-    line-height: 1;
-    white-space: nowrap; /* Evita que el texto salte de línea */
-}
-
-/* Colores */
 .btn-add .btn-icon { color: var(--neon-blue); }
 .btn-add:hover { border-color: var(--neon-blue); }
 .btn-hist .btn-icon { color: var(--accent-gold); }
 .btn-hist:hover { border-color: var(--accent-gold); }
 
-
-/* --- 3. VISTAS INTERNAS --- */
+/* --- 3. CONTENIDO Y TARJETAS --- */
 .content-view { 
-    width: 100%; 
-    max-width: none; 
-    display: flex; 
-    flex-direction: column; 
+    width: 100%; max-width: none; 
+    display: flex; flex-direction: column; 
     animation: fadeIn 0.2s ease-in;
-    
     align-items: flex-start; 
-    padding: 0 !important; 
-    margin: 0 !important;
+    padding: 0 !important; margin: 0 !important;
 }
 
 .card {
     background: var(--card-bg); 
-    border-radius: 12px; 
-    border: 1px solid #334155;
-    padding: 15px; 
-    box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+    border-radius: 12px; border: 1px solid #334155;
+    padding: 15px; box-shadow: 0 4px 15px rgba(0,0,0,0.2);
     display: flex; flex-direction: column;
-    /* Dejamos que las tarjetas internas tengan un ancho decente */
-    width: 100%; 
-    max-width: 600px; /* Pero no infinito para que no se vea feo el form */
+    width: 100%; max-width: 600px; 
 }
-
-.form-card { width: 100%; max-width: 350px; }
 
 .card-header {
     display: flex; justify-content: space-between; align-items: center;
@@ -198,12 +147,31 @@ html, body {
 }
 .card-header h3 { margin: 0; color: var(--neon-blue); text-transform: uppercase; font-size: 0.8rem; letter-spacing: 1px; }
 
+/* Botón flecha (para historial) */
 .btn-back {
     background: rgba(255,255,255,0.05); border: 1px solid #475569; color: #fff;
     padding: 4px 8px; border-radius: 4px; cursor: pointer; font-weight: bold; font-size: 0.7rem;
 }
 .btn-back:hover { background: #334155; border-color: #fff; }
 
+/* NUEVO: Botón X Roja (para cerrar modal) */
+.btn-close-modal {
+    background: transparent;
+    border: none;
+    color: var(--danger);
+    font-size: 1.5rem;
+    font-weight: 900;
+    cursor: pointer;
+    line-height: 1;
+    padding: 0 5px;
+    transition: transform 0.2s, color 0.2s;
+}
+.btn-close-modal:hover {
+    transform: scale(1.2) rotate(90deg);
+    color: #ff6b6b;
+}
+
+/* Formularios */
 .input-group { margin-bottom: 10px; width: 100%; }
 .row-group { display: flex; gap: 10px; width: 100%; }
 .row-group .input-group { flex: 1; }
@@ -222,6 +190,25 @@ html, body {
 }
 .btn-registrar:hover { background: #38bdf8; }
 
+/* Selectores Equipos */
+.league-selector {
+    display: flex; align-items: center; gap: 10px; margin-bottom: 15px;
+    background: #0f172a; padding: 5px; border-radius: 8px; border: 1px solid #334155;
+}
+.league-logo { width: 30px; height: 30px; object-fit: contain; opacity: 0; transition: opacity 0.3s; }
+.match-versus-container {
+    display: flex; align-items: center; justify-content: space-between; gap: 5px;
+    margin-bottom: 15px; background: #162030; padding: 10px; border-radius: 10px; border: 1px solid #334155;
+}
+.team-box { flex: 1; display: flex; flex-direction: column; align-items: center; gap: 5px; }
+.team-logo {
+    width: 40px; height: 40px; object-fit: contain; background: rgba(255,255,255,0.05);
+    border-radius: 50%; padding: 2px; opacity: 0; transition: opacity 0.3s;
+}
+.vs-divider { font-weight: 900; color: var(--neon-blue); font-size: 0.9rem; font-style: italic; }
+.team-box select { font-size: 0.75rem; text-align: center; padding: 5px; width: 100%; }
+
+/* Tablas */
 .table-container { overflow-x: auto; width: 100%; }
 .history-table { width: 100%; border-collapse: collapse; min-width: 400px; }
 .history-table th { text-align: left; color: #64748b; padding: 8px; border-bottom: 1px solid #334155; font-size: 0.7rem; text-transform: uppercase; }
@@ -241,67 +228,35 @@ html, body {
 @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
 .animate-fade { animation: fadeIn 0.3s ease-in; }
 
-/* --- ESTILOS NUEVOS PARA SELECTOR DE EQUIPOS --- */
-
-.league-selector {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    margin-bottom: 15px;
-    background: #0f172a;
-    padding: 5px;
-    border-radius: 8px;
-    border: 1px solid #334155;
+/* ==========================================================================
+   --- MODAL CENTRADO DEFINITIVO (OVERLAY) --- 
+   ========================================================================== */
+#view_form {
+    position: fixed !important; 
+    top: 0 !important; left: 0 !important;
+    width: 100vw !important; height: 100vh !important;
+    background-color: rgba(0, 0, 0, 0.85) !important; 
+    backdrop-filter: blur(5px);
+    z-index: 99999 !important;
+    display: flex !important;
+    justify-content: center !important;
+    align-items: center !important;
+    margin: 0 !important; padding: 20px !important;
+    box-sizing: border-box !important;
 }
+#view_form.hidden { display: none !important; }
 
-.league-logo {
-    width: 30px; height: 30px;
-    object-fit: contain;
-    opacity: 0; /* Oculto hasta seleccionar */
-    transition: opacity 0.3s;
+#view_form .card.form-card {
+    width: 100% !important; max-width: 400px !important; 
+    position: relative !important; 
+    top: auto !important; left: auto !important; transform: none !important;
+    margin: 0 !important;
+    background: #1e293b; 
+    border: 1px solid #00e0ff; 
+    box-shadow: 0 10px 40px rgba(0,0,0,0.6); 
+    animation: zoomIn 0.3s cubic-bezier(0.18, 0.89, 0.32, 1.28);
 }
-
-.match-versus-container {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 5px;
-    margin-bottom: 15px;
-    background: #162030;
-    padding: 10px;
-    border-radius: 10px;
-    border: 1px solid #334155;
-}
-
-.team-box {
-    flex: 1;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 5px;
-}
-
-.team-logo {
-    width: 40px; height: 40px;
-    object-fit: contain;
-    background: rgba(255,255,255,0.05);
-    border-radius: 50%;
-    padding: 2px;
-    opacity: 0;
-    transition: opacity 0.3s;
-}
-
-.vs-divider {
-    font-weight: 900;
-    color: var(--neon-blue);
-    font-size: 0.9rem;
-    font-style: italic;
-}
-
-/* Ajuste a los selects dentro de las cajas de equipos */
-.team-box select {
-    font-size: 0.75rem;
-    text-align: center;
-    padding: 5px;
-    width: 100%;
+@keyframes zoomIn {
+    from { opacity: 0; transform: scale(0.9); }
+    to { opacity: 1; transform: scale(1); }
 }

@@ -1,56 +1,76 @@
-const modulosCargados = {};
+// script.js (Global)
+
+const modulosCargados = {}; 
 let seccionActual = 'inicio';
 
 async function cambiarPestana(nombre) {
-    // 1. Actualizar botones visualmente
-    document.querySelectorAll('.nav-btn').forEach(btn => btn.classList.remove('activo'));
-    // Busca el botón que tiene el onclick correspondiente y actívalo (truco simple)
-    const botones = document.querySelectorAll('.nav-btn');
-    if(nombre === 'inicio') botones[0].classList.add('activo');
-    if(nombre === 'escalera') botones[1].classList.add('activo');
-    if(nombre === 'espejo') botones[2].classList.add('activo');
-    if(nombre === 'registro') botones[3].classList.add('activo');
+    console.log("Navegando a:", nombre);
 
-    // 2. Manejo de Vistas
+    // --- 1. VISUAL BOTONES ---
+    document.querySelectorAll('.nav-btn').forEach(btn => btn.classList.remove('activo'));
+    const botones = document.querySelectorAll('.nav-btn');
+    if (nombre === 'inicio') botones[0]?.classList.add('activo');
+    if (nombre === 'escalera') botones[1]?.classList.add('activo');
+    if (nombre === 'espejo') botones[2]?.classList.add('activo');
+    if (nombre === 'registro') botones[3]?.classList.add('activo');
+
+    // --- 2. VISUAL VISTAS ---
     const vistaInicio = document.getElementById('vista-inicio');
     const vistaDinamica = document.getElementById('vista-dinamica');
-    const contenedor = document.getElementById('contenido-modulo');
+    const contenedor = document.getElementById('contenido-modulo'); 
 
+    // MODO INICIO
     if (nombre === 'inicio') {
-        vistaDinamica.classList.remove('activa');
-        setTimeout(() => {
-            vistaInicio.classList.add('activa');
-        }, 100); // Pequeño delay para la transición
+        if (vistaDinamica) vistaDinamica.style.display = 'none';
+        if (vistaInicio) vistaInicio.style.display = 'block';
         seccionActual = 'inicio';
         return;
-    } 
-    
-    // Si vamos a una sección dinámica (Escalera, Espejo, etc.)
-    vistaInicio.classList.remove('activa');
-    vistaDinamica.classList.add('activa');
+    }
 
-    // Evitar recargar si ya estamos en esa sección y ya cargó
-    if (seccionActual === nombre && contenedor.innerHTML.length > 50) return;
+    // MODO DINÁMICO
+    if (vistaInicio) vistaInicio.style.display = 'none';
+    if (vistaDinamica) vistaDinamica.style.display = 'block';
 
-    // 3. Cargar contenido dinámico
-    try {
-        // Spinner de carga suave
-        if(seccionActual !== nombre) {
-            contenedor.innerHTML = '<div style="text-align:center; margin-top:50px; opacity:0.6">Cargando...</div>';
+    // SI YA ESTAMOS AQUÍ Y YA CARGÓ, NO RECARGAR
+    if (seccionActual === nombre && contenedor.innerHTML.trim().length > 50) {
+        // Reiniciar lógica específica si es necesario
+        if (nombre === 'espejo' && typeof window.initEspejo === 'function') {
+            window.initEspejo();
         }
-        
-        seccionActual = nombre;
+        return;
+    }
 
+    // --- 3. CARGA ---
+    try {
+        seccionActual = nombre;
+        contenedor.innerHTML = '<div style="display:flex;height:300px;align-items:center;justify-content:center;color:#fff;">Cargando...</div>';
+
+        // Fetch HTML
         const response = await fetch(`${nombre}/${nombre}.html?v=${Date.now()}`);
-        if (!response.ok) throw new Error("Archivo no encontrado");
+        if (!response.ok) throw new Error("Error cargando HTML");
         const html = await response.text();
-        
+
         // Inyectar HTML
         contenedor.innerHTML = html;
 
-        // 4. Cargar JS específico
+        // --- 4. INICIAR LÓGICA ---
+        
+        // === ESPEJO ===
+        if (nombre === 'espejo') {
+            // Esperamos 100ms para asegurar que el navegador renderizó el HTML
+            setTimeout(() => {
+                if (typeof window.initEspejo === 'function') {
+                    window.initEspejo();
+                } else {
+                    console.error("ERROR: initEspejo no encontrado. Verifica espejo.js");
+                    alert("Error: Recarga la página (Ctrl + F5)");
+                }
+            }, 100);
+        }
+
+        // === ESCALERA ===
         if (nombre === 'escalera') {
-            if (!modulosCargados['escalera']) {
+             if (!modulosCargados['escalera']) {
                 const script = document.createElement('script');
                 script.src = `escalera/escalera.js?v=${Date.now()}`;
                 script.onload = () => { if(typeof initEscalera === 'function') initEscalera(); };
@@ -60,9 +80,9 @@ async function cambiarPestana(nombre) {
                 if(typeof initEscalera === 'function') initEscalera();
             }
         }
-        // (Aquí agregarás los if para espejo y registro después)
 
-    } catch (error) {
-        contenedor.innerHTML = `<p style="text-align:center; color:red">Error: ${error.message}</p>`;
+    } catch (e) {
+        console.error(e);
+        contenedor.innerHTML = `<p style="color:red;text-align:center;">Error: ${e.message}</p>`;
     }
 }

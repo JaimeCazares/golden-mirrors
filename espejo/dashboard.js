@@ -1,14 +1,46 @@
 // espejo/dashboard.js
-window.actualizarDashboard = function() {
-    let total = 0, profit = 0;
 
-    historialApuestas.forEach(a => {
-        if (a.estado !== 'void') total += a.stake;
-        profit += a.ganancia;
+window.actualizarDashboard = function() {
+    console.log("Actualizando dashboard...");
+
+    // Elementos del DOM
+    const elTotal = document.getElementById('total_invested');
+    const elProfit = document.getElementById('net_profit');
+    const elBalance = document.getElementById('user_balance');
+
+    if (!elTotal || !elProfit || !elBalance) return;
+
+    let totalInvested = 0;
+    let netProfit = 0;
+
+    // Recorrer historial global
+    const apuestas = window.historialApuestas || [];
+    
+    apuestas.forEach(bet => {
+        // Sumar al invertido solo si no es anulada
+        if (bet.estado !== 'void' && bet.estado !== 'pending') {
+            totalInvested += bet.stake;
+        }
+        // Sumar ganancia/pérdida (ya viene con signo negativo si se perdió)
+        if (bet.estado === 'won' || bet.estado === 'lost') {
+            netProfit += bet.ganancia;
+        }
     });
 
-    total_invested.textContent = `$${total.toFixed(2)}`;
-    net_profit.textContent = `$${profit.toFixed(2)}`;
-    net_profit.style.color = profit >= 0 ? 'var(--success)' : 'var(--danger)';
-    user_balance.textContent = `$${profit.toFixed(2)}`;
+    // Formatear moneda
+    const fmt = (num) => `$${num.toFixed(2)}`;
+
+    elTotal.textContent = fmt(totalInvested);
+    elProfit.textContent = fmt(netProfit);
+    
+    // Color según ganancia
+    if (netProfit >= 0) {
+        elProfit.style.color = 'var(--success)';
+    } else {
+        elProfit.style.color = 'var(--danger)';
+    }
+
+    // Balance (Bank) simulado (base + profit)
+    // Aquí podrías sumar un bank inicial si quisieras
+    elBalance.textContent = fmt(netProfit); 
 };

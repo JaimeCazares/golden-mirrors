@@ -22,7 +22,7 @@ window.renderizarHistorial = function() {
         <tr>
           <td>
             ${logoLiga ? `<img src="${logoLiga}" style="width:12px">` : ''}
-            <strong>${a.evento}</strong><br>
+            <strong>${a.match}</strong><br>
             <small>${a.mercado}</small>
           </td>
           <td>$${a.stake}</td>
