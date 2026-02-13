@@ -56,17 +56,44 @@ async function cambiarPestana(nombre) {
         // --- 4. INICIAR LÓGICA ---
         
         // === ESPEJO ===
-        if (nombre === 'espejo') {
-            // Esperamos 100ms para asegurar que el navegador renderizó el HTML
-            setTimeout(() => {
-                if (typeof window.initEspejo === 'function') {
-                    window.initEspejo();
-                } else {
-                    console.error("ERROR: initEspejo no encontrado. Verifica espejo.js");
-                    alert("Error: Recarga la página (Ctrl + F5)");
+if (nombre === 'espejo') {
+
+    if (!modulosCargados['espejo']) {
+
+        const scripts = [
+            'espejo/datos.js',
+            'espejo/ui.js',
+            'espejo/apuestas.js',
+            'espejo/historial.js',
+            'espejo/dashboard.js',
+            'espejo/espejo.js'
+        ];
+
+        let cargados = 0;
+
+        scripts.forEach(src => {
+            const s = document.createElement('script');
+            s.src = `${src}?v=${Date.now()}`;
+            s.onload = () => {
+                cargados++;
+                if (cargados === scripts.length) {
+                    if (typeof window.initEspejo === 'function') {
+                        window.initEspejo();
+                    }
                 }
-            }, 100);
+            };
+            document.body.appendChild(s);
+        });
+
+        modulosCargados['espejo'] = true;
+
+    } else {
+        if (typeof window.initEspejo === 'function') {
+            window.initEspejo();
         }
+    }
+}
+
 
         // === ESCALERA ===
         if (nombre === 'escalera') {

@@ -9,16 +9,9 @@
     --input-bg: #0f172a;
 }
 
-/* --- RESET AGRESIVO GLOBAL --- */
-html, body {
-    margin: 0 !important; 
-    padding: 0 !important;
-    height: 100vh; 
-    width: 100vw;
-    overflow: hidden; 
-    background-color: var(--bg-dark);
-    font-family: 'Segoe UI', sans-serif;
-    color: var(--text-light);
+.espejo-wrapper {
+    width: 100%;
+    min-height: 100vh;
 }
 
 /* --- CONTENEDOR PRINCIPAL (DASHBOARD) --- */
@@ -232,19 +225,26 @@ html, body {
    --- MODAL CENTRADO DEFINITIVO (OVERLAY) --- 
    ========================================================================== */
 #view_form {
-    position: fixed !important; 
-    top: 0 !important; left: 0 !important;
-    width: 100vw !important; height: 100vh !important;
-    background-color: rgba(0, 0, 0, 0.85) !important; 
+    position: fixed; 
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background-color: rgba(0, 0, 0, 0.85);
     backdrop-filter: blur(5px);
-    z-index: 99999 !important;
-    display: flex !important;
-    justify-content: center !important;
-    align-items: center !important;
-    margin: 0 !important; padding: 20px !important;
-    box-sizing: border-box !important;
+    z-index: 99999;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: 0;
+    padding: 20px;
+    box-sizing: border-box;
 }
-#view_form.hidden { display: none !important; }
+
+#view_form.hidden {
+    display: none;
+}
+
 
 #view_form .card.form-card {
     width: 100% !important; max-width: 400px !important; 
