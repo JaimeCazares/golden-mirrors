@@ -1,0 +1,92 @@
+/* espejo/espejo-ui.css */
+/* --- COMPONENTES VISUALES (Cards, Modales, Tablas) --- */
+
+.content-view { 
+    width: 100%; max-width: none; 
+    display: flex; flex-direction: column; 
+    animation: fadeIn 0.2s ease-in;
+    align-items: flex-start; 
+    padding: 0 !important; margin: 0 !important;
+}
+
+.card {
+    background: var(--card-bg); 
+    border-radius: 12px; border: 1px solid #334155;
+    padding: 15px; box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+    display: flex; flex-direction: column;
+    width: 100%; max-width: 600px; 
+}
+
+.card-header {
+    display: flex; justify-content: space-between; align-items: center;
+    margin-bottom: 15px; border-bottom: 1px solid #334155; padding-bottom: 8px;
+    width: 100%;
+}
+.card-header h3 { margin: 0; color: var(--neon-blue); text-transform: uppercase; font-size: 0.8rem; letter-spacing: 1px; }
+
+/* Botones UI */
+.btn-back {
+    background: rgba(255,255,255,0.05); border: 1px solid #475569; color: #fff;
+    padding: 4px 8px; border-radius: 4px; cursor: pointer; font-weight: bold; font-size: 0.7rem;
+}
+.btn-back:hover { background: #334155; border-color: #fff; }
+
+.btn-close-modal {
+    background: transparent;
+    border: none;
+    color: var(--danger);
+    font-size: 1.5rem;
+    font-weight: 900;
+    cursor: pointer;
+    line-height: 1;
+    padding: 0 5px;
+    transition: transform 0.2s, color 0.2s;
+}
+.btn-close-modal:hover { transform: scale(1.2) rotate(90deg); color: #ff6b6b; }
+
+.btn-sm { background: transparent; border: 1px solid #ef4444; color: #ef4444; padding: 3px 6px; border-radius: 4px; cursor: pointer; font-size: 0.65rem; }
+.btn-sm:hover { background: #ef4444; color: white; }
+
+/* Tablas e Historial */
+.table-container { overflow-x: auto; width: 100%; }
+.history-table { width: 100%; border-collapse: collapse; min-width: 400px; }
+.history-table th { text-align: left; color: #64748b; padding: 8px; border-bottom: 1px solid #334155; font-size: 0.7rem; text-transform: uppercase; }
+.history-table td { padding: 8px; border-bottom: 1px solid #1e293b; font-size: 0.8rem; }
+
+.tag { padding: 3px 6px; border-radius: 10px; font-size: 0.65rem; font-weight: bold; }
+.tag.won { color: #fff; background: var(--success); }
+.tag.lost { color: #fff; background: var(--danger); }
+.tag.pending { color: #fff; background: #f59e0b; }
+.tag.void { color: #fff; background: #64748b; }
+
+.empty-state { text-align: center; color: #64748b; padding: 20px; margin-top: 10px; font-style: italic; font-size: 0.8rem; }
+
+/* Utilidades y Animaciones */
+.hidden { display: none !important; }
+@keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+.animate-fade { animation: fadeIn 0.3s ease-in; }
+
+/* --- MODAL CENTRADO (OVERLAY) --- */
+#view_form {
+    position: fixed; top: 0; left: 0;
+    width: 100vw; height: 100vh;
+    background-color: rgba(0, 0, 0, 0.85);
+    backdrop-filter: blur(5px);
+    z-index: 99999;
+    display: flex; justify-content: center; align-items: center;
+    margin: 0; padding: 20px; box-sizing: border-box;
+}
+#view_form.hidden { display: none; }
+
+#view_form .card.form-card {
+    width: 100% !important; max-width: 400px !important; 
+    position: relative !important; top: auto !important; left: auto !important; transform: none !important;
+    margin: 0 !important;
+    background: #1e293b; border: 1px solid #00e0ff; 
+    box-shadow: 0 10px 40px rgba(0,0,0,0.6); 
+    animation: zoomIn 0.3s cubic-bezier(0.18, 0.89, 0.32, 1.28);
+}
+@keyframes zoomIn {
+    from { opacity: 0; transform: scale(0.9); }
+    to { opacity: 1; transform: scale(1); }
+}
