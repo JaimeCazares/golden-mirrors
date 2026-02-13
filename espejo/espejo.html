@@ -1,7 +1,5 @@
 <div class="espejo-wrapper">
-
     <div id="view_dashboard" class="dashboard-stats">
-
         <div class="stat-card locked">
             <div class="icon">🔒</div>
             <div class="info">
@@ -47,14 +45,63 @@
             <form id="betForm" onsubmit="event.preventDefault(); window.registrarApuesta();">
                 
                 <div class="input-group">
-                    <label>Competición</label>
-                    <div class="league-selector">
-                        <img id="img_liga" src="" class="league-logo" alt="Liga">
-                        <select id="sel_liga" class="custom-select" onchange="window.actualizarEquipos()" required>
-                            <option value="">Selecciona Liga...</option>
-                        </select>
-                    </div>
-                </div>
+    <label>Competición</label>
+    
+    <div class="custom-select-wrapper" id="leagueSelectWrapper">
+        <select id="sel_liga" class="hidden-native-select" required>
+            <option value="">Selecciona Liga...</option>
+            <option value="champions">Champions League</option>
+            <option value="laliga">La Liga</option>
+            <option value="premier">Premier League</option>
+            </select>
+
+        <div class="custom-select-trigger">
+            <div class="selected-content" id="triggerContent">
+                <span style="color: #94a3b8; font-weight: normal;">Selecciona Liga...</span>
+            </div>
+            <span class="arrow">▼</span>
+        </div>
+
+        <div class="custom-options">
+            
+            <div class="custom-option" data-value="champions">
+                <img src="https://cdn.mos.cms.futurecdn.net/c6nfDmk7nEFkdMpAQYzEK4-1000-80.jpg" alt="" class="banner-img">
+                <span class="banner-text">Champions League</span>
+            </div>
+
+            <div class="custom-option" data-value="europa">
+                <img src="https://img.uefa.com/imgml/uefacom/uel/social/og-default.jpg" alt="" class="banner-img">
+                <span class="banner-text">Europa League</span>
+            </div>
+
+            <div class="custom-option" data-value="conference">
+                <img src="https://m.media-amazon.com/images/S/pv-target-images/9dad5e5640a6fa4801ebca7a13bb419fe8f88542487f6f5563f84083d6e07f46.jpg" alt="" class="banner-img">
+                <span class="banner-text">Conference League</span>
+            </div>
+
+            <div class="custom-option" data-value="premier">
+                <img src="https://www.monotype.com/sites/default/files/2019-10/premierleague-hero-new.png" alt="" class="banner-img">
+                <span class="banner-text">Premier League</span>
+            </div>
+
+            <div class="custom-option" data-value="laliga">
+                <img src="https://crystalpng.com/wp-content/uploads/2023/06/La-liga-new-logo-red.png" alt="" class="banner-img">
+                <span class="banner-text">La Liga</span>
+            </div>
+
+            <div class="custom-option" data-value="bundesliga">
+                <img src="https://logowik.com/content/uploads/blog/t_bundesliga-football-clubs-and-logos3600.logowik.com.webp" alt="" class="banner-img">
+                <span class="banner-text">Bundesliga</span>
+            </div>
+
+            <div class="custom-option" data-value="seriea">
+                <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/a/aa/Serie_A.svg/1920px-Serie_A.svg.png" alt="" class="banner-img">
+                <span class="banner-text">Serie A</span>
+            </div>
+            
+            </div>
+    </div>
+</div>
 
                 <label style="display:block; font-size:0.7rem; color:#94a3b8; margin-bottom:4px;">Encuentro</label>
                 <div class="match-versus-container">
@@ -134,31 +181,31 @@
             </div>
         </div>
     </div>
-<script>
-    (function() {
-        console.log("⚡ Módulo Espejo cargado directamente.");
+    
+    <script>
+        (function() {
+            console.log("⚡ Módulo Espejo cargado directamente.");
 
-        // 1. Verificar si las librerías base están listas
-        if (typeof window.datosDeportivos === 'undefined') {
-            console.warn("Cargando datos.js manualmente...");
-            let s1 = document.createElement('script'); s1.src = 'espejo/datos.js?v=' + Date.now(); document.body.appendChild(s1);
-        }
-        if (typeof window.cambiarVista === 'undefined') {
-             console.warn("Cargando ui.js manualmente...");
-            let s2 = document.createElement('script'); s2.src = 'espejo/ui.js?v=' + Date.now(); document.body.appendChild(s2);
-        }
-        
-        // 2. Esperar un poco y arrancar
-        setTimeout(() => {
-            if (window.initEspejo) {
-                window.initEspejo();
-            } else {
-                // Fallback si initEspejo no existe: arranque manual
-                if (window.cambiarVista) window.cambiarVista('menu');
-                if (window.cargarLigas) window.cargarLigas();
-                if (window.actualizarDashboard) window.actualizarDashboard();
+            // 1. Verificar si las librerías base están listas
+            if (typeof window.datosDeportivos === 'undefined') {
+                console.warn("Cargando datos.js manualmente...");
+                let s1 = document.createElement('script'); s1.src = 'espejo/datos.js?v=' + Date.now(); document.body.appendChild(s1);
             }
-        }, 300); // 300ms de gracia
-    })();
-</script>
+            if (typeof window.cambiarVista === 'undefined') {
+                 console.warn("Cargando ui.js manualmente...");
+                let s2 = document.createElement('script'); s2.src = 'espejo/ui.js?v=' + Date.now(); document.body.appendChild(s2);
+            }
+            
+            // 2. Esperar un poco y arrancar
+            setTimeout(() => {
+                if (window.initEspejo) {
+                    window.initEspejo();
+                } else {
+                    if (window.cambiarVista) window.cambiarVista('menu');
+                    if (window.cargarLigas) window.cargarLigas();
+                    if (window.actualizarDashboard) window.actualizarDashboard();
+                }
+            }, 300); 
+        })();
+    </script>
 </div>

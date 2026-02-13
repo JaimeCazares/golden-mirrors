@@ -1,3 +1,5 @@
+/* espejo/espejo.css */
+
 :root {
     --bg-dark: #0f172a;
     --card-bg: #1e293b;
@@ -147,7 +149,7 @@
 }
 .btn-back:hover { background: #334155; border-color: #fff; }
 
-/* NUEVO: Botón X Roja (para cerrar modal) */
+/* Botón X Roja (para cerrar modal) */
 .btn-close-modal {
     background: transparent;
     border: none;
@@ -189,6 +191,7 @@
     background: #0f172a; padding: 5px; border-radius: 8px; border: 1px solid #334155;
 }
 .league-logo { width: 30px; height: 30px; object-fit: contain; opacity: 0; transition: opacity 0.3s; }
+
 .match-versus-container {
     display: flex; align-items: center; justify-content: space-between; gap: 5px;
     margin-bottom: 15px; background: #162030; padding: 10px; border-radius: 10px; border: 1px solid #334155;
@@ -245,7 +248,6 @@
     display: none;
 }
 
-
 #view_form .card.form-card {
     width: 100% !important; max-width: 400px !important; 
     position: relative !important; 
@@ -259,4 +261,134 @@
 @keyframes zoomIn {
     from { opacity: 0; transform: scale(0.9); }
     to { opacity: 1; transform: scale(1); }
+}
+
+/* ==========================================================================
+   SELECTOR DE LIGA TIPO BANNER (CORREGIDO)
+   ========================================================================== */
+
+/* 1. Ocultar el select nativo que te está arruinando el diseño */
+.hidden-native-select {
+    display: none !important; /* Esto elimina la lista blanca fea */
+}
+
+.custom-select-wrapper {
+    position: relative;
+    user-select: none;
+    width: 100%;
+    margin-bottom: 10px;
+}
+
+/* --- EL BOTÓN PRINCIPAL (TRIGGER) --- */
+.custom-select-trigger {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center; /* Centra el texto */
+    height: 55px; /* Altura fija para que se vea bien la imagen */
+    background: var(--input-bg);
+    border: 1px solid #334155;
+    border-radius: 8px;
+    cursor: pointer;
+    overflow: hidden; /* Corta la imagen si se sale */
+    transition: all 0.2s;
+}
+
+.custom-select-trigger:hover {
+    border-color: var(--neon-blue);
+    box-shadow: 0 0 10px rgba(0, 224, 255, 0.2);
+}
+
+/* Contenedor interno del trigger */
+.selected-content {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+}
+
+/* --- ESTILOS PARA LA IMAGEN (MODO BANNER) --- */
+/* Esta clase se usa tanto en las opciones como en el trigger seleccionado */
+.banner-img {
+    position: absolute;
+    top: 0; left: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover; /* CLAVE: Rellena todo el cuadro */
+    object-position: center;
+    z-index: 0; /* Se va al fondo */
+    filter: brightness(0.4); /* Oscurece la imagen para que se lea el texto */
+}
+
+/* Texto encima de la imagen */
+.banner-text {
+    position: relative;
+    z-index: 1; /* Encima de la imagen */
+    color: #fff;
+    font-weight: 800;
+    text-transform: uppercase;
+    font-size: 1rem;
+    letter-spacing: 1px;
+    text-shadow: 0 2px 4px rgba(0,0,0,0.9); /* Sombra fuerte para leerse bien */
+}
+
+/* Flechita */
+.arrow {
+    position: absolute;
+    right: 15px;
+    z-index: 2;
+    color: #fff;
+    font-size: 0.8rem;
+    pointer-events: none;
+}
+
+/* --- LISTA DESPLEGABLE --- */
+.custom-options {
+    position: absolute;
+    top: 105%;
+    left: 0;
+    right: 0;
+    background: var(--card-bg);
+    border: 1px solid var(--neon-blue);
+    border-radius: 8px;
+    z-index: 1000; /* Muy alto para tapar todo lo demás */
+    display: none; /* Oculto por defecto */
+    max-height: 300px;
+    overflow-y: auto;
+    box-shadow: 0 10px 40px rgba(0,0,0,0.9);
+}
+
+/* Mostrar cuando está abierto */
+.custom-select-wrapper.open .custom-options {
+    display: block;
+    animation: slideDown 0.2s ease-out;
+}
+
+@keyframes slideDown {
+    from { opacity: 0; transform: translateY(-10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+/* CADA OPCIÓN INDIVIDUAL */
+.custom-option {
+    position: relative;
+    height: 60px; /* Altura generosa */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    border-bottom: 1px solid rgba(255,255,255,0.1);
+    overflow: hidden;
+}
+
+.custom-option:hover .banner-img {
+    filter: brightness(0.6); /* Se ilumina al pasar el mouse */
+    transform: scale(1.05); /* Zoom sutil */
+    transition: 0.3s;
+}
+
+.custom-option:hover .banner-text {
+    color: var(--neon-blue);
 }
