@@ -1,0 +1,37 @@
+<div class="card-container gastos-wrapper">
+    <div class="gastos-header">
+        <div class="saldo-group">
+            <div class="saldo-badge efectivo">
+                Efectivo: <span id="saldo-efectivo">$0</span>
+            </div>
+            <button class="btn-icon-only" onclick="editarSaldo('efectivo')" title="Editar saldo">
+                ✏️
+            </button>
+        </div>
+
+        <div class="saldo-group">
+            <div class="saldo-badge debito">
+                Débito: <span id="saldo-debito">$0</span>
+            </div>
+            <button class="btn-icon-only" onclick="editarSaldo('debito')" title="Editar saldo">
+                ✏️
+            </button>
+        </div>
+    </div>
+
+    <div class="gastos-form">
+        <input type="text" id="gasto-desc" placeholder="¿En qué gastaste?">
+        <input type="number" id="gasto-monto" placeholder="Cantidad $">
+        
+        <div class="form-group-inline">
+            <select id="gasto-metodo">
+                <option value="efectivo">Efectivo</option>
+                <option value="debito">Débito</option>
+            </select>
+            <button class="btn-add-gasto" onclick="procesarGasto()">AÑADIR</button>
+        </div>
+    </div>
+
+    <div class="gastos-historial" id="lista-gastos">
+        </div>
+</div>

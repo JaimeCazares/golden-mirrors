@@ -1,0 +1,123 @@
+/* Contenedor Principal */
+.gastos-wrapper {
+    background: #0b111e;
+    border: 2px solid #1e293b;
+    border-radius: 16px;
+    padding: 20px;
+    box-shadow: 0 0 20px rgba(0, 150, 255, 0.15);
+    width: 100%;
+    max-width: 600px;
+    margin-top: 10px;
+}
+
+/* Header de Saldos */
+.gastos-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+/* Grupo de saldo (Badge + Lápiz) */
+.saldo-group {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    background: rgba(255, 255, 255, 0.03); /* Fondo sutil para unirlo */
+    padding: 5px 10px;
+    border-radius: 10px;
+    border: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.saldo-badge {
+    font-size: 14px;
+    font-weight: bold;
+}
+
+.saldo-badge.efectivo { color: #00ff88; }
+.saldo-badge.debito { color: #00d9ff; }
+
+/* El botón invisible (solo muestra el lápiz) */
+.btn-icon-only {
+    background: transparent;
+    border: none;
+    font-size: 16px;
+    cursor: pointer;
+    padding: 0 5px;
+    opacity: 0.6;
+    transition: all 0.2s;
+}
+
+.btn-icon-only:hover {
+    opacity: 1;
+    transform: scale(1.2);
+    filter: drop-shadow(0 0 5px rgba(255, 204, 0, 0.8));
+}
+
+/* Formulario e Inputs */
+.gastos-form {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+}
+
+.gastos-form input, 
+.gastos-form select {
+    background: #162031;
+    border: 1px solid #334155;
+    color: white;
+    padding: 10px 15px;
+    border-radius: 8px;
+    font-size: 14px;
+    outline: none;
+    flex: 1; 
+}
+
+.gastos-form input:focus, 
+.gastos-form select:focus {
+    border-color: #00d9ff;
+    box-shadow: 0 0 8px rgba(0, 217, 255, 0.2);
+}
+
+/* Contenedor para Select y Botón (para que queden juntos) */
+.form-group-inline {
+    display: flex;
+    gap: 10px;
+    flex: 1;
+    min-width: 200px; /* Evita que se aplasten mucho */
+}
+
+/* Botón Añadir */
+.btn-add-gasto {
+    background: #ffcc00;
+    color: #000;
+    font-weight: 800;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 8px;
+    cursor: pointer;
+    box-shadow: 0 0 10px rgba(255, 204, 0, 0.4);
+    transition: transform 0.2s;
+}
+
+.btn-add-gasto:active {
+    transform: scale(0.95);
+}
+
+/* Historial */
+#lista-gastos {
+    margin-top: 15px;
+    max-height: 150px;
+    overflow-y: auto;
+    border-top: 1px solid #1e293b;
+    padding-top: 5px;
+}
+
+.gasto-item {
+    display: flex;
+    justify-content: space-between;
+    padding: 8px 5px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+    font-size: 13px;
+    color: #cbd5e1;
+}

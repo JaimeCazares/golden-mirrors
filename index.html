@@ -12,14 +12,16 @@
   <link rel="stylesheet" href="espejo/css/espejo-layout.css">
   <link rel="stylesheet" href="espejo/css/espejo-ui.css">
   <link rel="stylesheet" href="espejo/css/espejo-selector.css">
+  <link rel="stylesheet" href="gastos/gastos.css?v=1.0">
 </head>
 
 <body>
 
-  <section id="vista-inicio" class="vista-principal activa">
-      <div id="kg-wrapper"></div>
-      <div id="deuda-wrapper"></div>
-  </section>
+  <section id="vista-inicio" class="vista-principal activa" style="display: flex; flex-direction: column; gap: 70px;">
+    <div id="kg-wrapper"></div>
+    <div id="deuda-wrapper"></div>
+    <div id="gastos-container"></div>
+</section>
 
   <section id="vista-dinamica" class="vista-principal">
       <div id="contenido-modulo">
@@ -77,7 +79,25 @@
         s.onload = () => { if (typeof initDeuda === 'function') initDeuda() }; 
         document.body.appendChild(s);
     });
+
+    // 3. Carga de GASTOS
+fetch('gastos/gastos.html').then(r => r.text()).then(h => {
+    document.getElementById('gastos-container').innerHTML = h;
+    
+    // Cargar script de GASTOS
+    let s = document.createElement('script'); 
+    s.src = 'gastos/gastos.js?v=' + Date.now();
+    s.onload = () => { 
+        if (typeof initGastos === 'function') initGastos(); 
+    }; 
+    document.body.appendChild(s);
+});
+
   </script>
+
+  
+
+    <script src="gastos/gastos.js"></script>
 
 </body>
 </html>
