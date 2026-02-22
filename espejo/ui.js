@@ -52,49 +52,62 @@ window.cargarLigas = function() {
 
 // Actualizar los equipos cuando cambia la liga
 window.actualizarEquipos = function() {
+    console.log("--- 🕵️‍♂️ INICIANDO RASTREO DE EQUIPOS ---");
+    
     const selLiga = document.getElementById('sel_liga');
     const selLocal = document.getElementById('sel_local');
     const selVisita = document.getElementById('sel_visitante');
-    
     const imgLiga = document.getElementById('img_liga');
     const imgLocal = document.getElementById('img_local');
     const imgVisit = document.getElementById('img_visit');
 
+    console.log("1. Lo que el código cree que seleccionaste:", selLiga.value);
+
     // Resetear selects y logos
     selLocal.innerHTML = '<option value="">Local</option>';
     selVisita.innerHTML = '<option value="">Visita</option>';
-    imgLocal.style.opacity = '0';
-    imgVisit.style.opacity = '0';
-    imgLiga.style.opacity = '0';
-    imgLiga.src = '';
+    if(imgLocal) imgLocal.style.opacity = '0';
+    if(imgVisit) imgVisit.style.opacity = '0';
+    if(imgLiga) { imgLiga.style.opacity = '0'; imgLiga.src = ''; }
 
     const ligaSeleccionada = selLiga.value;
 
-    if (ligaSeleccionada && window.datosDeportivos[ligaSeleccionada]) {
-        const datosLiga = window.datosDeportivos[ligaSeleccionada];
-
-        // 1. Poner logo de la liga
-        if (datosLiga.logo) {
-            imgLiga.src = datosLiga.logo;
-            imgLiga.style.opacity = '1';
-        }
-
-        // 2. Llenar equipos (ordenados alfabéticamente)
-        const equiposOrdenados = [...datosLiga.equipos].sort((a, b) => a.nombre.localeCompare(b.nombre));
-
-        equiposOrdenados.forEach(equipo => {
-            // Crear opción para select LOCAL
-            const optLocal = document.createElement('option');
-            optLocal.value = equipo.nombre; // Usamos el nombre como valor
-            optLocal.textContent = equipo.nombre;
-            optLocal.setAttribute('data-logo', equipo.logo || ''); // Guardamos el logo en un atributo data
-            selLocal.appendChild(optLocal);
-
-            // Clonar opción para select VISITA
-            const optVisita = optLocal.cloneNode(true);
-            selVisita.appendChild(optVisita);
-        });
+    // VALIDACIÓN 1: ¿Está vacío?
+    if (!ligaSeleccionada) {
+        console.error("❌ ERROR: El valor de la liga está vacío. El 'data-value' de tu HTML NO coincide con el 'value' del select.");
+        return; 
     }
+
+    // VALIDACIÓN 2: ¿Existe en datos.js?
+    if (!window.datosDeportivos[ligaSeleccionada]) {
+        console.error(`❌ ERROR: El texto "${ligaSeleccionada}" no existe en tu archivo datos.js`);
+        console.log("Las ligas que SÍ existen en datos.js son:", Object.keys(window.datosDeportivos));
+        return;
+    }
+
+    console.log("✅ Liga encontrada correctamente. Cargando", window.datosDeportivos[ligaSeleccionada].equipos.length, "equipos...");
+
+    const datosLiga = window.datosDeportivos[ligaSeleccionada];
+
+    if (datosLiga.logo && imgLiga) {
+        imgLiga.src = datosLiga.logo;
+        imgLiga.style.opacity = '1';
+    }
+
+    const equiposOrdenados = [...datosLiga.equipos].sort((a, b) => a.nombre.localeCompare(b.nombre));
+
+    equiposOrdenados.forEach(equipo => {
+        const optLocal = document.createElement('option');
+        optLocal.value = equipo.nombre;
+        optLocal.textContent = equipo.nombre;
+        optLocal.setAttribute('data-logo', equipo.logo || '');
+        selLocal.appendChild(optLocal);
+
+        const optVisita = optLocal.cloneNode(true);
+        selVisita.appendChild(optVisita);
+    });
+    
+    console.log("✅ Equipos cargados y listos en pantalla.");
 };
 
 // Actualizar el logo del equipo seleccionado
