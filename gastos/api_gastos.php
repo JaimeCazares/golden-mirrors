@@ -1,15 +1,11 @@
 <?php
-// Muestra errores si los hay (solo para pruebas)
 error_reporting(E_ALL);
 ini_set('display_errors', 1);
 
 header('Content-Type: application/json');
 
-// IMPORTANTE: Verifica que esta ruta sea correcta. 
-// Si conexion.php está en la carpeta raíz (GOLDEN), esto está bien.
 include '../conexion.php';
 
-// Verificamos si la variable de conexión se llama $conn, $conexion o $mysqli
 if (!isset($conn)) {
     if (isset($conexion)) $conn = $conexion;
     elseif (isset($mysqli)) $conn = $mysqli;
@@ -28,7 +24,6 @@ $accion = $_GET['accion'] ?? '';
 if ($accion == 'obtener') {
     $datos = ['saldos' => [], 'historial' => []];
 
-    // Sacar saldos
     $res = $conn->query("SELECT * FROM saldos");
     if ($res) {
         while ($row = $res->fetch_assoc()) {
@@ -36,7 +31,6 @@ if ($accion == 'obtener') {
         }
     }
 
-    // Sacar historial
     $res_hist = $conn->query("SELECT * FROM gastos_historial ORDER BY fecha DESC LIMIT 20");
     if ($res_hist) {
         while ($row = $res_hist->fetch_assoc()) {
@@ -48,23 +42,36 @@ if ($accion == 'obtener') {
     exit;
 }
 
-// Leer el cuerpo JSON para las siguientes acciones
 $inputJSON = file_get_contents('php://input');
 $data = json_decode($inputJSON, true);
 
-// 2. REGISTRAR GASTO
+// 2. REGISTRAR MOVIMIENTO
 if ($accion == 'registrar' && $data) {
     $desc = $conn->real_escape_string($data['descripcion']);
     $monto = floatval($data['monto']);
     $metodo = $conn->real_escape_string($data['metodo']);
+    $tipo = $conn->real_escape_string($data['tipo'] ?? 'gasto');
 
     // Insertar historial
-    $conn->query("INSERT INTO gastos_historial (descripcion, monto, metodo) VALUES ('$desc', $monto, '$metodo')");
+    $conn->query("INSERT INTO gastos_historial (descripcion, monto, metodo, tipo) VALUES ('$desc', $monto, '$metodo', '$tipo')");
+    $nuevo_id = $conn->insert_id; 
 
-    // Restar saldo
-    $conn->query("UPDATE saldos SET monto = monto - $monto WHERE tipo = '$metodo'");
+    // OBTENEMOS LA FECHA EXACTA RECIÉN CREADA EN LA BD
+    $res_fecha = $conn->query("SELECT fecha FROM gastos_historial WHERE id = $nuevo_id");
+    $fecha_registro = '';
+    if ($res_fecha && $res_fecha->num_rows > 0) {
+        $fecha_registro = $res_fecha->fetch_assoc()['fecha'];
+    }
 
-    echo json_encode(['status' => 'ok']);
+    // Sumar o restar saldo
+    if ($tipo === 'ingreso') {
+        $conn->query("UPDATE saldos SET monto = monto + $monto WHERE tipo = '$metodo'");
+    } else {
+        $conn->query("UPDATE saldos SET monto = monto - $monto WHERE tipo = '$metodo'");
+    }
+
+    // Devolvemos también la fecha
+    echo json_encode(['status' => 'ok', 'id' => $nuevo_id, 'fecha' => $fecha_registro]);
     exit;
 }
 
@@ -75,5 +82,30 @@ if ($accion == 'editar_saldo' && $data) {
 
     $conn->query("UPDATE saldos SET monto = $nuevo_monto WHERE tipo = '$tipo'");
     echo json_encode(['status' => 'ok']);
+    exit;
+}
+
+// 4. ELIMINAR REGISTRO
+if ($accion == 'eliminar' && $data) {
+    $id = intval($data['id']);
+
+    $res = $conn->query("SELECT monto, metodo, tipo FROM gastos_historial WHERE id = $id");
+    if ($res && $res->num_rows > 0) {
+        $gasto = $res->fetch_assoc();
+        $monto = $gasto['monto'];
+        $metodo = $gasto['metodo'];
+        $tipo = $gasto['tipo'] ?? 'gasto'; 
+
+        if ($tipo === 'ingreso') {
+            $conn->query("UPDATE saldos SET monto = monto - $monto WHERE tipo = '$metodo'");
+        } else {
+            $conn->query("UPDATE saldos SET monto = monto + $monto WHERE tipo = '$metodo'");
+        }
+
+        $conn->query("DELETE FROM gastos_historial WHERE id = $id");
+        echo json_encode(['status' => 'ok']);
+    } else {
+        echo json_encode(['status' => 'error', 'message' => 'Gasto no encontrado']);
+    }
     exit;
 }

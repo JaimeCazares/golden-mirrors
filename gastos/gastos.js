@@ -1,26 +1,32 @@
 let saldoEfectivo = 0;
 let saldoDebito = 0;
+let modoActual = 'gasto';
+
+// NUEVA FUNCIÓN: Darle formato bonito a la fecha
+function formatearFecha(fechaSql) {
+    if (!fechaSql) return '';
+    // Reemplaza espacio por 'T' para que funcione bien en todos los navegadores
+    let d = new Date(fechaSql.replace(' ', 'T')); 
+    if (isNaN(d)) return fechaSql; 
+    
+    return d.toLocaleDateString('es-MX', { 
+        day: '2-digit', month: 'short', 
+        hour: '2-digit', minute: '2-digit', hour12: true 
+    });
+}
 
 function initGastos() {
-    console.log("Iniciando módulo de gastos...");
-    
-    // Llamada a la API
     fetch('gastos/api_gastos.php?accion=obtener')
         .then(response => {
-            if (!response.ok) {
-                throw new Error("Error en la red o archivo PHP no encontrado");
-            }
-            return response.json(); // Intentar convertir a JSON
+            if (!response.ok) throw new Error("Error en la red o archivo PHP");
+            return response.json();
         })
         .then(data => {
-            console.log("Datos recibidos:", data); // Ver en consola F12
-
             if (data.error) {
                 alert("Error de BD: " + data.error);
                 return;
             }
 
-            // Asignar valores con protección (si vienen vacíos, pone 0)
             if (data.saldos) {
                 saldoEfectivo = parseFloat(data.saldos.efectivo) || 0;
                 saldoDebito = parseFloat(data.saldos.debito) || 0;
@@ -28,19 +34,38 @@ function initGastos() {
 
             actualizarVisuales();
 
-            // Cargar historial
             const lista = document.getElementById('lista-gastos');
             lista.innerHTML = ''; 
             if (data.historial && data.historial.length > 0) {
                 data.historial.forEach(item => {
-                    agregarItemVisual(item.descripcion, item.monto, item.metodo);
+                    // Ahora también mandamos item.fecha
+                    agregarItemVisual(item.id, item.descripcion, item.monto, item.metodo, item.tipo || 'gasto', item.fecha);
                 });
             }
         })
-        .catch(error => {
-            console.error("Error cargando gastos:", error);
-            // Si hay error, no bloqueamos la app, solo avisamos en consola
-        });
+        .catch(error => console.error("Error cargando gastos:", error));
+}
+
+function toggleModo() {
+    const btnModo = document.getElementById('btn-modo');
+    const descInput = document.getElementById('gasto-desc');
+    const btnAñadir = document.querySelector('.btn-add-gasto');
+
+    if (modoActual === 'gasto') {
+        modoActual = 'ingreso';
+        btnModo.innerHTML = 'Modo: INGRESO 📈';
+        btnModo.className = 'btn-modo modo-ingreso';
+        descInput.placeholder = "Descripción del ingreso:";
+        btnAñadir.style.background = '#00ff88';
+        btnAñadir.innerText = "SUMAR";
+    } else {
+        modoActual = 'gasto';
+        btnModo.innerHTML = 'Modo: GASTO 📉';
+        btnModo.className = 'btn-modo modo-gasto';
+        descInput.placeholder = "¿En qué gastaste?";
+        btnAñadir.style.background = '#ffcc00';
+        btnAñadir.innerText = "AÑADIR";
+    }
 }
 
 function procesarGasto() {
@@ -57,16 +82,23 @@ function procesarGasto() {
     fetch('gastos/api_gastos.php?accion=registrar', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ descripcion: desc, monto: monto, metodo: metodo })
+        body: JSON.stringify({ descripcion: desc, monto: monto, metodo: metodo, tipo: modoActual })
     })
     .then(res => res.json())
     .then(response => {
         if (response.status === 'ok') {
-            if (metodo === 'efectivo') saldoEfectivo -= monto;
-            else saldoDebito -= monto;
+            if (modoActual === 'ingreso') {
+                if (metodo === 'efectivo') saldoEfectivo += monto;
+                else saldoDebito += monto;
+            } else {
+                if (metodo === 'efectivo') saldoEfectivo -= monto;
+                else saldoDebito -= monto;
+            }
             
             actualizarVisuales();
-            agregarItemVisual(desc, monto, metodo, true);
+            // Pasamos la fecha recién creada que nos manda el PHP
+            agregarItemVisual(response.id, desc, monto, metodo, modoActual, response.fecha, true);
+            
             descInput.value = "";
             montoInput.value = "";
         } else {
@@ -75,46 +107,90 @@ function procesarGasto() {
     });
 }
 
-function editarSaldo(tipo) {
-    let nuevoMonto = prompt(`Ingresa el saldo REAL en ${tipo.toUpperCase()}:`);
-    
-    if (nuevoMonto !== null && !isNaN(nuevoMonto) && nuevoMonto.trim() !== "") {
-        nuevoMonto = parseFloat(nuevoMonto);
-
-        fetch('gastos/api_gastos.php?accion=editar_saldo', {
-            method: 'POST',
-            body: JSON.stringify({ tipo: tipo, monto: nuevoMonto })
-        })
-        .then(res => res.json())
-        .then(data => {
-            if(data.status === 'ok'){
-                if (tipo === 'efectivo') saldoEfectivo = nuevoMonto;
-                else saldoDebito = nuevoMonto;
-                actualizarVisuales();
-            }
-        });
-    }
-}
-
 function actualizarVisuales() {
-    // Usamos toLocaleString para que ponga comas (ej. 1,000.00)
     document.getElementById('saldo-efectivo').innerText = `$${saldoEfectivo.toLocaleString('es-MX', {minimumFractionDigits: 2})}`;
     document.getElementById('saldo-debito').innerText = `$${saldoDebito.toLocaleString('es-MX', {minimumFractionDigits: 2})}`;
 }
 
-function agregarItemVisual(desc, monto, metodo, esNuevo = false) {
+// Actualizamos los parámetros para recibir 'fecha'
+function agregarItemVisual(id, desc, monto, metodo, tipo = 'gasto', fecha = '', esNuevo = false) {
     const lista = document.getElementById('lista-gastos');
     const nuevoItem = document.createElement('div');
     nuevoItem.className = 'gasto-item';
+    nuevoItem.dataset.id = id;
     
+    const colorTexto = tipo === 'ingreso' ? '#00ff88' : '#ff4444';
+    const signo = tipo === 'ingreso' ? '+' : '-';
+    const fechaMostrar = formatearFecha(fecha);
+    
+    // Agregamos el div para la fecha debajo de la descripción
     nuevoItem.innerHTML = `
-        <span>${desc}</span>
-        <span>
-            <strong style="color: #ff4444;">-$${parseFloat(monto).toFixed(2)}</strong> 
-            <small style="color: #64748b; margin-left:5px;">(${metodo})</small>
-        </span>
+        <div class="gasto-info" style="display: flex; flex-direction: column;">
+            <div>
+                <span>${desc}</span>
+                <small style="color: #64748b; margin-left:5px;">(${metodo})</small>
+            </div>
+            <small style="color: #475569; font-size: 11px; margin-top: 3px;">📅 ${fechaMostrar}</small>
+        </div>
+        <div class="gasto-acciones">
+            <strong style="color: ${colorTexto};">${signo}$${parseFloat(monto).toFixed(2)}</strong> 
+            <button class="btn-tres-puntos" onclick="abrirMenuFlotante(${id}, ${monto}, '${metodo}', '${tipo}', this, event)">⋮</button>
+        </div>
     `;
     
     if (esNuevo) lista.prepend(nuevoItem); 
     else lista.appendChild(nuevoItem);     
 }
+
+function eliminarGasto(id, monto, metodo, tipo) {
+    fetch('gastos/api_gastos.php?accion=eliminar', {
+        method: 'POST',
+        body: JSON.stringify({ id: id })
+    })
+    .then(res => res.json())
+    .then(data => {
+        if (data.status === 'ok') {
+            if (tipo === 'ingreso') {
+                if (metodo === 'efectivo') saldoEfectivo -= monto;
+                else saldoDebito -= monto;
+            } else {
+                if (metodo === 'efectivo') saldoEfectivo += monto;
+                else saldoDebito += monto;
+            }
+            
+            actualizarVisuales();
+            const item = document.querySelector(`.gasto-item[data-id="${id}"]`);
+            if (item) item.remove();
+        }
+    });
+}
+
+function abrirMenuFlotante(id, monto, metodo, tipo, botonElement, event) {
+    event.stopPropagation();
+    
+    const menuViejo = document.getElementById('menu-flotante-unico');
+    if (menuViejo) menuViejo.remove();
+
+    const coordenadas = botonElement.getBoundingClientRect();
+    const menu = document.createElement('div');
+    menu.id = 'menu-flotante-unico';
+    menu.className = 'menu-desplegable-flotante';
+    
+    menu.style.position = 'fixed';
+    menu.style.top = (coordenadas.top - 40) + 'px';
+    menu.style.left = (coordenadas.left + 15) + 'px';
+    menu.style.zIndex = '99999';
+
+    menu.innerHTML = `
+        <button class="btn-eliminar-menu" onclick="eliminarGasto(${id}, ${monto}, '${metodo}', '${tipo}')">
+            Eliminar
+        </button>
+    `;
+
+    document.body.appendChild(menu);
+}
+
+document.addEventListener('click', function() {
+    const menu = document.getElementById('menu-flotante-unico');
+    if (menu) menu.remove();
+});

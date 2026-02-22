@@ -104,10 +104,9 @@
     transform: scale(0.95);
 }
 
-/* Historial */
 #lista-gastos {
     margin-top: 15px;
-    max-height: 150px;
+    max-height: 220px; /* <--- Sube este número para mostrar más historial */
     overflow-y: auto;
     border-top: 1px solid #1e293b;
     padding-top: 5px;
@@ -120,4 +119,214 @@
     border-bottom: 1px solid rgba(255, 255, 255, 0.05);
     font-size: 13px;
     color: #cbd5e1;
+}
+
+.gasto-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center; /* Centra verticalmente */
+    padding: 8px 5px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.gasto-acciones {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.btn-del-gasto {
+    background: transparent;
+    border: none;
+    color: #ef4444;
+    cursor: pointer;
+    font-size: 12px;
+    padding: 2px 5px;
+    border-radius: 4px;
+    transition: background 0.2s;
+}
+
+.btn-del-gasto:hover {
+    background: rgba(239, 68, 68, 0.1);
+}
+
+/* --- ESTILOS PARA EL MENÚ DE 3 PUNTOS --- */
+.menu-opciones {
+    position: relative; /* IMPORTANTE: Esto hace que el menú se posicione con respecto a este contenedor */
+    display: inline-block;
+}
+
+.btn-tres-puntos {
+    background: transparent;
+    border: none;
+    color: #cbd5e1;
+    font-size: 20px;
+    font-weight: bold;
+    cursor: pointer;
+    padding: 0 5px;
+    border-radius: 4px;
+}
+
+.btn-tres-puntos:hover {
+    color: #fff;
+}
+
+/* El cuadro flotante del menú */
+/* Reemplaza tu .menu-desplegable actual por este: */
+.menu-desplegable {
+    display: none;
+    position: absolute;
+    
+    /* LA VERDADERA MAGIA PARA EVITAR EL SCROLL */
+    bottom: 100%; /* Lo avienta hacia arriba del botón */
+    right: 0;     /* Lo alinea a la derecha para no salirse de la pantalla */
+    margin-bottom: 5px; /* Un pequeño salto para que flote encimita */
+
+    background: #1e293b;
+    border: 1px solid #334155;
+    border-radius: 6px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.5);
+    z-index: 100;
+    min-width: auto;
+    white-space: nowrap;
+}
+
+/* Esta clase aparecerá cuando le demos clic */
+.menu-desplegable.show {
+    display: block;
+}
+
+/* Botón de eliminar dentro del menú */
+/* Reemplaza tu .btn-eliminar-menu actual por este: */
+.btn-eliminar-menu {
+    width: 100%;
+    background: transparent;
+    border: none;
+    color: #ef4444; /* Rojo para indicar acción destructiva */
+    padding: 8px 12px;
+    text-align: center; /* Texto centrado */
+    cursor: pointer;
+    font-size: 13px;
+    font-weight: 600;
+    transition: background 0.2s;
+    display: block;
+    border-radius: 5px; /* Bordes redondeados para el botón interno */
+}
+
+.btn-eliminar-menu:hover {
+    background: rgba(239, 68, 68, 0.1); /* Fondo rojo suave al pasar el mouse */
+}
+
+.menu-desplegable-flotante {
+    background: #1e293b;
+    border: 1px solid #334155;
+    border-radius: 6px;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.8);
+    padding: 2px;
+}
+
+.btn-eliminar-menu {
+    width: 100%;
+    background: transparent;
+    border: none;
+    color: #ef4444;
+    padding: 8px 12px;
+    text-align: center;
+    cursor: pointer;
+    font-size: 13px;
+    font-weight: 600;
+    border-radius: 4px;
+    transition: background 0.2s;
+}
+
+.btn-eliminar-menu:hover {
+    background: rgba(239, 68, 68, 0.1);
+}
+
+/* Botón para cambiar entre Ingreso y Gasto */
+.btn-modo {
+    background: transparent;
+    border: 1px solid #334155;
+    padding: 6px 12px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 12px;
+    font-weight: bold;
+    transition: all 0.3s ease;
+}
+
+.btn-modo.modo-gasto {
+    background: rgba(239, 68, 68, 0.1);
+    color: #ef4444;
+    border-color: #ef4444;
+}
+
+.btn-modo.modo-ingreso {
+    background: rgba(0, 255, 136, 0.1);
+    color: #00ff88;
+    border-color: #00ff88;
+}
+
+/* =========================================
+   DISEÑO RESPONSIVO MÁS EFICIENTE (MÓVILES)
+   ========================================= */
+@media screen and (max-width: 600px) {
+    .gastos-wrapper {
+        padding: 12px; /* Reducimos el relleno interior para ganar espacio */
+        width: 92%; 
+        margin: 5px auto;
+    }
+
+    .gastos-header {
+        flex-wrap: wrap;
+        justify-content: space-between;
+        gap: 8px;
+        margin-bottom: 10px;
+    }
+
+    /* El botón GASTO/INGRESO sigue arriba ocupando el 100% */
+    .btn-modo {
+        width: 100%;
+        order: -1; 
+        margin-bottom: 2px;
+    }
+
+    /* FILA 1: Descripción y Cantidad en la misma línea */
+    .gastos-form {
+        display: flex;
+        flex-direction: row; 
+        flex-wrap: wrap;
+        gap: 8px;
+    }
+
+    #gasto-desc {
+        flex: 2; /* Toma más espacio (aprox 65%) */
+        min-width: 120px;
+        box-sizing: border-box;
+    }
+
+    #gasto-monto {
+        flex: 1; /* Toma menos espacio (aprox 35%) */
+        min-width: 80px;
+        box-sizing: border-box;
+    }
+
+    /* FILA 2: Selector y Botón Añadir en la misma línea */
+    .form-group-inline {
+        display: flex;
+        flex-direction: row !important; /* Mantenemos en fila */
+        width: 100%;
+        gap: 8px;
+    }
+
+    .form-group-inline select, 
+    .btn-add-gasto {
+        flex: 1; /* Se dividen 50/50 exacto */
+        box-sizing: border-box;
+    }
+
+    /* Historial un poco más compacto */
+    .gasto-item {
+        padding: 6px 2px;
+    }
 }
