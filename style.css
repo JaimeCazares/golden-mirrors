@@ -174,10 +174,10 @@ body {
     flex-direction: column !important;
     align-items: center !important;
     justify-content: flex-start !important;
-    gap: 15px !important; /* ANTES ERA 40px, AHORA ES 15px */
+    gap: 5px !important; /* ANTES ERA 40px, AHORA ES 15px */
     overflow-y: auto !important;
     height: 100% !important;
-    padding-top: 15px !important; /* Un poco menos de espacio arriba */
+    padding-top: 5px !important; /* Un poco menos de espacio arriba */
     padding-bottom: 150px !important; 
 }
 
