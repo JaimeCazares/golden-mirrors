@@ -177,8 +177,11 @@ function abrirMenuFlotante(id, monto, metodo, tipo, botonElement, event) {
     menu.className = 'menu-desplegable-flotante';
     
     menu.style.position = 'fixed';
-    menu.style.top = (coordenadas.top - 40) + 'px';
-    menu.style.left = (coordenadas.left + 15) + 'px';
+    menu.style.top = (coordenadas.top - 40) + 'px'; 
+    
+    // AQUÍ ESTÁ EL CAMBIO: Restamos 75px para aventarlo a la izquierda del botón
+    menu.style.left = (coordenadas.left - 75) + 'px'; 
+    
     menu.style.zIndex = '99999';
 
     menu.innerHTML = `
