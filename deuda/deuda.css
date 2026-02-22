@@ -1,89 +1,141 @@
+/* Contenedor principal mucho más compacto */
 .deudas-container {
-  position: fixed;
-  top: 10px;
-  left: 10px;
-  background: rgba(15, 15, 30, 0.85);
-  border-radius: 10px;
-  padding: 10px 14px;
+  background: #0b111e;
+  border: 2px solid #1e293b;
+  border-radius: 12px; /* Menos redondo para ahorrar espacio */
+  padding: 10px 12px; /* Reducido al máximo sin verse apretado */
   color: white;
-  font-size: 13px;
-  
-  /* CAMBIO FINAL: Z-INDEX 1. Nivel suelo. */
-  z-index: 1 !important; 
-  
-  display: grid;
-  grid-template-columns: repeat(3, auto) 1fr;
-  column-gap: 10px;
-  row-gap: 6px;
+  width: 100%;
+  box-sizing: border-box;
+  box-shadow: 0 0 15px rgba(0, 255, 136, 0.05);
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 10px; /* Separación más pequeña entre la cabecera y la lista */
+}
+
+/* Fila superior: Todo en la misma línea */
+.deudas-header-inline {
+  display: flex;
+  justify-content: space-between;
   align-items: center;
-  box-shadow: 0 0 12px rgba(0, 255, 255, 0.1);
-  backdrop-filter: blur(8px);
-  max-width: 650px;
+  width: 100%;
+  gap: 5px;
 }
 
-#listaDeudas {
-  list-style: none; padding: 0; margin: 0;
-  grid-column: 1 / span 3;
-  display: grid; grid-template-columns: repeat(3, auto);
-  column-gap: 8px; row-gap: 6px;
+/* Título en medio con color */
+.deudas-titulo {
+  margin: 0;
+  font-size: 15px; /* Más pequeñito */
+  letter-spacing: 1px;
+  color: #00d9ff; /* Color cyan para que resalte chido */
+  font-weight: 800;
+  text-transform: uppercase;
+  text-align: center;
+  white-space: nowrap; /* Evita que se rompa en dos líneas */
 }
 
-#listaDeudas li {
-  cursor: pointer; user-select: none;
-  background: linear-gradient(145deg, #ff3c3c, #b02020);
-  color: #fff; padding: 2px 8px; border-radius: 6px;
-  box-shadow: 0 0 6px rgba(255, 0, 0, 0.4);
-  transition: all 0.25s ease; font-weight: 500;
-  text-align: center; font-size: 12px;
-}
-
-#listaDeudas li.pagada {
-  background: linear-gradient(145deg, #00ff66, #008f44);
-  box-shadow: 0 0 8px rgba(0, 255, 100, 0.7);
-  text-decoration: line-through; opacity: 0.9;
+/* Botones más pequeños y compactos */
+#totalDeuda, #editarBtn {
+  font-weight: bold;
+  font-size: 11px; /* Letra reducida */
+  padding: 6px 10px; /* Botones más delgaditos */
+  border-radius: 6px;
+  box-sizing: border-box;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  white-space: nowrap;
 }
 
 #totalDeuda {
-  grid-column: 4; grid-row: 1 / span 3; 
-  font-weight: bold; text-align: center;
   background: linear-gradient(145deg, #ffcc00, #b38f00);
-  color: #222; padding: 6px 10px; border-radius: 8px;
-  box-shadow: 0 0 8px rgba(255, 204, 0, 0.7);
-  font-size: 13px; transition: all 0.3s ease;
-  align-self: start; justify-self: end;
+  color: #222;
+  box-shadow: 0 0 8px rgba(255, 204, 0, 0.4);
+  transition: all 0.3s ease;
 }
 
 #totalDeuda.completo {
   background: linear-gradient(145deg, #00ff66, #00a84d);
-  box-shadow: 0 0 10px rgba(0, 255, 100, 0.9);
-  color: #fff; transform: scale(1.05);
+  box-shadow: 0 0 10px rgba(0, 255, 100, 0.8);
+  color: #fff;
+  transform: scale(1.02);
 }
 
 #editarBtn {
-  position: absolute; bottom: 10px; right: 14px;        
-  background: linear-gradient(145deg, #1c2541, #0f172a);
-  color: white; border: 1px solid rgba(255, 255, 255, 0.1);
-  padding: 4px 10px; border-radius: 6px; cursor: pointer;
-  font-size: 10px; font-weight: bold; transition: all 0.25s ease;
-  box-shadow: 0 0 6px rgba(255, 255, 255, 0.1);
-  
-  /* Botón un pelín arriba del contenedor, pero bajo el modal */
-  z-index: 5 !important;
-  display: flex; align-items: center; gap: 5px;
+  background: transparent;
+  border: 1px solid #334155;
+  color: #cbd5e1;
+  cursor: pointer;
+  transition: all 0.25s ease;
+  gap: 4px;
 }
 
 #editarBtn:hover {
-  background: linear-gradient(145deg, #3a4b78, #24335b);
-  transform: scale(1.05);
+  background: rgba(255, 255, 255, 0.05);
+  color: white;
+  transform: scale(1.02);
 }
 
+/* El grid de las deudas (pastillas) */
+#listaDeudas {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px; /* Menos espacio entre cada deuda */
+  width: 100%;
+}
+
+/* Las pastillas más compactas */
+#listaDeudas li {
+  flex-grow: 1; /* Siguen estirándose para rellenar */
+  cursor: pointer;
+  user-select: none;
+  background: linear-gradient(145deg, #ff3c3c, #b02020);
+  color: #fff;
+  padding: 5px 8px; /* Mucho más compactas de altura */
+  border-radius: 5px;
+  box-shadow: 0 0 4px rgba(255, 0, 0, 0.4);
+  transition: all 0.25s ease;
+  font-weight: 600;
+  text-align: center;
+  font-size: 11px; /* Letra reducida */
+  white-space: nowrap;
+}
+
+#listaDeudas li.pagada {
+  background: linear-gradient(145deg, #00ff66, #008f44);
+  box-shadow: 0 0 6px rgba(0, 255, 100, 0.7);
+  text-decoration: line-through;
+  opacity: 0.9;
+}
+
+/* =========================================
+   DISEÑO MÓVIL (Aún más exprimido)
+   ========================================= */
 @media (max-width: 600px) {
   .deudas-container {
-    width: 94%; left: 3%; top: 5px; padding: 8px 6px;
-    grid-template-columns: 1fr auto; gap: 4px;
-    position: fixed; box-sizing: border-box; 
+    padding: 8px 10px;
+    gap: 8px;
   }
-  #listaDeudas { display: flex; flex-wrap: wrap; gap: 3px; grid-column: 1; }
-  #totalDeuda { grid-column: 2; font-size: 10px; padding: 4px 6px; align-self: center; }
-  #editarBtn { position: absolute; top: 2px; right: 2px; bottom: auto; padding: 2px 6px; font-size: 9px; }
+  
+  .deudas-titulo {
+    font-size: 13px;
+  }
+
+  #totalDeuda, #editarBtn {
+    font-size: 10px;
+    padding: 5px 8px;
+  }
+
+  #listaDeudas {
+    gap: 4px;
+  }
+
+  #listaDeudas li {
+    padding: 4px 6px;
+    font-size: 10px; /* Para que quepan unas 4 por renglón fácil */
+  }
 }
