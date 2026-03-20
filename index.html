@@ -42,25 +42,37 @@ a{text-decoration:none;color:inherit;}
 .topbar{
   position:fixed;top:0;left:0;width:100%;z-index:1000;
   background:var(--forest);
-  height:46px;display:flex;align-items:center;justify-content:center;
+  height:56px;display:grid;grid-template-columns:1fr 1fr 1fr;
   gap:0;
 }
 .tb-link{
-  display:flex;align-items:center;gap:8px;
-  padding:0 24px;height:100%;
-  font-size:12px;font-weight:500;color:rgba(255,255,255,.75);
-  border-right:1px solid rgba(255,255,255,.1);
-  transition:color .2s,background .2s;
+  display:flex;align-items:center;justify-content:center;gap:10px;
+  height:100%;
+  font-size:13px;font-weight:600;color:rgba(255,255,255,.8);
+  border-right:1px solid rgba(255,255,255,.12);
+  transition:color .18s,background .18s;
   position:relative;
+  letter-spacing:.01em;
 }
-.tb-link:first-child{border-left:1px solid rgba(255,255,255,.1);}
-.tb-link:hover{color:#fff;background:rgba(255,255,255,.06);}
-.tb-link svg{width:17px;height:17px;flex-shrink:0;}
-.tb-handle{font-size:11.5px;}
+.tb-link:first-child{border-left:none;}
+.tb-link:last-child{border-right:none;}
+.tb-link:hover{color:#fff;background:rgba(255,255,255,.09);}
+.tb-link:active{background:rgba(255,255,255,.15);}
+/* pressed ripple hint */
+.tb-link::after{
+  content:'';position:absolute;inset:6px;border-radius:8px;
+  background:rgba(255,255,255,.07);
+  opacity:0;transition:opacity .18s;
+}
+.tb-link:hover::after{opacity:1;}
+.tb-link svg{width:26px;height:26px;flex-shrink:0;}
+.tb-handle{font-size:12.5px;font-weight:600;}
+@media(max-width:480px){.tb-handle{display:none;}}
+/* nav offset updated */
 
 /* ══ NAV ══ */
 nav{
-  position:fixed;top:46px;left:0;width:100%;z-index:999;
+  position:fixed;top:56px;left:0;width:100%;z-index:999;
   display:flex;align-items:center;justify-content:space-between;
   padding:0 48px;height:68px;
   background:rgba(240,235,225,.93);
@@ -98,7 +110,7 @@ nav{
 /* ══ HERO — layout totalmente diferente ══ */
 .hero{
   min-height:100vh;
-  padding-top:114px;
+  padding-top:124px;
   display:flex;flex-direction:column;
   position:relative;overflow:hidden;
 }
@@ -441,17 +453,44 @@ footer{
 
 <!-- ══ TOPBAR REDES — fijo arriba siempre ══ -->
 <div class="topbar">
+  <!-- Instagram -->
   <a href="https://www.instagram.com/goldentechmx" target="_blank" class="tb-link">
-    <svg viewBox="0 0 24 24"><defs><radialGradient id="ig1" cx="30%" cy="107%" r="120%"><stop offset="0%" stop-color="#ffd879"/><stop offset="35%" stop-color="#f26a35"/><stop offset="65%" stop-color="#e1306c"/><stop offset="100%" stop-color="#405de6"/></radialGradient></defs><rect x="2" y="2" width="20" height="20" rx="6" fill="url(#ig1)"/><circle cx="12" cy="12" r="4.5" fill="none" stroke="white" stroke-width="1.6"/><circle cx="17.2" cy="6.8" r="1.1" fill="white"/></svg>
-    <span class="tb-handle">@goldentechmx</span>
+    <svg viewBox="0 0 24 24" width="26" height="26">
+      <defs>
+        <radialGradient id="ig1" cx="30%" cy="107%" r="130%">
+          <stop offset="0%" stop-color="#ffd879"/>
+          <stop offset="30%" stop-color="#f9a241"/>
+          <stop offset="52%" stop-color="#f26a35"/>
+          <stop offset="70%" stop-color="#e1306c"/>
+          <stop offset="90%" stop-color="#833ab4"/>
+          <stop offset="100%" stop-color="#405de6"/>
+        </radialGradient>
+      </defs>
+      <rect x="1.5" y="1.5" width="21" height="21" rx="6.5" fill="url(#ig1)"/>
+      <circle cx="12" cy="12" r="5" fill="none" stroke="white" stroke-width="1.8"/>
+      <circle cx="17.5" cy="6.5" r="1.3" fill="white"/>
+    </svg>
+    <span class="tb-handle">Instagram</span>
   </a>
+
+  <!-- TikTok -->
   <a href="https://www.tiktok.com/@goldentechmx" target="_blank" class="tb-link">
-    <svg viewBox="0 0 24 24"><rect x="2" y="2" width="20" height="20" rx="6" fill="#000"/><path fill="white" d="M15.8 7.2a3.6 3.6 0 01-2.8-3.2V3h-2.6v10.2a2.2 2.2 0 01-2.1 1.9 2.2 2.2 0 01-2.2-2.2 2.2 2.2 0 012.2-2.2c.2 0 .4 0 .6.1V8.3a5 5 0 00-.6 0 4.8 4.8 0 00-4.8 4.8 4.8 4.8 0 004.8 4.8 4.8 4.8 0 004.8-4.8V6.6a6.2 6.2 0 003.6 1.1V5.2a3.7 3.7 0 01-.9-.1z"/></svg>
-    <span class="tb-handle">@goldentechmx</span>
+    <svg viewBox="0 0 24 24" width="26" height="26">
+      <rect x="1.5" y="1.5" width="21" height="21" rx="6.5" fill="#010101"/>
+      <path fill="#69C9D0" d="M13.5 7.2V15a1.8 1.8 0 11-1.8-1.8c.15 0 .3.02.44.05v-2.1a3.9 3.9 0 100 7.8 3.9 3.9 0 003.9-3.9V8.9a5.6 5.6 0 003.3 1.07V7.88a3.55 3.55 0 01-2.08-.94A3.52 3.52 0 0115.1 5H13.1v.02l.4 2.18z"/>
+      <path fill="#EE1D52" d="M17.26 7.88v2.1a5.6 5.6 0 01-3.3-1.07v4.97a3.9 3.9 0 11-3.9-3.9c.15 0 .3.01.44.03v2.1a1.8 1.8 0 10-.44 3.55 1.8 1.8 0 001.8-1.8V5h2.04c.05.47.22.92.5 1.32a3.52 3.52 0 002.86 1.56z"/>
+      <path fill="white" d="M13.5 6.67V14.9a1.8 1.8 0 11-1.36-1.74v-2.1a3.9 3.9 0 100 7.8 3.9 3.9 0 003.9-3.9V7.88a5.6 5.6 0 003.3 1.07V6.87a3.55 3.55 0 01-2.08-.94A3.52 3.52 0 0115.1 4.5H13.1v2.17z"/>
+    </svg>
+    <span class="tb-handle">TikTok</span>
   </a>
+
+  <!-- Facebook -->
   <a href="https://www.facebook.com/share/1D173NfyU6/" target="_blank" class="tb-link">
-    <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10" fill="#1877F2"/><path fill="white" d="M15.5 8H13V6.5c0-.6.4-.7.7-.7H15V3h-2.5C10.2 3 9.5 4.9 9.5 6.5V8H7.5v3H9.5v8h3v-8h2.2l.8-3z"/></svg>
-    <span class="tb-handle">Golden Tech</span>
+    <svg viewBox="0 0 24 24" width="26" height="26">
+      <rect x="1.5" y="1.5" width="21" height="21" rx="6.5" fill="#1877F2"/>
+      <path fill="white" d="M15.8 8.3h-2V6.7c0-.6.4-.8.7-.8H15.8V3.8H13.5c-2.4 0-2.9 1.8-2.9 2.9v1.6H9v2.7h1.6V19h2.8v-7.9h2l.4-2.8z"/>
+    </svg>
+    <span class="tb-handle">Facebook</span>
   </a>
 </div>
 
