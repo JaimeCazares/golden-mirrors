@@ -47,37 +47,44 @@ a{text-decoration:none;color:inherit;}
 .tb-link{
   display:flex;align-items:center;justify-content:center;gap:10px;
   height:100%;
-  font-size:13px;font-weight:700;color:#fff;
-  transition:filter .2s, transform .15s;
+  font-size:13px;font-weight:700;
+  transition:filter .2s;
   position:relative;
   letter-spacing:.02em;
-  text-shadow:0 1px 3px rgba(0,0,0,.25);
 }
 .tb-link:hover{filter:brightness(1.12);}
 .tb-link:active{filter:brightness(.92);}
-/* Facebook — azul limpio con borde derecho sutil */
+/* Facebook — azul muy suave para que la f blanca resalte */
 .tb-fb{
-  background:linear-gradient(135deg, #1877f2 0%, #1060d0 100%);
-  border-right:2px solid rgba(255,255,255,.2);
+  background:#e8f0fe;
+  border-right:2px solid rgba(0,0,0,.07);
 }
-/* Instagram — gradiente oficial amarillo/naranja/rosa/lila */
+.tb-fb .tb-handle{color:#1877f2;}
+/* Instagram — tono suave rosado/lila */
 .tb-ig{
-  background:linear-gradient(135deg, #f9a825 0%, #e8384f 40%, #c13584 70%, #833ab4 100%);
-  border-right:2px solid rgba(255,255,255,.2);
+  background:linear-gradient(135deg, #fde8c8 0%, #fad4e0 50%, #e8d4f0 100%);
+  border-right:2px solid rgba(0,0,0,.07);
 }
-/* TikTok — fondo gris oscuro neutro para que el logo negro destaque */
+.tb-ig .tb-handle{color:#c13584;}
+/* TikTok — gris muy claro para que el logo negro/cyan/rojo se vea */
 .tb-tt{
-  background:linear-gradient(135deg, #2a2a2a 0%, #1a1a1a 100%);
+  background:#f0f0f0;
 }
+.tb-tt .tb-handle{color:#1a1a1a;}
+/* Texto general */
+.tb-link{
+  display:flex;align-items:center;justify-content:center;gap:10px;
+  height:100%;
+  font-size:13px;font-weight:700;
+  transition:filter .2s;
+  position:relative;
+  letter-spacing:.02em;
+}
+.tb-link:hover{filter:brightness(.94);}
 /* Imagen de cada logo */
 .tb-img{
   width:36px;height:36px;flex-shrink:0;object-fit:contain;
   border-radius:0;background:transparent;
-  filter:drop-shadow(0 1px 4px rgba(0,0,0,.35));
-}
-/* En TikTok, forzar que el logo luzca con brillo para la t blanca */
-.tb-tt .tb-img{
-  filter:drop-shadow(0 0 3px rgba(105,201,208,.6)) drop-shadow(0 0 3px rgba(238,29,82,.5)) brightness(1.08);
 }
 .tb-handle{font-size:13px;font-weight:700;letter-spacing:.03em;}
 @media(max-width:480px){.tb-handle{display:none;}}
