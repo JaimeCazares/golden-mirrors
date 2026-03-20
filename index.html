@@ -95,36 +95,62 @@ nav{
   position:fixed;top:56px;left:0;width:100%;z-index:999;
   display:flex;align-items:center;justify-content:space-between;
   padding:0 48px;height:68px;
-  background:rgba(240,235,225,.93);
-  backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);
-  border-bottom:1px solid var(--border);
+  background:#0e0e0e;
+  border-bottom:1px solid rgba(201,150,12,.25);
 }
 .nav-logo{display:flex;align-items:center;gap:14px;}
-.nav-logo img{width:44px;height:44px;object-fit:contain;}
+.nav-logo img{width:58px;height:58px;object-fit:contain;}
 .nav-brand{}
+/* Animación shimmer dorado en el nombre */
+@keyframes goldShimmer{
+  0%{background-position:200% center;}
+  100%{background-position:-200% center;}
+}
 .nav-brand-name{
   font-family:'Cormorant Garamond',serif;
-  font-size:20px;font-weight:700;letter-spacing:.02em;color:var(--forest);
+  font-size:20px;font-weight:700;letter-spacing:.04em;
   line-height:1;
+  background:linear-gradient(90deg,
+    #a06800 0%,
+    #C9960C 20%,
+    #f5d57a 40%,
+    #fff5c0 50%,
+    #f5d57a 60%,
+    #C9960C 80%,
+    #a06800 100%);
+  background-size:200% auto;
+  -webkit-background-clip:text;
+  -webkit-text-fill-color:transparent;
+  background-clip:text;
+  animation:goldShimmer 3s linear infinite;
 }
-.nav-brand-sub{font-size:11px;color:var(--muted);font-weight:400;margin-top:2px;}
+.nav-brand-sub{font-size:11px;color:rgba(255,255,255,.4);font-weight:400;margin-top:2px;}
 .nav-right{display:flex;align-items:center;gap:14px;}
 .nav-status{
   display:flex;align-items:center;gap:6px;
-  font-size:12px;font-weight:500;color:var(--forest2);
-  background:var(--sage-lt);border-radius:100px;
-  padding:5px 14px;border:1px solid rgba(143,180,154,.4);
+  font-size:12px;font-weight:500;color:rgba(255,255,255,.7);
+  background:rgba(255,255,255,.07);border-radius:100px;
+  padding:5px 14px;border:1px solid rgba(255,255,255,.12);
 }
-.nav-dot{width:7px;height:7px;border-radius:50%;background:#4caf7d;animation:blink 2s infinite;}
+.nav-dot{width:7px;height:7px;border-radius:50%;background:#25D366;animation:blink 2s infinite;}
 @keyframes blink{0%,100%{opacity:1}50%{opacity:.3}}
+/* Botón WhatsApp verde oficial */
+@keyframes neonPulse{
+  0%,100%{box-shadow:0 0 8px #25D366, 0 0 20px #25D36660, 0 0 35px #25D36630;}
+  50%{box-shadow:0 0 4px #25D366, 0 0 10px #25D36640, 0 0 18px #25D36618;}
+}
 .nav-wa{
   display:flex;align-items:center;gap:8px;
-  background:var(--forest);color:#fff;
-  font-size:13px;font-weight:600;
+  background:#25D366;
+  color:#fff;
+  font-size:13px;font-weight:800;
   padding:10px 22px;border-radius:6px;
-  transition:background .2s,transform .15s;
+  transition:transform .15s, filter .2s;
+  box-shadow:0 0 8px #25D366, 0 0 20px #25D36660;
+  animation:neonPulse 2.5s ease-in-out infinite;
+  letter-spacing:.02em;
 }
-.nav-wa:hover{background:var(--forest2);transform:translateY(-1px);}
+.nav-wa:hover{transform:translateY(-2px);filter:brightness(1.1);}
 .nav-wa svg{width:16px;height:16px;}
 
 /* ══ HERO — layout totalmente diferente ══ */
