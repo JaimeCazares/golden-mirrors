@@ -94,12 +94,12 @@ a{text-decoration:none;color:inherit;}
 nav{
   position:fixed;top:56px;left:0;width:100%;z-index:999;
   display:flex;align-items:center;justify-content:space-between;
-  padding:0 48px;height:68px;
+  padding:18px 48px;height:90px;
   background:#0e0e0e;
   border-bottom:1px solid rgba(201,150,12,.25);
 }
 .nav-logo{display:flex;align-items:center;gap:14px;}
-.nav-logo img{width:58px;height:58px;object-fit:contain;}
+.nav-logo img{width:75px;height:75px;object-fit:contain;}
 .nav-brand{}
 /* Animación shimmer dorado en el nombre */
 @keyframes goldShimmer{
@@ -156,7 +156,7 @@ nav{
 /* ══ HERO — layout totalmente diferente ══ */
 .hero{
   min-height:100vh;
-  padding-top:124px;
+  padding-top:146px;
   display:flex;flex-direction:column;
   position:relative;overflow:hidden;
 }
@@ -170,7 +170,7 @@ nav{
 .hero-content{
   position:relative;z-index:2;
   display:grid;grid-template-columns:1.1fr 1fr;
-  min-height:calc(100vh - 114px);
+  min-height:calc(100vh - 146px);
 }
 .hero-main{
   padding:72px 64px 64px 72px;
@@ -449,7 +449,7 @@ footer{
 
 /* ══ WA FLOAT ══ */
 .waf{
-  position:fixed;bottom:28px;right:28px;z-index:998;
+  position:fixed;bottom:90px;right:20px;z-index:998;
   display:flex;flex-direction:column;align-items:center;gap:12px;
 }
 .waf-status{
@@ -509,7 +509,8 @@ footer{
   .city-stack{flex-direction:row;}
   .city-panel{height:200px;}
   .contact-grid{grid-template-columns:1fr;}
-  nav{padding:0 20px;}
+  nav{padding:12px 20px;height:80px;}
+  .nav-logo img{width:65px;height:65px;}
   .srv-section,.why-section,.contact-section{padding:72px 24px;}
   footer{padding:44px 24px 24px;}
 }
@@ -517,7 +518,8 @@ footer{
   .tb-handle{display:none;}
   .srv-grid{grid-template-columns:1fr;}
   .hero-modes{grid-template-columns:1fr;}
-  .nav-status{display:none;}
+  .nav-right{flex-direction:column;gap:8px;align-items:flex-end;}
+  .nav-status{font-size:10px;padding:4px 10px;}
   .city-stack{flex-direction:column;}
 }
 </style>
