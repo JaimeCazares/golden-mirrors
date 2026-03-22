@@ -136,6 +136,21 @@ nav{
   background:rgba(255,255,255,.07);border-radius:100px;
   padding:5px 14px;border:1px solid rgba(255,255,255,.12);
 }
+
+@media(max-width:640px){
+  .nav-right{
+    display:flex;
+    align-items:center;
+    gap:8px;
+  }
+
+  .nav-status{
+    height:40px;
+    display:flex;
+    align-items:center;
+  }
+}
+
 .nav-dot{width:7px;height:7px;border-radius:50%;background:#25D366;animation:blink 2s infinite;}
 @keyframes blink{0%,100%{opacity:1}50%{opacity:.3}}
 /* Botón WhatsApp verde oficial */
