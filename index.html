@@ -182,11 +182,12 @@ nav{
   display:flex;flex-direction:column;justify-content:center;
 }
 .hero-label{
+  position:absolute;top:24px;left:24px;z-index:10;
   display:inline-flex;align-items:center;gap:8px;
   background:var(--forest);color:#fff;
   font-size:10.5px;font-weight:600;letter-spacing:.16em;text-transform:uppercase;
   padding:6px 16px;border-radius:4px;
-  width:fit-content;margin-bottom:28px;
+  width:fit-content;
   opacity:0;animation:rise .6s .05s forwards;
 }
 .hero-label-dot{width:5px;height:5px;border-radius:50%;background:var(--gold);}
@@ -578,15 +579,8 @@ footer{
 <section class="hero">
   <div class="hero-bg"></div>
   <div class="hero-content">
-    <div class="hero-main">
-      <div class="hero-label"><div class="hero-label-dot"></div>Culiacán, Sinaloa</div>
 
-
-
-
-    </div>
-
-    <div class="hero-visual">
+    <div class="hero-visual"> <div class="hero-label"><div class="hero-label-dot"></div>Culiacán, Sinaloa</div>
       <div class="hero-img-wrap">
         <img class="city-bg"
           src="https://images.unsplash.com/photo-1477959858617-67f85cf4f1df?w=1000&auto=format&fit=crop&q=80"
