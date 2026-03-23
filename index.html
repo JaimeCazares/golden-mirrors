@@ -241,9 +241,12 @@ h1 em{color:var(--gold);font-style:normal;}
 .btn-sec:hover{background:var(--forest);color:#fff;transform:translateY(-1px);}
 
 /* hero right: foto + logo + stats */
-.hero-visual{
-  position:relative;overflow:hidden;
-  opacity:0;animation:slideL .8s .2s forwards;
+.hero-visual {
+  position: relative;
+  overflow: hidden;
+  opacity: 0;
+  animation: slideL .8s .2s forwards;
+  display: flex; /* <--- AGREGA ESTO para eliminar el espacio inferior */
 }
 .hero-img-wrap{position:absolute;inset:0;}
 .hero-img-wrap img.city-bg{
