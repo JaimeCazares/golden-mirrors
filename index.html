@@ -160,7 +160,7 @@ nav{
 
 /* ══ HERO — layout totalmente diferente ══ */
 .hero{
-  min-height:100vh;
+  min-height:auto;
   padding-top:146px;
   padding-bottom:0;
    margin-bottom:0;
@@ -511,8 +511,9 @@ footer{
 
 /* ══ RESPONSIVE ══ */
 @media(max-width:960px){
-  .hero-content{grid-template-columns:1fr;}
+  .hero-content{grid-template-columns:1fr; align-items:start;}
   .hero-visual{height:380px;}
+  .hero{min-height:auto;}
   .hero-main{padding:60px 28px 40px;}
   .srv-grid{grid-template-columns:1fr 1fr;}
   .sc.featured{grid-row:auto;}
