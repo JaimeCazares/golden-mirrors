@@ -246,15 +246,19 @@ h1 em{color:var(--gold);font-style:normal;}
   overflow: hidden;
   opacity: 0;
   animation: slideL .8s .2s forwards;
-  display: flex; /* <--- AGREGA ESTO para eliminar el espacio inferior */
+  /* AGREGA ESTO */
+  display: flex;
+  line-height: 0;
+  align-items: flex-end;
 }
 .hero-img-wrap{position:absolute;inset:0;}
 .hero-img-wrap img.city-bg {
   width: 100%;
   height: 100%;
   object-fit: cover;
-  display: block; /* <--- AGREGA ESTO */
-  filter: saturate(.8) brightness(.9);
+  /* AGREGA ESTO */
+  display: block;
+  vertical-align: bottom;
 }
 .hero-img-overlay{
   position:absolute;inset:0;
@@ -293,7 +297,9 @@ h1 em{color:var(--gold);font-style:normal;}
   background: var(--forest);
   position: relative;
   overflow: hidden;
-  margin-top: -1px; /* <--- OPCIONAL: Un margen negativo de 1px elimina cualquier línea fantasma */
+  /* AGREGA ESTO */
+  margin-top: -1px;
+  z-index: 5;
 }
 .srv-section::before{
   content:'';position:absolute;top:-120px;right:-80px;
