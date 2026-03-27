@@ -147,7 +147,7 @@ nav{
   letter-spacing:.02em;
 }
 .nav-wa:hover{transform:translateY(-2px);filter:brightness(1.1);}
-.nav-wa svg{width:16px;height:16px;}
+.nav-wa img{width:16px;height:16px;filter:brightness(0) invert(1) contrast(100%);}
 
 /* ══ HERO — layout totalmente diferente ══ */
 .hero{
@@ -431,7 +431,7 @@ footer{
   transition:transform .2s;
 }
 .waf a:hover{transform:scale(1.1);}
-.waf svg{width:30px;height:30px;fill:#fff;}
+.waf img{width:30px;height:30px;filter:brightness(0) invert(1);}
 
 /* ══ ANIM ══ */
 @keyframes rise{from{opacity:0;transform:translateY(22px)}to{opacity:1;transform:translateY(0)}}
@@ -483,4 +483,15 @@ footer{
     font-size: 10px;
     line-height: 1.3;
   }
+}
+
+/* ══ ICONS ══ */
+.icon-wa, .icon-ig, .icon-fb, .icon-tt {
+  display: inline-block;
+  vertical-align: middle;
+  object-fit: contain;
+}
+.ft-soc-icon {
+  width: 17px; height: 17px;
+  filter: brightness(0) invert(1) contrast(100%);
 }
