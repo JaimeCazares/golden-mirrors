@@ -281,74 +281,7 @@ h1 em{color:var(--gold);font-style:normal;}
 }
 .hero-stat-l{font-size:11px;color:var(--muted);margin-top:3px;font-weight:500;}
 
-/* ══ SERVICIOS — grid asimétrico ══ */
-.srv-section {
-  padding: 60px 56px;
-  background: var(--forest);
-  position: relative;
-  overflow: hidden;
-  /* AGREGA ESTO */
-  margin-top: -1px;
-  z-index: 5;
-}
-.srv-section::before{
-  content:'';position:absolute;top:-120px;right:-80px;
-  width:400px;height:400px;border-radius:50%;
-  background:rgba(143,180,154,.08);pointer-events:none;
-}
-.srv-top{display:flex;justify-content:space-between;align-items:flex-end;margin-bottom:56px;flex-wrap:wrap;gap:20px;}
-.srv-eyebrow{font-size:11px;font-weight:700;letter-spacing:.18em;text-transform:uppercase;color:var(--sage);margin-bottom:10px;}
-.srv-h2{
-  font-family:'Cormorant Garamond',serif;
-  font-size:clamp(34px,4vw,54px);font-weight:700;
-  letter-spacing:-.02em;line-height:1;color:#fff;
-}
-.srv-desc{font-size:14px;color:rgba(255,255,255,.5);max-width:300px;line-height:1.65;text-align:right;}
-.srv-grid{
-  display:grid;
-  grid-template-columns:1.4fr 1fr 1fr;
-  grid-template-rows:auto auto;
-  gap:16px;
-}
-.sc{
-  border-radius:12px;padding:32px 28px;
-  display:flex;flex-direction:column;gap:14px;
-  position:relative;overflow:hidden;
-  transition:transform .25s,box-shadow .25s;
-  cursor:default;
-}
-.sc:hover{transform:translateY(-4px);}
-.sc.featured{
-  grid-row:span 2;
-  background:var(--gold);
-}
-.sc.featured .sc-icon{background:rgba(255,255,255,.2);}
-.sc.featured h3,.sc.featured p,.sc.featured .sc-tag{color:#fff;}
-.sc.featured .sc-tag{background:rgba(255,255,255,.15);color:#fff;}
-.sc.green{background:var(--sage-lt);}
-.sc.dark{background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.08);}
-.sc.dark h3{color:#fff;} .sc.dark p{color:rgba(255,255,255,.5);}
-.sc.dark .sc-tag{background:rgba(255,255,255,.1);color:rgba(255,255,255,.7);}
-.sc.terra{background:#F5E8E0;}
-.sc.light{background:var(--sand);}
-.sc-icon{
-  width:46px;height:46px;border-radius:10px;
-  display:grid;place-items:center;font-size:22px;
-  background:rgba(44,62,53,.08);
-  width:fit-content;padding:10px;
-}
-.sc h3{font-size:16px;font-weight:700;color:var(--forest);line-height:1.2;}
-.sc p{font-size:13px;color:var(--muted);line-height:1.6;flex:1;}
-.sc-tag{
-  display:inline-flex;align-items:center;gap:7px;
-  background:rgba(44,62,53,.07);
-  border-radius:100px;padding:7px 14px;
-  font-size:12px;font-weight:600;color:var(--forest);
-  width:fit-content;margin-top:auto;
-  transition:background .2s;
-}
-.sc-tag:hover{background:var(--forest);color:#fff;}
-.sc-tag svg{width:13px;height:13px;}
+
 
 /* ══ WHY — horizontal cards ══ */
 .why-section{padding:96px 56px;background:var(--sand2);}
@@ -523,8 +456,7 @@ footer{
   .hero-visual{height:380px;}
   .hero{min-height:auto;padding-top:136px;}
   .hero-main{padding:30px 28px 40px;}
-  .srv-grid{grid-template-columns:1fr 1fr;}
-  .sc.featured{grid-row:auto;}
+
   .why-grid{grid-template-columns:1fr;gap:2px;}
   .why-card:first-child{border-radius:12px 12px 0 0;}
   .why-card:last-child{border-radius:0 0 12px 12px;}
@@ -534,12 +466,12 @@ footer{
   .contact-grid{grid-template-columns:1fr;}
   nav{padding:12px 20px;height:80px;}
   .nav-logo img{width:65px;height:65px;}
-  .srv-section,.why-section,.contact-section{padding:72px 24px;}
+  .why-section,.contact-section{padding:72px 24px;}
   footer{padding:44px 24px 24px;}
 }
 @media(max-width:640px){
   .tb-handle{display:none;}
-  .srv-grid{grid-template-columns:1fr;}
+
   .hero-modes{grid-template-columns:1fr;}
   .nav-right{flex-direction:column;gap:8px;align-items:flex-end;}
   .nav-status{font-size:10px;padding:4px 10px;}
