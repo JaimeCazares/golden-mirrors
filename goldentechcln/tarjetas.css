@@ -273,8 +273,8 @@
 .brands-inline{
   display:inline-flex;
   align-items:center;
-  gap:10px;
-  margin-left:10px;
+  gap:8px;
+  margin-left:8px;
   padding:6px 12px;
 
   font-size:11px;
@@ -293,16 +293,42 @@
   box-shadow:0 4px 12px rgba(0,0,0,.15);
 
   vertical-align:middle;
+
+  max-width:100%;
+  flex-wrap:wrap; /* 🔥 clave para móvil */
 }
 
+/* LOGOS */
 .brands-inline img{
   height:14px;
-  filter: brightness(0) invert(1); /* blancos */
+  max-width:40px;
+  object-fit:contain;
+
+  filter: brightness(0) invert(1);
   opacity:.9;
+
   transition:.25s ease;
 }
 
+/* HOVER */
 .brands-inline img:hover{
   opacity:1;
   transform:scale(1.15);
+}
+
+
+/* 📱 RESPONSIVE (CELULAR) */
+@media(max-width:640px){
+
+  .brands-inline{
+    gap:5px;
+    padding:5px 10px;
+    font-size:10px;
+  }
+
+  .brands-inline img{
+    height:12px;
+    max-width:30px;
+  }
+
 }
