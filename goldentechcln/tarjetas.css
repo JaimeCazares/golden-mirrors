@@ -253,3 +253,19 @@
   transition: transform .7s;
   transform-style: preserve-3d;
 }
+
+.btn-back{
+  margin-top:20px;
+  padding:10px 16px;
+  border:none;
+  border-radius:999px;
+  background:#fff;
+  color:#333;
+  font-size:13px;
+  cursor:pointer;
+  transition:.2s;
+}
+
+.btn-back:hover{
+  background:#eee;
+}

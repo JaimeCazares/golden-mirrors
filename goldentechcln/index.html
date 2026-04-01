@@ -121,14 +121,18 @@
     <div class="flip-back">
 
       <div class="back-content back-x">
-        <h3>Beneficios</h3>
-        <p>✔ Menos calentamiento<br>✔ Más velocidad<br>✔ Mayor vida útil</p>
-      </div>
+  <h3>Beneficios</h3>
+  <p>✔ Menos calentamiento<br>✔ Más velocidad<br>✔ Mayor vida útil</p>
 
-      <div class="back-content back-y">
-        <h3>Antes y Después</h3>
-        <p>Aquí puedes poner fotos o resultados del servicio.</p>
-      </div>
+  <button onclick="flipCard('card1','x')" class="btn-back">← Regresar</button>
+</div>
+
+<div class="back-content back-y">
+  <h3>Antes y Después</h3>
+  <p>Aquí puedes poner fotos o resultados del servicio.</p>
+
+  <button onclick="flipCard('card1','y')" class="btn-back">← Regresar</button>
+</div>
 
     </div>
 
@@ -311,25 +315,7 @@
 
 <button id="sec" onclick="location.href='login.html'"></button>
 
-<script>
-const io = new IntersectionObserver(entries => {
-  entries.forEach(e => { if(e.isIntersecting){ e.target.classList.add('on'); io.unobserve(e.target); } });
-}, {threshold:0.1});
-document.querySelectorAll('.fade').forEach(el => io.observe(el));
-</script>
+<script src="golden.js"></script>
 
-<script>
-function flipCard(id, axis){
-  const card = document.getElementById(id);
-
-  if(axis === "x"){
-    card.classList.toggle("flip-x");
-    card.classList.remove("flip-y");
-  } else {
-    card.classList.toggle("flip-y");
-    card.classList.remove("flip-x");
-  }
-}
-</script>
 </body>
 </html>
