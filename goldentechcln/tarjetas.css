@@ -269,3 +269,40 @@
 .btn-back:hover{
   background:#eee;
 }
+
+.brands-inline{
+  display:inline-flex;
+  align-items:center;
+  gap:10px;
+  margin-left:10px;
+  padding:6px 12px;
+
+  font-size:11px;
+  font-weight:600;
+  letter-spacing:.08em;
+  text-transform:uppercase;
+
+  color:#fff;
+
+  background:rgba(255,255,255,.12);
+  backdrop-filter:blur(6px);
+
+  border:1px solid rgba(255,255,255,.25);
+  border-radius:999px;
+
+  box-shadow:0 4px 12px rgba(0,0,0,.15);
+
+  vertical-align:middle;
+}
+
+.brands-inline img{
+  height:14px;
+  filter: brightness(0) invert(1); /* blancos */
+  opacity:.9;
+  transition:.25s ease;
+}
+
+.brands-inline img:hover{
+  opacity:1;
+  transform:scale(1.15);
+}
