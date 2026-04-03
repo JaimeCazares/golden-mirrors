@@ -283,47 +283,6 @@ h1 em{color:var(--gold);font-style:normal;}
 
 
 
-/* ══ WHY — horizontal cards ══ */
-.why-section{padding:96px 56px;background:var(--sand2);}
-.why-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:2px;margin-top:52px;}
-.why-card{
-  background:var(--white);
-  padding:40px 36px;
-  position:relative;
-  transition:background .2s;
-}
-.why-card:first-child{border-radius:12px 0 0 12px;}
-.why-card:last-child{border-radius:0 12px 12px 0;}
-.why-card:hover{background:var(--forest);}
-.why-card:hover .why-n,.why-card:hover h3,.why-card:hover p{color:#fff;}
-.why-card:hover .why-line{background:var(--gold);}
-.why-n{
-  font-family:'Cormorant Garamond',serif;
-  font-size:64px;font-weight:700;color:var(--sand2);
-  line-height:1;margin-bottom:16px;
-  transition:color .2s;
-}
-.why-line{width:32px;height:3px;background:var(--gold);margin-bottom:16px;transition:background .2s;}
-.why-card h3{font-size:16px;font-weight:700;color:var(--forest);margin-bottom:10px;transition:color .2s;}
-.why-card p{font-size:13.5px;color:var(--muted);line-height:1.65;transition:color .2s;}
-
-/* ══ CIUDAD strip ══ */
-.city-section{display:grid;grid-template-columns:1fr 1fr;height:420px;overflow:hidden;}
-.city-panel{position:relative;overflow:hidden;}
-.city-panel img{width:100%;height:100%;object-fit:cover;transition:transform .6s ease;filter:saturate(.85);}
-.city-panel:hover img{transform:scale(1.05);}
-.city-panel-cap{
-  position:absolute;bottom:0;left:0;right:0;
-  padding:24px 28px;
-  background:linear-gradient(to top, rgba(44,62,53,.85) 0%, transparent 100%);
-  color:#fff;
-}
-.city-panel-cap h3{font-family:'Cormorant Garamond',serif;font-size:22px;font-weight:700;}
-.city-panel-cap p{font-size:12px;opacity:.7;margin-top:3px;}
-
-/* RIGHT side of city = 2 stacked */
-.city-stack{display:flex;flex-direction:column;}
-.city-stack .city-panel{flex:1;}
 
 /* ══ CONTACTO ══ */
 .contact-section{padding:96px 56px;background:var(--white);}
@@ -457,16 +416,10 @@ footer{
   .hero{min-height:auto;padding-top:136px;}
   .hero-main{padding:30px 28px 40px;}
 
-  .why-grid{grid-template-columns:1fr;gap:2px;}
-  .why-card:first-child{border-radius:12px 12px 0 0;}
-  .why-card:last-child{border-radius:0 0 12px 12px;}
-  .city-section{grid-template-columns:1fr;height:auto;}
-  .city-stack{flex-direction:row;}
-  .city-panel{height:200px;}
   .contact-grid{grid-template-columns:1fr;}
   nav{padding:12px 20px;height:80px;}
   .nav-logo img{width:65px;height:65px;}
-  .why-section,.contact-section{padding:72px 24px;}
+  .contact-section{padding:72px 24px;}
   footer{padding:44px 24px 24px;}
 }
 @media(max-width:640px){
@@ -475,7 +428,6 @@ footer{
   .hero-modes{grid-template-columns:1fr;}
   .nav-right{flex-direction:column;gap:8px;align-items:flex-end;}
   .nav-status{font-size:10px;padding:4px 10px;}
-  .city-stack{flex-direction:column;}
   .hero-stat-n {
     font-size: 22px;
   }
