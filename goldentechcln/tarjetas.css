@@ -261,41 +261,62 @@
 /* ===== BOTÓN WHATSAPP ELEGANTE ===== */
 /* ===== BOTÓN WHATSAPP MINIMAL ===== */
 .btn-wa{
-  margin-top:12px;
+  margin-top:16px;
   display:flex;
   align-items:center;
   justify-content:center;
   gap:10px;
-  padding:12px 18px;
-  border-radius:999px;
+  padding:12px 24px;
+  border-radius:12px;
   
-  /* COLOR BASE DISCRETO */
-  background:#1f1f1f;
-  color:#eaeaea;
+  /* ESTILO FROSTED GLASS (CRISTAL ESMERILADO) */
+  background:rgba(44,62,53,0.08); /* Fondo muy sutil para dar cuerpo */
+  backdrop-filter:blur(10px);
+  -webkit-backdrop-filter:blur(10px);
+  color:var(--forest);
+  border:1.5px solid rgba(44,62,53,0.15);
   
-  font-weight:500;
+  font-weight:700;
   text-decoration:none;
-  font-size:14px;
+  font-size:13px;
+  text-transform:uppercase;
+  letter-spacing:0.04em;
   
-  transition: all 0.25s ease;
-  border:1px solid rgba(255,255,255,0.08);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+
+/* Si la card es oscura, el boton es cristal blanco */
+.sc.dark .btn-wa,
+.sc.featured .btn-wa{
+  background:rgba(255,255,255,0.12);
+  border-color:rgba(255,255,255,0.25);
+  color:#fff;
 }
 
 /* ICONO */
 .btn-wa img{
-  width:20px;
-  height:20px;
-  object-fit:contain;
+  width:18px;
+  height:18px;
+  opacity:1; /* Recuperamos visibilidad */
+}
+.sc.dark .btn-wa img,
+.sc.featured .btn-wa img{
+  filter: none; /* Recuperamos el color original */
 }
 
 /* HOVER ELEGANTE */
 .btn-wa:hover{
-  background:#2a2a2a;
-  transform: translateY(-2px);
-  
-  /* glow sutil verde */
-  box-shadow: 0 0 0 1px rgba(37, 211, 102, 0.4),
-              0 6px 18px rgba(0,0,0,0.4);
+  background:rgba(44,62,53,0.15);
+  border-color:var(--forest);
+  transform:translateY(-2px);
+  box-shadow:0 8px 20px rgba(0,0,0,0.08);
+}
+.sc.dark .btn-wa:hover,
+.sc.featured .btn-wa:hover{
+  background:rgba(255,255,255,0.2);
+  border-color:#fff;
+  box-shadow:0 8px 30px rgba(0,0,0,0.3);
 }
 
 /* EFECTO AL HACER CLICK */
