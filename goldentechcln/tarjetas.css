@@ -220,13 +220,13 @@
   background:#1f4e3e;
 }
 
-/* ===== BOTÓN WHATSAPP GRANDE ===== */
+/* ===== BOTÓN WHATSAPP PRO ===== */
 .btn-wa{
   margin-top:12px;
   display:flex;
   align-items:center;
   justify-content:center;
-  gap:8px;
+  gap:10px;
   padding:14px;
   border-radius:999px;
   background:#25D366;
@@ -234,10 +234,67 @@
   font-weight:600;
   text-decoration:none;
   font-size:14px;
+  position:relative;
+  overflow:hidden;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
 }
 
+/* ICONO MÁS VISIBLE */
 .btn-wa img{
-  width:18px;
+  width:20px;
+  z-index:2;
+}
+
+/* TEXTO ENCIMA */
+.btn-wa span{
+  z-index:2;
+}
+
+/* EFECTO NEÓN */
+.btn-wa::before{
+  content:"";
+  position:absolute;
+  inset:0;
+  border-radius:999px;
+  background: linear-gradient(
+    120deg,
+    transparent,
+    rgba(255,255,255,0.6),
+    transparent
+  );
+  transform: translateX(-100%);
+  animation: neonMove 2.5s infinite;
+}
+
+/* LÍNEAS HORIZONTALES SUTILES */
+.btn-wa::after{
+  content:"";
+  position:absolute;
+  inset:0;
+  background: repeating-linear-gradient(
+    0deg,
+    rgba(255,255,255,0.08),
+    rgba(255,255,255,0.08) 2px,
+    transparent 2px,
+    transparent 6px
+  );
+  border-radius:999px;
+}
+
+/* HOVER (AGRANDAR + BRILLO) */
+.btn-wa:hover{
+  transform: scale(1.08);
+  box-shadow: 0 0 12px #25D366, 0 0 25px #25D366;
+}
+
+/* ANIMACIÓN */
+@keyframes neonMove{
+  0%{
+    transform: translateX(-100%);
+  }
+  100%{
+    transform: translateX(100%);
+  }
 }
 
 .flip-card{
