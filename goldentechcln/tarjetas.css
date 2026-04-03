@@ -222,51 +222,52 @@
 
 /* ===== BOTÓN WHATSAPP PRO ===== */
 /* ===== BOTÓN WHATSAPP ELEGANTE ===== */
+/* ===== BOTÓN WHATSAPP MINIMAL ===== */
 .btn-wa{
   margin-top:12px;
   display:flex;
   align-items:center;
   justify-content:center;
   gap:10px;
-  padding:14px 18px;
+  padding:12px 18px;
   border-radius:999px;
-  background:#25D366;
-  color:#fff;
-  font-weight:600;
-  text-decoration:none;
-  font-size:15px;
-  position:relative;
-  transition: all 0.25s ease;
   
-  /* glow base */
-  box-shadow: 0 0 0 rgba(37, 211, 102, 0.6);
-  animation: pulseGlow 2.5s infinite;
+  /* COLOR BASE DISCRETO */
+  background:#1f1f1f;
+  color:#eaeaea;
+  
+  font-weight:500;
+  text-decoration:none;
+  font-size:14px;
+  
+  transition: all 0.25s ease;
+  border:1px solid rgba(255,255,255,0.08);
 }
 
-/* LOGO */
+/* ICONO */
 .btn-wa img{
-  width:24px;
-  height:24px;
-  object-fit: contain;
+  width:20px;
+  height:20px;
+  object-fit:contain;
 }
 
-/* HOVER: efecto premium */
+/* HOVER ELEGANTE */
 .btn-wa:hover{
-  transform: translateY(-3px) scale(1.05);
-  box-shadow: 0 8px 25px rgba(37, 211, 102, 0.6);
+  background:#2a2a2a;
+  transform: translateY(-2px);
+  
+  /* glow sutil verde */
+  box-shadow: 0 0 0 1px rgba(37, 211, 102, 0.4),
+              0 6px 18px rgba(0,0,0,0.4);
 }
 
-/* ANIMACIÓN SUAVE (PULSO) */
-@keyframes pulseGlow{
-  0%{
-    box-shadow: 0 0 0 0 rgba(37, 211, 102, 0.6);
-  }
-  70%{
-    box-shadow: 0 0 0 12px rgba(37, 211, 102, 0);
-  }
-  100%{
-    box-shadow: 0 0 0 0 rgba(37, 211, 102, 0);
-  }
+/* EFECTO AL HACER CLICK */
+.btn-wa:active{
+  transform: scale(0.97);
+}
+
+.btn-wa:hover img{
+  filter: drop-shadow(0 0 4px rgba(37, 211, 102, 0.6));
 }
 
 .flip-card{
