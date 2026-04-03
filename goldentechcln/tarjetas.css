@@ -221,79 +221,51 @@
 }
 
 /* ===== BOTÓN WHATSAPP PRO ===== */
+/* ===== BOTÓN WHATSAPP ELEGANTE ===== */
 .btn-wa{
   margin-top:12px;
   display:flex;
   align-items:center;
   justify-content:center;
   gap:10px;
-  padding:14px;
+  padding:14px 18px;
   border-radius:999px;
   background:#25D366;
   color:#fff;
   font-weight:600;
   text-decoration:none;
-  font-size:14px;
+  font-size:15px;
   position:relative;
-  overflow:hidden;
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  transition: all 0.25s ease;
+  
+  /* glow base */
+  box-shadow: 0 0 0 rgba(37, 211, 102, 0.6);
+  animation: pulseGlow 2.5s infinite;
 }
 
-/* ICONO MÁS VISIBLE */
+/* LOGO */
 .btn-wa img{
-  width:20px;
-  z-index:2;
+  width:24px;
+  height:24px;
+  object-fit: contain;
 }
 
-/* TEXTO ENCIMA */
-.btn-wa span{
-  z-index:2;
-}
-
-/* EFECTO NEÓN */
-.btn-wa::before{
-  content:"";
-  position:absolute;
-  inset:0;
-  border-radius:999px;
-  background: linear-gradient(
-    120deg,
-    transparent,
-    rgba(255,255,255,0.6),
-    transparent
-  );
-  transform: translateX(-100%);
-  animation: neonMove 2.5s infinite;
-}
-
-/* LÍNEAS HORIZONTALES SUTILES */
-.btn-wa::after{
-  content:"";
-  position:absolute;
-  inset:0;
-  background: repeating-linear-gradient(
-    0deg,
-    rgba(255,255,255,0.08),
-    rgba(255,255,255,0.08) 2px,
-    transparent 2px,
-    transparent 6px
-  );
-  border-radius:999px;
-}
-
-/* HOVER (AGRANDAR + BRILLO) */
+/* HOVER: efecto premium */
 .btn-wa:hover{
-  transform: scale(1.08);
-  box-shadow: 0 0 12px #25D366, 0 0 25px #25D366;
+  transform: translateY(-3px) scale(1.05);
+  box-shadow: 0 8px 25px rgba(37, 211, 102, 0.6);
 }
 
-/* ANIMACIÓN */
-@keyframes neonMove{
+/* ANIMACIÓN SUAVE (PULSO) */
+@keyframes pulseGlow{
   0%{
-    transform: translateX(-100%);
+    box-shadow: 0 0 0 0 rgba(37, 211, 102, 0.6);
+  }
+  70%{
+    box-shadow: 0 0 0 12px rgba(37, 211, 102, 0);
   }
   100%{
-    transform: translateX(100%);
+    box-shadow: 0 0 0 0 rgba(37, 211, 102, 0);
   }
 }
 
