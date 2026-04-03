@@ -53,7 +53,35 @@
   background:rgba(44,62,53,.08);
   width:fit-content;padding:10px;
 }
-.sc h3{font-size:16px;font-weight:700;color:var(--forest);line-height:1.2;}
+.sc h3{
+  font-size:19px;
+  font-weight:700;
+  color:var(--forest);
+  line-height:1.2;
+  letter-spacing:0.01em;
+  
+  /* ESTILO MINIMALISTA Y DISCRETO */
+  display:block;
+  padding-left:14px;
+  border-left:2.5px solid var(--gold); /* UNICO ACENTO DISCRETO */
+  margin-bottom:14px;
+  transition:border-color 0.3s ease;
+}
+.sc:hover h3{
+  border-left-color:var(--forest);
+}
+.sc.dark h3{
+  border-left-color:var(--gold);
+  color:#fff;
+}
+.sc.dark:hover h3{
+  border-left-color:#fff;
+}
+.sc.featured h3{
+  border-left-color:#fff;
+  color:#fff;
+  font-size:26px; /* UN POCO MAS GRANDE PERO SOBRIO */
+}
 .sc p{font-size:13px;color:var(--muted);line-height:1.6;flex:1;}
 .sc-tag{
   display:inline-flex;align-items:center;gap:7px;
@@ -83,10 +111,19 @@
 }
 
 /* TITULO */
+/* TITULO PRO SOBRIO */
 .custom-card h3{
   font-size:28px;
   font-weight:700;
   color:#fff;
+  letter-spacing:-0.01em;
+  
+  /* ESTILO LIMPIO */
+  display:block;
+  padding-left:18px;
+  border-left:4px solid #fff;
+  margin-bottom:18px;
+  line-height:1.1;
 }
 
 /* TEXTO */
@@ -570,3 +607,31 @@
   50%{opacity:.9;}
   100%{opacity:.4;}
 }
+
+/* CONTENEDOR */
+.consolas{
+  margin:14px 0;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+}
+
+/* IMAGEN */
+.consolas img{
+  width:100%;
+  max-width:220px; /* controla tamaño */
+  height:auto;
+  object-fit:contain;
+  
+  /* estilo visual */
+  border-radius:12px;
+  opacity:0.95;
+  transition: all 0.3s ease;
+}
+
+/* HOVER BONITO */
+.consolas img:hover{
+  transform: scale(1.05);
+  opacity:1;
+}
+
