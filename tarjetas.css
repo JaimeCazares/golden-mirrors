@@ -634,45 +634,11 @@
   margin:14px 0;
 }
 
-/* STRIP — 5 consolas juntas en fila */
-.consolas-strip{
-  display:flex;
-  align-items:flex-end;
-  justify-content:center;
-  gap:6px;
+.consolas-hero{
   width:100%;
-}
-
-.con-fig{
-  flex:1;
-  display:flex;
-  flex-direction:column;
-  align-items:center;
-  gap:4px;
-  margin:0;
-}
-
-.con-fig img{
-  width:100%;
-  max-height:88px;
-  object-fit:contain;
-  filter:drop-shadow(0 2px 5px rgba(0,0,0,0.18));
-  transition:transform 0.25s ease, filter 0.25s ease;
-}
-
-.con-fig:hover img{
-  transform:translateY(-4px) scale(1.06);
-  filter:drop-shadow(0 6px 10px rgba(0,0,0,0.28));
-}
-
-.con-fig figcaption{
-  font-size:9px;
-  font-weight:700;
-  text-align:center;
-  color:#1E2D27;
-  opacity:0.7;
-  line-height:1.2;
-  white-space:nowrap;
+  border-radius:12px;
+  object-fit:cover;
+  display:block;
 }
 
 /* ══ PRECIO ══ */
