@@ -656,6 +656,66 @@
   opacity:1;
 }
 
+/* ══ PRECIO ══ */
+.sc-price{
+  width:100%;
+  margin:16px 0 6px;
+  padding-top:13px;
+  border-top:1px solid rgba(44,62,53,.13);
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+}
+.sc-price-label{
+  font-size:10px;
+  font-weight:500;
+  text-transform:uppercase;
+  letter-spacing:.2em;
+  color:var(--muted);
+}
+.sc-price-main{
+  display:flex;
+  align-items:baseline;
+  gap:2px;
+}
+.sc-price-sym{
+  font-size:13px;
+  font-weight:600;
+  color:var(--gold);
+}
+.sc-price-num{
+  font-size:22px;
+  font-weight:700;
+  color:var(--gold);
+  letter-spacing:-.3px;
+}
+.sc-price-cur{
+  font-size:10px;
+  font-weight:500;
+  color:var(--gold);
+  opacity:.55;
+  letter-spacing:.12em;
+  padding-left:3px;
+}
+
+/* Tarjetas oscuras / featured */
+.sc.dark .sc-price,
+.sc.featured .sc-price{
+  border-top-color:rgba(255,255,255,.12);
+}
+.sc.dark .sc-price-label,
+.sc.featured .sc-price-label{
+  color:rgba(255,255,255,.4);
+}
+.sc.dark .sc-price-sym,
+.sc.dark .sc-price-num,
+.sc.dark .sc-price-cur,
+.sc.featured .sc-price-sym,
+.sc.featured .sc-price-num,
+.sc.featured .sc-price-cur{
+  color:#FFD166;
+}
+
 /* GRID DE SISTEMAS OPERATIVOS */
 .os-grid {
   display: grid;
