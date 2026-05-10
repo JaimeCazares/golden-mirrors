@@ -95,74 +95,15 @@
   <div class="srv-grid">
     <!-- Featured -->
     <div class="sc featured custom-card fade fd1 flip-card" id="card1">
-
+<div class="badge-hot">🔥 Más solicitado</div>
   <div class="flip-inner">
 
     <!-- CARA FRONTAL -->
     <div class="flip-front">
-<div class="badge-hot">
-  🔥 Más solicitado
-</div>
-      <h3 style="font-size:18px;">Mantenimiento de Computadoras</h3>
+      <h3 style="font-size:16px;margin-top:8px;">Mantenimiento de Computadoras</h3>
 
       <p style="font-size:12px;">
         PC, All-in-One y Laptop (de todas las marcas). Limpieza interna completa, cambio de pasta térmica, limpieza profunda de ventiladores y disipadores.
-        <div class="brands-box">
-
-  <div class="brands-top">
-    <span>Trabajamos con:</span>
-
-    <div class="brands-row brands-main">
-      <div class="brand-item">
-        <img src="img/hp.svg">
-        <small>HP</small>
-      </div>
-
-      <div class="brand-item">
-        <img src="img/dell.svg">
-        <small>Dell</small>
-      </div>
-
-      <div class="brand-item">
-        <img src="img/lenovo.svg">
-        <small>Lenovo</small>
-      </div>
-    </div>
-  </div>
-
-  <div class="brands-row brands-secondary">
-    <div class="brand-item">
-      <img src="img/apple.svg">
-      <small>Apple</small>
-    </div>
-
-    <div class="brand-item">
-      <img src="img/acer.svg">
-      <small>Acer</small>
-    </div>
-
-    <div class="brand-item">
-      <img src="img/asus.svg">
-      <small>ASUS</small>
-    </div>
-
-    <div class="brand-item">
-      <img src="img/msi.svg">
-      <small>MSI</small>
-    </div>
-
-    <div class="brand-item">
-      <img src="img/huawei.svg">
-      <small>Huawei</small>
-    </div>
-
-    <div class="brand-item">
-      <img src="img/toshiba.svg">
-      <small>Toshiba</small>
-    </div>
-  </div>
-
-</div>
       </p>
 
       <div class="sc-devices">
@@ -359,26 +300,7 @@
       <h3>Instalación de Sistema Operativo</h3>
       <p>Windows 10/11, macOS, Linux, Ubuntu, Chrome OS</p>
 
-      <div class="os-grid">
-        <div class="os-item">
-          <img src="img/windows  10.jpg" alt="Windows 10">
-        </div>
-        <div class="os-item">
-          <img src="img/windows  11.jpg" alt="Windows 11">
-        </div>
-        <div class="os-item">
-          <img src="img/Mac os.jpg" alt="macOS">
-        </div>
-        <div class="os-item">
-          <img src="img/ubuntu.jpg" alt="Ubuntu">
-        </div>
-        <div class="os-item">
-          <img src="img/linux.jpg" alt="Linux">
-        </div>
-        <div class="os-item">
-          <img src="img/chrome os.jpg" alt="Chrome OS">
-        </div>
-      </div>
+      <img class="os-img" src="img/sistemas-operativos.png" alt="Windows 10, Windows 11, macOS, Linux, Ubuntu, Chrome OS">
       <div class="sc-price">
         <span class="sc-price-label">Precio</span>
         <div class="sc-price-main">
@@ -399,21 +321,57 @@
       <h3>Expansión de almacenamiento</h3>
       <p>Cambios de discos duros por SSD, Aumento de RAM.</p>
 
-      <div class="storage-visual">
-        <div class="sv-row">
-          <span class="sv-lbl">HDD</span>
-          <div class="sv-track"><div class="sv-fill hdd"></div></div>
-          <span class="sv-speed">80 MB/s</span>
+      <div class="upgrade-visual">
+        <!-- HDD → SSD -->
+        <div class="uv-swap">
+          <div class="uv-device uv-hdd">
+            <svg class="uv-hw" viewBox="0 0 44 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <rect x="1" y="1" width="42" height="30" rx="3.5" stroke="currentColor" stroke-width="1.8"/>
+              <circle cx="18" cy="16" r="11" stroke="currentColor" stroke-width="1.3"/>
+              <circle cx="18" cy="16" r="4" fill="currentColor" opacity="0.2"/>
+              <circle cx="18" cy="16" r="1.5" fill="currentColor"/>
+              <line x1="18" y1="16" x2="25" y2="8" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/>
+              <rect x="32" y="13" width="9" height="2" rx="0.8" fill="currentColor" opacity="0.5"/>
+              <rect x="32" y="17" width="9" height="2" rx="0.8" fill="currentColor" opacity="0.5"/>
+            </svg>
+            <span class="uv-lbl">HDD</span>
+            <span class="uv-spd uv-slow">80 MB/s</span>
+          </div>
+          <span class="uv-arr">→</span>
+          <div class="uv-device uv-ssd">
+            <svg class="uv-hw" viewBox="0 0 44 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <rect x="1" y="1" width="42" height="30" rx="3.5" stroke="currentColor" stroke-width="1.8"/>
+              <rect x="5" y="7" width="10" height="8" rx="1.5" fill="currentColor" opacity="0.6"/>
+              <rect x="18" y="7" width="10" height="8" rx="1.5" fill="currentColor" opacity="0.6"/>
+              <rect x="5" y="18" width="10" height="7" rx="1.5" fill="currentColor" opacity="0.4"/>
+              <rect x="18" y="18" width="6" height="7" rx="1.5" fill="currentColor" opacity="0.4"/>
+              <rect x="32" y="13" width="9" height="2" rx="0.8" fill="currentColor" opacity="0.7"/>
+              <rect x="32" y="17" width="9" height="2" rx="0.8" fill="currentColor" opacity="0.7"/>
+            </svg>
+            <span class="uv-lbl">SSD</span>
+            <span class="uv-spd uv-fast">550 MB/s</span>
+          </div>
         </div>
-        <div class="sv-row">
-          <span class="sv-lbl sv-ssd">SSD</span>
-          <div class="sv-track"><div class="sv-fill ssd"></div></div>
-          <span class="sv-speed sv-fast">550 MB/s</span>
-        </div>
-        <div class="sv-row">
-          <span class="sv-lbl sv-ram">RAM</span>
-          <div class="sv-track"><div class="sv-fill ram"></div></div>
-          <span class="sv-speed sv-ram-fast">+8 GB</span>
+
+        <div class="uv-sep"></div>
+
+        <!-- RAM: antes → después -->
+        <div class="uv-swap">
+          <div class="uv-ram-group">
+            <div class="uv-sticks">
+              <div class="uv-dimm on"></div>
+              <div class="uv-dimm off"></div>
+            </div>
+            <span class="uv-spd uv-slow">4 GB</span>
+          </div>
+          <span class="uv-arr">→</span>
+          <div class="uv-ram-group">
+            <div class="uv-sticks">
+              <div class="uv-dimm on"></div>
+              <div class="uv-dimm on new"></div>
+            </div>
+            <span class="uv-spd uv-ram">+8 GB</span>
+          </div>
         </div>
       </div>
 
