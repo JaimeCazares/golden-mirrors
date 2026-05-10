@@ -76,7 +76,7 @@
       </div>
       <div class="hero-stats">
         <div class="hero-stat"><div class="hero-stat-n">+200</div><div class="hero-stat-l">Equipos atendidos</div></div>
-        <div class="hero-stat"><div class="hero-stat-n">1-2 días</div><div class="hero-stat-l">Entrega mismo día</div></div>
+        <div class="hero-stat"><div class="hero-stat-n">Entrega rápida</div><div class="hero-stat-l">(1-2 días Max)</div></div>
         <div class="hero-stat"><div class="hero-stat-n">100%</div><div class="hero-stat-l">Satisfacción</div></div>
       </div>
     </div>
@@ -237,7 +237,30 @@
     <!-- Dark -->
     <div class="sc dark fade fd3">
       <h3>Formateos</h3>
-      <p>Windows o macOS, cualquier laptop, contamos con opcion de Respaldo de tus archivos antes de formatear.</p>
+      <p>Windows o macOS, cualquier laptop, como nueva de fabrica, contamos con opcion de Respaldo de tus archivos antes de formatear.</p>
+
+      <div class="format-visual">
+        <div class="format-header">
+          <span class="format-title-bar">Instalación de Windows</span>
+          <div class="format-win-controls">
+            <span class="fwc-min">&#8210;</span>
+            <span class="fwc-max">&#9633;</span>
+            <span class="fwc-close">&#x2715;</span>
+          </div>
+        </div>
+        <div class="format-body">
+          <div class="format-label">Instalando Windows<span class="format-dots"></span></div>
+          <div class="format-bar-wrap">
+            <div class="format-bar"></div>
+          </div>
+          <div class="format-steps">
+            <span class="format-step fst-done">✓ Borrar datos</span>
+            <span class="format-step fst-active">⟳ Instalando</span>
+            <span class="format-step">Configurar</span>
+          </div>
+        </div>
+      </div>
+
       <div class="sc-price">
         <span class="sc-price-label">Precio</span>
         <div class="sc-price-main">
@@ -285,6 +308,38 @@
     <div class="sc light fade fd2">
       <h3>Optimización</h3>
       <p>Nuestro servicio acelera tu computadora al máximo. Limpiamos la basura digital, optimizamos el sistema, ajustamos configuraciones y mejoramos el tiempo de arranque para que tu equipo vuelva a funcionar de forma rápida, segura y sin interrupciones.</p>
+
+      <div class="speed-visual">
+        <svg viewBox="0 0 160 95" class="speed-svg">
+          <defs>
+            <linearGradient id="sg" x1="0%" y1="0%" x2="100%" y2="0%">
+              <stop offset="0%"   stop-color="#e74c3c"/>
+              <stop offset="50%"  stop-color="#f39c12"/>
+              <stop offset="100%" stop-color="#17b978"/>
+            </linearGradient>
+          </defs>
+          <!-- Track -->
+          <path d="M 18 82 A 62 62 0 0 1 142 82" stroke="rgba(44,62,53,0.12)" stroke-width="9" fill="none" stroke-linecap="round"/>
+          <!-- Arco de color -->
+          <path d="M 18 82 A 62 62 0 0 1 142 82" stroke="url(#sg)" stroke-width="9" fill="none" stroke-linecap="round" opacity="0.9"/>
+          <!-- Ticks -->
+          <line x1="18"  y1="82" x2="22"  y2="82" stroke="rgba(44,62,53,0.3)" stroke-width="1.5" stroke-linecap="round"/>
+          <line x1="36"  y1="38" x2="39"  y2="41" stroke="rgba(44,62,53,0.3)" stroke-width="1.5" stroke-linecap="round"/>
+          <line x1="80"  y1="20" x2="80"  y2="24" stroke="rgba(44,62,53,0.3)" stroke-width="1.5" stroke-linecap="round"/>
+          <line x1="124" y1="38" x2="121" y2="41" stroke="rgba(44,62,53,0.3)" stroke-width="1.5" stroke-linecap="round"/>
+          <line x1="142" y1="82" x2="138" y2="82" stroke="rgba(44,62,53,0.3)" stroke-width="1.5" stroke-linecap="round"/>
+          <!-- Aguja -->
+          <rect class="speed-needle" x="78.5" y="32" width="3" height="50" rx="1.5" fill="#2c3e50"/>
+          <!-- Centro -->
+          <circle cx="80" cy="82" r="7" fill="#2c3e50"/>
+          <circle cx="80" cy="82" r="3" fill="#f5f0e8"/>
+          <!-- Etiquetas -->
+          <text x="9"   y="93" font-size="7.5" fill="rgba(44,62,53,0.4)">Lento</text>
+          <text x="118" y="93" font-size="7.5" fill="#17b978">Óptimo</text>
+        </svg>
+        <p class="speed-tag">⚡ Tu equipo como nuevo</p>
+      </div>
+
       <div class="sc-price">
         <span class="sc-price-label">Precio</span>
         <div class="sc-price-main">
@@ -343,6 +398,25 @@
     <div class="sc green fade fd2">
       <h3>Expansión de almacenamiento</h3>
       <p>Cambios de discos duros por SSD, Aumento de RAM.</p>
+
+      <div class="storage-visual">
+        <div class="sv-row">
+          <span class="sv-lbl">HDD</span>
+          <div class="sv-track"><div class="sv-fill hdd"></div></div>
+          <span class="sv-speed">80 MB/s</span>
+        </div>
+        <div class="sv-row">
+          <span class="sv-lbl sv-ssd">SSD</span>
+          <div class="sv-track"><div class="sv-fill ssd"></div></div>
+          <span class="sv-speed sv-fast">550 MB/s</span>
+        </div>
+        <div class="sv-row">
+          <span class="sv-lbl sv-ram">RAM</span>
+          <div class="sv-track"><div class="sv-fill ram"></div></div>
+          <span class="sv-speed sv-ram-fast">+8 GB</span>
+        </div>
+      </div>
+
       <div class="sc-price">
         <span class="sc-price-label">A partir de</span>
         <div class="sc-price-main">
