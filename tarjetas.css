@@ -1,6 +1,6 @@
 /* ══ SERVICIOS / TARJETAS ══ */
 .srv-section {
-  padding: 40px 56px;
+  padding: 14px 20px;
   background: var(--forest);
   position: relative;
   overflow: hidden;
@@ -12,14 +12,10 @@
   width:400px;height:400px;border-radius:50%;
   background:rgba(143,180,154,.08);pointer-events:none;
 }
-.srv-top{display:flex;justify-content:space-between;align-items:flex-end;margin-bottom:32px;flex-wrap:wrap;gap:14px;}
-.srv-eyebrow{font-size:11px;font-weight:700;letter-spacing:.18em;text-transform:uppercase;color:var(--sage);margin-bottom:10px;}
-.srv-h2{
-  font-family:'Cormorant Garamond',serif;
-  font-size:clamp(34px,4vw,54px);font-weight:700;
-  letter-spacing:-.02em;line-height:1;color:#fff;
-}
-.srv-desc{font-size:14px;color:rgba(255,255,255,.5);max-width:300px;line-height:1.65;text-align:right;}
+.srv-top{display:flex;flex-direction:column;gap:4px;margin-bottom:10px;}
+.srv-eyebrow{display:flex;align-items:center;gap:10px;font-size:10px;font-weight:700;letter-spacing:.16em;text-transform:uppercase;color:var(--sage);white-space:nowrap;}
+.srv-eyebrow::after{content:'';flex:1;height:1px;background:rgba(255,255,255,.12);}
+.srv-desc{font-size:11.5px;color:rgba(255,255,255,.5);line-height:1.4;}
 .srv-grid{
   display:grid;
   grid-template-columns:1.4fr 1fr 1fr;
@@ -28,14 +24,15 @@
 }
 .sc{
   border-radius:12px;padding:16px 18px;
-  display:flex;flex-direction:column;gap:6px;
+  display:flex;flex-direction:column;gap:3px;
   position:relative;overflow:hidden;
   transition:transform .25s,box-shadow .25s;
   cursor:default;
 }
 .sc:hover{transform:translateY(-4px);}
 .sc.featured{
-  grid-row:span 2;
+  grid-row:span 1;
+  align-self:start;
   background:var(--gold);
 }
 .sc.featured .sc-icon{background:rgba(255,255,255,.2);}
@@ -62,7 +59,7 @@
   display:block;
   padding-left:10px;
   border-left:2.5px solid var(--gold);
-  margin-bottom:4px;
+  margin-bottom:0;
   transition:border-color 0.3s ease;
 }
 .sc:hover h3{
@@ -80,7 +77,7 @@
   color:#fff;
   font-size:22px;
 }
-.sc p{font-size:12px;color:var(--muted);line-height:1.45;}
+.sc p{font-size:12px;color:var(--muted);line-height:1.45;margin:0;}
 .sc-tag{
   display:inline-flex;align-items:center;gap:6px;
   background:rgba(44,62,53,.07);
@@ -96,7 +93,7 @@
 @media(max-width:960px){
   .srv-grid{grid-template-columns:1fr 1fr;}
   .sc.featured{grid-row:auto;}
-  .srv-section{padding:72px 24px;}
+  .srv-section{padding:14px 16px;}
 }
 @media(max-width:640px){
   .srv-grid{grid-template-columns:1fr;}
@@ -137,7 +134,7 @@
   justify-content:center;
   align-items:flex-end;
   gap:0px;
-  margin:2px 0 0;
+  margin:0;
 }
 
 /* IMÁGENES */
@@ -175,7 +172,17 @@
 }
 
 .custom-card .flip-front{
-  justify-content:space-between;
+  justify-content:flex-start;
+  gap:3px;
+}
+#card1 .flip-card,
+#card1 .flip-inner{
+  height:auto;
+  min-height:0;
+}
+#card1 .flip-front{
+  position:relative;
+  height:auto;
 }
 
 .custom-card .sc-tag:hover{
@@ -643,6 +650,39 @@
   display:block;
 }
 
+/* ══ FOOTER: COSTO + CONSULTAR EN LÍNEA ══ */
+.sc-footer{
+  display:flex;
+  align-items:center;
+  gap:8px;
+  width:100%;
+  margin-top:0;
+  padding-top:6px;
+  border-top:1px solid rgba(44,62,53,.13);
+}
+.sc-footer .sc-price{
+  flex:0 0 auto;
+  width:auto;
+  border-top:none;
+  margin:0;
+  padding:0;
+}
+.sc-footer .btn-wa{
+  margin-top:0;
+  flex:1 1 auto;
+  padding:7px 10px;
+  font-size:11px;
+  gap:5px;
+}
+.sc-footer .btn-wa img{
+  width:14px;
+  height:14px;
+}
+.sc.dark .sc-footer,
+.sc.featured .sc-footer{
+  border-top-color:rgba(255,255,255,.12);
+}
+
 /* ══ PRECIO ══ */
 .sc-price{
   width:100%;
@@ -1035,8 +1075,8 @@
 
 /* ══ OPTIMIZACIÓN: VELOCÍMETRO ══ */
 .speed-visual {
-  margin: 4px 0;
-  padding: 10px 14px 6px;
+  margin: 2px 0;
+  padding: 6px 10px 4px;
   background: rgba(44,62,53,0.05);
   border-radius: 10px;
   border: 1px solid rgba(44,62,53,0.1);
@@ -1045,7 +1085,7 @@
 
 .speed-svg {
   width: 100%;
-  max-width: 180px;
+  max-width: 120px;
   display: block;
   margin: 0 auto;
 }
