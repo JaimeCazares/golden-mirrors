@@ -736,11 +736,13 @@
 }
 .sc.dark .sc-price-sym,
 .sc.dark .sc-price-num,
-.sc.dark .sc-price-cur,
+.sc.dark .sc-price-cur{
+  color:#FFD166;
+}
 .sc.featured .sc-price-sym,
 .sc.featured .sc-price-num,
 .sc.featured .sc-price-cur{
-  color:#FFD166;
+  color:#fff;
 }
 
 /* IMAGEN SISTEMAS OPERATIVOS */
