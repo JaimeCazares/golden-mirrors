@@ -1305,15 +1305,15 @@
   .srv-top{flex-shrink:0;margin-bottom:3px;gap:2px;}
   .srv-desc{font-size:10px;}
 
-  /* Grid: 4 columnas, filas con alto natural (como móvil) */
+  /* Grid: 4 columnas, 2 filas exactas (8 tarjetas × 1 col cada una) */
   .srv-grid{
     flex:1;min-height:0;overflow:hidden;
-    grid-template-columns:1fr 1fr 1fr 1fr;
-    grid-template-rows:auto auto;
-    align-content:start;
+    grid-template-columns:repeat(4,1fr);
+    grid-template-rows:1fr 1fr;
+    align-content:stretch;
     gap:5px;
   }
-  .sc.featured{grid-column:span 2;}
+  .sc.featured{grid-column:span 1;}
   .sc{padding:6px 9px;gap:1px;min-height:0;overflow:hidden;}
   .sc h3{font-size:11px;}
   .sc.featured h3{font-size:14px;}

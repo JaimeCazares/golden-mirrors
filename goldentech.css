@@ -464,32 +464,22 @@ footer{
 
 /* ══ DESKTOP — SIN SCROLL ══ */
 @media(min-width:961px){
-  /* Sin scroll en toda la página */
   html,body{height:100vh;overflow:hidden;}
   body{
     display:flex;flex-direction:column;
-    padding-top:146px; /* espacio para topbar+nav fijos */
+    padding-top:146px;
     overflow:hidden;
   }
 
-  /* Fila principal: hero izquierda + servicios derecha */
-  .main-row{
-    flex:1;display:flex;min-height:0;overflow:hidden;
-  }
+  .main-row{flex:1;display:flex;min-height:0;overflow:hidden;}
 
-  /* Hero: columna izquierda — imagen completa, ancho reducido */
   .hero{
     flex:0 0 22%;
     padding-top:0;padding-bottom:0;
     min-height:0;overflow:hidden;
   }
-  .hero-content{
-    flex:1;min-height:0;
-    display:flex;flex-direction:column;
-  }
-  .hero-visual{
-    flex:1;min-height:0;height:auto;
-  }
+  .hero-content{flex:1;min-height:0;display:flex;flex-direction:column;}
+  .hero-visual{flex:none;min-height:0;height:200px;}
   .hero-img-wrap img.city-bg{object-fit:contain;}
   .hero-logo-center{width:110px;height:110px;}
   .hero-stats{bottom:8px;left:14px;right:14px;gap:8px;}
@@ -498,19 +488,38 @@ footer{
   .hero-stat-l{font-size:8px;}
   .hero-label{top:12px;left:14px;padding:4px 10px;font-size:9px;}
 
-  /* Talleres y Contacto: fijos al fondo */
-  .talleres-section{flex-shrink:0;padding:6px 16px;display:flex;align-items:center;gap:20px;}
-  .talleres-header{margin-bottom:0;flex-shrink:0;max-width:280px;}
-  .talleres-hint{margin-bottom:0;flex-shrink:0;font-size:10px;}
-  .talleres-cards{grid-template-columns:repeat(2,220px);gap:6px;flex-shrink:0;}
-  .tc-map{height:110px;}
-  .tc-val{font-size:12px;}
-  .tc-label{font-size:8.5px;}
-  .tc-info{padding:5px 8px;}
-  .contact-section{flex-shrink:0;padding:4px 16px;}
-  .contact-header{margin-bottom:3px;}
-  .contact-cards{grid-template-columns:repeat(6,1fr);gap:4px;}
-  footer{flex-shrink:0;}
+  /* Talleres y Contacto: un solo renglón */
+  .bottom-row{display:flex;flex-shrink:0;align-items:stretch;}
+  .contact-section{flex:0 0 54%;padding:2px 10px;border-right:1px solid var(--border);}
+  .contact-header{margin-bottom:2px;display:flex;align-items:baseline;gap:6px;flex-wrap:nowrap;}
+  .contact-title{font-size:11px;white-space:nowrap;flex-shrink:0;}
+  .contact-sub{font-size:9px;margin:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+  .contact-cards{grid-template-columns:repeat(6,1fr);gap:3px;}
+  .cc{padding:3px 5px;border-radius:7px;gap:5px;flex-wrap:nowrap;align-items:center;min-width:0;}
+  .cc-ico{width:26px;height:26px;border-radius:6px;font-size:14px;flex-shrink:0;overflow:hidden;padding:0;}
+  .cc-ico.whats{padding:4px;box-sizing:border-box;}
+  .cc-ico img{width:100%;height:100%;object-fit:contain;display:block;}
+  .icon{width:100%;height:100%;border-radius:0;}
+  .cc > div{min-width:0;overflow:hidden;}
+  .cc-label{font-size:7px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+  .cc-val{font-size:8.5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+  .talleres-section{flex:1;padding:3px 12px;display:flex;flex-direction:column;align-items:flex-start;justify-content:center;gap:4px;}
+  .talleres-header{margin-bottom:0;flex-shrink:0;max-width:none;display:block;}
+  .talleres-title{font-size:11px;white-space:nowrap;}
+  .talleres-sub{font-size:8.5px;margin:0;line-height:1.3;white-space:nowrap;}
+  .talleres-hint{display:none;}
+  .talleres-cards{grid-template-columns:repeat(2,130px);gap:4px;flex-shrink:0;}
+  .tc{border-radius:7px;}
+  .tc-map{height:36px;}
+  .tc-val{font-size:9.5px;margin-top:0;}
+  .tc-label{font-size:7px;}
+  .tc-info{padding:2px 5px;}
+  footer{flex-shrink:0;padding:2px 16px 1px;}
+  .ft-inner{padding-bottom:1px;gap:4px;justify-content:center;}
+  .ft-logo{width:36px;height:36px;}
+  .ft-name{font-size:16px;}
+  .ft-sub{font-size:9px;}
+  .ft-copy{font-size:9px;margin:2px auto 0;}
 }
 
 /* ══ RESPONSIVE ══ */
@@ -522,6 +531,8 @@ footer{
 
   nav{padding:12px 20px;height:80px;}
   .nav-logo img{width:65px;height:65px;}
+  .bottom-row{flex-direction:column;}
+  .contact-section{border-right:none;border-bottom:1px solid var(--border);}
   .talleres-section{padding:16px 16px;}
   .talleres-cards{gap:8px;}
   .contact-section{padding:16px 16px;}
