@@ -1114,6 +1114,186 @@
   margin: 0 0 4px;
 }
 
+/* ══ PÁGINAS WEB & SISTEMAS ══ */
+.web-img {
+  width: 100%;
+  border-radius: 10px;
+  display: block;
+  margin: 4px 0 2px;
+  object-fit: cover;
+}
+
+/* ══ PÁGINAS WEB & SISTEMAS — MOCKUP BROWSER ══ */
+.wmock {
+  border-radius: 10px;
+  overflow: hidden;
+  border: 1px solid rgba(255,255,255,0.12);
+  margin: 4px 0;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+}
+
+.wmock-chrome {
+  background: #3c3c3c;
+  padding: 6px 10px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.wmock-dots {
+  display: flex;
+  gap: 4px;
+  flex-shrink: 0;
+}
+
+.wmock-dots span {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+}
+
+.wmock-dots span:nth-child(1) { background: #ff5f57; }
+.wmock-dots span:nth-child(2) { background: #febc2e; }
+.wmock-dots span:nth-child(3) { background: #28c840; }
+
+.wmock-addr {
+  flex: 1;
+  background: rgba(255,255,255,0.12);
+  border-radius: 5px;
+  padding: 2px 8px;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 9px;
+  color: rgba(255,255,255,0.7);
+}
+
+.wmock-lock { font-size: 8px; }
+
+.wmock-page {
+  background: #fff;
+  display: flex;
+  flex-direction: column;
+}
+
+.wmock-nav {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 5px 10px;
+  background: #fff;
+  border-bottom: 1px solid #f0f0f0;
+}
+
+.wmock-logo-bar {
+  font-size: 9px;
+  font-weight: 800;
+  color: #1a1a2e;
+  letter-spacing: -0.02em;
+}
+
+.wmock-nav-links {
+  display: flex;
+  gap: 8px;
+}
+
+.wmock-nav-links span {
+  font-size: 8px;
+  color: #666;
+}
+
+.wmock-hero {
+  background: linear-gradient(135deg, #1a73e8 0%, #0d47a1 55%, #34a853 100%);
+  padding: 10px 12px 9px;
+  position: relative;
+  overflow: hidden;
+}
+
+.wmock-hero::before {
+  content: '';
+  position: absolute;
+  top: -18px; right: -18px;
+  width: 55px; height: 55px;
+  border-radius: 50%;
+  background: rgba(255,255,255,0.07);
+  pointer-events: none;
+}
+
+.wmock-hero::after {
+  content: '';
+  position: absolute;
+  bottom: -14px; left: -8px;
+  width: 45px; height: 45px;
+  border-radius: 50%;
+  background: rgba(255,255,255,0.05);
+  pointer-events: none;
+}
+
+.wmock-h1 {
+  font-size: 11px;
+  font-weight: 800;
+  color: #fff;
+  line-height: 1.2;
+  position: relative;
+  z-index: 1;
+}
+
+.wmock-sub {
+  font-size: 8px;
+  color: rgba(255,255,255,0.78);
+  margin-top: 3px;
+  position: relative;
+  z-index: 1;
+}
+
+.wmock-cta {
+  display: inline-block;
+  margin-top: 6px;
+  background: #fff;
+  color: #1a73e8;
+  font-size: 8px;
+  font-weight: 700;
+  padding: 3px 10px;
+  border-radius: 999px;
+  position: relative;
+  z-index: 1;
+  animation: ctaPulse 2.5s ease-in-out infinite;
+}
+
+@keyframes ctaPulse {
+  0%, 100% { box-shadow: 0 0 0 rgba(255,255,255,0); }
+  50%       { box-shadow: 0 0 10px rgba(255,255,255,0.55); }
+}
+
+.wmock-strip {
+  display: flex;
+  background: #f8f9fa;
+  border-top: 1px solid #ececec;
+}
+
+.wmock-info-item {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 5px 2px;
+  gap: 1px;
+  border-right: 1px solid #ececec;
+}
+
+.wmock-info-item:last-child { border-right: none; }
+
+.wmock-info-item span:first-child {
+  font-size: 10px;
+  line-height: 1;
+}
+
+.wmock-info-item span:last-child {
+  font-size: 7.5px;
+  color: #777;
+  font-weight: 600;
+}
+
 /* ══ DESKTOP — SIN SCROLL ══ */
 @media(min-width:961px){
   /* Servicios: columna derecha, ocupa todo el espacio disponible */
@@ -1159,4 +1339,21 @@
   .btn-wa{padding:4px 8px;font-size:9.5px;}
   .badge-hot{padding:3px 8px;font-size:9px;}
   .flip-inner{min-height:0;}
+
+  /* website mockup desktop */
+  .wmock{margin:1px 0;}
+  .wmock-chrome{padding:3px 7px;gap:5px;}
+  .wmock-dots span{width:5px;height:5px;}
+  .wmock-addr{font-size:7.5px;padding:1px 6px;}
+  .wmock-nav{padding:3px 7px;}
+  .wmock-logo-bar{font-size:7.5px;}
+  .wmock-nav-links{gap:5px;}
+  .wmock-nav-links span{font-size:7px;}
+  .wmock-hero{padding:6px 8px 5px;}
+  .wmock-h1{font-size:9px;}
+  .wmock-sub{font-size:6.5px;margin-top:2px;}
+  .wmock-cta{font-size:7px;padding:2px 7px;margin-top:4px;}
+  .wmock-info-item{padding:3px 1px;}
+  .wmock-info-item span:first-child{font-size:8px;}
+  .wmock-info-item span:last-child{font-size:6px;}
 }
