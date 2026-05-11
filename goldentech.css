@@ -499,10 +499,11 @@ footer{
   .hero-label{top:12px;left:14px;padding:4px 10px;font-size:9px;}
 
   /* Talleres y Contacto: fijos al fondo */
-  .talleres-section{flex-shrink:0;padding:6px 16px;}
-  .talleres-header{margin-bottom:4px;}
-  .talleres-cards{grid-template-columns:repeat(2,1fr);gap:6px;}
-  .tc-map{height:90px;}
+  .talleres-section{flex-shrink:0;padding:6px 16px;display:flex;align-items:center;gap:20px;}
+  .talleres-header{margin-bottom:0;flex-shrink:0;max-width:280px;}
+  .talleres-hint{margin-bottom:0;flex-shrink:0;font-size:10px;}
+  .talleres-cards{grid-template-columns:repeat(2,220px);gap:6px;flex-shrink:0;}
+  .tc-map{height:110px;}
   .tc-val{font-size:12px;}
   .tc-label{font-size:8.5px;}
   .tc-info{padding:5px 8px;}
