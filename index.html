@@ -415,6 +415,34 @@
 
 </div><!-- /.main-row -->
 
+<!-- ══ TALLERES ══ -->
+<section class="talleres-section" id="talleres">
+  <div class="talleres-header fade">
+    <span class="talleres-title">Talleres disponibles:</span>
+    <p class="talleres-sub">Se señala la ubicación en el mapa, para la ubicación exacta se comparte al momento de confirmar servicio</p>
+  </div>
+  <p class="talleres-hint">Selecciona la imagen para ver a más detalle</p>
+  <div class="talleres-cards">
+
+    <div class="tc fade fd1">
+      <img src="img/mapa-bachigualato.jpg" class="tc-map tc-map-bachi" alt="Mapa Nuevo Bachigualato" onclick="openMap(this)">
+      <div class="tc-info">
+        <div class="tc-label">Noroeste · Aeropuerto</div>
+        <div class="tc-val">Nuevo Bachigualato</div>
+      </div>
+    </div>
+
+    <div class="tc fade fd2">
+      <img src="img/mapa-floresta.jpg" class="tc-map" alt="Mapa Fracc. Floresta" onclick="openMap(this)">
+      <div class="tc-info">
+        <div class="tc-label">Noreste · Carr. a Imala</div>
+        <div class="tc-val">Fracc. Floresta</div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
 <!-- ══ CONTACTO ══ -->
 <section class="contact-section" id="contacto">
   <div class="contact-header fade">
@@ -509,7 +537,25 @@
 
 <button id="sec" onclick="location.href='login.html'"></button>
 
+<!-- ══ MAPA MODAL ══ -->
+<div id="map-modal" onclick="closeMap()">
+  <div id="map-modal-wrap" onclick="event.stopPropagation()">
+    <button type="button" id="map-close" onclick="closeMap()" title="Cerrar">&#x2715;</button>
+    <img id="map-modal-img" src="" alt="Mapa ampliado">
+  </div>
+</div>
+
 <script src="golden.js"></script>
+<script>
+function openMap(img){
+  document.getElementById('map-modal-img').src = img.src;
+  document.getElementById('map-modal').classList.add('active');
+}
+function closeMap(){
+  document.getElementById('map-modal').classList.remove('active');
+}
+document.addEventListener('keydown',function(e){ if(e.key==='Escape') closeMap(); });
+</script>
 
 </body>
 </html>
