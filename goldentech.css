@@ -446,6 +446,11 @@ footer{
 .waf img{width:30px;height:30px;filter:brightness(0) invert(1);}
 
 /* ══ ANIM ══ */
+@keyframes arrow-chase{
+  0%{opacity:.3;transform:translateX(-4px);}
+  50%{opacity:1;transform:translateX(4px);}
+  100%{opacity:.3;transform:translateX(-4px);}
+}
 @keyframes rise{from{opacity:0;transform:translateY(22px)}to{opacity:1;transform:translateY(0)}}
 @keyframes slideL{from{opacity:0;transform:translateX(30px)}to{opacity:1;transform:translateX(0)}}
 @keyframes waBouncePulse{
@@ -490,11 +495,11 @@ footer{
 
   /* Talleres y Contacto: un solo renglón */
   .bottom-row{display:flex;flex-shrink:0;align-items:stretch;}
-  .contact-section{flex:0 0 54%;padding:2px 10px;border-right:1px solid var(--border);}
-  .contact-header{margin-bottom:2px;display:flex;align-items:baseline;gap:6px;flex-wrap:nowrap;}
+  .contact-section{flex:0 0 auto;padding:4px 10px;border-right:1px solid var(--border);display:flex;flex-direction:column;justify-content:center;align-items:center;gap:4px;}
+  .contact-header{margin-bottom:0;display:flex;align-items:baseline;gap:6px;flex-wrap:nowrap;justify-content:center;}
   .contact-title{font-size:11px;white-space:nowrap;flex-shrink:0;}
   .contact-sub{font-size:9px;margin:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
-  .contact-cards{grid-template-columns:repeat(6,1fr);gap:3px;}
+  .contact-cards{grid-template-columns:repeat(6,max-content);gap:3px;margin-top:0;}
   .cc{padding:3px 5px;border-radius:7px;gap:5px;flex-wrap:nowrap;align-items:center;min-width:0;}
   .cc-ico{width:26px;height:26px;border-radius:6px;font-size:14px;flex-shrink:0;overflow:hidden;padding:0;}
   .cc-ico.whats{padding:4px;box-sizing:border-box;}
@@ -503,17 +508,18 @@ footer{
   .cc > div{min-width:0;overflow:hidden;}
   .cc-label{font-size:7px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
   .cc-val{font-size:8.5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
-  .talleres-section{flex:1;padding:3px 12px;display:flex;flex-direction:column;align-items:flex-start;justify-content:center;gap:4px;}
-  .talleres-header{margin-bottom:0;flex-shrink:0;max-width:none;display:block;}
+  .talleres-section{flex:1;padding:2px 8px;display:flex;flex-direction:row;align-items:center;gap:8px;}
+  .talleres-header{margin-bottom:0;flex-shrink:0;max-width:200px;display:flex;flex-direction:column;justify-content:center;}
   .talleres-title{font-size:11px;white-space:nowrap;}
-  .talleres-sub{font-size:8.5px;margin:0;line-height:1.3;white-space:nowrap;}
-  .talleres-hint{display:none;}
-  .talleres-cards{grid-template-columns:repeat(2,130px);gap:4px;flex-shrink:0;}
+  .talleres-sub{font-size:8.5px;margin:0;line-height:1.3;white-space:normal;}
+  .talleres-hint{display:block;font-size:8px;font-weight:700;color:var(--forest);letter-spacing:.02em;background:#fff;border-radius:10px;padding:4px 10px;box-shadow:0 2px 8px rgba(44,62,53,.15);white-space:nowrap;flex-shrink:0;text-align:center;line-height:1.65;}
+  .hint-arrows{display:block;font-size:10px;color:#2CA05A;letter-spacing:3px;animation:arrow-chase 2.2s ease-in-out infinite;}
+  .talleres-cards{grid-template-columns:repeat(2,120px);gap:4px;flex-shrink:0;}
   .tc{border-radius:7px;}
-  .tc-map{height:36px;}
-  .tc-val{font-size:9.5px;margin-top:0;}
+  .tc-map{height:32px;}
+  .tc-val{font-size:9px;margin-top:0;}
   .tc-label{font-size:7px;}
-  .tc-info{padding:2px 5px;}
+  .tc-info{padding:2px 4px;}
   footer{flex-shrink:0;padding:2px 16px 1px;}
   .ft-inner{padding-bottom:1px;gap:4px;justify-content:center;}
   .ft-logo{width:36px;height:36px;}
