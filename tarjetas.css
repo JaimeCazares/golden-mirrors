@@ -1356,4 +1356,21 @@
   .wmock-info-item{padding:3px 1px;}
   .wmock-info-item span:first-child{font-size:8px;}
   .wmock-info-item span:last-child{font-size:6px;}
+
+  /* ── Tarjetas llenan su celda completa ── */
+  .sc.featured{align-self:stretch;}
+  #card1 .flip-inner{height:100%;}
+  #card1 .flip-front{position:absolute;height:100%;}
+
+  /* ── El visual crece para ocupar el espacio restante en cada tarjeta ── */
+  .sc-devices{flex:1;min-height:0;}
+  .consolas{flex:1;min-height:0;display:flex;align-items:center;justify-content:center;}
+  .consolas-hero{max-height:none;height:100%;width:100%;object-fit:contain;}
+  .format-visual{flex:1;min-height:0;display:flex;flex-direction:column;}
+  .format-body{flex:1;justify-content:center;}
+  .office-logos{flex:1;min-height:0;}
+  .speed-visual{flex:1;min-height:0;display:flex;flex-direction:column;align-items:center;justify-content:center;}
+  .upgrade-visual{flex:1;min-height:0;justify-content:center;}
+  .os-img{flex:1;min-height:0;max-height:none;height:0;}
+  .web-img{flex:1;min-height:0;height:0;}
 }
