@@ -97,6 +97,7 @@
 }
 @media(max-width:640px){
   .srv-grid{grid-template-columns:1fr;}
+  .web-img { min-height: 180px; }
 }
 /* ===== TARJETA PRO ===== */
 .custom-card{
@@ -668,11 +669,14 @@
 }
 
 /* IMAGEN SISTEMAS OPERATIVOS */
+.os-img-wrap {
+  border-radius: 22px;
+  overflow: hidden;
+  margin: 4px 0 2px;
+}
 .os-img {
   width: 100%;
-  border-radius: 8px;
   display: block;
-  margin: 4px 0 2px;
   object-fit: cover;
 }
 
@@ -1044,12 +1048,40 @@
 }
 
 /* ══ PÁGINAS WEB & SISTEMAS ══ */
+.sc-web {
+  padding: 0 !important;
+  overflow: hidden;
+}
 .web-img {
   width: 100%;
-  border-radius: 10px;
+  height: 100%;
   display: block;
+  object-fit: contain;
+}
+
+/* ══ ARMADO DE PC — texto ══ */
+.sc-pc h3 { font-size: 18px; }
+.sc-pc p  { font-size: 13.5px; }
+
+/* ══ ARMADO DE PC — imagen ══ */
+.pc-build-visual {
   margin: 4px 0 2px;
+  border-radius: 10px;
+  overflow: hidden;
+}
+.pc-build-img {
+  width: 100%;
+  display: block;
+  border-radius: 10px;
   object-fit: cover;
+  max-height: 160px;
+}
+.pc-build-tag {
+  font-size: 10px;
+  font-weight: 600;
+  color: rgba(255,255,255,0.45);
+  letter-spacing: 0.04em;
+  margin: 4px 0 2px;
 }
 
 /* ══ PÁGINAS WEB & SISTEMAS — MOCKUP BROWSER ══ */
@@ -1251,7 +1283,7 @@
   .custom-card p{font-size:10px;}
   .consolas{margin:2px 0;}
   .consolas-hero{max-height:56px;object-fit:contain;}
-  .os-img{max-height:64px;margin:1px 0;object-fit:contain;}
+  .os-img-wrap{max-height:64px;margin:1px 0;} .os-img{object-fit:contain;}
   .format-visual{margin:1px 0;}
   .format-header{padding:3px 8px;}
   .format-body{padding:4px 8px;gap:3px;}
@@ -1368,12 +1400,23 @@
   /* Formateos (1°) y Expansión (4°) — footer pegado al visual, sin espacio muerto */
   .sc-mini-col .sc:nth-child(1) .sc-footer,
   .sc-mini-col .sc:nth-child(4) .sc-footer { margin-top: 2px; }
-  /* Páginas Web ocupa cols 1-3 en fila 2 */
+  /* Páginas Web ocupa cols 1-2 en fila 2 (hasta donde topa consolas) */
   .sc-web {
-    grid-column: 1 / span 3;
+    grid-column: 1 / span 2;
     grid-row: 2;
   }
-  .web-img { flex: 1; min-height: 0; height: 0; }
+  .web-img { width: 100%; height: 100%; object-fit: contain; }
+
+  /* Armado de PC ocupa col 3 en fila 2 (bajo instalación SO) */
+  .sc-pc {
+    grid-column: 3;
+    grid-row: 2;
+  }
+  .sc-pc h3 { font-size: 16px; }
+  .sc-pc p  { font-size: 12px; }
+  .pc-build-visual { flex: 1; min-height: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 0; margin: 2px 0; }
+  .pc-build-svg { max-width: 100%; }
+  .pc-build-tag { font-size: 8px; margin: 2px 0 1px; }
 
   /* website mockup desktop */
   .wmock{margin:1px 0;}
@@ -1407,6 +1450,6 @@
   .office-logos{flex:1;min-height:0;}
   .speed-visual{flex:1;min-height:0;display:flex;flex-direction:column;align-items:center;justify-content:center;}
   .upgrade-visual{flex:1;min-height:0;justify-content:center;}
-  .os-img{flex:1;min-height:0;max-height:none;height:0;}
-  .web-img{flex:1;min-height:0;height:0;}
+  .os-img-wrap{flex:1;min-height:0;max-height:none;height:0;} .os-img{height:100%;}
+  .web-img{width:100%;height:100%;object-fit:contain;}
 }
