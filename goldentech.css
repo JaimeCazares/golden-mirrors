@@ -144,6 +144,12 @@ nav{
 .nav-wa:hover{transform:translateY(-2px);filter:brightness(1.1);}
 .nav-wa img{width:16px;height:16px;filter:brightness(0) invert(1) contrast(100%);}
 
+/* ══ NAV SOCIAL — solo visible en desktop, oculto en mobile ══ */
+.nav-social{display:none;}
+.nav-social .tb-link{height:auto;padding:6px 14px;border-radius:100px;}
+.nav-social .tb-img{width:22px;height:22px;}
+.nav-social .tb-handle{font-size:12px;}
+
 /* ══ HERO — layout totalmente diferente ══ */
 .hero{
   min-height:auto;
@@ -472,9 +478,14 @@ footer{
   html,body{height:100vh;overflow:hidden;}
   body{
     display:flex;flex-direction:column;
-    padding-top:146px;
+    padding-top:90px;
     overflow:hidden;
   }
+  /* Ocultar topbar de redes y bajar nav al tope */
+  .topbar{display:none;}
+  nav{top:0;}
+  /* Mostrar redes dentro del nav */
+  .nav-social{display:flex;align-items:center;gap:8px;}
 
   .main-row{flex:1;display:flex;min-height:0;overflow:hidden;}
 

@@ -9,11 +9,11 @@ session_start();
 if ($_SERVER['SERVER_NAME'] === 'localhost') {
     // 🔹 XAMPP
     $conexion = new mysqli(
-        "localhost",
+        "127.0.0.1",
         "root",
         "",
         "golden",
-        3306
+        3307
     );
 } else {
     // 🔹 HOSTINGER

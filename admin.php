@@ -1,3 +1,10 @@
+<?php
+session_start();
+if (empty($_SESSION['gt_admin']) || $_SESSION['gt_admin'] !== true) {
+    header('Location: admin_login.php');
+    exit;
+}
+?>
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -97,7 +104,10 @@ textarea{resize:vertical;min-height:70px;}
 <!-- TOPBAR -->
 <div class="topbar">
   <div class="brand"><img src="img/logo.png" style="height:32px;"> Golden <span>Tech</span> — Admin</div>
-  <a href="index.html" class="back-btn">← Volver al sitio</a>
+  <div style="display:flex;align-items:center;gap:16px;">
+    <a href="index.html" class="back-btn">← Volver al sitio</a>
+    <a href="admin_logout.php" class="back-btn" style="color:#ff9a9a;">Cerrar sesión</a>
+  </div>
 </div>
 
 <!-- TABS -->
