@@ -20,7 +20,8 @@ async function cambiarPestana(nombre) {
         inicio: 0,
         escalera: 1,
         espejo: 2,
-        registro: 3
+        registro: 3,
+        nutricion: 4
     };
 
     document.querySelectorAll('.nav-btn')[mapa[nombre]]
@@ -138,6 +139,21 @@ async function cambiarPestana(nombre) {
                 if (typeof initEscalera === 'function') {
                     initEscalera();
                 }
+            }
+        }
+
+        // === NUTRICION ===
+        if (nombre === 'nutricion') {
+            if (!modulosCargados['nutricion']) {
+                const script = document.createElement('script');
+                script.src = `nutricion/nutricion.js?v=${Date.now()}`;
+                script.onload = () => {
+                    if (typeof initNutricion === 'function') initNutricion();
+                };
+                document.body.appendChild(script);
+                modulosCargados['nutricion'] = true;
+            } else {
+                if (typeof initNutricion === 'function') initNutricion();
             }
         }
 

@@ -1,0 +1,325 @@
+.nutricion-container {
+    padding: 16px;
+    max-width: 480px;
+    margin: 0 auto;
+    color: #fff;
+}
+
+/* HEADER */
+.nutri-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 16px;
+}
+.nutri-titulo {
+    font-size: 1.3rem;
+    font-weight: 700;
+}
+.nutri-fecha-label {
+    font-size: 0.8rem;
+    color: #aaa;
+}
+
+/* TOP CARDS: BMR + Mi Band */
+.nutri-top-cards {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+    margin-bottom: 14px;
+}
+.nutri-top-card {
+    background: rgba(255,255,255,0.05);
+    border-radius: 14px;
+    padding: 12px 14px;
+    position: relative;
+}
+.ntc-label {
+    font-size: 0.68rem;
+    color: #888;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-bottom: 4px;
+}
+.ntc-valor {
+    font-size: 1.2rem;
+    font-weight: 700;
+    color: #f97316;
+}
+.ntc-valor small { font-size: 0.7rem; font-weight: 400; color: #aaa; }
+.ntc-miband-input {
+    font-size: 1.2rem;
+    font-weight: 700;
+    color: #60a5fa;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+}
+.ntc-miband-input small { font-size: 0.7rem; font-weight: 400; color: #aaa; }
+.ntc-edit-btn {
+    position: absolute;
+    top: 8px;
+    right: 8px;
+    background: none;
+    border: none;
+    font-size: 0.85rem;
+    cursor: pointer;
+    opacity: 0.5;
+    padding: 2px;
+}
+.ntc-edit-btn:active { opacity: 1; }
+
+/* DÉFICIT CARD */
+.nutri-deficit-card {
+    background: rgba(255,255,255,0.05);
+    border-radius: 16px;
+    padding: 16px;
+    margin-bottom: 14px;
+}
+.ndc-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 4px 0;
+}
+.ndc-label {
+    font-size: 0.82rem;
+    color: #888;
+}
+.ndc-val {
+    font-size: 0.95rem;
+    font-weight: 600;
+}
+.ndc-row.quemado .ndc-val  { color: #f97316; }
+.ndc-row.consumido .ndc-val { color: #fff; }
+.ndc-divider {
+    height: 1px;
+    background: rgba(255,255,255,0.07);
+    margin: 8px 0;
+}
+.ndc-divider.grueso {
+    height: 1px;
+    background: rgba(255,255,255,0.15);
+    margin: 10px 0;
+}
+.ndc-resultado {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+.ndc-resultado-label {
+    font-size: 0.75rem;
+    font-weight: 700;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    color: #888;
+}
+.ndc-resultado-val {
+    font-size: 1.5rem;
+    font-weight: 800;
+    color: #4ade80;
+}
+.ndc-resultado-val.superavit { color: #f87171; }
+
+/* MACROS */
+.nutri-macros-grid {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    background: rgba(255,255,255,0.04);
+    border-radius: 14px;
+    padding: 14px;
+    margin-bottom: 16px;
+}
+.macro-row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+.macro-nombre {
+    width: 62px;
+    font-size: 0.78rem;
+    font-weight: 600;
+    flex-shrink: 0;
+}
+.macro-nombre.prot  { color: #4ade80; }
+.macro-nombre.carb  { color: #60a5fa; }
+.macro-nombre.gras  { color: #facc15; }
+.macro-nombre.fibra { color: #c084fc; }
+.macro-track {
+    flex: 1;
+    height: 8px;
+    background: rgba(255,255,255,0.08);
+    border-radius: 99px;
+    overflow: hidden;
+}
+.macro-fill {
+    height: 100%;
+    border-radius: 99px;
+    transition: width 0.4s ease;
+    width: 0%;
+}
+.macro-fill.prot  { background: #4ade80; }
+.macro-fill.carb  { background: #60a5fa; }
+.macro-fill.gras  { background: #facc15; }
+.macro-fill.fibra { background: #c084fc; }
+.macro-val {
+    width: 72px;
+    font-size: 0.72rem;
+    color: #aaa;
+    text-align: right;
+    flex-shrink: 0;
+}
+
+/* BOTÓN AGREGAR */
+.nutri-btns-row {
+    margin-bottom: 20px;
+}
+.nutri-btn-add {
+    width: 100%;
+    padding: 13px;
+    border: none;
+    border-radius: 12px;
+    font-size: 0.95rem;
+    font-weight: 700;
+    cursor: pointer;
+    transition: opacity 0.2s;
+}
+.nutri-btn-add:active { opacity: 0.75; }
+.nutri-btn-add.comida { background: #4ade80; color: #0a0a0a; }
+
+/* LOG */
+.nutri-log-titulo {
+    font-size: 0.78rem;
+    color: #666;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin-bottom: 8px;
+}
+.nutri-log {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    padding-bottom: 80px;
+}
+.nutri-log-vacio {
+    text-align: center;
+    color: #555;
+    padding: 24px;
+    font-size: 0.85rem;
+}
+.nutri-entry {
+    display: flex;
+    align-items: center;
+    background: rgba(255,255,255,0.04);
+    border-radius: 10px;
+    padding: 10px 12px;
+    gap: 10px;
+}
+.nutri-entry-icon { font-size: 1.1rem; flex-shrink: 0; }
+.nutri-entry-info { flex: 1; min-width: 0; }
+.nutri-entry-nombre {
+    font-size: 0.88rem;
+    font-weight: 600;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+.nutri-entry-detalle { font-size: 0.7rem; color: #888; margin-top: 1px; }
+.nutri-entry-cals { font-size: 0.85rem; font-weight: 700; flex-shrink: 0; color: #4ade80; }
+.nutri-entry-del {
+    background: none;
+    border: none;
+    color: #555;
+    font-size: 1rem;
+    cursor: pointer;
+    padding: 2px 4px;
+    flex-shrink: 0;
+}
+.nutri-entry-del:active { color: #f87171; }
+
+/* MODAL */
+.nutri-modal-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.75);
+    display: flex;
+    align-items: flex-end;
+    justify-content: center;
+    z-index: 9000;
+    padding-bottom: 70px;
+}
+.nutri-modal-hidden {
+    display: none;
+}
+.nutri-modal-box {
+    background: #1a1a1a;
+    border-radius: 20px 20px 0 0;
+    width: 100%;
+    max-width: 480px;
+    padding: 20px 20px 24px;
+}
+.nutri-modal-titulo {
+    font-size: 1.1rem;
+    font-weight: 700;
+    margin-bottom: 6px;
+    text-align: center;
+}
+.nutri-modal-desc {
+    font-size: 0.78rem;
+    color: #888;
+    text-align: center;
+    margin-bottom: 14px;
+}
+.nutri-input {
+    width: 100%;
+    background: rgba(255,255,255,0.08);
+    border: 1px solid rgba(255,255,255,0.12);
+    border-radius: 10px;
+    color: #fff;
+    padding: 10px 12px;
+    font-size: 0.92rem;
+    box-sizing: border-box;
+    margin-bottom: 8px;
+}
+.nutri-input::placeholder { color: #666; }
+.nutri-input:focus { outline: none; border-color: rgba(255,255,255,0.3); }
+.nutri-grid-2 {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+}
+.nutri-field label {
+    font-size: 0.72rem;
+    color: #888;
+    margin-bottom: 3px;
+    display: block;
+}
+.nutri-field .nutri-input { margin-bottom: 0; }
+.nutri-field-full { grid-column: span 2; }
+.nutri-modal-btns {
+    display: flex;
+    gap: 10px;
+    margin-top: 16px;
+}
+.nutri-btn-guardar {
+    flex: 1;
+    padding: 12px;
+    background: #4ade80;
+    color: #0a0a0a;
+    border: none;
+    border-radius: 12px;
+    font-size: 0.95rem;
+    font-weight: 700;
+    cursor: pointer;
+}
+.nutri-btn-cancelar {
+    flex: 1;
+    padding: 12px;
+    background: rgba(255,255,255,0.08);
+    color: #fff;
+    border: none;
+    border-radius: 12px;
+    font-size: 0.95rem;
+    cursor: pointer;
+}

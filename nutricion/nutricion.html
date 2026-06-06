@@ -1,0 +1,162 @@
+<div class="nutricion-container">
+
+  <!-- HEADER -->
+  <div class="nutri-header">
+    <div class="nutri-titulo">Nutrición</div>
+    <div class="nutri-fecha-label" id="n-fecha-label"></div>
+  </div>
+
+  <!-- BMR + MI BAND ROW -->
+  <div class="nutri-top-cards">
+
+    <!-- BMR -->
+    <div class="nutri-top-card bmr-card">
+      <div class="ntc-label">Solo por existir</div>
+      <div class="ntc-valor"><span id="n-bmr-val">2,500</span> <small>kcal</small></div>
+      <button type="button" class="ntc-edit-btn" onclick="nutriEditarBMR()">✏️</button>
+    </div>
+
+    <!-- MI BAND -->
+    <div class="nutri-top-card miband-card">
+      <div class="ntc-label">Actividad Mi Band</div>
+      <div class="ntc-miband-input" id="n-miband-display">
+        <span id="n-miband-val">—</span> <small>kcal</small>
+        <button type="button" class="ntc-edit-btn" onclick="nutriEditarMiBand()">✏️</button>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- DÉFICIT CARD -->
+  <div class="nutri-deficit-card" id="n-deficit-card">
+    <div class="ndc-row quemado">
+      <span class="ndc-label">Total quemado</span>
+      <span class="ndc-val" id="n-total-quemado">2,500 kcal</span>
+    </div>
+    <div class="ndc-divider"></div>
+    <div class="ndc-row consumido">
+      <span class="ndc-label">Consumido</span>
+      <span class="ndc-val" id="n-total-consumido">0 kcal</span>
+    </div>
+    <div class="ndc-divider grueso"></div>
+    <div class="ndc-resultado" id="n-resultado-wrap">
+      <span class="ndc-resultado-label" id="n-resultado-label">DÉFICIT</span>
+      <span class="ndc-resultado-val" id="n-resultado-val">2,500 kcal</span>
+    </div>
+  </div>
+
+  <!-- MACROS -->
+  <div class="nutri-macros-grid">
+
+    <div class="macro-row">
+      <span class="macro-nombre prot">Proteína</span>
+      <div class="macro-track">
+        <div class="macro-fill prot" id="m-fill-prot"></div>
+      </div>
+      <span class="macro-val"><span id="m-prot">0</span>/206g</span>
+    </div>
+
+    <div class="macro-row">
+      <span class="macro-nombre carb">Carbos</span>
+      <div class="macro-track">
+        <div class="macro-fill carb" id="m-fill-carb"></div>
+      </div>
+      <span class="macro-val"><span id="m-carb">0</span>/160g</span>
+    </div>
+
+    <div class="macro-row">
+      <span class="macro-nombre gras">Grasa</span>
+      <div class="macro-track">
+        <div class="macro-fill gras" id="m-fill-gras"></div>
+      </div>
+      <span class="macro-val"><span id="m-gras">0</span>/55g</span>
+    </div>
+
+    <div class="macro-row">
+      <span class="macro-nombre fibra">Fibra</span>
+      <div class="macro-track">
+        <div class="macro-fill fibra" id="m-fill-fibra"></div>
+      </div>
+      <span class="macro-val"><span id="m-fibra">0</span>/30g</span>
+    </div>
+
+  </div>
+
+  <!-- BOTÓN AGREGAR COMIDA -->
+  <div class="nutri-btns-row">
+    <button class="nutri-btn-add comida" onclick="nutriAbrirModal('comida')">+ Agregar Comida</button>
+  </div>
+
+  <!-- LOG DEL DÍA -->
+  <div class="nutri-log-titulo">Registro de hoy</div>
+  <div class="nutri-log" id="n-log">
+    <div class="nutri-log-vacio">Sin registros aún</div>
+  </div>
+
+</div>
+
+<!-- MODAL COMIDA -->
+<div id="modalNutriComida" class="nutri-modal-overlay nutri-modal-hidden">
+  <div class="nutri-modal-box">
+    <div class="nutri-modal-titulo">Agregar Comida</div>
+    <input type="text" id="nf-nombre" class="nutri-input" placeholder="Nombre del alimento">
+    <div class="nutri-grid-2">
+      <div class="nutri-field">
+        <label>Calorías</label>
+        <input type="number" id="nf-cals" class="nutri-input" placeholder="kcal" min="0">
+      </div>
+      <div class="nutri-field">
+        <label>Proteína (g)</label>
+        <input type="number" id="nf-prot" class="nutri-input" placeholder="g" min="0">
+      </div>
+      <div class="nutri-field">
+        <label>Carbos (g)</label>
+        <input type="number" id="nf-carb" class="nutri-input" placeholder="g" min="0">
+      </div>
+      <div class="nutri-field">
+        <label>Grasa (g)</label>
+        <input type="number" id="nf-gras" class="nutri-input" placeholder="g" min="0">
+      </div>
+      <div class="nutri-field nutri-field-full">
+        <label>Fibra (g)</label>
+        <input type="number" id="nf-fibra" class="nutri-input" placeholder="g" min="0">
+      </div>
+    </div>
+    <div class="nutri-modal-btns">
+      <button class="nutri-btn-guardar" onclick="nutriGuardarComida()">Guardar</button>
+      <button class="nutri-btn-cancelar" onclick="nutriCerrarModal('comida')">Cancelar</button>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL EDITAR BMR -->
+<div id="modalNutriBMR" class="nutri-modal-overlay nutri-modal-hidden">
+  <div class="nutri-modal-box">
+    <div class="nutri-modal-titulo">Calorías base (BMR)</div>
+    <p class="nutri-modal-desc">Calorías que quemas solo por existir. Actualízalo cada semana al pesarte.</p>
+    <div class="nutri-field">
+      <label>kcal/día</label>
+      <input type="number" id="nb-valor" class="nutri-input" placeholder="ej. 2500" min="1000" max="5000">
+    </div>
+    <div class="nutri-modal-btns">
+      <button class="nutri-btn-guardar" onclick="nutriGuardarBMR()">Guardar</button>
+      <button class="nutri-btn-cancelar" onclick="nutriCerrarModal('bmr')">Cancelar</button>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL MI BAND -->
+<div id="modalNutriMiBand" class="nutri-modal-overlay nutri-modal-hidden">
+  <div class="nutri-modal-box">
+    <div class="nutri-modal-titulo">Actividad Mi Band</div>
+    <p class="nutri-modal-desc">Ingresa las calorías extra que quemaste hoy según tu Mi Band 10.</p>
+    <div class="nutri-field">
+      <label>kcal quemadas (actividad)</label>
+      <input type="number" id="nm-valor" class="nutri-input" placeholder="ej. 350" min="0">
+    </div>
+    <div class="nutri-modal-btns">
+      <button class="nutri-btn-guardar" onclick="nutriGuardarMiBand()">Guardar</button>
+      <button class="nutri-btn-cancelar" onclick="nutriCerrarModal('miband')">Cancelar</button>
+    </div>
+  </div>
+</div>

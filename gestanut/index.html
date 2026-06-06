@@ -1,0 +1,1010 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="Diana Zavala — Nutrióloga en Culiacán, Sinaloa. Especialista en nutrición materno-infantil, recomposición corporal y control de peso. Consulta presencial y online.">
+<meta name="keywords" content="nutrióloga Culiacán, nutrición embarazo Culiacán, recomposición corporal Culiacán, nutrióloga online Sinaloa, Diana Zavala nutrióloga">
+<title>Diana Zavala | Nutrióloga · Culiacán, Sinaloa</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --forest:#1a3328;
+  --forest-m:#2d5240;
+  --sage:#6b9e78;
+  --sage-l:#c8dfc8;
+  --sage-ll:#eef5ee;
+  --cream:#faf6ef;
+  --cream-d:#f0e9dc;
+  --terra:#c4714a;
+  --terra-l:#f5ebe4;
+  --sand:#e8dcc8;
+  --text:#1a2418;
+  --text-m:#4a5e44;
+  --text-l:#8a9e84;
+  --white:#ffffff;
+  --r:16px;
+}
+
+html{scroll-behavior:smooth}
+body{font-family:'DM Sans',sans-serif;background:var(--cream);color:var(--text);overflow-x:hidden;line-height:1.6}
+
+/* ─── NAV ─────────────────────────────────────────── */
+nav{
+  position:fixed;top:0;left:0;right:0;z-index:100;
+  display:flex;align-items:center;justify-content:space-between;
+  padding:18px 5%;
+  background:rgba(250,246,239,0.92);
+  backdrop-filter:blur(12px);
+  border-bottom:1px solid rgba(107,158,120,0.15);
+  transition:all .3s;
+}
+.nav-logo{font-family:'Cormorant Garamond',serif;font-size:22px;color:var(--forest);letter-spacing:.5px;text-decoration:none}
+.nav-logo span{color:var(--sage);font-style:italic}
+.nav-links{display:flex;align-items:center;gap:28px}
+.nav-links a{font-size:13px;color:var(--text-m);text-decoration:none;letter-spacing:.3px;transition:color .2s}
+.nav-links a:hover{color:var(--forest)}
+.nav-cta{background:var(--forest);color:var(--cream)!important;padding:9px 20px;border-radius:50px;font-size:13px;font-weight:500;text-decoration:none;transition:background .2s!important}
+.nav-cta:hover{background:var(--forest-m)!important}
+
+/* Botón login — discreto en la esquina */
+.nav-login{
+  font-size:12px;color:var(--text-l)!important;
+  border:1px solid var(--sage-l);
+  padding:7px 14px;border-radius:50px;
+  text-decoration:none;transition:all .2s!important;
+  white-space:nowrap;
+}
+.nav-login:hover{color:var(--forest)!important;border-color:var(--sage)!important}
+
+.hamburger{display:none;flex-direction:column;gap:5px;cursor:pointer;padding:4px}
+.hamburger span{width:22px;height:1.5px;background:var(--forest);display:block;transition:all .3s}
+
+/* ─── HERO ────────────────────────────────────────── */
+.hero{
+  min-height:100vh;
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  position:relative;
+  overflow:hidden;
+  padding-top:80px;
+}
+
+.hero-left{
+  display:flex;flex-direction:column;justify-content:center;
+  padding:80px 5% 80px 8%;
+  position:relative;z-index:2;
+}
+
+.hero-eyebrow{
+  display:inline-flex;align-items:center;gap:8px;
+  font-size:12px;letter-spacing:2px;text-transform:uppercase;
+  color:var(--sage);margin-bottom:24px;
+  font-weight:500;
+}
+.eyebrow-line{width:32px;height:1px;background:var(--sage)}
+
+.hero-title{
+  font-family:'Cormorant Garamond',serif;
+  font-size:clamp(48px,5.5vw,80px);
+  font-weight:300;
+  line-height:1.05;
+  color:var(--forest);
+  margin-bottom:12px;
+}
+.hero-title em{font-style:italic;color:var(--terra)}
+.hero-title strong{font-weight:600}
+
+.hero-name{
+  font-family:'Cormorant Garamond',serif;
+  font-size:clamp(18px,2vw,26px);
+  color:var(--text-m);
+  font-style:italic;
+  font-weight:300;
+  margin-bottom:28px;
+  letter-spacing:.5px;
+}
+
+.hero-desc{
+  font-size:16px;color:var(--text-m);
+  max-width:440px;line-height:1.75;
+  margin-bottom:40px;
+}
+
+.hero-actions{display:flex;align-items:center;gap:16px;flex-wrap:wrap}
+
+.btn-whatsapp{
+  display:inline-flex;align-items:center;gap:10px;
+  background:var(--forest);color:var(--cream);
+  padding:14px 28px;border-radius:50px;
+  font-size:15px;font-weight:500;text-decoration:none;
+  transition:all .25s;
+  box-shadow:0 8px 32px rgba(26,51,40,0.25);
+}
+.btn-whatsapp:hover{background:var(--forest-m);transform:translateY(-2px);box-shadow:0 12px 40px rgba(26,51,40,0.3)}
+.btn-whatsapp svg{width:18px;height:18px;fill:currentColor}
+
+.btn-ghost{
+  display:inline-flex;align-items:center;gap:8px;
+  color:var(--forest);font-size:14px;text-decoration:none;
+  border-bottom:1px solid var(--sage-l);padding-bottom:2px;
+  transition:border-color .2s;
+}
+.btn-ghost:hover{border-color:var(--forest)}
+
+.hero-badges{
+  display:flex;gap:10px;margin-top:44px;flex-wrap:wrap;
+}
+.hero-badge{
+  display:flex;align-items:center;gap:7px;
+  background:var(--white);border:1px solid var(--sage-l);
+  border-radius:50px;padding:8px 16px;
+  font-size:12px;color:var(--text-m);
+  box-shadow:0 2px 12px rgba(107,158,120,0.08);
+}
+
+/* HERO RIGHT */
+.hero-right{
+  position:relative;
+  background:var(--forest);
+  overflow:hidden;
+  display:flex;align-items:center;justify-content:center;
+}
+
+.hero-photo-placeholder{
+  position:relative;z-index:2;
+  width:100%;height:100%;
+  display:flex;align-items:center;justify-content:center;
+  flex-direction:column;gap:16px;
+}
+
+.blob{position:absolute;border-radius:60% 40% 70% 30% / 50% 60% 40% 70%;opacity:.12}
+.blob-1{width:400px;height:400px;background:var(--sage);top:-80px;right:-80px;animation:float1 8s ease-in-out infinite}
+.blob-2{width:300px;height:300px;background:var(--terra);bottom:-60px;left:-60px;animation:float2 10s ease-in-out infinite}
+.blob-3{width:200px;height:200px;background:var(--sage-l);top:40%;right:10%;animation:float1 12s ease-in-out infinite reverse;opacity:.15}
+
+@keyframes float1{0%,100%{transform:translate(0,0) rotate(0deg)}50%{transform:translate(15px,-20px) rotate(5deg)}}
+@keyframes float2{0%,100%{transform:translate(0,0) rotate(0deg)}50%{transform:translate(-10px,15px) rotate(-4deg)}}
+
+.hero-img-frame{
+  position:relative;z-index:3;
+  width:280px;height:380px;
+  border-radius:140px 140px 100px 100px;
+  background:rgba(255,255,255,0.08);
+  border:1px solid rgba(255,255,255,0.15);
+  overflow:hidden;
+  display:flex;align-items:center;justify-content:center;
+  flex-direction:column;gap:12px;
+  color:rgba(255,255,255,0.5);
+  font-size:13px;text-align:center;
+  padding:0;
+}
+.hero-img-frame .img-icon{font-size:40px;opacity:.6}
+.hero-img-note{font-size:11px;color:rgba(255,255,255,0.35);margin-top:4px;line-height:1.5}
+
+.hero-stat-cards{
+  position:absolute;z-index:4;
+  display:flex;flex-direction:column;gap:10px;
+  right:-20px;top:50%;transform:translateY(-50%);
+}
+.hero-stat{
+  background:var(--white);border-radius:14px;
+  padding:12px 18px;
+  box-shadow:0 8px 32px rgba(0,0,0,0.15);
+  min-width:140px;
+}
+.hero-stat-num{font-family:'Cormorant Garamond',serif;font-size:26px;color:var(--forest);font-weight:600;line-height:1}
+.hero-stat-lbl{font-size:11px;color:var(--text-l);margin-top:2px}
+
+.scroll-hint{
+  position:absolute;bottom:32px;left:8%;
+  display:flex;align-items:center;gap:10px;
+  font-size:12px;color:var(--text-l);letter-spacing:1px;text-transform:uppercase;
+  animation:bounce 2s ease-in-out infinite;
+}
+@keyframes bounce{0%,100%{transform:translateY(0)}50%{transform:translateY(6px)}}
+.scroll-arrow{width:1px;height:32px;background:var(--sage-l);margin-left:4px}
+
+/* ─── DIVIDER STRIP ───────────────────────────────── */
+.strip{
+  background:var(--forest);color:var(--cream);
+  padding:18px 0;overflow:hidden;
+  display:flex;
+}
+.strip-track{
+  display:flex;gap:0;white-space:nowrap;
+  animation:marquee 20s linear infinite;
+  flex-shrink:0;
+}
+@keyframes marquee{from{transform:translateX(0)}to{transform:translateX(-50%)}}
+.strip-item{
+  display:inline-flex;align-items:center;gap:12px;
+  font-family:'Cormorant Garamond',serif;font-size:18px;font-style:italic;
+  padding:0 40px;color:rgba(250,246,239,0.7);
+}
+.strip-dot{width:5px;height:5px;border-radius:50%;background:var(--sage);flex-shrink:0}
+
+/* ─── SECTION BASE ────────────────────────────────── */
+section{padding:96px 8%}
+.section-label{
+  display:inline-flex;align-items:center;gap:8px;
+  font-size:11px;letter-spacing:2.5px;text-transform:uppercase;
+  color:var(--sage);margin-bottom:18px;font-weight:500;
+}
+.section-label::before{content:'';width:24px;height:1px;background:var(--sage)}
+.section-title{
+  font-family:'Cormorant Garamond',serif;
+  font-size:clamp(36px,4vw,58px);
+  font-weight:300;line-height:1.1;color:var(--forest);
+  margin-bottom:20px;
+}
+.section-title em{font-style:italic;color:var(--terra)}
+.section-sub{font-size:16px;color:var(--text-m);max-width:560px;line-height:1.75}
+
+/* ─── SOBRE DIANA ─────────────────────────────────── */
+.about{background:var(--white)}
+.about-grid{display:grid;grid-template-columns:1fr 1fr;gap:80px;align-items:center}
+.about-img-wrap{position:relative}
+.about-img{
+  width:100%;aspect-ratio:3/4;
+  background:var(--sage-ll);border-radius:120px 120px 40px 40px;
+  display:flex;align-items:center;justify-content:center;
+  flex-direction:column;gap:10px;color:var(--text-l);font-size:13px;
+  position:relative;overflow:hidden;
+}
+.about-img::before{display:none}
+.about-img-icon{font-size:48px;opacity:.4}
+
+.about-card{
+  position:absolute;bottom:-20px;right:-24px;
+  background:var(--forest);color:var(--cream);
+  border-radius:16px;padding:20px 24px;
+  box-shadow:0 16px 48px rgba(26,51,40,0.25);
+}
+.about-card-num{font-family:'Cormorant Garamond',serif;font-size:38px;font-weight:600;line-height:1}
+.about-card-lbl{font-size:12px;opacity:.7;margin-top:2px}
+
+.about-content{padding:20px 0}
+.about-quote{
+  font-family:'Cormorant Garamond',serif;
+  font-size:24px;font-style:italic;font-weight:300;
+  color:var(--forest);line-height:1.5;
+  border-left:3px solid var(--sage);
+  padding-left:24px;margin:28px 0;
+}
+.about-text{font-size:15px;color:var(--text-m);line-height:1.85;margin-bottom:16px}
+.about-cred{
+  display:flex;align-items:center;gap:10px;
+  background:var(--sage-ll);border-radius:12px;
+  padding:14px 18px;margin-top:28px;
+  font-size:13px;color:var(--text-m);
+}
+.about-cred-icon{font-size:20px}
+
+/* ─── SERVICIOS ───────────────────────────────────── */
+.servicios{background:var(--cream)}
+.servicios-head{display:flex;justify-content:space-between;align-items:flex-end;margin-bottom:56px;flex-wrap:wrap;gap:24px}
+.servicios-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:24px}
+
+.serv-card{
+  border-radius:24px;padding:36px 30px;
+  position:relative;overflow:hidden;
+  transition:transform .3s,box-shadow .3s;
+  cursor:default;
+}
+.serv-card:hover{transform:translateY(-6px)}
+
+.serv-card-1{background:var(--forest);color:var(--cream)}
+.serv-card-2{background:var(--white);border:1px solid var(--sage-l);color:var(--text)}
+.serv-card-3{background:var(--terra-l);color:var(--text)}
+.serv-card-4{background:var(--sand);color:var(--text)}
+
+.serv-icon{font-size:36px;margin-bottom:20px;display:block}
+.serv-title{
+  font-family:'Cormorant Garamond',serif;
+  font-size:26px;font-weight:600;margin-bottom:12px;line-height:1.2;
+}
+.serv-card-1 .serv-title{color:var(--cream)}
+.serv-desc{font-size:14px;line-height:1.75;opacity:.8;margin-bottom:24px}
+.serv-tags{display:flex;flex-wrap:wrap;gap:6px}
+.serv-tag{
+  font-size:11px;padding:5px 12px;border-radius:50px;
+  font-weight:500;letter-spacing:.3px;
+}
+.serv-card-1 .serv-tag{background:rgba(255,255,255,0.12);color:rgba(250,246,239,0.85)}
+.serv-card-2 .serv-tag,.serv-card-4 .serv-tag{background:var(--sage-ll);color:var(--sage)}
+.serv-card-3 .serv-tag{background:rgba(196,113,74,0.15);color:var(--terra)}
+
+/* ─── COMO FUNCIONA ───────────────────────────────── */
+.proceso{background:var(--forest);color:var(--cream)}
+.proceso .section-label{color:var(--sage-l)}
+.proceso .section-label::before{background:var(--sage-l)}
+.proceso .section-title{color:var(--cream)}
+.proceso-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:0;margin-top:60px;position:relative}
+.proceso-grid::before{
+  content:'';position:absolute;
+  top:28px;left:10%;right:10%;height:1px;
+  background:rgba(255,255,255,0.1);
+}
+.paso{text-align:center;padding:0 12px;position:relative}
+.paso-num{
+  width:56px;height:56px;border-radius:50%;
+  background:rgba(255,255,255,0.08);
+  border:1px solid rgba(255,255,255,0.2);
+  display:flex;align-items:center;justify-content:center;
+  margin:0 auto 20px;
+  font-family:'Cormorant Garamond',serif;
+  font-size:20px;color:var(--cream);font-weight:600;
+  position:relative;z-index:2;
+}
+.paso.active .paso-num{background:var(--sage);border-color:var(--sage)}
+.paso-icon{font-size:20px;margin-bottom:14px;display:block}
+.paso-title{font-size:14px;font-weight:500;color:var(--cream);margin-bottom:8px}
+.paso-desc{font-size:12px;color:rgba(250,246,239,0.55);line-height:1.6}
+
+/* ─── CONSULTA INCLUYE ────────────────────────────── */
+.incluye{background:var(--cream-d)}
+.incluye-grid{display:grid;grid-template-columns:1fr 1fr;gap:60px;align-items:start}
+.incluye-items{display:flex;flex-direction:column;gap:20px;margin-top:40px}
+.incluye-item{
+  display:flex;align-items:flex-start;gap:18px;
+  background:var(--white);border-radius:16px;padding:22px;
+  border:1px solid rgba(107,158,120,0.15);
+  transition:border-color .2s,box-shadow .2s;
+}
+.incluye-item:hover{border-color:var(--sage-l);box-shadow:0 4px 20px rgba(107,158,120,0.1)}
+.incluye-check{
+  width:36px;height:36px;border-radius:50%;
+  background:var(--sage-ll);
+  display:flex;align-items:center;justify-content:center;
+  flex-shrink:0;font-size:16px;
+}
+.incluye-item-title{font-size:15px;font-weight:500;color:var(--forest);margin-bottom:4px}
+.incluye-item-desc{font-size:13px;color:var(--text-m);line-height:1.6}
+
+.incluye-cta-box{
+  position:sticky;top:100px;
+  background:var(--forest);color:var(--cream);
+  border-radius:28px;padding:44px 38px;
+}
+.incluye-cta-label{font-size:11px;letter-spacing:2px;text-transform:uppercase;color:var(--sage-l);margin-bottom:16px;font-weight:500}
+.incluye-cta-title{
+  font-family:'Cormorant Garamond',serif;
+  font-size:36px;font-weight:300;line-height:1.2;margin-bottom:20px;
+}
+.incluye-cta-title em{font-style:italic;color:var(--sage-l)}
+.incluye-cta-price{
+  margin:28px 0;padding:20px 0;
+  border-top:1px solid rgba(255,255,255,0.1);
+  border-bottom:1px solid rgba(255,255,255,0.1);
+}
+.price-note{font-size:12px;color:rgba(250,246,239,0.5);margin-bottom:6px}
+.price-val{
+  font-family:'Cormorant Garamond',serif;
+  font-size:48px;font-weight:600;line-height:1;color:var(--cream);
+}
+.price-sub{font-size:13px;color:rgba(250,246,239,0.6);margin-top:4px}
+.incluye-cta-desc{font-size:14px;color:rgba(250,246,239,0.65);line-height:1.75;margin-bottom:28px}
+.btn-wa-big{
+  display:flex;align-items:center;justify-content:center;gap:10px;
+  background:var(--cream);color:var(--forest);
+  padding:16px 28px;border-radius:50px;
+  font-size:15px;font-weight:500;text-decoration:none;
+  transition:all .25s;width:100%;
+}
+.btn-wa-big:hover{background:var(--sage-ll)}
+.btn-wa-big svg{width:18px;height:18px;fill:#25D366}
+.incluye-loc{display:flex;align-items:center;gap:8px;margin-top:16px;font-size:13px;color:rgba(250,246,239,0.5)}
+
+/* ─── RESEÑAS ─────────────────────────────────────── */
+.resenas{background:var(--white)}
+.resenas-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:24px;margin-top:56px}
+.resena-card{
+  background:var(--cream);border-radius:20px;
+  padding:28px 26px;position:relative;
+}
+.resena-stars{color:#e8a020;font-size:14px;letter-spacing:2px;margin-bottom:16px}
+.resena-text{
+  font-family:'Cormorant Garamond',serif;
+  font-size:19px;font-weight:300;font-style:italic;
+  line-height:1.55;color:var(--forest);margin-bottom:20px;
+}
+.resena-author{display:flex;align-items:center;gap:12px}
+.resena-avatar{
+  width:38px;height:38px;border-radius:50%;
+  background:var(--sage-l);display:flex;align-items:center;
+  justify-content:center;font-size:13px;font-weight:600;color:var(--forest);
+}
+.resena-name{font-size:13px;font-weight:500}
+.resena-type{font-size:11px;color:var(--text-l)}
+.resena-quote{
+  position:absolute;top:20px;right:24px;
+  font-family:'Cormorant Garamond',serif;
+  font-size:60px;color:var(--sage-l);line-height:1;
+}
+
+/* ─── FAQ ─────────────────────────────────────────── */
+.faq{background:var(--cream-d)}
+.faq-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:48px}
+.faq-item{
+  background:var(--white);border-radius:16px;
+  padding:24px;cursor:pointer;
+  border:1px solid transparent;transition:border-color .2s;
+}
+.faq-item:hover{border-color:var(--sage-l)}
+.faq-q{
+  font-size:15px;font-weight:500;color:var(--forest);
+  display:flex;justify-content:space-between;align-items:center;gap:12px;
+}
+.faq-arrow{
+  width:28px;height:28px;border-radius:50%;
+  background:var(--sage-ll);display:flex;align-items:center;
+  justify-content:center;font-size:14px;color:var(--sage);flex-shrink:0;
+  transition:transform .3s;
+}
+.faq-a{font-size:13px;color:var(--text-m);line-height:1.75;margin-top:12px;display:none}
+.faq-item.open .faq-a{display:block}
+.faq-item.open .faq-arrow{transform:rotate(45deg)}
+
+/* ─── CONTACTO ────────────────────────────────────── */
+.contacto{
+  background:var(--forest);color:var(--cream);
+  text-align:center;padding:96px 8%;
+  position:relative;overflow:hidden;
+}
+.contacto::before{
+  content:'';position:absolute;
+  top:-100px;left:50%;transform:translateX(-50%);
+  width:600px;height:600px;
+  border-radius:50%;
+  background:rgba(107,158,120,0.06);
+}
+.contacto .section-label{color:var(--sage-l);margin:0 auto 18px}
+.contacto .section-label::before{background:var(--sage-l)}
+.contacto .section-title{color:var(--cream);margin:0 auto 16px;text-align:center}
+.contacto-desc{font-size:16px;color:rgba(250,246,239,0.65);max-width:500px;margin:0 auto 48px;line-height:1.75}
+.contacto-actions{display:flex;align-items:center;justify-content:center;gap:16px;flex-wrap:wrap;margin-bottom:56px}
+.btn-wa-hero{
+  display:inline-flex;align-items:center;gap:10px;
+  background:var(--cream);color:var(--forest);
+  padding:16px 32px;border-radius:50px;
+  font-size:16px;font-weight:500;text-decoration:none;
+  transition:all .25s;box-shadow:0 8px 32px rgba(0,0,0,0.2);
+}
+.btn-wa-hero:hover{transform:translateY(-3px);box-shadow:0 12px 48px rgba(0,0,0,0.25)}
+.btn-wa-hero svg{width:20px;height:20px;fill:#25D366}
+.btn-ig{
+  display:inline-flex;align-items:center;gap:10px;
+  background:rgba(255,255,255,0.08);color:var(--cream);
+  padding:16px 32px;border-radius:50px;
+  font-size:16px;font-weight:400;text-decoration:none;
+  border:1px solid rgba(255,255,255,0.2);
+  transition:all .25s;
+}
+.btn-ig:hover{background:rgba(255,255,255,0.14)}
+
+.contacto-info{
+  display:flex;justify-content:center;gap:40px;flex-wrap:wrap;
+  padding-top:48px;border-top:1px solid rgba(255,255,255,0.1);
+}
+.cinfo-item{text-align:center}
+.cinfo-icon{font-size:20px;margin-bottom:8px;display:block}
+.cinfo-label{font-size:11px;color:rgba(250,246,239,0.4);text-transform:uppercase;letter-spacing:1.5px;margin-bottom:4px}
+.cinfo-val{font-size:14px;color:rgba(250,246,239,0.8)}
+
+/* ─── FOOTER ──────────────────────────────────────── */
+footer{
+  background:var(--text);color:rgba(255,255,255,0.4);
+  padding:24px 8%;display:flex;
+  justify-content:space-between;align-items:center;
+  flex-wrap:wrap;gap:12px;font-size:12px;
+}
+footer a{color:rgba(255,255,255,0.5);text-decoration:none}
+
+/* ─── FLOATING WA ─────────────────────────────────── */
+.float-wa{
+  position:fixed;bottom:28px;right:28px;z-index:99;
+  width:58px;height:58px;border-radius:50%;
+  background:#25D366;color:#fff;
+  display:flex;align-items:center;justify-content:center;
+  box-shadow:0 6px 28px rgba(37,211,102,0.4);
+  text-decoration:none;
+  animation:waPulse 3s ease-in-out infinite;
+  transition:transform .2s;
+}
+.float-wa:hover{transform:scale(1.1)}
+.float-wa svg{width:26px;height:26px;fill:#fff}
+@keyframes waPulse{0%,100%{box-shadow:0 6px 28px rgba(37,211,102,0.4)}50%{box-shadow:0 6px 40px rgba(37,211,102,0.65)}}
+
+/* ─── ANIMATIONS ──────────────────────────────────── */
+.reveal{opacity:0;transform:translateY(30px);transition:opacity .7s ease,transform .7s ease}
+.reveal.visible{opacity:1;transform:translateY(0)}
+.reveal-delay-1{transition-delay:.1s}
+.reveal-delay-2{transition-delay:.2s}
+.reveal-delay-3{transition-delay:.3s}
+
+/* ─── RESPONSIVE ──────────────────────────────────── */
+@media(max-width:900px){
+  .hero{grid-template-columns:1fr;min-height:auto}
+  .hero-right{display:none}
+  .hero-left{padding:60px 6%;text-align:center}
+  .hero-eyebrow{justify-content:center}
+  .hero-desc{margin-left:auto;margin-right:auto}
+  .hero-actions{justify-content:center}
+  .hero-badges{justify-content:center}
+  .about-grid{grid-template-columns:1fr}
+  .about-img-wrap{max-width:340px;margin:0 auto}
+  .servicios-grid{grid-template-columns:1fr}
+  .proceso-grid{grid-template-columns:1fr 1fr;gap:24px}
+  .proceso-grid::before{display:none}
+  .incluye-grid{grid-template-columns:1fr}
+  .incluye-cta-box{position:static}
+  .resenas-grid{grid-template-columns:1fr}
+  .faq-grid{grid-template-columns:1fr}
+  .contacto-info{gap:24px}
+  .nav-links{display:none}
+  .hamburger{display:flex}
+  section{padding:64px 6%}
+}
+@media(max-width:480px){
+  .hero-title{font-size:38px}
+  .section-title{font-size:32px}
+  .float-wa{bottom:20px;right:20px;width:52px;height:52px}
+}
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <a href="#" class="nav-logo">Gesta<span>Nut</span></a>
+  <div class="nav-links">
+    <a href="#sobre-mi">Sobre mí</a>
+    <a href="#servicios">Servicios</a>
+    <a href="#consulta">Tu consulta</a>
+    <a href="#resenas">Reseñas</a>
+    <a href="#contacto" class="nav-cta">Agendar cita</a>
+    <a href="login.php" class="nav-login">Iniciar sesión</a>
+  </div>
+  <div class="hamburger">
+    <span></span><span></span><span></span>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section class="hero" style="padding:0">
+  <div class="hero-left">
+    <div class="hero-eyebrow">
+      <span class="eyebrow-line"></span>
+      Nutrióloga · Culiacán, Sinaloa
+    </div>
+    <h1 class="hero-title">
+      Alimentación<br>
+      <em>realista</em> y<br>
+      <strong>sin castigos</strong>
+    </h1>
+    <p class="hero-name">Diana Zavala — @gestanut</p>
+    <p class="hero-desc">
+      Tu cuerpo no está fallando. Solo necesita estrategia, no restricción. Te acompaño a mejorar tu salud con un plan personalizado, cercano y sostenible.
+    </p>
+    <div class="hero-actions">
+      <a href="https://wa.me/526673056211?text=Hola%20Diana%2C%20me%20gustar%C3%ADa%20agendar%20una%20consulta%20contigo%20%F0%9F%8C%BF" class="btn-whatsapp" target="_blank">
+        <svg viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+        Agendar por WhatsApp
+      </a>
+      <a href="#servicios" class="btn-ghost">Ver servicios →</a>
+    </div>
+    <div class="hero-badges">
+      <div class="hero-badge">🤰 Materno-infantil</div>
+      <div class="hero-badge">⚖️ Recomposición corporal</div>
+      <div class="hero-badge">💻 Consulta online</div>
+    </div>
+  </div>
+  <div class="hero-right">
+    <div class="blob blob-1"></div>
+    <div class="blob blob-2"></div>
+    <div class="blob blob-3"></div>
+    <div class="hero-photo-placeholder">
+      <div class="hero-img-frame">
+        <img src="diana-hero.png" alt="Diana Zavala · Nutrióloga" style="width:100%;height:100%;object-fit:cover;object-position:top center">
+      </div>
+      <div class="hero-stat-cards">
+        <div class="hero-stat">
+          <div class="hero-stat-num">100%</div>
+          <div class="hero-stat-lbl">Planes personalizados</div>
+        </div>
+        <div class="hero-stat">
+          <div class="hero-stat-num">Céd.</div>
+          <div class="hero-stat-lbl">15304166 · Registro oficial</div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="scroll-hint">
+    Scroll<div class="scroll-arrow"></div>
+  </div>
+</section>
+
+<!-- STRIP -->
+<div class="strip">
+  <div class="strip-track">
+    <span class="strip-item"><span class="strip-dot"></span>Nutrición materno-infantil</span>
+    <span class="strip-item"><span class="strip-dot"></span>Recomposición corporal</span>
+    <span class="strip-item"><span class="strip-dot"></span>Control de peso</span>
+    <span class="strip-item"><span class="strip-dot"></span>Consulta online</span>
+    <span class="strip-item"><span class="strip-dot"></span>Nutrición presencial · Culiacán</span>
+    <span class="strip-item"><span class="strip-dot"></span>Planes 100% personalizados</span>
+    <span class="strip-item"><span class="strip-dot"></span>Sin dietas imposibles</span>
+    <span class="strip-item"><span class="strip-dot"></span>Nutrición materno-infantil</span>
+    <span class="strip-item"><span class="strip-dot"></span>Recomposición corporal</span>
+    <span class="strip-item"><span class="strip-dot"></span>Control de peso</span>
+    <span class="strip-item"><span class="strip-dot"></span>Consulta online</span>
+    <span class="strip-item"><span class="strip-dot"></span>Nutrición presencial · Culiacán</span>
+    <span class="strip-item"><span class="strip-dot"></span>Planes 100% personalizados</span>
+    <span class="strip-item"><span class="strip-dot"></span>Sin dietas imposibles</span>
+  </div>
+</div>
+
+<!-- SOBRE MI -->
+<section class="about" id="sobre-mi">
+  <div class="about-grid">
+    <div class="about-img-wrap reveal">
+      <div class="about-img">
+        <img src="diana-about.png" alt="Diana Zavala · Nutrióloga" style="width:100%;height:100%;object-fit:cover;object-position:top center">
+      </div>
+      <div class="about-card">
+        <div class="about-card-num">+2 años</div>
+        <div class="about-card-lbl">en consulta privada</div>
+      </div>
+    </div>
+    <div class="about-content reveal reveal-delay-1">
+      <div class="section-label">Sobre mí</div>
+      <h2 class="section-title">Soy Diana,<br><em>tu nutrióloga</em></h2>
+      <div class="about-quote">
+        "Mi objetivo es ayudarte a mejorar tu salud a través de una alimentación personalizada, realista y sostenible."
+      </div>
+      <p class="about-text">
+        Soy nutrióloga egresada con cédula profesional 15304166, especializada en nutrición materno-infantil y recomposición corporal. Creo firmemente que comer bien no tiene que ser un sacrificio — y me dedico a demostrártelo.
+      </p>
+      <p class="about-text">
+        Me mantengo constantemente actualizada con los últimos avances en nutrición clínica, porque tu salud merece lo mejor que la ciencia tiene para ofrecer. Atiendo de forma presencial en Culiacán y también en línea para pacientes de todo México.
+      </p>
+      <div class="about-cred">
+        <span class="about-cred-icon">🏥</span>
+        <div>
+          <div style="font-weight:500;font-size:14px">Asociada a Clínica SonTusHormonas</div>
+          <div style="font-size:12px;color:var(--text-l)">@clinica.sontushormonas · Culiacán, Sinaloa</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- SERVICIOS -->
+<section class="servicios" id="servicios">
+  <div class="servicios-head">
+    <div>
+      <div class="section-label">Servicios</div>
+      <h2 class="section-title">¿En qué te<br><em>puedo ayudar?</em></h2>
+    </div>
+    <p class="section-sub">Cada persona es diferente. Por eso cada plan es completamente a tu medida.</p>
+  </div>
+  <div class="servicios-grid">
+    <div class="serv-card serv-card-1 reveal">
+      <span class="serv-icon">🤰</span>
+      <div class="serv-title">Nutrición Materno-Infantil</div>
+      <p class="serv-desc">Acompañamiento nutricional durante el embarazo, lactancia y los primeros años de vida. Cuida tu salud y la de tu bebé con un plan seguro y personalizado.</p>
+      <div class="serv-tags">
+        <span class="serv-tag">Embarazo</span>
+        <span class="serv-tag">Lactancia</span>
+        <span class="serv-tag">Post-parto</span>
+        <span class="serv-tag">Nutrición infantil</span>
+      </div>
+    </div>
+    <div class="serv-card serv-card-2 reveal reveal-delay-1">
+      <span class="serv-icon">⚖️</span>
+      <div class="serv-title">Recomposición Corporal</div>
+      <p class="serv-desc">Pierde grasa y gana músculo al mismo tiempo con una estrategia nutricional respaldada por ciencia. Sin restricciones extremas, con resultados reales.</p>
+      <div class="serv-tags">
+        <span class="serv-tag">Pérdida de grasa</span>
+        <span class="serv-tag">Ganancia muscular</span>
+        <span class="serv-tag">Nutrición deportiva</span>
+      </div>
+    </div>
+    <div class="serv-card serv-card-3 reveal reveal-delay-2">
+      <span class="serv-icon">📉</span>
+      <div class="serv-title">Control de Peso</div>
+      <p class="serv-desc">Mejora tu relación con la comida y aprende hábitos que puedas mantener de por vida. Sin dietas imposibles, sin efecto rebote.</p>
+      <div class="serv-tags">
+        <span class="serv-tag">Hábitos saludables</span>
+        <span class="serv-tag">Sin efecto rebote</span>
+        <span class="serv-tag">Educación nutricional</span>
+      </div>
+    </div>
+  </div>
+  <div style="margin-top:20px">
+    <div class="serv-card serv-card-4 reveal" style="display:flex;align-items:center;gap:28px;padding:28px 36px">
+      <span class="serv-icon" style="margin-bottom:0;font-size:32px">💻</span>
+      <div style="flex:1">
+        <div class="serv-title" style="font-size:22px;margin-bottom:8px">Consulta Online</div>
+        <p class="serv-desc" style="margin-bottom:0">¿No estás en Culiacán? No importa. Atiendo pacientes de todo México por videollamada. Mismo plan personalizado, misma atención de siempre.</p>
+      </div>
+      <a href="https://wa.me/526673056211?text=Hola%20Diana%2C%20me%20interesa%20la%20consulta%20online%20%F0%9F%8C%BF" target="_blank" class="btn-whatsapp" style="white-space:nowrap;flex-shrink:0">
+        <svg viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+        Consulta online
+      </a>
+    </div>
+  </div>
+</section>
+
+<!-- PROCESO -->
+<section class="proceso">
+  <div class="section-label">Cómo funciona</div>
+  <h2 class="section-title">Tu camino hacia<br><em>una mejor salud</em></h2>
+  <div class="proceso-grid">
+    <div class="paso reveal">
+      <div class="paso-num">01</div>
+      <span class="paso-icon">📱</span>
+      <div class="paso-title">Agendas tu cita</div>
+      <p class="paso-desc">Escríbeme por WhatsApp y buscamos el horario que mejor te acomode.</p>
+    </div>
+    <div class="paso reveal reveal-delay-1">
+      <div class="paso-num active">02</div>
+      <span class="paso-icon">🩺</span>
+      <div class="paso-title">Historia clínica</div>
+      <p class="paso-desc">Platicamos sobre tus hábitos, objetivos, historial médico y estilo de vida.</p>
+    </div>
+    <div class="paso reveal reveal-delay-2">
+      <div class="paso-num">03</div>
+      <span class="paso-icon">📊</span>
+      <div class="paso-title">Evaluación corporal</div>
+      <p class="paso-desc">Medimos composición corporal para tener una base real de tu estado actual.</p>
+    </div>
+    <div class="paso reveal reveal-delay-2">
+      <div class="paso-num">04</div>
+      <span class="paso-icon">🥗</span>
+      <div class="paso-title">Tu plan personalizado</div>
+      <p class="paso-desc">Diseño un plan de alimentación 100% adaptado a ti, tus gustos y tu vida real.</p>
+    </div>
+    <div class="paso reveal reveal-delay-3">
+      <div class="paso-num">05</div>
+      <span class="paso-icon">💬</span>
+      <div class="paso-title">Seguimiento</div>
+      <p class="paso-desc">Hacemos ajustes continuos según tu progreso. No estás sola en el proceso.</p>
+    </div>
+  </div>
+</section>
+
+<!-- CONSULTA INCLUYE -->
+<section class="incluye" id="consulta">
+  <div class="incluye-grid">
+    <div>
+      <div class="section-label">Tu consulta incluye</div>
+      <h2 class="section-title">Todo lo que<br><em>necesitas</em></h2>
+      <p class="section-sub">Sin letra chica. Esto es lo que recibes en cada consulta conmigo.</p>
+      <div class="incluye-items">
+        <div class="incluye-item reveal">
+          <div class="incluye-check">📋</div>
+          <div>
+            <div class="incluye-item-title">Historia clínica y evaluación corporal</div>
+            <div class="incluye-item-desc">Análisis completo de tu composición corporal, hábitos y antecedentes médicos relevantes.</div>
+          </div>
+        </div>
+        <div class="incluye-item reveal reveal-delay-1">
+          <div class="incluye-check">🥗</div>
+          <div>
+            <div class="incluye-item-title">Plan de alimentación 100% personalizado</div>
+            <div class="incluye-item-desc">Diseñado específicamente para ti, tus gustos, tu rutina y tus objetivos.</div>
+          </div>
+        </div>
+        <div class="incluye-item reveal reveal-delay-1">
+          <div class="incluye-check">📚</div>
+          <div>
+            <div class="incluye-item-title">Guía práctica y educación nutricional</div>
+            <div class="incluye-item-desc">Aprenderás a tomar decisiones alimenticias inteligentes en tu vida diaria.</div>
+          </div>
+        </div>
+        <div class="incluye-item reveal reveal-delay-2">
+          <div class="incluye-check">📈</div>
+          <div>
+            <div class="incluye-item-title">Seguimiento y ajustes continuos</div>
+            <div class="incluye-item-desc">Monitoreo de tu progreso con ajustes en el plan cuando sea necesario.</div>
+          </div>
+        </div>
+        <div class="incluye-item reveal reveal-delay-2">
+          <div class="incluye-check">💚</div>
+          <div>
+            <div class="incluye-item-title">Atención cercana y sin juicios</div>
+            <div class="incluye-item-desc">Un espacio seguro donde puedes ser honesta. Sin críticas, con mucho apoyo.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div>
+      <div class="incluye-cta-box reveal">
+        <div class="incluye-cta-label">¿Listo/a para empezar?</div>
+        <div class="incluye-cta-title">Tu primera consulta<br>te <em>cambia la perspectiva</em></div>
+        <div class="incluye-cta-price">
+          <div class="price-note">Primera consulta desde</div>
+          <div class="price-val">$400</div>
+          <div class="price-sub">Presencial en Culiacán · Online disponible</div>
+        </div>
+        <p class="incluye-cta-desc">Escríbeme por WhatsApp y platicamos. Sin compromiso, con toda la información que necesitas para decidir.</p>
+        <a href="https://wa.me/526673056211?text=Hola%20Diana%2C%20me%20gustar%C3%ADa%20agendar%20mi%20primera%20consulta%20contigo%20%F0%9F%8C%BF" target="_blank" class="btn-wa-big">
+          <svg viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+          Agendar mi consulta ahora
+        </a>
+        <div class="incluye-loc">
+          <span>📍</span> Culiacán, Sinaloa · @clinica.sontushormonas · También online
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- RESEÑAS -->
+<section class="resenas" id="resenas">
+  <div class="section-label">Reseñas</div>
+  <h2 class="section-title">Lo que dicen<br><em>mis pacientes</em></h2>
+  <div class="resenas-grid">
+    <div class="resena-card reveal">
+      <div class="resena-quote">"</div>
+      <div class="resena-stars">★★★★★</div>
+      <p class="resena-text">"Diana me acompañó durante todo mi embarazo. Me sentí segura, bien informada y nunca con hambre. Mi bebé nació sano y yo recuperé mi peso más rápido de lo que esperaba."</p>
+      <div class="resena-author">
+        <div class="resena-avatar">SL</div>
+        <div>
+          <div class="resena-name">Sofía L.</div>
+          <div class="resena-type">Paciente · Nutrición prenatal</div>
+        </div>
+      </div>
+    </div>
+    <div class="resena-card reveal reveal-delay-1">
+      <div class="resena-quote">"</div>
+      <div class="resena-stars">★★★★★</div>
+      <p class="resena-text">"Llevaba años intentando bajar de peso con dietas que me dejaban miserable. Con Diana aprendí a comer sin culpa y bajé 9 kg en 4 meses. Sin restricciones, con hábitos reales."</p>
+      <div class="resena-author">
+        <div class="resena-avatar">MR</div>
+        <div>
+          <div class="resena-name">María R.</div>
+          <div class="resena-type">Paciente · Control de peso</div>
+        </div>
+      </div>
+    </div>
+    <div class="resena-card reveal reveal-delay-2">
+      <div class="resena-quote">"</div>
+      <div class="resena-stars">★★★★★</div>
+      <p class="resena-text">"La consulta online fue igual de completa que si fuera presencial. Me hizo un plan ajustado a mi rutina de gym y en 3 meses noté un cambio brutal en mi composición corporal."</p>
+      <div class="resena-author">
+        <div class="resena-avatar">LM</div>
+        <div>
+          <div class="resena-name">Laura M.</div>
+          <div class="resena-type">Paciente online · Recomposición</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FAQ -->
+<section class="faq" id="faq">
+  <div class="section-label">Preguntas frecuentes</div>
+  <h2 class="section-title">¿Tienes<br><em>dudas?</em></h2>
+  <div class="faq-grid">
+    <div class="faq-item" onclick="toggleFaq(this)">
+      <div class="faq-q">¿Cómo agendo mi primera cita? <div class="faq-arrow">+</div></div>
+      <div class="faq-a">Es muy sencillo. Escríbeme directo por WhatsApp al 667 305 6211 y buscamos el horario que mejor te acomode. Atiendo de lunes a sábado.</div>
+    </div>
+    <div class="faq-item" onclick="toggleFaq(this)">
+      <div class="faq-q">¿La consulta online funciona igual? <div class="faq-arrow">+</div></div>
+      <div class="faq-a">Sí. La consulta online es igual de completa. Hacemos la evaluación, historia clínica y te elaboro tu plan personalizado por videollamada. Ideal si vives fuera de Culiacán.</div>
+    </div>
+    <div class="faq-item" onclick="toggleFaq(this)">
+      <div class="faq-q">¿Puedo llevar a mi bebé a la consulta? <div class="faq-arrow">+</div></div>
+      <div class="faq-a">¡Por supuesto! Especialista en nutrición materno-infantil, así que puedes traer a tu bebé y también consultamos sobre su alimentación si lo necesitas.</div>
+    </div>
+    <div class="faq-item" onclick="toggleFaq(this)">
+      <div class="faq-q">¿Cada cuánto son las consultas de seguimiento? <div class="faq-arrow">+</div></div>
+      <div class="faq-a">Depende de tu objetivo y tu progreso. Generalmente cada 2-4 semanas. Lo definimos juntas en tu primera consulta según lo que más te convenga.</div>
+    </div>
+    <div class="faq-item" onclick="toggleFaq(this)">
+      <div class="faq-q">¿Me vas a dar una dieta muy estricta? <div class="faq-arrow">+</div></div>
+      <div class="faq-a">Para nada. Mi enfoque es realista y sostenible. El plan se adapta a tus gustos, tu rutina y tu vida. No creo en prohibiciones extremas que no puedas mantener.</div>
+    </div>
+    <div class="faq-item" onclick="toggleFaq(this)">
+      <div class="faq-q">¿Atiendes casos de salud hormonal? <div class="faq-arrow">+</div></div>
+      <div class="faq-a">Sí. Trabajo en colaboración con la Clínica SonTusHormonas en Culiacán, donde atendemos casos que requieren un enfoque nutricional-hormonal integral.</div>
+    </div>
+  </div>
+</section>
+
+<!-- CONTACTO -->
+<section class="contacto" id="contacto">
+  <div class="section-label" style="justify-content:center">Contáctame</div>
+  <h2 class="section-title" style="max-width:600px;margin:0 auto 16px">¿Listo/a para<br><em>empezar?</em></h2>
+  <p class="contacto-desc">Da el primer paso. Escríbeme hoy y platicamos sin compromiso sobre cómo puedo ayudarte.</p>
+  <div class="contacto-actions">
+    <a href="https://wa.me/526673056211?text=Hola%20Diana%2C%20me%20gustar%C3%ADa%20agendar%20una%20consulta%20%F0%9F%8C%BF" target="_blank" class="btn-wa-hero">
+      <svg viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+      Escribir por WhatsApp
+    </a>
+    <a href="https://instagram.com/gestanut" target="_blank" class="btn-ig">
+      <span>📸</span> @gestanut en Instagram
+    </a>
+  </div>
+  <div class="contacto-info">
+    <div class="cinfo-item">
+      <span class="cinfo-icon">📍</span>
+      <div class="cinfo-label">Ubicación</div>
+      <div class="cinfo-val">Culiacán, Sinaloa</div>
+    </div>
+    <div class="cinfo-item">
+      <span class="cinfo-icon">📱</span>
+      <div class="cinfo-label">WhatsApp</div>
+      <div class="cinfo-val">667 305 6211</div>
+    </div>
+    <div class="cinfo-item">
+      <span class="cinfo-icon">💻</span>
+      <div class="cinfo-label">Modalidad</div>
+      <div class="cinfo-val">Presencial y Online</div>
+    </div>
+    <div class="cinfo-item">
+      <span class="cinfo-icon">🏥</span>
+      <div class="cinfo-label">Clínica</div>
+      <div class="cinfo-val">@clinica.sontushormonas</div>
+    </div>
+    <div class="cinfo-item">
+      <span class="cinfo-icon">📜</span>
+      <div class="cinfo-label">Cédula Profesional</div>
+      <div class="cinfo-val">15304166</div>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <span>© 2025 Diana Zavala · Nutrióloga · Céd. Prof. 15304166</span>
+  <span>Culiacán, Sinaloa · <a href="https://instagram.com/gestanut" target="_blank">@gestanut</a></span>
+</footer>
+
+<!-- FLOATING WA -->
+<a href="https://wa.me/526673056211?text=Hola%20Diana%2C%20me%20gustar%C3%ADa%20agendar%20una%20consulta%20%F0%9F%8C%BF" target="_blank" class="float-wa" title="Agendar por WhatsApp">
+  <svg viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+</a>
+
+<script>
+function toggleFaq(el){
+  const isOpen=el.classList.contains('open');
+  document.querySelectorAll('.faq-item').forEach(i=>i.classList.remove('open'));
+  if(!isOpen) el.classList.add('open');
+}
+
+const observer=new IntersectionObserver(entries=>{
+  entries.forEach(e=>{if(e.isIntersecting) e.target.classList.add('visible')});
+},{threshold:.15});
+document.querySelectorAll('.reveal').forEach(el=>observer.observe(el));
+
+window.addEventListener('scroll',()=>{
+  document.querySelector('nav').style.boxShadow=
+    window.scrollY>50?'0 4px 24px rgba(26,51,40,0.08)':'none';
+});
+
+document.querySelector('.hamburger').addEventListener('click',function(){
+  const links=document.querySelector('.nav-links');
+  const open=links.style.display==='flex';
+  links.style.display=open?'none':'flex';
+  links.style.flexDirection='column';
+  links.style.position='absolute';
+  links.style.top='70px';
+  links.style.left='0';links.style.right='0';
+  links.style.background='rgba(250,246,239,0.98)';
+  links.style.padding='20px 6%';
+  links.style.gap='16px';
+  links.style.borderBottom='1px solid rgba(107,158,120,0.15)';
+  if(open) links.style.display='none';
+});
+</script>
+</body>
+</html>

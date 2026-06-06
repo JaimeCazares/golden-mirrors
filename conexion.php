@@ -18,7 +18,7 @@ if ($esLocal) {
     $username   = "root";
     $password   = "";
     $database   = "golden";
-    $port       = 3307; // XAMPP en este equipo usa 3307
+    $port       = 3306; // XAMPP en este equipo usa 3307
 } else {
     // 🔹 HOSTINGER (PRODUCCIÓN)
     $servername = "localhost"; // Hostinger usa localhost interno

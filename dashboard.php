@@ -20,6 +20,7 @@ if (empty($_SESSION['rol']) || $_SESSION['rol'] !== 'admin') {
   <link rel="stylesheet" href="espejo/css/espejo-ui.css">
   <link rel="stylesheet" href="espejo/css/espejo-selector.css">
   <link rel="stylesheet" href="gastos/gastos.css?v=1.0">
+  <link rel="stylesheet" href="nutricion/nutricion.css?v=1.0">
 </head>
 
 <body>
@@ -54,6 +55,11 @@ if (empty($_SESSION['rol']) || $_SESSION['rol'] !== 'admin') {
       <button class="nav-btn" onclick="cambiarPestana('registro')">
           <span class="icono">📝</span>
           <span class="label">Normales</span>
+      </button>
+
+      <button class="nav-btn" onclick="cambiarPestana('nutricion')">
+          <span class="icono">🥗</span>
+          <span class="label">Nutrición</span>
       </button>
   </nav>
 
