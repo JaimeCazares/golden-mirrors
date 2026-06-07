@@ -41,7 +41,8 @@ nav{
   border-bottom:1px solid rgba(107,158,120,0.15);
   transition:all .3s;
 }
-.nav-logo{font-family:'Cormorant Garamond',serif;font-size:22px;color:var(--forest);letter-spacing:.5px;text-decoration:none}
+.nav-logo{font-family:'Cormorant Garamond',serif;font-size:22px;color:var(--forest);letter-spacing:.5px;text-decoration:none;display:flex;align-items:center;gap:5px}
+.nav-logo-img{height:28px;width:auto;object-fit:contain}
 .nav-logo span{color:var(--sage);font-style:italic}
 .nav-links{display:flex;align-items:center;gap:28px}
 .nav-links a{font-size:13px;color:var(--text-m);text-decoration:none;letter-spacing:.3px;transition:color .2s}
@@ -94,7 +95,15 @@ nav{
   color:var(--forest);
   margin-bottom:12px;
 }
-.hero-title em{font-style:italic;color:var(--terra)}
+.hero-title em{
+  font-style:italic;
+  background:linear-gradient(90deg,#c4714a 0%,#e8956a 28%,#c4714a 52%,#e8956a 76%,#c4714a 100%);
+  background-size:200% auto;
+  -webkit-background-clip:text;
+  -webkit-text-fill-color:transparent;
+  background-clip:text;
+  animation:shimmerText 4.5s linear infinite;
+}
 .hero-title strong{font-weight:600}
 
 .hero-name{
@@ -318,31 +327,34 @@ section{padding:68px 8%}
 .serv-card-3 .serv-tag{background:rgba(196,113,74,0.15);color:var(--terra)}
 
 /* ─── COMO FUNCIONA ───────────────────────────────── */
-.proceso{background:var(--forest);color:var(--cream)}
+.proceso{background:linear-gradient(145deg,#1a3328 0%,#22382c 55%,#1e3529 100%);color:var(--cream);position:relative;overflow:hidden;padding:44px 8%}
+.proceso::before{content:'';position:absolute;top:-80px;right:-80px;width:360px;height:360px;border-radius:50%;background:radial-gradient(circle,rgba(107,158,120,0.1) 0%,transparent 65%);pointer-events:none}
+.proceso::after{content:'';position:absolute;bottom:-60px;left:-60px;width:280px;height:280px;border-radius:50%;background:radial-gradient(circle,rgba(196,113,74,0.07) 0%,transparent 65%);pointer-events:none}
 .proceso .section-label{color:var(--sage-l)}
 .proceso .section-label::before{background:var(--sage-l)}
 .proceso .section-title{color:var(--cream)}
-.proceso-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:0;margin-top:36px;position:relative}
+.proceso-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:8px;margin-top:26px;position:relative}
 .proceso-grid::before{
   content:'';position:absolute;
-  top:28px;left:10%;right:10%;height:1px;
-  background:rgba(255,255,255,0.1);
+  top:22px;left:10%;right:10%;height:1px;
+  background:linear-gradient(90deg,transparent,rgba(255,255,255,0.12),transparent);
 }
-.paso{text-align:center;padding:0 12px;position:relative}
+.paso{text-align:center;padding:18px 8px;position:relative;border-radius:16px;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);transition:background .2s}
+.paso:hover{background:rgba(255,255,255,0.09)}
 .paso-num{
-  width:44px;height:44px;border-radius:50%;
+  width:38px;height:38px;border-radius:50%;
   background:rgba(255,255,255,0.08);
-  border:1px solid rgba(255,255,255,0.2);
+  border:1px solid rgba(255,255,255,0.18);
   display:flex;align-items:center;justify-content:center;
-  margin:0 auto 14px;
+  margin:0 auto 10px;
   font-family:'Cormorant Garamond',serif;
-  font-size:17px;color:var(--cream);font-weight:600;
+  font-size:15px;color:var(--cream);font-weight:600;
   position:relative;z-index:2;
 }
-.paso.active .paso-num{background:var(--sage);border-color:var(--sage)}
-.paso-icon{font-size:18px;margin-bottom:8px;display:block}
-.paso-title{font-size:13px;font-weight:500;color:var(--cream);margin-bottom:6px}
-.paso-desc{font-size:11px;color:rgba(250,246,239,0.55);line-height:1.55}
+.paso.active .paso-num{background:var(--sage);border-color:var(--sage);box-shadow:0 0 18px rgba(107,158,120,0.45)}
+.paso-icon{font-size:18px;margin-bottom:6px;display:block}
+.paso-title{font-size:12px;font-weight:500;color:var(--cream);margin-bottom:4px;line-height:1.25}
+.paso-desc{font-size:10.5px;color:rgba(250,246,239,0.5);line-height:1.5}
 
 /* ─── CONSULTA INCLUYE ────────────────────────────── */
 .incluye{background:var(--cream-d)}
@@ -519,11 +531,60 @@ footer a{color:rgba(255,255,255,0.5);text-decoration:none}
 @keyframes waPulse{0%,100%{box-shadow:0 6px 28px rgba(37,211,102,0.4)}50%{box-shadow:0 6px 40px rgba(37,211,102,0.65)}}
 
 /* ─── ANIMATIONS ──────────────────────────────────── */
-.reveal{opacity:0;transform:translateY(30px);transition:opacity .7s ease,transform .7s ease}
-.reveal.visible{opacity:1;transform:translateY(0)}
-.reveal-delay-1{transition-delay:.1s}
-.reveal-delay-2{transition-delay:.2s}
-.reveal-delay-3{transition-delay:.3s}
+@keyframes shimmerText{from{background-position:-200% center}to{background-position:200% center}}
+@keyframes bgShift{0%,100%{background-position:0% 60%}50%{background-position:100% 40%}}
+@keyframes heroFadeUp{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
+@keyframes growLine{from{width:0;opacity:0}to{width:32px;opacity:1}}
+@keyframes spinSlow{from{transform:translate(-50%,-50%) rotate(0deg)}to{transform:translate(-50%,-50%) rotate(360deg)}}
+@keyframes spinSlowRev{from{transform:translate(-50%,-50%) rotate(0deg)}to{transform:translate(-50%,-50%) rotate(-360deg)}}
+@keyframes btnGlow{0%,100%{box-shadow:0 8px 32px rgba(26,51,40,0.25)}50%{box-shadow:0 12px 48px rgba(26,51,40,0.42)}}
+@keyframes dotPulse{0%,100%{opacity:.35;transform:scale(1)}50%{opacity:.9;transform:scale(1.4)}}
+
+.reveal{opacity:0;transform:translateY(26px) scale(0.97);transition:opacity .75s cubic-bezier(.22,1,.36,1),transform .75s cubic-bezier(.22,1,.36,1)}
+.reveal.visible{opacity:1;transform:translateY(0) scale(1)}
+.reveal-delay-1{transition-delay:.12s}
+.reveal-delay-2{transition-delay:.24s}
+.reveal-delay-3{transition-delay:.36s}
+
+/* Hero entrance — staggered */
+.hero-eyebrow{animation:heroFadeUp .8s .08s cubic-bezier(.22,1,.36,1) both}
+.eyebrow-line{animation:growLine .7s .3s cubic-bezier(.22,1,.36,1) both}
+.hero-title{animation:heroFadeUp 1s .22s cubic-bezier(.22,1,.36,1) both}
+.hero-name{animation:heroFadeUp .8s .42s cubic-bezier(.22,1,.36,1) both}
+.hero-desc{animation:heroFadeUp .8s .56s cubic-bezier(.22,1,.36,1) both}
+.hero-actions{animation:heroFadeUp .8s .7s cubic-bezier(.22,1,.36,1) both}
+.hero-badges{animation:heroFadeUp .8s .88s cubic-bezier(.22,1,.36,1) both}
+
+.btn-whatsapp{animation:btnGlow 2.8s ease-in-out infinite}
+.btn-whatsapp:hover{animation:none}
+
+/* Orbitas decorativas — solo mobile */
+.hero-orbit,.hero-orbit-2{
+  position:absolute;top:50%;left:50%;
+  border-radius:50%;pointer-events:none;z-index:0;display:none;
+}
+.hero-orbit{
+  width:300px;height:300px;
+  border:1px solid rgba(107,158,120,0.18);
+  animation:spinSlow 28s linear infinite;
+}
+.hero-orbit::before{
+  content:'';position:absolute;top:-5px;left:50%;transform:translateX(-50%);
+  width:10px;height:10px;border-radius:50%;
+  background:var(--sage);opacity:.5;
+  animation:dotPulse 2.5s ease-in-out infinite;
+}
+.hero-orbit-2{
+  width:200px;height:200px;
+  border:1px dashed rgba(196,113,74,0.15);
+  animation:spinSlowRev 18s linear infinite;
+}
+.hero-orbit-2::before{
+  content:'';position:absolute;bottom:-4px;left:50%;transform:translateX(-50%);
+  width:8px;height:8px;border-radius:50%;
+  background:var(--terra);opacity:.45;
+  animation:dotPulse 2s .8s ease-in-out infinite;
+}
 
 /* ─── NAV MOBILE MENU ─────────────────────────────────── */
 .nav-links.open{
@@ -542,9 +603,39 @@ footer a{color:rgba(255,255,255,0.5);text-decoration:none}
 @media(max-width:900px){
   .nav-links{display:none}
   .hamburger{display:flex}
-  .hero{grid-template-columns:1fr;min-height:auto}
+  .hero{
+    grid-template-columns:1fr;min-height:0;
+    background:linear-gradient(150deg,#152b21 0%,#1f3a2c 50%,#1a3328 100%);
+    position:relative;overflow:hidden;
+  }
+  .hero-orbit,.hero-orbit-2{display:block}
+  .hero::before{
+    content:'';position:absolute;top:-40px;right:-40px;
+    width:300px;height:300px;border-radius:50%;
+    background:radial-gradient(circle,rgba(107,158,120,0.25) 0%,transparent 65%);
+    pointer-events:none;z-index:0;
+  }
+  .hero::after{
+    content:'';position:absolute;bottom:-30px;left:-50px;
+    width:260px;height:260px;border-radius:50%;
+    background:radial-gradient(circle,rgba(196,113,74,0.2) 0%,transparent 65%);
+    pointer-events:none;z-index:0;
+  }
   .hero-right{display:none}
-  .hero-left{padding:60px 6% 48px;text-align:center}
+  .hero-left{padding:106px 6% 52px;text-align:center;position:relative;z-index:1}
+  .hero-eyebrow{color:var(--sage-l)}
+  .eyebrow-line{background:var(--sage-l)}
+  .hero-title{color:var(--cream)}
+  .hero-name{color:rgba(250,246,239,0.55)}
+  .hero-desc{color:rgba(250,246,239,0.72)}
+  .hero-badge{background:rgba(255,255,255,0.09);border-color:rgba(255,255,255,0.14);color:rgba(250,246,239,0.8);box-shadow:none}
+  .hero-left .btn-whatsapp{background:var(--cream);color:var(--forest);animation:none;box-shadow:0 8px 36px rgba(0,0,0,0.4)}
+  .hero-left .btn-whatsapp svg{fill:#25D366}
+  .hero-left .btn-whatsapp:hover{background:var(--sage-ll);transform:translateY(-2px);box-shadow:0 12px 44px rgba(0,0,0,0.45)}
+  .hero-left .btn-ghost{color:rgba(250,246,239,0.55);border-color:rgba(250,246,239,0.2)}
+  .hero-left .btn-ghost:hover{border-color:rgba(250,246,239,0.5);color:var(--cream)}
+  .scroll-hint{color:rgba(250,246,239,0.3)}
+  .scroll-arrow{background:rgba(250,246,239,0.15)}
   .hero-eyebrow{justify-content:center}
   .hero-desc{margin-left:auto;margin-right:auto}
   .hero-actions{justify-content:center}
@@ -552,8 +643,27 @@ footer a{color:rgba(255,255,255,0.5);text-decoration:none}
   .about-grid{grid-template-columns:1fr;gap:40px}
   .about-img-wrap{max-width:340px;margin:0 auto}
   .servicios-grid{grid-template-columns:1fr}
-  .proceso-grid{grid-template-columns:repeat(2,1fr);gap:24px}
+  .proceso{padding:28px 5%}
+  .proceso-grid{grid-template-columns:1fr;gap:5px;margin-top:16px}
   .proceso-grid::before{display:none}
+  .paso{
+    display:grid;
+    grid-template-areas:"num icon title" "num icon desc";
+    grid-template-columns:34px 26px 1fr;
+    grid-template-rows:auto auto;
+    text-align:left;gap:0 10px;
+    background:rgba(255,255,255,0.06);
+    border:1px solid rgba(255,255,255,0.1);
+    border-radius:12px;padding:11px 14px;
+    transition:background .2s;
+  }
+  .paso:hover{background:rgba(255,255,255,0.1)}
+  .paso:nth-child(5){grid-column:auto;max-width:none;margin:0}
+  .paso-num{grid-area:num;margin:0;align-self:center;width:30px;height:30px;font-size:12px}
+  .paso-icon{grid-area:icon;margin:0;font-size:16px;display:flex;align-items:center;justify-content:center;align-self:center}
+  .paso-title{grid-area:title;margin:0 0 1px;font-size:12.5px;line-height:1.2}
+  .paso-desc{grid-area:desc;margin:0;font-size:9.5px;line-height:1.35;color:rgba(250,246,239,0.48)}
+  .proceso .section-title{margin-bottom:4px}
   .incluye-grid{grid-template-columns:1fr}
   .incluye-cta-box{position:static}
   .resenas-grid{grid-template-columns:1fr}
@@ -563,7 +673,13 @@ footer a{color:rgba(255,255,255,0.5);text-decoration:none}
   section{padding:48px 6%}
 }
 @media(max-width:600px){
-  .proceso-grid{grid-template-columns:1fr}
+  .proceso{padding:20px 4% 22px}
+  .proceso-grid{gap:4px;margin-top:14px}
+  .paso{border-radius:11px;padding:10px 12px;grid-template-columns:30px 22px 1fr;gap:0 8px}
+  .paso-num{width:26px;height:26px;font-size:11px}
+  .paso-icon{font-size:15px}
+  .paso-title{font-size:12px;margin-bottom:1px}
+  .paso-desc{font-size:9px;line-height:1.3}
   .serv-card-wide{flex-direction:column!important;gap:16px!important;padding:22px 18px!important}
   .serv-card-wide .btn-whatsapp{width:100%;justify-content:center}
   .contacto-actions{flex-direction:column;align-items:stretch}
@@ -571,20 +687,24 @@ footer a{color:rgba(255,255,255,0.5);text-decoration:none}
 }
 @media(max-width:480px){
   nav{padding:14px 5%}
-  section{padding:36px 5%}
-  .hero-left{padding:36px 5% 32px}
-  .hero-title{font-size:32px}
+  section{padding:32px 5%}
+  .hero-left{padding:92px 5% 28px}
+  .hero-title{font-size:30px}
   .hero-actions{flex-direction:column;align-items:stretch}
   .btn-whatsapp{justify-content:center;width:100%}
   .btn-ghost{justify-content:center;text-align:center}
   .section-title{font-size:26px}
-  .serv-card{padding:20px 18px}
+  .serv-card{padding:18px 16px}
   .incluye-cta-box{padding:22px 18px}
   .incluye-cta-title{font-size:22px}
   .price-val{font-size:32px}
   .contacto-info{gap:14px}
   footer{padding:16px 5%}
   .float-wa{bottom:20px;right:20px;width:50px;height:50px}
+  .proceso-grid{gap:4px}
+  .paso{padding:9px 10px}
+  .paso-title{font-size:11.5px}
+  .paso-desc{font-size:8.5px}
 }
 </style>
 </head>
@@ -592,12 +712,13 @@ footer a{color:rgba(255,255,255,0.5);text-decoration:none}
 
 <!-- NAV -->
 <nav>
-  <a href="#" class="nav-logo">Gesta<span>Nut</span></a>
+  <a href="#" class="nav-logo"><img src="assets/img/logo.png" alt="GestaNut" class="nav-logo-img">Gesta<span>Nut</span></a>
   <div class="nav-links">
     <a href="#sobre-mi">Sobre mí</a>
     <a href="#servicios">Servicios</a>
     <a href="#consulta">Tu consulta</a>
     <a href="#resenas">Reseñas</a>
+    <a href="#faq">Preguntas frecuentes</a>
     <a href="#contacto" class="nav-cta">Agendar cita</a>
     <a href="login.php" class="nav-login">Iniciar sesión</a>
   </div>
@@ -614,13 +735,13 @@ footer a{color:rgba(255,255,255,0.5);text-decoration:none}
       Nutrióloga · Culiacán, Sinaloa
     </div>
     <h1 class="hero-title">
-      Alimentación<br>
-      <em>realista</em> y<br>
-      <strong>sin castigos</strong>
+      Alcanza tu<br>
+      <em>peso ideal</em><br>
+      <strong>sin restricciones</strong>
     </h1>
     <p class="hero-name">Diana Zavala — @gestanut</p>
     <p class="hero-desc">
-      Tu cuerpo no está fallando. Solo necesita estrategia, no restricción. Te acompaño a mejorar tu salud con un plan personalizado, cercano y sostenible.
+      Nutrióloga clínica especializada en planes de alimentación 100% personalizados. Te acompaño en pérdida de peso, recomposición corporal, embarazo, lactancia y más — con un enfoque real y sostenible.
     </p>
     <div class="hero-actions">
       <a href="https://wa.me/526673056211?text=Hola%20Diana%2C%20me%20gustar%C3%ADa%20agendar%20una%20consulta%20contigo%20%F0%9F%8C%BF" class="btn-whatsapp" target="_blank">
@@ -655,6 +776,8 @@ footer a{color:rgba(255,255,255,0.5);text-decoration:none}
       </div>
     </div>
   </div>
+  <div class="hero-orbit" aria-hidden="true"></div>
+  <div class="hero-orbit-2" aria-hidden="true"></div>
   <div class="scroll-hint">
     Scroll<div class="scroll-arrow"></div>
   </div>
