@@ -9,7 +9,7 @@ function injectModals() {
       <div class="modal-head"><div class="modal-title">Nuevo <em>paciente</em></div><button class="modal-close" onclick="closeModal('newpx-modal')">✕</button></div>
       <div class="modal-body">
         <div class="field"><label class="field-label">Nombre completo*</label><input id="np-nombre" class="input" placeholder="Ej. Laura García Méndez"></div>
-        <div class="field-row"><div class="field"><label class="field-label">WhatsApp*</label><input id="np-phone" class="input" placeholder="667 123 4567"></div><div class="field"><label class="field-label">Tipo de consulta*</label><select id="np-tipo" class="select"><option>Materno-infantil</option><option>Recomposición</option><option>Control de peso</option></select></div></div>
+        <div class="field-row"><div class="field"><label class="field-label">WhatsApp*</label><input id="np-phone" class="input" placeholder="667 123 4567"></div><div class="field"><label class="field-label">Tipo de consulta*</label><select id="np-tipo" class="select"><option>Materno-infantil</option><option>Recomposición</option><option>Pérdida de peso</option><option>Control de peso</option></select></div></div>
         <div class="field"><label class="field-label">Modalidad</label><select id="np-modalidad" class="select"><option>Presencial</option><option>Online</option></select></div>
         <div style="background:var(--sage-lll);border-radius:var(--rs);padding:12px 16px;margin-top:4px;border-left:3px solid var(--sage)">
           <div style="font-size:12px;font-weight:600;color:var(--forest);margin-bottom:4px">📋 Datos clínicos en primera consulta</div>
@@ -33,7 +33,7 @@ function injectModals() {
       <div class="modal-head"><div class="modal-title">Agendar <em>cita</em></div><button class="modal-close" onclick="closeModal('appt-modal')">✕</button></div>
       <div class="modal-body">
         <div class="field"><label class="field-label">Paciente</label><select id="appt-paciente" class="select">${PATIENTS.map(p => `<option value="${p.id}">${p.name}</option>`).join('')}</select></div>
-        <div class="field-row"><div class="field"><label class="field-label">Fecha</label><input id="appt-fecha" class="input" type="date" value="${new Date().toISOString().split('T')[0]}"></div><div class="field"><label class="field-label">Hora</label><select id="appt-hora" class="select">${['8:00','8:30','9:00','9:30','10:00','10:30','11:00','11:30','12:00','12:30','13:00','13:30','14:00','14:30','15:00','15:30','16:00','16:30','17:00'].map(t => `<option>${t}</option>`).join('')}</select></div></div>
+        <div class="field-row"><div class="field"><label class="field-label">Fecha</label><input id="appt-fecha" class="input" type="date" value="${localToday()}"></div><div class="field"><label class="field-label">Hora</label><select id="appt-hora" class="select">${['8:00','8:30','9:00','9:30','10:00','10:30','11:00','11:30','12:00','12:30','13:00','13:30','14:00','14:30','15:00','15:30','16:00','16:30','17:00'].map(t => `<option>${t}</option>`).join('')}</select></div></div>
         <div class="field"><label class="field-label">Modalidad</label><div style="display:flex;gap:12px"><label style="display:flex;align-items:center;gap:6px;cursor:pointer"><input type="radio" name="appt-mod" value="presencial" checked> Presencial</label><label style="display:flex;align-items:center;gap:6px;cursor:pointer"><input type="radio" name="appt-mod" value="online"> Online</label></div></div>
         <div class="field"><label class="field-label">Tipo de consulta</label><select id="appt-tipo" class="select"><option>Control / Seguimiento</option><option>Primera consulta</option><option>Urgencia</option></select></div>
         <div class="field"><label class="field-label">Notas previas</label><textarea id="appt-notas" class="textarea" style="min-height:60px" placeholder="Ej. Traer estudios de laboratorio recientes..."></textarea></div>
@@ -66,25 +66,52 @@ function injectModals() {
     <div class="modal" style="max-width:520px">
       <div class="modal-head"><div class="modal-title">Generar <em>recibo</em></div><button class="modal-close" onclick="closeModal('receipt-modal')">✕</button></div>
       <div class="modal-body">
-        <div id="receipt-preview" style="background:var(--white);border:1px solid rgba(107,158,120,.15);border-radius:var(--rs);padding:24px;font-size:13px;line-height:1.9">
-          <div style="text-align:center;margin-bottom:16px">
-            <div style="font-family:'Cormorant Garamond',serif;font-size:26px;font-weight:600;color:var(--forest)">GestaNut</div>
-            <div style="font-size:11px;color:var(--text-m)">Diana Zavala · Nutrióloga · Cédula 15304166</div>
-            <div style="font-size:11px;color:var(--text-m)">📱 667 305 6211 · @gestanut</div>
-            <div style="width:100%;height:1px;background:rgba(107,158,120,.2);margin:12px 0"></div>
+        <div class="field-row" style="margin-bottom:14px">
+          <div class="field"><label class="field-label">Concepto</label><input id="rcpt-concepto-in" class="input" value="Consulta nutricional" oninput="rcptUpdate()"></div>
+          <div class="field" style="max-width:130px"><label class="field-label">Monto ($)</label><input id="rcpt-monto-in" class="input" type="number" min="0" placeholder="400" oninput="rcptUpdate()"></div>
+        </div>
+        <div id="receipt-preview" style="background:#fff;border-radius:12px;overflow:hidden;box-shadow:0 4px 24px rgba(26,51,40,.18)">
+          <!-- Header -->
+          <div style="background:#1a3328;padding:28px 24px 22px;text-align:center;position:relative;overflow:hidden">
+            <div style="position:absolute;top:-24px;right:-24px;width:90px;height:90px;border-radius:50%;background:rgba(107,158,120,.12)"></div>
+            <div style="position:absolute;bottom:-36px;left:-28px;width:110px;height:110px;border-radius:50%;background:rgba(107,158,120,.09)"></div>
+            <div style="font-size:20px;margin-bottom:6px;position:relative">🌿</div>
+            <div style="font-family:'Cormorant Garamond',serif;font-size:30px;font-weight:600;color:#faf6ef;letter-spacing:1px;position:relative">GestaNut</div>
+            <div style="width:36px;height:1px;background:rgba(107,158,120,.6);margin:8px auto 10px;position:relative"></div>
+            <div style="font-size:10px;color:rgba(250,246,239,.6);letter-spacing:.6px;text-transform:uppercase;position:relative">Diana Zavala · Nutrióloga · Cédula 15304166</div>
+            <div style="font-size:10px;color:rgba(250,246,239,.45);margin-top:3px;position:relative">667 305 6211 · @gestanut</div>
           </div>
-          <div style="display:flex;justify-content:space-between;margin-bottom:10px;font-size:12px"><span style="color:var(--text-m)">Folio</span><span style="font-weight:600">#REC-${String(Math.floor(Math.random() * 9000) + 1000).padStart(4, '0')}</span></div>
-          <div style="display:flex;justify-content:space-between;margin-bottom:10px;font-size:12px"><span style="color:var(--text-m)">Fecha</span><span>6 de Mayo, 2025</span></div>
-          <div style="display:flex;justify-content:space-between;margin-bottom:10px;font-size:12px"><span style="color:var(--text-m)">Concepto</span><span id="rcpt-concepto">Consulta nutricional</span></div>
-          <div style="width:100%;height:1px;background:rgba(107,158,120,.1);margin:14px 0"></div>
-          <div style="display:flex;justify-content:space-between;font-size:16px;font-weight:600;color:var(--forest)"><span>Total</span><span id="rcpt-total">$400</span></div>
-          <div style="margin-top:16px;padding:10px 14px;background:var(--sage-lll);border-radius:var(--rs);font-size:11px;color:var(--text-m);text-align:center">Este recibo es un comprobante informal de pago. No es una factura fiscal.</div>
+          <!-- Tear edge -->
+          <div style="background:#1a3328;line-height:0">
+            <svg viewBox="0 0 400 14" preserveAspectRatio="none" style="width:100%;height:14px;display:block"><polygon points="0,14 10,0 20,14 30,0 40,14 50,0 60,14 70,0 80,14 90,0 100,14 110,0 120,14 130,0 140,14 150,0 160,14 170,0 180,14 190,0 200,14 210,0 220,14 230,0 240,14 250,0 260,14 270,0 280,14 290,0 300,14 310,0 320,14 330,0 340,14 350,0 360,14 370,0 380,14 390,0 400,14" fill="#ffffff"/></svg>
+          </div>
+          <!-- Body -->
+          <div style="background:#fff;padding:18px 24px 22px">
+            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px">
+              <span style="font-size:9px;text-transform:uppercase;letter-spacing:1.2px;color:#8a9e84;font-weight:500">Recibo de Pago</span>
+              <span style="font-size:11px;font-weight:600;background:#eef5ee;color:#1a3328;padding:3px 10px;border-radius:20px" id="rcpt-folio">#REC-0000</span>
+            </div>
+            <div style="border-top:1px dashed rgba(107,158,120,.3);padding-top:4px">
+              <div style="display:flex;justify-content:space-between;align-items:center;padding:9px 0;border-bottom:1px dashed rgba(107,158,120,.15);font-size:12px">
+                <span style="color:#8a9e84">Fecha</span><span style="color:#1a2418" id="rcpt-fecha">—</span>
+              </div>
+              <div style="display:flex;justify-content:space-between;align-items:center;padding:9px 0;font-size:12px">
+                <span style="color:#8a9e84">Concepto</span><span style="color:#1a2418;font-weight:500;text-align:right;max-width:60%" id="rcpt-concepto">Consulta nutricional</span>
+              </div>
+            </div>
+            <div style="margin-top:14px;background:#1a3328;border-radius:10px;padding:14px 20px;display:flex;justify-content:space-between;align-items:center">
+              <span style="font-size:11px;color:rgba(250,246,239,.6);text-transform:uppercase;letter-spacing:.6px">Total</span>
+              <span style="font-family:'Cormorant Garamond',serif;font-size:28px;font-weight:600;color:#faf6ef" id="rcpt-total">$—</span>
+            </div>
+            <div style="margin-top:12px;text-align:center;font-size:10px;color:#8a9e84;letter-spacing:.3px">Comprobante informal · No es factura fiscal</div>
+          </div>
         </div>
       </div>
       <div class="modal-foot">
         <button class="btn btn-outline" onclick="closeModal('receipt-modal')">Cerrar</button>
-        <button class="btn btn-sage" onclick="toast('📥 Guardando recibo...');setTimeout(()=>toast('Recibo guardado ✓ · Compartiendo por WhatsApp'),800)">💾 Guardar</button>
-        <button class="btn btn-primary" onclick="closeModal('receipt-modal');toast('🧾 Recibo enviado por WhatsApp ✓')">📤 Enviar por WhatsApp</button>
+        <button class="btn btn-sage" onclick="rcptGuardar()">💾 Guardar PDF</button>
+        <button class="btn btn-outline" onclick="rcptWhatsApp()" title="Enviar texto por WhatsApp">📤 Texto</button>
+        <button class="btn btn-primary" onclick="rcptShareImage()" title="Enviar imagen por WhatsApp">🖼️ Imagen</button>
       </div>
     </div>
   </div>
@@ -104,7 +131,7 @@ function injectModals() {
         <div class="field"><label class="field-label">Concepto*</label><input id="fin-concepto" class="input" placeholder="Ej. Consulta prenatal · Sofia Lopez"></div>
         <div class="field-row">
           <div class="field"><label class="field-label">Monto (MXN)*</label><input id="fin-monto" class="input" type="number" min="1" placeholder="400"></div>
-          <div class="field"><label class="field-label">Fecha*</label><input id="fin-fecha" class="input" type="date" value="${new Date().toISOString().split('T')[0]}"></div>
+          <div class="field"><label class="field-label">Fecha*</label><input id="fin-fecha" class="input" type="date" value="${localToday()}"></div>
         </div>
         <div class="field">
           <label style="display:flex;align-items:center;gap:8px;cursor:pointer;font-size:13px">
@@ -174,7 +201,7 @@ function injectModals() {
           <div class="field"><label class="field-label">Ocupación</label><input id="hc-ocu" class="input" placeholder="Ocupación"></div>
         </div>
         <div class="field-row">
-          <div class="field"><label class="field-label">Estado civil</label><input id="hc-ecivil" class="input" placeholder="Estado civil"></div>
+          <div class="field"><label class="field-label">Estado civil</label><select id="hc-ecivil" class="select"><option value="">—</option><option>Soltero/a</option><option>Casado/a</option><option>Unión libre</option><option>Divorciado/a</option><option>Separado/a</option><option>Viudo/a</option></select></div>
           <div class="field"><label class="field-label">Tabaquismo</label><select id="hc-tab" class="select"><option value="No">No</option><option value="exfumador">Exfumador/a</option><option value="actual">Fumador/a actual</option></select></div>
           <div class="field"><label class="field-label">Alcohol</label>
             <select id="hc-alc" class="select" onchange="hcAlcoholChange()">
@@ -186,7 +213,7 @@ function injectModals() {
             <input id="hc-alc-otro" class="input" style="display:none;margin-top:6px" placeholder="Especifica cómo...">
           </div>
         </div>
-        <div class="field"><label class="field-label">Biografía / Notas generales</label><textarea id="hc-bio" class="textarea" style="min-height:70px" placeholder="Notas sobre la paciente..."></textarea></div>
+        <div class="field"><label class="field-label">Biografía / Notas generales</label><textarea id="hc-bio" class="textarea" style="min-height:70px" placeholder="Notas sobre el paciente..."></textarea></div>
       </div>
       <div class="modal-foot">
         <button class="btn btn-outline" onclick="cerrarHistoriaConFirmacion()">Cancelar</button>
@@ -195,24 +222,82 @@ function injectModals() {
     </div>
   </div>
 
-  <!-- MEDICIÓN CORPORAL -->
-  <div class="modal-overlay" id="medicion-modal">
-    <div class="modal" style="max-width:420px">
-      <div class="modal-head"><div class="modal-title">Nueva <em>medición</em></div><button class="modal-close" onclick="closeModal('medicion-modal')">✕</button></div>
+  <!-- DATOS BÁSICOS (durante la primera consulta) -->
+  <div class="modal-overlay" id="datos-basicos-modal">
+    <div class="modal" style="max-width:520px">
+      <div class="modal-head"><div class="modal-title">Datos <em>del paciente</em></div><button class="modal-close" onclick="closeModal('datos-basicos-modal')">✕</button></div>
       <div class="modal-body">
-        <div class="field"><label class="field-label">Fecha*</label><input id="med-fecha" class="input" type="date"></div>
         <div class="field-row">
-          <div class="field"><label class="field-label">Cintura (cm)</label><input id="med-cintura" class="input" type="number" step="0.1" placeholder="80"></div>
-          <div class="field"><label class="field-label">Cadera (cm)</label><input id="med-cadera" class="input" type="number" step="0.1" placeholder="100"></div>
+          <div class="field"><label class="field-label">Edad (años)*</label><input id="db-edad" class="input" type="number" min="1" max="120" placeholder="28"></div>
+          <div class="field"><label class="field-label">Peso (kg)</label><input id="db-peso" class="input" type="number" step="0.1" min="1" placeholder="70.0"></div>
+          <div class="field"><label class="field-label">Altura (m)*</label><input id="db-altura" class="input" type="number" step="0.01" min="0.5" max="2.5" placeholder="1.62"></div>
+        </div>
+        <div class="field">
+          <label class="field-label">Sexo*</label>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">
+            <label id="db-sexo-f" onclick="setDbSexo('femenino')" style="display:flex;align-items:center;justify-content:center;gap:7px;padding:10px 16px;border-radius:var(--rs);cursor:pointer;font-size:13px;font-weight:500;transition:all .15s;background:var(--terra-l);color:var(--terra-d);border:1.5px solid var(--terra)">
+              <input type="radio" name="db-sexo" value="femenino" checked style="display:none"> ♀ Femenino
+            </label>
+            <label id="db-sexo-m" onclick="setDbSexo('masculino')" style="display:flex;align-items:center;justify-content:center;gap:7px;padding:10px 16px;border-radius:var(--rs);cursor:pointer;font-size:13px;font-weight:500;transition:all .15s;background:var(--cream);color:var(--text-m);border:1.5px solid transparent">
+              <input type="radio" name="db-sexo" value="masculino" style="display:none"> ♂ Masculino
+            </label>
+          </div>
+        </div>
+        <div style="font-size:11px;font-weight:600;color:var(--text-m);text-transform:uppercase;letter-spacing:.5px;margin:10px 0 6px">Medidas corporales <span style="font-weight:400;text-transform:none;letter-spacing:0">(opcional)</span></div>
+        <div class="field-row">
+          <div class="field"><label class="field-label">Cintura (cm)</label><input id="db-cintura" class="input" type="number" step="0.1" placeholder="80"></div>
+          <div class="field"><label class="field-label">Cadera (cm)</label><input id="db-cadera" class="input" type="number" step="0.1" placeholder="100"></div>
         </div>
         <div class="field-row">
-          <div class="field"><label class="field-label">Brazo (cm)</label><input id="med-brazo" class="input" type="number" step="0.1" placeholder="28"></div>
-          <div class="field"><label class="field-label">Muslo (cm)</label><input id="med-muslo" class="input" type="number" step="0.1" placeholder="55"></div>
+          <div class="field"><label class="field-label">Brazo (cm)</label><input id="db-brazo" class="input" type="number" step="0.1" placeholder="28"></div>
+          <div class="field"><label class="field-label">Muslo (cm)</label><input id="db-muslo" class="input" type="number" step="0.1" placeholder="55"></div>
+        </div>
+        <div class="field"><label class="field-label">Objetivo principal</label><input id="db-objetivo" class="input" placeholder="Ej. Bajar 8 kg para diciembre"></div>
+        <div id="db-materno-section" style="display:none;margin-top:4px">
+          <div style="font-size:11px;font-weight:600;color:var(--text-m);text-transform:uppercase;letter-spacing:.5px;margin:10px 0 6px">Datos de embarazo <span style="font-weight:400;text-transform:none;letter-spacing:0">(materno-infantil)</span></div>
+          <div class="field-row">
+            <div class="field"><label class="field-label">Semanas de gestación</label><input id="db-semanas" class="input" type="number" min="1" max="42" placeholder="28"></div>
+            <div class="field"><label class="field-label">Peso pre-embarazo (kg)</label><input id="db-preemb" class="input" type="number" step="0.1" min="30" placeholder="65.0"></div>
+          </div>
+          <label style="display:flex;align-items:center;gap:8px;font-size:13px;color:var(--text);cursor:pointer;padding:6px 0">
+            <input type="checkbox" id="db-dg" style="width:15px;height:15px;accent-color:var(--terra)"> Diabetes gestacional
+          </label>
         </div>
       </div>
       <div class="modal-foot">
-        <button class="btn btn-outline" onclick="closeModal('medicion-modal')">Cancelar</button>
-        <button id="med-submit" class="btn btn-primary" onclick="guardarMedicion()">Guardar medición</button>
+        <button class="btn btn-outline" onclick="closeModal('datos-basicos-modal')">Cancelar</button>
+        <button id="db-submit" class="btn btn-primary" onclick="guardarDatosBasicos()">Guardar</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- REGISTRO UNIFICADO (peso + medidas corporales) -->
+  <div class="modal-overlay" id="registro-modal">
+    <div class="modal" style="max-width:480px">
+      <div class="modal-head"><div class="modal-title">Nuevo <em>registro</em></div><button class="modal-close" onclick="closeModal('registro-modal')">✕</button></div>
+      <div class="modal-body">
+        <div class="field-row">
+          <div class="field"><label class="field-label">Fecha*</label><input id="reg-fecha" class="input" type="date"></div>
+          <div class="field"><label class="field-label">Peso (kg)*</label><input id="reg-peso" class="input" type="number" step="0.1" placeholder="72.5"></div>
+        </div>
+        <div style="font-size:11px;font-weight:600;color:var(--text-m);text-transform:uppercase;letter-spacing:.5px;margin:10px 0 6px">Medidas corporales <span style="font-weight:400;text-transform:none;letter-spacing:0">(opcional)</span></div>
+        <div class="field-row">
+          <div class="field"><label class="field-label">Cintura (cm)</label><input id="reg-cintura" class="input" type="number" step="0.1" placeholder="80"></div>
+          <div class="field"><label class="field-label">Cadera (cm)</label><input id="reg-cadera" class="input" type="number" step="0.1" placeholder="100"></div>
+        </div>
+        <div class="field-row">
+          <div class="field"><label class="field-label">Brazo (cm)</label><input id="reg-brazo" class="input" type="number" step="0.1" placeholder="28"></div>
+          <div class="field"><label class="field-label">Muslo (cm)</label><input id="reg-muslo" class="input" type="number" step="0.1" placeholder="55"></div>
+        </div>
+        <div class="field-row">
+          <div class="field"><label class="field-label">% Grasa (opcional)</label><input id="reg-grasa" class="input" type="number" step="0.1" placeholder="28.5"></div>
+          <div class="field"></div>
+        </div>
+        <div class="field"><label class="field-label">Nota</label><textarea id="reg-nota" class="textarea" style="min-height:55px" placeholder="Ej. Se nota más energía, ropa más holgada..."></textarea></div>
+      </div>
+      <div class="modal-foot">
+        <button class="btn btn-outline" onclick="closeModal('registro-modal')">Cancelar</button>
+        <button id="reg-submit" class="btn btn-primary" onclick="guardarRegistro()">Guardar registro</button>
       </div>
     </div>
   </div>
@@ -298,25 +383,6 @@ function injectModals() {
     </div>
   </div>
 
-  <!-- REGISTRO DE PROGRESO -->
-  <div class="modal-overlay" id="progreso-modal">
-    <div class="modal" style="max-width:420px">
-      <div class="modal-head"><div class="modal-title">Registrar <em>progreso</em></div><button class="modal-close" onclick="closeModal('progreso-modal')">✕</button></div>
-      <div class="modal-body">
-        <div class="field-row">
-          <div class="field"><label class="field-label">Fecha*</label><input id="prog-fecha" class="input" type="date"></div>
-          <div class="field"><label class="field-label">Peso (kg)*</label><input id="prog-peso" class="input" type="number" step="0.1" placeholder="Ej. 72.5"></div>
-        </div>
-        <div id="prog-grasa-row" class="field" style="display:none"><label class="field-label">% Grasa (opcional)</label><input id="prog-grasa" class="input" type="number" step="0.1" placeholder="Ej. 28.5"></div>
-        <div class="field"><label class="field-label">Nota (opcional)</label><textarea id="prog-nota" class="textarea" style="min-height:60px" placeholder="Ej. Se nota más energía, ropa más holgada..."></textarea></div>
-      </div>
-      <div class="modal-foot">
-        <button class="btn btn-outline" onclick="closeModal('progreso-modal')">Cancelar</button>
-        <button id="prog-submit" class="btn btn-primary" onclick="guardarProgreso()">Guardar registro</button>
-      </div>
-    </div>
-  </div>
-
   <!-- LABORATORIO -->
   <div class="modal-overlay" id="lab-modal">
     <div class="modal" style="max-width:480px">
@@ -379,7 +445,7 @@ function closeModal(id) {
 
 function openLabModal() {
   const input = $('#lab-fecha');
-  if (input) input.value = new Date().toISOString().split('T')[0];
+  if (input) input.value = localToday();
   ['#lab-prueba','#lab-valor','#lab-rango'].forEach(s => { const el = $(s); if (el) el.value = ''; });
   const st = $('#lab-status'); if (st) st.value = 'ok';
   openModal('lab-modal');
@@ -491,58 +557,86 @@ function historiaOverlayClick(e) {
 }
 
 function cerrarHistoriaConFirmacion() {
-  const ids = ['hc-motivo','hc-ant','hc-aleg','hc-into','hc-med','hc-cir','hc-fam','hc-act','hc-ocu','hc-ecivil','hc-bio'];
+  const ids = ['hc-motivo','hc-ant','hc-aleg','hc-into','hc-med','hc-cir','hc-fam','hc-act','hc-ocu','hc-bio'];
   const alcOtro = $('#hc-alc-otro');
   const hasDatos = ids.some(id => { const el = $('#'+id); return el && el.value.trim(); })
                 || (alcOtro && alcOtro.style.display !== 'none' && alcOtro.value.trim());
   if (!hasDatos) { closeModal('historia-modal'); return; }
-  const modal = document.querySelector('#historia-modal .modal');
-  if (modal) { modal.classList.remove('hc-shake'); void modal.offsetWidth; modal.classList.add('hc-shake'); setTimeout(() => modal.classList.remove('hc-shake'), 600); }
-  ids.forEach(id => {
-    const el = $('#'+id);
-    if (el && el.value.trim()) { el.classList.add('hc-field-warn'); setTimeout(() => el.classList.remove('hc-field-warn'), 800); }
+  if (confirm('¿Seguro que quieres salir? Los cambios no guardados se perderán.')) {
+    closeModal('historia-modal');
+  }
+}
+
+// ─── Registro unificado (peso + medidas corporales) ────
+function openRegistroModal() {
+  const today = localToday();
+  const fecha = $('#reg-fecha'); if (fecha) fecha.value = today;
+  ['reg-peso','reg-cintura','reg-cadera','reg-brazo','reg-muslo','reg-grasa','reg-nota'].forEach(id => {
+    const el = $('#' + id); if (el) el.value = '';
   });
+  openModal('registro-modal');
 }
 
-// ─── Mediciones corporales ─────────────────────────────
-function openMedicionModal() {
-  const input = $('#med-fecha');
-  if (input) input.value = new Date().toISOString().split('T')[0];
-  ['med-cintura','med-cadera','med-brazo','med-muslo'].forEach(id => { const el = $('#' + id); if (el) el.value = ''; });
-  openModal('medicion-modal');
-}
+async function guardarRegistro() {
+  const fechaRaw = ($('#reg-fecha') || {}).value;
+  const pesoRaw  = ($('#reg-peso')  || {}).value;
+  if (!fechaRaw || !pesoRaw) { toast('Fecha y peso son obligatorios'); return; }
 
-async function guardarMedicion() {
-  const fechaRaw = ($('#med-fecha') || {}).value;
-  if (!fechaRaw) { toast('Selecciona una fecha'); return; }
-  const btn = $('#med-submit');
+  const btn = $('#reg-submit');
   if (btn) { btn.disabled = true; btn.textContent = 'Guardando...'; }
+
   try {
-    const res = await fetch('api/mediciones.php', {
+    // 1. Guardar peso (inserta nueva fila en mediciones)
+    const r1 = await fetch('api/progreso.php', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
         paciente_id: currentPatient.id,
-        fecha: fechaRaw,
-        cintura: ($('#med-cintura')||{}).value || '',
-        cadera:  ($('#med-cadera') ||{}).value || '',
-        brazo:   ($('#med-brazo')  ||{}).value || '',
-        muslo:   ($('#med-muslo')  ||{}).value || '',
+        fecha:  fechaRaw,
+        peso:   parseFloat(pesoRaw),
+        grasa:  ($('#reg-grasa')||{}).value || '',
+        nota:   ($('#reg-nota') ||{}).value?.trim() || '',
+        altura: currentPatient.height,
       }),
     });
-    if (!res.ok) throw new Error();
-    // Actualizar medidas locales
-    ['cintura','cadera','brazo','muslo'].forEach(k => {
-      const v = ($('#med-' + k)||{}).value;
-      if (v) currentPatient.measures[k] = parseFloat(v);
-    });
-    closeModal('medicion-modal');
-    toast('Medición guardada ✓');
-    setCTab('mediciones');
+    if (!r1.ok) throw new Error('Error al guardar peso');
+
+    // 2. Si hay medidas, actualizarlas en la misma fila (upsert por fecha)
+    const cintura = ($('#reg-cintura')||{}).value;
+    const cadera  = ($('#reg-cadera') ||{}).value;
+    const brazo   = ($('#reg-brazo')  ||{}).value;
+    const muslo   = ($('#reg-muslo')  ||{}).value;
+    if (cintura || cadera || brazo || muslo) {
+      const r2 = await fetch('api/mediciones.php', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          paciente_id: currentPatient.id,
+          fecha: fechaRaw,
+          cintura: cintura || '',
+          cadera:  cadera  || '',
+          brazo:   brazo   || '',
+          muslo:   muslo   || '',
+        }),
+      });
+      if (!r2.ok) throw new Error('Error al guardar medidas');
+    }
+
+    // 3. Recargar detalle completo
+    const res3 = await fetch(`api/paciente.php?id=${currentPatient.id}`);
+    if (res3.ok) {
+      const detail = await res3.json();
+      Object.assign(currentPatient, detail);
+      if (detail.weight) currentPatient.weight = detail.weight;
+    }
+
+    closeModal('registro-modal');
+    toast('Registro guardado ✓');
+    setCTab('progreso');
   } catch (e) {
     toast('No se pudo guardar. Revisa la conexión.');
   } finally {
-    if (btn) { btn.disabled = false; btn.textContent = 'Guardar medición'; }
+    if (btn) { btn.disabled = false; btn.textContent = 'Guardar registro'; }
   }
 }
 
@@ -581,7 +675,7 @@ let _recTiempos = [];
 
 function openRecuentoModal() {
   const input = $('#rec-fecha');
-  if (input) input.value = new Date().toISOString().split('T')[0];
+  if (input) input.value = localToday();
   const agua = $('#rec-agua'); if (agua) agua.value = '';
   const nota = $('#rec-nota'); if (nota) nota.value = '';
   _recTiempos = [];
@@ -637,52 +731,6 @@ async function guardarRecuento() {
   }
 }
 
-function openProgresoModal() {
-  const input = $('#prog-fecha');
-  if (input) input.value = new Date().toISOString().split('T')[0];
-  ['#prog-peso','#prog-grasa','#prog-nota'].forEach(s => { const el = $(s); if (el) el.value = ''; });
-  const grasaRow = $('#prog-grasa-row');
-  if (grasaRow) grasaRow.style.display = currentPatient?.history?.[0]?.grasa !== undefined && currentPatient.history[0].grasa !== null ? '' : 'none';
-  openModal('progreso-modal');
-}
-
-async function guardarProgreso() {
-  const fechaRaw = ($('#prog-fecha') || {}).value;
-  const pesoRaw  = ($('#prog-peso')  || {}).value;
-  const grasaRaw = ($('#prog-grasa') || {}).value;
-  const nota     = ($('#prog-nota')  || {}).value?.trim();
-
-  if (!fechaRaw || !pesoRaw) { toast('Completa los campos obligatorios'); return; }
-
-  const btn = $('#prog-submit');
-  if (btn) { btn.disabled = true; btn.textContent = 'Guardando...'; }
-
-  try {
-    const res = await fetch('api/progreso.php', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        paciente_id: currentPatient.id,
-        fecha: fechaRaw,
-        peso: parseFloat(pesoRaw),
-        grasa: grasaRaw || '',
-        nota,
-        altura: currentPatient.height,
-      }),
-    });
-    if (!res.ok) throw new Error('Error servidor');
-    // Recargar detalle completo del paciente para reflejar cambios
-    const res2 = await fetch(`api/paciente.php?id=${currentPatient.id}`);
-    if (res2.ok) { const detail = await res2.json(); Object.assign(currentPatient, detail); if (detail.weight) currentPatient.weight = detail.weight; }
-    closeModal('progreso-modal');
-    toast('Registro guardado ✓');
-    setCTab('progreso');
-  } catch (e) {
-    toast('No se pudo guardar. Revisa la conexión.');
-  } finally {
-    if (btn) { btn.disabled = false; btn.textContent = 'Guardar registro'; }
-  }
-}
 
 document.addEventListener('click', e => {
   if (!e.target.classList.contains('modal-overlay')) return;
@@ -767,7 +815,7 @@ async function guardarMovimiento() {
 // ─── Glucosa ───────────────────────────────────────────
 function openGlucosaModal() {
   const input = $('#gluc-fecha');
-  if (input) input.value = new Date().toISOString().split('T')[0];
+  if (input) input.value = localToday();
   ['gluc-ayuno','gluc-pre','gluc-post','gluc-prec','gluc-postc','gluc-nota'].forEach(id => {
     const el = $('#' + id); if (el) el.value = '';
   });
@@ -862,6 +910,108 @@ async function guardarCita() {
   }
 }
 
+function openDatosBasicosModal() {
+  const p = currentPatient;
+  if (!p) return;
+  const edad   = $('#db-edad');    if (edad)   edad.value   = p.age    || '';
+  const peso   = $('#db-peso');    if (peso)   peso.value   = p.weight || '';
+  const altura = $('#db-altura');  if (altura) altura.value = p.height || '';
+  const obj    = $('#db-objetivo');if (obj)    obj.value    = p.goal   || '';
+  const m = p.measures || {};
+  ['cintura','cadera','brazo','muslo'].forEach(k => {
+    const el = $('#db-' + k); if (el) el.value = m[k] || '';
+  });
+  setDbSexo(p.sexo || 'femenino');
+  const sec = $('#db-materno-section');
+  if (sec) {
+    const isMaterna = p.type === 'materna';
+    sec.style.display = isMaterna ? '' : 'none';
+    if (isMaterna) {
+      const dbSem = $('#db-semanas'); if (dbSem) dbSem.value = p.semGestacion  || '';
+      const dbPre = $('#db-preemb');  if (dbPre) dbPre.value = p.prePregWeight || '';
+      const dbDg  = $('#db-dg');      if (dbDg)  dbDg.checked = !!(p.dg);
+    }
+  }
+  openModal('datos-basicos-modal');
+}
+
+async function guardarDatosBasicos() {
+  const btn = $('#db-submit');
+  const edad   = parseFloat(($('#db-edad')   ||{}).value);
+  const pesoVal = ($('#db-peso')  ||{}).value;
+  const peso   = pesoVal ? parseFloat(pesoVal) : null;
+  const altura = parseFloat(($('#db-altura') ||{}).value);
+  const sexo   = (document.querySelector('input[name="db-sexo"]:checked')||{}).value || 'femenino';
+  const objetivo = (($('#db-objetivo')||{}).value||'').trim();
+
+  if (!edad || !altura) { toast('⚠️ Edad y altura son obligatorias'); return; }
+
+  if (btn) { btn.disabled = true; btn.textContent = 'Guardando...'; }
+  try {
+    const res = await fetch('api/pacientes.php', {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ id: currentPatient.id, edad, sexo, altura, objetivo }),
+    });
+    if (!res.ok) throw new Error();
+    const updated = await res.json();
+    currentPatient.age    = updated.age;
+    currentPatient.sexo   = updated.sexo;
+    currentPatient.height = updated.height;
+    currentPatient.goal   = objetivo;
+    const px = PATIENTS.find(p => p.id === currentPatient.id);
+    if (px) { px.age = updated.age; px.sexo = updated.sexo; px.height = updated.height; }
+
+    const today = localToday();
+
+    if (peso) {
+      const rP = await fetch('api/progreso.php', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ paciente_id: currentPatient.id, fecha: today, peso, altura, grasa: '', nota: '' }),
+      });
+      if (rP.ok) {
+        currentPatient.weight = peso;
+        if (px) px.weight = peso;
+      }
+    }
+
+    const cintura = ($('#db-cintura')||{}).value;
+    const cadera  = ($('#db-cadera') ||{}).value;
+    const brazo   = ($('#db-brazo')  ||{}).value;
+    const muslo   = ($('#db-muslo')  ||{}).value;
+    if (cintura || cadera || brazo || muslo) {
+      await fetch('api/mediciones.php', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ paciente_id: currentPatient.id, fecha: today, cintura: cintura||'', cadera: cadera||'', brazo: brazo||'', muslo: muslo||'' }),
+      });
+    }
+
+    if (currentPatient.type === 'materna') {
+      const sem = (($('#db-semanas')||{}).value || '').trim();
+      const pre = (($('#db-preemb') ||{}).value || '').trim();
+      const dg  = !!(($('#db-dg')||{}).checked);
+      await fetch('api/embarazo.php', {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ paciente_id: currentPatient.id, semanas_gestacion: sem, peso_preembarazo: pre, diabetes_gestacional: dg }),
+      });
+    }
+
+    const res3 = await fetch(`api/paciente.php?id=${currentPatient.id}`);
+    if (res3.ok) { const d = await res3.json(); Object.assign(currentPatient, d); if (d.weight) currentPatient.weight = d.weight; }
+
+    closeModal('datos-basicos-modal');
+    toast('Datos guardados ✓');
+    renderConsulta();
+  } catch(e) {
+    toast('No se pudo guardar. Revisa la conexión.');
+  } finally {
+    if (btn) { btn.disabled = false; btn.textContent = 'Guardar'; }
+  }
+}
+
 async function crearPaciente() {
   const nombre   = ($('#np-nombre')   || {}).value?.trim();
   const phone    = ($('#np-phone')    || {}).value?.trim();
@@ -900,6 +1050,17 @@ async function crearPaciente() {
   }
 }
 
+function setDbSexo(val) {
+  document.querySelectorAll('input[name="db-sexo"]').forEach(r => r.checked = r.value === val);
+  const f = $('#db-sexo-f'), m = $('#db-sexo-m');
+  if (f) Object.assign(f.style, val === 'femenino'
+    ? { background: 'var(--terra-l)', color: 'var(--terra-d)', border: '1.5px solid var(--terra)' }
+    : { background: 'var(--cream)',   color: 'var(--text-m)',  border: '1.5px solid transparent' });
+  if (m) Object.assign(m.style, val === 'masculino'
+    ? { background: 'var(--sage-ll)', color: 'var(--sage)',    border: '1.5px solid var(--sage)' }
+    : { background: 'var(--cream)',   color: 'var(--text-m)',  border: '1.5px solid transparent' });
+}
+
 function setNpSexo(val) {
   const fLbl = document.getElementById('lbl-sexo-f');
   const mLbl = document.getElementById('lbl-sexo-m');
@@ -911,4 +1072,146 @@ function setNpSexo(val) {
   Object.assign(mLbl.style, val === 'masculino'
     ? { background: 'var(--sage-ll)', color: 'var(--sage)', fontWeight: '600' }
     : { background: 'transparent', color: 'var(--text-m)', fontWeight: '400' });
+}
+
+// ── Recibo ────────────────────────────────────────────
+function openReceiptModal(opts = {}) {
+  const folio = '#REC-' + String(Math.floor(Math.random() * 9000) + 1000).padStart(4, '0');
+  const fecha = new Date().toLocaleDateString('es-MX', { day: 'numeric', month: 'long', year: 'numeric' });
+  const el = id => document.getElementById(id);
+  if (el('rcpt-folio')) el('rcpt-folio').textContent = folio;
+  if (el('rcpt-fecha')) el('rcpt-fecha').textContent = fecha;
+  const ci = el('rcpt-concepto-in'), mi = el('rcpt-monto-in');
+  if (ci) ci.value = opts.concepto || 'Consulta nutricional';
+  if (mi) mi.value = opts.monto    || '';
+  rcptUpdate();
+  openModal('receipt-modal');
+}
+
+function rcptUpdate() {
+  const el = id => document.getElementById(id);
+  const concepto = el('rcpt-concepto-in')?.value || 'Consulta nutricional';
+  const monto    = el('rcpt-monto-in')?.value;
+  if (el('rcpt-concepto')) el('rcpt-concepto').textContent = concepto;
+  if (el('rcpt-total'))    el('rcpt-total').textContent    = monto ? '$' + parseFloat(monto).toLocaleString('es-MX') : '$—';
+}
+
+function rcptGuardar() {
+  const monto    = document.getElementById('rcpt-monto-in')?.value;
+  const concepto = document.getElementById('rcpt-concepto-in')?.value || 'Consulta nutricional';
+  const folio    = document.getElementById('rcpt-folio')?.textContent || '';
+  const fecha    = document.getElementById('rcpt-fecha')?.textContent  || '';
+  if (!monto) { toast('⚠️ Ingresa el monto primero'); return; }
+  const total = '$' + parseFloat(monto).toLocaleString('es-MX');
+  const win = window.open('', '_blank', 'width=520,height=640');
+  win.document.write(`<!DOCTYPE html><html><head><meta charset="UTF-8"><title>Recibo GestaNut</title>
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,600&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+    <style>
+      *{box-sizing:border-box;margin:0;padding:0}
+      body{font-family:'DM Sans',sans-serif;background:#f0ece4;display:flex;justify-content:center;align-items:flex-start;padding:40px 20px;min-height:100vh}
+      .card{background:#fff;border-radius:16px;overflow:hidden;width:100%;max-width:420px;box-shadow:0 8px 40px rgba(26,51,40,.18)}
+      .hd{background:#1a3328;padding:32px 28px 26px;text-align:center;position:relative;overflow:hidden}
+      .hd-orb1{position:absolute;top:-28px;right:-28px;width:100px;height:100px;border-radius:50%;background:rgba(107,158,120,.13)}
+      .hd-orb2{position:absolute;bottom:-40px;left:-32px;width:120px;height:120px;border-radius:50%;background:rgba(107,158,120,.1)}
+      .leaf{font-size:22px;margin-bottom:8px;position:relative}
+      .brand{font-family:'Cormorant Garamond',serif;font-size:34px;font-weight:600;color:#faf6ef;letter-spacing:1px;position:relative}
+      .hd-line{width:40px;height:1px;background:rgba(107,158,120,.55);margin:10px auto 12px;position:relative}
+      .hd-sub{font-size:10px;color:rgba(250,246,239,.58);letter-spacing:.7px;text-transform:uppercase;position:relative}
+      .hd-contact{font-size:10px;color:rgba(250,246,239,.4);margin-top:4px;position:relative}
+      .tear{background:#1a3328;line-height:0}
+      .body{padding:22px 28px 28px}
+      .meta{display:flex;justify-content:space-between;align-items:center;margin-bottom:16px}
+      .meta-label{font-size:9px;text-transform:uppercase;letter-spacing:1.3px;color:#8a9e84;font-weight:500}
+      .folio{font-size:11px;font-weight:600;background:#eef5ee;color:#1a3328;padding:4px 12px;border-radius:20px}
+      .rows{border-top:1px dashed rgba(107,158,120,.3);padding-top:4px}
+      .row{display:flex;justify-content:space-between;align-items:center;padding:10px 0;border-bottom:1px dashed rgba(107,158,120,.15);font-size:12px}
+      .row:last-child{border-bottom:none}
+      .row-label{color:#8a9e84}
+      .row-val{color:#1a2418;font-weight:500;text-align:right;max-width:60%}
+      .total-box{margin-top:16px;background:#1a3328;border-radius:12px;padding:16px 20px;display:flex;justify-content:space-between;align-items:center}
+      .total-label{font-size:11px;color:rgba(250,246,239,.6);text-transform:uppercase;letter-spacing:.7px}
+      .total-val{font-family:'Cormorant Garamond',serif;font-size:32px;font-weight:600;color:#faf6ef}
+      .note{margin-top:14px;text-align:center;font-size:10px;color:#8a9e84;letter-spacing:.3px}
+      @media print{body{background:#fff;padding:0}  .card{box-shadow:none;border-radius:0;max-width:100%}}
+    </style></head><body>
+    <div class="card">
+      <div class="hd">
+        <div class="hd-orb1"></div><div class="hd-orb2"></div>
+        <div class="leaf">🌿</div>
+        <div class="brand">GestaNut</div>
+        <div class="hd-line"></div>
+        <div class="hd-sub">Diana Zavala · Nutrióloga · Cédula 15304166</div>
+        <div class="hd-contact">667 305 6211 · @gestanut</div>
+      </div>
+      <div class="tear"><svg viewBox="0 0 400 14" preserveAspectRatio="none" style="width:100%;height:14px;display:block"><polygon points="0,14 10,0 20,14 30,0 40,14 50,0 60,14 70,0 80,14 90,0 100,14 110,0 120,14 130,0 140,14 150,0 160,14 170,0 180,14 190,0 200,14 210,0 220,14 230,0 240,14 250,0 260,14 270,0 280,14 290,0 300,14 310,0 320,14 330,0 340,14 350,0 360,14 370,0 380,14 390,0 400,14" fill="#ffffff"/></svg></div>
+      <div class="body">
+        <div class="meta"><span class="meta-label">Recibo de Pago</span><span class="folio">${folio}</span></div>
+        <div class="rows">
+          <div class="row"><span class="row-label">Fecha</span><span class="row-val">${fecha}</span></div>
+          <div class="row"><span class="row-label">Concepto</span><span class="row-val">${concepto}</span></div>
+        </div>
+        <div class="total-box"><span class="total-label">Total</span><span class="total-val">${total}</span></div>
+        <div class="note">Comprobante informal de pago · No es factura fiscal</div>
+      </div>
+    </div>
+    <script>window.onload=()=>{window.print()}<\/script>
+  </body></html>`);
+  win.document.close();
+}
+
+function _rcptText() {
+  const concepto = document.getElementById('rcpt-concepto-in')?.value || 'Consulta nutricional';
+  const folio    = document.getElementById('rcpt-folio')?.textContent  || '';
+  const fecha    = document.getElementById('rcpt-fecha')?.textContent   || '';
+  const monto    = document.getElementById('rcpt-monto-in')?.value      || '0';
+  const total    = '$' + parseFloat(monto).toLocaleString('es-MX');
+  return `*GestaNut · Recibo de pago*\n\nFolio: ${folio}\nFecha: ${fecha}\nConcepto: ${concepto}\n\n*Total: ${total}*\n\n_Comprobante informal de pago. No es factura fiscal._`;
+}
+
+function rcptWhatsApp() {
+  const monto = document.getElementById('rcpt-monto-in')?.value;
+  if (!monto) { toast('⚠️ Ingresa el monto primero'); return; }
+  window.open('https://api.whatsapp.com/send?text=' + encodeURIComponent(_rcptText()), '_blank');
+}
+
+async function rcptShareImage() {
+  const monto = document.getElementById('rcpt-monto-in')?.value;
+  if (!monto) { toast('⚠️ Ingresa el monto primero'); return; }
+
+  toast('Generando imagen...');
+
+  if (typeof html2canvas === 'undefined') {
+    await new Promise((resolve, reject) => {
+      const s = document.createElement('script');
+      s.src = 'https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js';
+      s.onload = resolve; s.onerror = reject;
+      document.head.appendChild(s);
+    });
+  }
+
+  const preview = document.getElementById('receipt-preview');
+  const canvas  = await html2canvas(preview, { scale: 2, useCORS: true, backgroundColor: '#ffffff' });
+
+  canvas.toBlob(async blob => {
+    const file = new File([blob], 'recibo-gestanut.png', { type: 'image/png' });
+
+    if (navigator.share && navigator.canShare?.({ files: [file] })) {
+      try {
+        await navigator.share({ files: [file], title: 'Recibo GestaNut' });
+        toast('Imagen compartida ✓');
+      } catch (e) {
+        if (e.name !== 'AbortError') _rcptDownload(canvas);
+      }
+    } else {
+      _rcptDownload(canvas);
+      toast('Imagen descargada · Compártela en WhatsApp 📲');
+    }
+  }, 'image/png');
+}
+
+function _rcptDownload(canvas) {
+  const a = document.createElement('a');
+  a.download = 'recibo-gestanut.png';
+  a.href = canvas.toDataURL('image/png');
+  a.click();
 }

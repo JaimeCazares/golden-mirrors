@@ -39,9 +39,10 @@ async function loadPlanes() {
 const _planColors = ['blush', 'sage', 'terra', 'info', 'gold'];
 
 const _planTipos = {
-  materna: { icon: '🤰', label: 'Materno-infantil' },
-  recomp:  { icon: '⚖️',  label: 'Recomposición'    },
-  peso:    { icon: '📉', label: 'Control de peso'   },
+  materna:  { icon: '🤰', label: 'Materno-infantil' },
+  recomp:   { icon: '⚖️',  label: 'Recomposición'    },
+  perdida:  { icon: '📉', label: 'Pérdida de peso'   },
+  peso:     { icon: '⚖️', label: 'Control de peso'   },
 };
 
 function renderPlanesGrid(plans) {

@@ -134,24 +134,40 @@ function marcarFirmado(id) {
     if (!input.files.length) return;
     const p = PATIENTS.find(x => x.id === id);
     if (!p) return;
+    const fd = new FormData();
+    fd.append('paciente_id', id);
+    fd.append('archivo', input.files[0]);
+    toast('Subiendo consentimiento...');
     try {
-      const res  = await fetch('api/consentimientos.php', {
-        method: 'PUT',
-        headers: {'Content-Type': 'application/json'},
-        body: JSON.stringify({ paciente_id: id })
-      });
+      const res  = await fetch('api/consentimientos.php', { method: 'POST', body: fd });
       const data = await res.json();
       if (!data.ok) throw new Error();
       const fecha = new Date(data.fecha + 'T12:00:00')
         .toLocaleDateString('es-MX', { day: 'numeric', month: 'short', year: 'numeric' });
-      p.consentimiento = { firmado: true, fecha };
-      toast('Consentimiento guardado en la BD ✓');
+      p.consentimiento = { firmado: true, fecha, archivoUrl: data.archivo_url };
+      toast('Consentimiento guardado ✓');
       showView('consentimientos');
     } catch {
       toast('⚠️ Error al guardar en la base de datos');
     }
   };
   input.click();
+}
+
+function verConsentimiento(url, nombre) {
+  const ext = url.split('.').pop().toLowerCase();
+  if (ext === 'pdf') {
+    window.open(url, '_blank');
+    return;
+  }
+  const ov = document.createElement('div');
+  ov.style.cssText = 'position:fixed;inset:0;background:rgba(0,0,0,.85);z-index:9999;display:flex;flex-direction:column;align-items:center;justify-content:center;cursor:zoom-out;gap:12px';
+  ov.innerHTML = `
+    <div style="font-size:13px;color:rgba(255,255,255,.7);max-width:90vw;text-align:center">Consentimiento · ${nombre}</div>
+    <img src="${url}" style="max-width:90vw;max-height:85vh;border-radius:8px;object-fit:contain">
+  `;
+  ov.onclick = () => ov.remove();
+  document.body.appendChild(ov);
 }
 
 VIEWS.consentimientos = () => {
@@ -176,7 +192,13 @@ VIEWS.consentimientos = () => {
             <div class="muted-sm" style="font-size:11px">${p.historia.motivo}</div>
           </div>
           ${p.consentimiento.firmado
-            ? `<div style="text-align:right"><span class="badge b-green">✓ Firmado</span><div class="muted-sm" style="font-size:10px;margin-top:3px">${p.consentimiento.fecha}</div></div>`
+            ? `<div style="text-align:right;display:flex;flex-direction:column;align-items:flex-end;gap:4px">
+                 <span class="badge b-green">✓ Firmado</span>
+                 <div class="muted-sm" style="font-size:10px">${p.consentimiento.fecha}</div>
+                 ${p.consentimiento.archivoUrl
+                   ? `<button class="btn btn-outline btn-xs" onclick="verConsentimiento('${p.consentimiento.archivoUrl}','${p.name.replace(/'/g,"\\'")}')">👁 Ver archivo</button>`
+                   : ''}
+               </div>`
             : `<div style="display:flex;flex-direction:column;gap:5px;align-items:flex-end">
                  <button class="btn btn-terra btn-xs" onclick="descargarConsentimientoPDF(PATIENTS.find(x=>x.id===${p.id})?.name)">Generar PDF →</button>
                  <div style="display:flex;gap:5px">
@@ -200,7 +222,6 @@ VIEWS.consentimientos = () => {
           </div>
           <div style="display:flex;gap:8px;margin-top:12px">
             <button class="btn btn-sage btn-sm" style="flex:1" onclick="descargarConsentimientoPDF()">📥 Descargar PDF</button>
-            <button class="btn btn-outline btn-sm" onclick="toast('Consentimiento enviado por WhatsApp ✓')">📤 Enviar</button>
           </div>
         </div>
       </div>

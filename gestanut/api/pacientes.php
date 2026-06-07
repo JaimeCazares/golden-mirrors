@@ -1,11 +1,16 @@
 <?php
 header('Content-Type: application/json; charset=utf-8');
 header('Access-Control-Allow-Origin: *');
-header('Access-Control-Allow-Methods: GET, POST, DELETE, OPTIONS');
+header('Access-Control-Allow-Methods: GET, POST, PUT, DELETE, OPTIONS');
 header('Access-Control-Allow-Headers: Content-Type');
 if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') exit;
 
 require __DIR__ . '/db.php';
+
+// Ensure archivo_url column exists in consentimientos
+try {
+    $pdo->exec('ALTER TABLE consentimientos ADD COLUMN IF NOT EXISTS archivo_url VARCHAR(500) NULL');
+} catch (Exception $e) {}
 
 $method = $_SERVER['REQUEST_METHOD'];
 
@@ -13,7 +18,7 @@ $method = $_SERVER['REQUEST_METHOD'];
 if ($method === 'GET') {
     $stmt = $pdo->query('
         SELECT p.*,
-               c.firmado AS con_firmado, c.fecha_firma,
+               c.firmado AS con_firmado, c.fecha_firma, c.archivo_url AS con_archivo_url,
                (SELECT CONCAT(DATE_FORMAT(ci.fecha, \'%d %b\'), \' · \', TIME_FORMAT(ci.hora, \'%H:%i\'))
                 FROM citas ci
                 WHERE ci.paciente_id = p.id AND ci.fecha >= CURDATE()
@@ -27,6 +32,27 @@ if ($method === 'GET') {
     exit;
 }
 
+// ── PUT: actualizar datos básicos ─────────────────────────────────
+if ($method === 'PUT') {
+    $d  = json_decode(file_get_contents('php://input'), true);
+    $id = (int)($d['id'] ?? 0);
+    if (!$id) { http_response_code(400); echo json_encode(['error' => 'id requerido']); exit; }
+
+    $pdo->prepare('UPDATE pacientes SET edad=?, sexo=?, altura=?, objetivo_principal=?, ultima_visita=NOW() WHERE id=?')
+        ->execute([
+            isset($d['edad'])   ? (int)$d['edad']      : null,
+            $d['sexo']          ?? null,
+            isset($d['altura']) ? (float)$d['altura']  : null,
+            trim($d['objetivo'] ?? ''),
+            $id,
+        ]);
+
+    $stmt = $pdo->prepare('SELECT * FROM pacientes WHERE id = ?');
+    $stmt->execute([$id]);
+    echo json_encode(mapRow($stmt->fetch()));
+    exit;
+}
+
 // ── POST: crear paciente ───────────────────────────────────────────
 if ($method === 'POST') {
     $d = json_decode(file_get_contents('php://input'), true);
@@ -34,6 +60,7 @@ if ($method === 'POST') {
     $tipoMap = [
         'Materno-infantil' => 'materna',
         'Recomposición'    => 'recomp',
+        'Pérdida de peso'  => 'perdida',
         'Control de peso'  => 'peso',
     ];
     $tipo = $tipoMap[$d['tipo_consulta']] ?? 'peso';
@@ -84,11 +111,22 @@ http_response_code(405);
 echo json_encode(['error' => 'Método no permitido']);
 
 // ── Helper ────────────────────────────────────────────────────────
+function fmtUltimaVisita($uv) {
+    if (!$uv) return '—';
+    $meses = ['01'=>'Ene','02'=>'Feb','03'=>'Mar','04'=>'Abr','05'=>'May','06'=>'Jun',
+              '07'=>'Jul','08'=>'Ago','09'=>'Sep','10'=>'Oct','11'=>'Nov','12'=>'Dic'];
+    $parts = explode(' ', $uv);
+    $d     = explode('-', $parts[0]);
+    $hora  = isset($parts[1]) ? substr($parts[1], 0, 5) : '';
+    return ltrim($d[2], '0') . ' ' . ($meses[$d[1]] ?? '') . ' ' . $d[0] . ($hora ? ' · ' . $hora : '');
+}
+
 function mapRow($r) {
     $tipos = [
-        'materna' => ['label' => 'Materno-infantil', 'icon' => '🤰', 'badge' => 'b-blush', 'av' => 'av-c3'],
-        'recomp'  => ['label' => 'Recomposición',    'icon' => '⚖️',  'badge' => 'b-sage',  'av' => 'av-c1'],
-        'peso'    => ['label' => 'Control de peso',  'icon' => '📉',  'badge' => 'b-terra', 'av' => 'av-c2'],
+        'materna'  => ['label' => 'Materno-infantil', 'icon' => '🤰', 'badge' => 'b-blush', 'av' => 'av-c3'],
+        'recomp'   => ['label' => 'Recomposición',    'icon' => '⚖️',  'badge' => 'b-sage',  'av' => 'av-c1'],
+        'perdida'  => ['label' => 'Pérdida de peso',  'icon' => '📉',  'badge' => 'b-terra', 'av' => 'av-c2'],
+        'peso'     => ['label' => 'Control de peso',  'icon' => '⚖️',  'badge' => 'b-gold',  'av' => 'av-c2'],
     ];
     $estados = ['nueva' => 'new', 'activa' => 'active', 'seguimiento' => 'follow-up', 'inactiva' => 'inactive'];
 
@@ -99,7 +137,7 @@ function mapRow($r) {
     return [
         'id'           => (int)$r['id'],
         'name'         => $r['nombre'],
-        'age'          => (int)$r['edad'],
+        'age'          => $r['edad'] !== null ? (int)$r['edad'] : null,
         'phone'        => $r['whatsapp'],
         'type'         => $r['tipo_consulta'],
         'typeLabel'    => $t['label'],
@@ -115,12 +153,13 @@ function mapRow($r) {
         'goal'         => $r['objetivo_principal'] ?? '',
         'sub'          => $r['modalidad'] === 'online' ? 'Online' : 'Presencial',
         'proxima'      => $r['proxima_cita']  ?? '—',
-        'sexo'         => $r['sexo'] ?? 'femenino',
-        'ultimaVisita' => $r['ultima_visita'] ?? '—',
+        'sexo'         => $r['sexo'] ?? null,
+        'ultimaVisita' => fmtUltimaVisita($r['ultima_visita'] ?? null),
         'foto'         => $r['foto_perfil']  ?? null,
         'consentimiento' => isset($r['con_firmado']) && $r['con_firmado'] !== null
-            ? ['firmado' => (bool)$r['con_firmado'],
-               'fecha'   => $r['fecha_firma'] ? date('d M Y', strtotime($r['fecha_firma'])) : '']
+            ? ['firmado'     => (bool)$r['con_firmado'],
+               'fecha'       => $r['fecha_firma'] ? date('d M Y', strtotime($r['fecha_firma'])) : '',
+               'archivoUrl'  => $r['con_archivo_url'] ?? null]
             : null,
     ];
 }

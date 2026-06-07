@@ -66,7 +66,7 @@ async function subirFoto(input) {
   const fd = new FormData();
   fd.append('paciente_id', p.id);
   fd.append('foto', file);
-  fd.append('fecha', new Date().toISOString().split('T')[0]);
+  fd.append('fecha', localToday());
   fd.append('descripcion', '');
 
   toast('Subiendo foto...');

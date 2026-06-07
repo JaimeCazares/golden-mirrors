@@ -83,14 +83,21 @@ $history  = [];
 $prevW    = null;
 foreach ($meds as $m) {
     $w     = (float)$m['peso'];
-    $entry = ['date' => fmtFechaCorta($m['fecha'], $meses), 'weight' => $w, 'dateRaw' => $m['fecha']];
+    $hora  = isset($m['created_at']) ? substr($m['created_at'], 11, 5) : '';
+    $fp    = explode('-', $m['fecha'] ?? '');
+    $dateFmt = count($fp) === 3 ? $fp[2].'/'.$fp[1].'/'.$fp[0] : ($m['fecha'] ?? '');
+    $entry = ['date' => $dateFmt . ($hora ? ' · ' . $hora : ''), 'weight' => $w, 'dateRaw' => $m['fecha']];
     if ($prevW !== null) {
         $delta = round($w - $prevW, 1);
         if ($delta != 0) $entry['delta'] = $delta;
     }
-    if (!empty($m['porcentaje_grasa'])) $entry['grasa'] = (float)$m['porcentaje_grasa'];
-    if (!empty($m['nota']))             $entry['note']  = $m['nota'];
-    if (!empty($m['sem']))              $entry['sem']   = (int)$m['sem'];
+    if (!empty($m['porcentaje_grasa'])) $entry['grasa']   = (float)$m['porcentaje_grasa'];
+    if (!empty($m['nota']))             $entry['note']    = $m['nota'];
+    if (!empty($m['sem']))              $entry['sem']     = (int)$m['sem'];
+    if (!empty($m['cintura']))          $entry['cintura'] = (float)$m['cintura'];
+    if (!empty($m['cadera']))           $entry['cadera']  = (float)$m['cadera'];
+    if (!empty($m['brazo']))            $entry['brazo']   = (float)$m['brazo'];
+    if (!empty($m['muslo']))            $entry['muslo']   = (float)$m['muslo'];
     $history[] = $entry;
     $prevW = $w;
 }
@@ -203,8 +210,10 @@ $suplementacion = array_map(fn($r) => [
     'razon'      => $r['razon']      ?? '',
 ], $stmt->fetchAll());
 
-// ─── Último peso ───────────────────────────────────────
+// ─── Último peso y última visita (de mediciones) ───────
 $lastWeight = $history ? end($history)['weight'] : null;
+$lastMed    = $history ? end($history) : null;
+$ultimaVisitaFmt = $lastMed ? $lastMed['date'] : '—';
 
 echo json_encode([
     'historia'       => $historia,
@@ -223,4 +232,5 @@ echo json_encode([
     'prePregWeight'  => $prePregWeight,
     'suplementacion' => $suplementacion,
     'weight'         => $lastWeight,
+    'ultimaVisita'   => $ultimaVisitaFmt,
 ], JSON_UNESCAPED_UNICODE);

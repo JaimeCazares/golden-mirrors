@@ -14,6 +14,18 @@ require __DIR__ . '/db.php';
 $method = $_SERVER['REQUEST_METHOD'];
 
 if ($method === 'GET') {
+    // Insertar alimentos esenciales que pueden faltar en la BD
+    $esenciales = [
+        ['Jamón de pavo',  'Proteína animal', 30, '1 rebanada (30g)', 35, 5.5, 0.8, 1.2, 0.0],
+        ['Jamón de cerdo', 'Proteína animal', 30, '1 rebanada (30g)', 45, 5.0, 1.0, 2.5, 0.0],
+    ];
+    $ins = $pdo->prepare("
+        INSERT INTO alimentos (nombre, categoria, porcion_g, porcion_descripcion, calorias, proteina_g, carbohidratos_g, grasas_g, fibra_g)
+        SELECT ?,?,?,?,?,?,?,?,?
+        WHERE NOT EXISTS (SELECT 1 FROM alimentos WHERE nombre = ?)
+    ");
+    foreach ($esenciales as $e) $ins->execute(array_merge($e, [$e[0]]));
+
     $pid = (int)($_GET['paciente_id'] ?? 0);
 
     if ($pid) {

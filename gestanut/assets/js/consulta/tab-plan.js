@@ -8,6 +8,7 @@ let _planAct    = 1.4;
 let _pickerMeal = null;
 let _pickerCat  = 'Todos';
 let _pickerTab  = 'alimentos';
+let _pickerRecCat = 'Todos';
 
 const MEALS = [
   { key:'desayuno',    label:'🌅 Desayuno',    hora:'7:30',  pct:.25 },
@@ -61,23 +62,35 @@ const CAT_COL = {
   'Verdura':         { bg:'var(--sage-ll)', fg:'var(--sage)',  bar:'var(--sage)' },
 };
 
+const MEAL_REC_COL = {
+  'Desayuno':    { bg:'var(--gold-l)',  fg:'var(--gold)',   bar:'var(--gold)' },
+  'Colación AM': { bg:'var(--terra-l)', fg:'var(--terra)',  bar:'var(--terra)' },
+  'Comida':      { bg:'var(--sage-ll)', fg:'var(--sage)',   bar:'var(--sage)' },
+  'Colación PM': { bg:'var(--blush-l)', fg:'var(--blush)',  bar:'var(--blush)' },
+  'Cena':        { bg:'var(--info-l)',  fg:'var(--info)',   bar:'var(--info)' },
+};
+const MEAL_REC_EMOJI = {
+  'Desayuno':'🌅', 'Colación AM':'🍎', 'Comida':'🍽', 'Colación PM':'🥑', 'Cena':'🌙',
+};
+
 const RECETAS = [
+  // ── Desayuno ─────────────────────────────────────────
   {
     nombre:'Huevo con jamón', emoji:'🍳', cat:'Desayuno',
     desc:'Clásico desayuno proteico', color:'#fff8f5', border:'#c4714a',
     ing:[
-      { buscar:'huevo',  label:'Huevo',  emoji:'🥚', qty:2,   step:1,   min:1, max:6 },
-      { buscar:'jamón',  label:'Jamón',  emoji:'🥓', qty:2,   step:1,   min:0, max:8 },
-      { buscar:'aceite', label:'Aceite', emoji:'🫒', qty:0.5, step:0.5, min:0, max:3 },
+      { buscar:'huevo entero',  label:'Huevo entero',  emoji:'🥚', qty:2, step:1,   min:1, max:6 },
+      { buscar:'jamón de pavo', label:'Jamón de pavo', emoji:'🥓', qty:2, step:1,   min:0, max:8 },
+      { buscar:'aceite',        label:'Aceite',        emoji:'🫒', qty:1, step:0.5, min:0, max:5 },
     ]
   },
   {
     nombre:'Omelette de queso', emoji:'🍳', cat:'Desayuno',
     desc:'Esponjoso y proteico', color:'#fffbf0', border:'#d4a843',
     ing:[
-      { buscar:'huevo',  label:'Huevo',  emoji:'🥚', qty:3,   step:1,   min:1, max:6 },
-      { buscar:'queso',  label:'Queso',  emoji:'🧀', qty:1,   step:0.5, min:0, max:4 },
-      { buscar:'aceite', label:'Aceite', emoji:'🫒', qty:0.5, step:0.5, min:0, max:2 },
+      { buscar:'huevo entero', label:'Huevo entero', emoji:'🥚', qty:3,   step:1,   min:1, max:6 },
+      { buscar:'queso',        label:'Queso',        emoji:'🧀', qty:1,   step:0.5, min:0, max:4 },
+      { buscar:'aceite',       label:'Aceite',       emoji:'🫒', qty:1,   step:0.5, min:0, max:5 },
     ]
   },
   {
@@ -90,24 +103,25 @@ const RECETAS = [
     ]
   },
   {
-    nombre:'Pollo con arroz', emoji:'🍗', cat:'Comida',
-    desc:'Proteína magra + carbohidrato', color:'#f5faf5', border:'#6b9e78',
+    nombre:'Yogur con granola y fruta', emoji:'🥣', cat:'Desayuno',
+    desc:'Desayuno fresco y equilibrado', color:'#fff5f8', border:'#e8739a',
     ing:[
-      { buscar:'pechuga', label:'Pechuga', emoji:'🍗', qty:1,   step:0.5, min:0.5, max:4 },
-      { buscar:'arroz',   label:'Arroz',   emoji:'🍚', qty:1,   step:0.5, min:0,   max:4 },
-      { buscar:'aceite',  label:'Aceite',  emoji:'🫒', qty:0.5, step:0.5, min:0,   max:2 },
+      { buscar:'yogur',   label:'Yogur griego', emoji:'🥛', qty:1,   step:0.5, min:0.5, max:4 },
+      { buscar:'granola', label:'Granola',      emoji:'🌾', qty:0.5, step:0.5, min:0,   max:3 },
+      { buscar:'fresa',   label:'Fresa',        emoji:'🍓', qty:1,   step:0.5, min:0,   max:3 },
     ]
   },
+  // ── Colación AM ───────────────────────────────────────
   {
-    nombre:'Yogur con granola', emoji:'🥛', cat:'Colación',
+    nombre:'Yogur con granola', emoji:'🥛', cat:'Colación AM',
     desc:'Alto en proteína, snack ideal', color:'#fff5f8', border:'#e8739a',
     ing:[
       { buscar:'yogur',   label:'Yogur griego', emoji:'🥛', qty:1,   step:0.5, min:0.5, max:4 },
-      { buscar:'granola', label:'Granola',       emoji:'🌾', qty:0.5, step:0.5, min:0,   max:3 },
+      { buscar:'granola', label:'Granola',      emoji:'🌾', qty:0.5, step:0.5, min:0,   max:3 },
     ]
   },
   {
-    nombre:'Licuado proteico', emoji:'🥤', cat:'Colación',
+    nombre:'Licuado proteico', emoji:'🥤', cat:'Colación AM',
     desc:'Post entreno / snack energético', color:'#fff8f5', border:'#c4714a',
     ing:[
       { buscar:'leche',   label:'Leche',   emoji:'🥛', qty:1,   step:0.5, min:0.5, max:3 },
@@ -115,7 +129,115 @@ const RECETAS = [
       { buscar:'avena',   label:'Avena',   emoji:'🌾', qty:0.5, step:0.5, min:0,   max:2 },
     ]
   },
+  {
+    nombre:'Fruta con nueces', emoji:'🍎', cat:'Colación AM',
+    desc:'Energía rápida y grasas saludables', color:'#fffbf0', border:'#d4a843',
+    ing:[
+      { buscar:'manzana', label:'Manzana', emoji:'🍎', qty:1,   step:1,   min:1, max:3 },
+      { buscar:'nuez',    label:'Nueces',  emoji:'🥜', qty:0.5, step:0.5, min:0, max:3 },
+    ]
+  },
+  // ── Comida ────────────────────────────────────────────
+  {
+    nombre:'Pollo con arroz', emoji:'🍗', cat:'Comida',
+    desc:'Proteína magra + carbohidrato', color:'#f5faf5', border:'#6b9e78',
+    ing:[
+      { buscar:'pechuga', label:'Pechuga', emoji:'🍗', qty:1, step:0.5, min:0.5, max:4 },
+      { buscar:'arroz',   label:'Arroz',   emoji:'🍚', qty:1, step:0.5, min:0,   max:4 },
+      { buscar:'aceite',  label:'Aceite',  emoji:'🫒', qty:1, step:0.5, min:0,   max:5 },
+    ]
+  },
+  {
+    nombre:'Atún con arroz y verduras', emoji:'🐟', cat:'Comida',
+    desc:'Rico en omega-3 y fibra', color:'#f0f7ff', border:'#5b8fb0',
+    ing:[
+      { buscar:'atún',      label:'Atún',     emoji:'🐟', qty:1, step:0.5, min:0.5, max:4 },
+      { buscar:'arroz',     label:'Arroz',    emoji:'🍚', qty:1, step:0.5, min:0,   max:4 },
+      { buscar:'jitomate',  label:'Jitomate', emoji:'🍅', qty:1, step:1,   min:0,   max:4 },
+      { buscar:'aceite',    label:'Aceite',   emoji:'🫒', qty:1, step:0.5, min:0,   max:5 },
+    ]
+  },
+  {
+    nombre:'Pollo con verduras al vapor', emoji:'🥦', cat:'Comida',
+    desc:'Ligero, nutritivo y bajo en grasa', color:'#f0fff4', border:'#4a9e6b',
+    ing:[
+      { buscar:'pechuga',  label:'Pechuga',  emoji:'🍗', qty:1, step:0.5, min:0.5, max:4 },
+      { buscar:'brócoli',  label:'Brócoli',  emoji:'🥦', qty:1, step:0.5, min:0,   max:4 },
+      { buscar:'zanahoria',label:'Zanahoria',emoji:'🥕', qty:1, step:0.5, min:0,   max:4 },
+      { buscar:'aceite',   label:'Aceite',   emoji:'🫒', qty:1, step:0.5, min:0,   max:3 },
+    ]
+  },
+  // ── Colación PM ───────────────────────────────────────
+  {
+    nombre:'Fruta con yogur', emoji:'🍓', cat:'Colación PM',
+    desc:'Snack dulce y proteico', color:'#fff5f8', border:'#e8739a',
+    ing:[
+      { buscar:'yogur', label:'Yogur griego', emoji:'🥛', qty:1, step:0.5, min:0.5, max:4 },
+      { buscar:'fresa', label:'Fresa',        emoji:'🍓', qty:1, step:0.5, min:0,   max:3 },
+    ]
+  },
+  {
+    nombre:'Plátano con almendras', emoji:'🍌', cat:'Colación PM',
+    desc:'Energía + grasas saludables', color:'#fffbf0', border:'#d4a843',
+    ing:[
+      { buscar:'plátano',  label:'Plátano',  emoji:'🍌', qty:1,   step:1,   min:1, max:3 },
+      { buscar:'almendra', label:'Almendras',emoji:'🫘', qty:0.5, step:0.5, min:0, max:3 },
+    ]
+  },
+  {
+    nombre:'Queso cottage con fruta', emoji:'🧀', cat:'Colación PM',
+    desc:'Proteína + antioxidantes', color:'#f0f7ff', border:'#5b8fb0',
+    ing:[
+      { buscar:'queso cottage', label:'Queso cottage', emoji:'🧀', qty:1, step:0.5, min:0.5, max:4 },
+      { buscar:'manzana',       label:'Manzana',       emoji:'🍎', qty:1, step:1,   min:0,   max:3 },
+    ]
+  },
+  // ── Cena ──────────────────────────────────────────────
+  {
+    nombre:'Huevos revueltos con verduras', emoji:'🥚', cat:'Cena',
+    desc:'Ligero y proteico para la noche', color:'#fff8f5', border:'#c4714a',
+    ing:[
+      { buscar:'huevo entero', label:'Huevo entero', emoji:'🥚', qty:2, step:1,   min:1, max:5 },
+      { buscar:'espinaca',     label:'Espinaca',     emoji:'🥬', qty:1, step:0.5, min:0, max:3 },
+      { buscar:'jitomate',     label:'Jitomate',     emoji:'🍅', qty:1, step:1,   min:0, max:3 },
+      { buscar:'aceite',       label:'Aceite',       emoji:'🫒', qty:1, step:0.5, min:0, max:3 },
+    ]
+  },
+  {
+    nombre:'Pechuga a la plancha', emoji:'🍗', cat:'Cena',
+    desc:'Proteína sin exceso de calorías', color:'#f5faf5', border:'#6b9e78',
+    ing:[
+      { buscar:'pechuga', label:'Pechuga', emoji:'🍗', qty:1, step:0.5, min:0.5, max:4 },
+      { buscar:'brócoli', label:'Brócoli', emoji:'🥦', qty:1, step:0.5, min:0,   max:4 },
+      { buscar:'aceite',  label:'Aceite',  emoji:'🫒', qty:1, step:0.5, min:0,   max:3 },
+    ]
+  },
+  {
+    nombre:'Sopa de verduras', emoji:'🥣', cat:'Cena',
+    desc:'Reconfortante y baja en calorías', color:'#f0f7ff', border:'#5b8fb0',
+    ing:[
+      { buscar:'calabaza',  label:'Calabaza',  emoji:'🥦', qty:1, step:0.5, min:0.5, max:4 },
+      { buscar:'zanahoria', label:'Zanahoria', emoji:'🥕', qty:1, step:0.5, min:0,   max:4 },
+      { buscar:'espinaca',  label:'Espinaca',  emoji:'🥬', qty:1, step:0.5, min:0,   max:3 },
+    ]
+  },
 ];
+
+// ── Recetas mutables (copia editable en sesión) ───────
+let _recetasMut  = null;
+let _recAddOpen  = null;
+let _recAddQuery = '';
+let _recAddCat   = 'Todos';
+
+function getRecMut() {
+  if (!_recetasMut) _recetasMut = JSON.parse(JSON.stringify(RECETAS));
+  return _recetasMut;
+}
+
+function resolveIngFood(ing) {
+  if (ing.alimId) return _alimentos.find(a => a.id === ing.alimId);
+  return _alimentos.find(a => a.nombre.toLowerCase().includes(ing.buscar || ''));
+}
 
 function foodEmoji(a) {
   const n = a.nombre.toLowerCase();
@@ -326,7 +448,11 @@ function renderTargetsPanel(T, C) {
   return `<div class="panel mb-sm">
     <div class="panel-head">
       <div class="panel-title"><span class="pt-icon">🎯</span>Metas diarias</div>
-      <button class="btn btn-primary btn-xs" onclick="guardarPlan()">💾 Guardar plan</button>
+      <div style="display:flex;gap:6px">
+        <button class="btn btn-outline btn-xs" onclick="enviarPlanWA()">📤 WhatsApp</button>
+        <button class="btn btn-sage btn-xs" onclick="generarPlanPDF()">📄 Exportar PDF</button>
+        <button class="btn btn-primary btn-xs" onclick="guardarPlan()">💾 Guardar</button>
+      </div>
     </div>
     <div class="panel-body">
       <div style="background:linear-gradient(135deg,var(--sage) 0%,var(--forest-l) 100%);border-radius:14px;padding:20px 24px;margin-bottom:14px;color:var(--cream);position:relative;overflow:hidden">
@@ -373,6 +499,21 @@ function renderMealCard(meal, T) {
   const ms     = MEAL_STYLE[meal.key] || { border:'var(--sage)', bg:'var(--sage-ll)', emoji:'🍽' };
   const name   = meal.label.replace(/^\S+\s/, '');
 
+  const mProt  = +items.reduce((s, i) => s + i.proteina * i.porciones, 0).toFixed(1);
+  const mCarbs = +items.reduce((s, i) => s + i.carbos   * i.porciones, 0).toFixed(1);
+  const mGras  = +items.reduce((s, i) => s + i.grasas   * i.porciones, 0).toFixed(1);
+  const mFibra = +items.reduce((s, i) => s + i.fibra    * i.porciones, 0).toFixed(1);
+
+  const macroFooter = items.length ? `
+    <div style="display:flex;align-items:center;gap:6px;flex-wrap:wrap;
+                padding:8px 16px;border-top:1px solid var(--cream-d);background:var(--cream)">
+      <span style="font-size:10px;font-weight:600;color:var(--text-m);margin-right:2px">Total:</span>
+      <span style="font-size:10px;padding:2px 8px;border-radius:8px;background:var(--terra-l);color:var(--terra);font-weight:600">🥩 P ${mProt}g</span>
+      <span style="font-size:10px;padding:2px 8px;border-radius:8px;background:var(--gold-l);color:var(--gold);font-weight:600">🌾 C ${mCarbs}g</span>
+      <span style="font-size:10px;padding:2px 8px;border-radius:8px;background:var(--blush-l);color:var(--blush);font-weight:600">🫒 G ${mGras}g</span>
+      <span style="font-size:10px;padding:2px 8px;border-radius:8px;background:var(--sage-ll);color:var(--sage);font-weight:600">🌿 F ${mFibra}g</span>
+    </div>` : '';
+
   return `<div class="panel mb-sm" style="border-left:4px solid ${ms.border}">
     <div class="panel-head">
       <div style="display:flex;align-items:center;gap:10px">
@@ -400,6 +541,7 @@ function renderMealCard(meal, T) {
              Sin alimentos · objetivo ~${tKcal} kcal
            </div>`}
     </div>
+    ${macroFooter}
   </div>`;
 }
 
@@ -419,18 +561,18 @@ function renderFoodRow(item, mealKey, idx, total) {
         <div style="font-size:12px;font-weight:500;color:var(--forest)">${item.nombre}</div>
         <div style="font-size:11px;color:var(--text-m);margin-top:2px">
           ${item.porcion_desc} ×${item.porciones} &nbsp;
-          <span style="color:#9e5a3a">P${prot}g</span> ·
-          <span style="color:#8a6a14">C${carbs}g</span> ·
-          <span style="color:#9e3a5a">G${gras}g</span>
-          ${fibra > 0 ? `· <span style="color:#3a6840">F${fibra}g</span>` : ''}
+          <span style="color:#9e5a3a">🥩 P${prot}g</span> ·
+          <span style="color:#8a6a14">🌾 C${carbs}g</span> ·
+          <span style="color:#9e3a5a">🫒 G${gras}g</span> ·
+          <span style="color:#3a6840">🌿 F${fibra}g</span>
         </div>
       </div>
     </div>
     <div style="display:flex;align-items:center;gap:5px;flex-shrink:0">
       <span style="font-size:11px;font-weight:600;color:var(--forest);min-width:52px;text-align:right">${kcal} kcal</span>
-      <select style="font-size:11px;padding:2px 4px;border-radius:4px;border:1px solid var(--cream-d);background:var(--cream);cursor:pointer"
+      <select size="1" style="font-size:11px;padding:2px 4px;border-radius:4px;border:1px solid var(--cream-d);background:#fff;color:#1a3025;cursor:pointer"
               onchange="changePortion('${mealKey}',${idx},this.value)">
-        ${[0.5,1,1.5,2,2.5,3].map(v => `<option value="${v}"${item.porciones == v ? ' selected' : ''}>${v}×</option>`).join('')}
+        ${Array.from({length:20},(_,i)=>+(i+1)*0.5).map(v => `<option value="${v}"${item.porciones == v ? ' selected' : ''}>${v}×</option>`).join('')}
       </select>
       <button onclick="removeFoodItem('${mealKey}',${idx})"
         style="background:none;border:none;color:var(--text-m);cursor:pointer;font-size:13px;padding:2px 5px;border-radius:4px"
@@ -441,9 +583,10 @@ function renderFoodRow(item, mealKey, idx, total) {
 
 // ── Food Picker ───────────────────────────────────────
 function openFoodPicker(mealKey) {
-  _pickerMeal = mealKey;
-  _pickerCat  = 'Todos';
-  _pickerTab  = 'alimentos';
+  _pickerMeal    = mealKey;
+  _pickerCat     = 'Todos';
+  _pickerRecCat  = 'Todos';
+  _pickerTab     = 'alimentos';
   const meal  = MEALS.find(m => m.key === mealKey);
   const el    = $('#food-picker-modal');
   if (!el) return;
@@ -492,7 +635,20 @@ function switchPickerTab(tab) {
       >${em}${c}</button>`;
     }).join('');
   } else {
-    catsBar.style.display = 'none';
+    catsBar.style.display = 'flex';
+    const mealCats = ['Todos', 'Desayuno', 'Colación AM', 'Comida', 'Colación PM', 'Cena'];
+    catsBar.innerHTML = mealCats.map(c => {
+      const col    = MEAL_REC_COL[c] || {};
+      const active = c === _pickerRecCat;
+      const em     = MEAL_REC_EMOJI[c] ? MEAL_REC_EMOJI[c] + ' ' : '';
+      return `<button onclick="pickerSetRecCat('${c}')" data-preccat="${c}"
+        style="font-size:11px;padding:4px 12px;border-radius:20px;cursor:pointer;
+               font-family:'DM Sans',sans-serif;font-weight:500;transition:all .15s;white-space:nowrap;
+               border:1.5px solid ${active ? (col.bar||'var(--sage)') : 'var(--cream-dd)'};
+               background:${active ? (col.bg||'var(--sage-ll)') : 'transparent'};
+               color:${active ? (col.fg||'var(--sage)') : 'var(--text-l)'}"
+      >${em}${c}</button>`;
+    }).join('');
   }
 
   renderPickerContent();
@@ -503,6 +659,19 @@ function pickerSetCat(cat) {
   $$('[data-pcat]').forEach(b => {
     const c      = b.dataset.pcat;
     const col    = CAT_COL[c] || {};
+    const active = c === cat;
+    b.style.borderColor = active ? (col.bar||'var(--sage)') : 'var(--cream-dd)';
+    b.style.background  = active ? (col.bg||'var(--sage-ll)') : 'transparent';
+    b.style.color       = active ? (col.fg||'var(--sage)') : 'var(--text-l)';
+  });
+  renderPickerContent();
+}
+
+function pickerSetRecCat(cat) {
+  _pickerRecCat = cat;
+  $$('[data-preccat]').forEach(b => {
+    const c      = b.dataset.preccat;
+    const col    = MEAL_REC_COL[c] || {};
     const active = c === cat;
     b.style.borderColor = active ? (col.bar||'var(--sage)') : 'var(--cream-dd)';
     b.style.background  = active ? (col.bg||'var(--sage-ll)') : 'transparent';
@@ -543,7 +712,7 @@ function renderAlimentosList() {
     const em     = foodEmoji(a);
     const col    = CAT_COL[a.categoria] || { bg:'var(--sage-ll)', fg:'var(--sage)', bar:'var(--sage)' };
     const inPlan = (_planSel[_pickerMeal] || []).some(x => (x.alimento_id || x.id) === a.id);
-    const porOpts = [0.5,1,1.5,2,2.5,3].map(v =>
+    const porOpts = Array.from({length:20},(_,i)=>+(i+1)*0.5).map(v =>
       `<option value="${v}"${v===1?' selected':''}>${v}×</option>`).join('');
 
     return `
@@ -568,7 +737,7 @@ function renderAlimentosList() {
           <span style="font-size:10px;padding:2px 7px;border-radius:8px;background:var(--terra-l);color:var(--terra);font-weight:600">🥩 P ${a.proteina}g</span>
           <span style="font-size:10px;padding:2px 7px;border-radius:8px;background:var(--gold-l);color:var(--gold);font-weight:600">🌾 C ${a.carbos}g</span>
           <span style="font-size:10px;padding:2px 7px;border-radius:8px;background:var(--blush-l);color:var(--blush);font-weight:600">🫒 G ${a.grasas}g</span>
-          ${a.fibra > 0 ? `<span style="font-size:10px;padding:2px 7px;border-radius:8px;background:var(--sage-ll);color:var(--sage);font-weight:600">🌿 F ${a.fibra}g</span>` : ''}
+          <span style="font-size:10px;padding:2px 7px;border-radius:8px;background:var(--sage-ll);color:var(--sage);font-weight:600">🌿 F ${a.fibra}g</span>
         </div>
       </div>
       <!-- Actions -->
@@ -576,7 +745,7 @@ function renderAlimentosList() {
         ${!a.excluido ? `
         <select id="por-${a.id}"
           style="font-size:11px;padding:5px 8px;border-radius:8px;border:1.5px solid var(--cream-d);
-                 background:var(--cream);color:var(--forest);cursor:pointer;font-family:'DM Sans',sans-serif">
+                 background:#fff;color:#1a3025;cursor:pointer;font-family:'DM Sans',sans-serif">
           ${porOpts}
         </select>
         <button onclick="addFoodToMeal(${a.id})"
@@ -602,10 +771,10 @@ function renderAlimentosList() {
 
 // ── Recetas tab ───────────────────────────────────────
 function calcRecetaTotals(rIdx) {
-  const r = RECETAS[rIdx];
+  const r = getRecMut()[rIdx];
   let kcal=0, prot=0, carbs=0, grasas=0;
   r.ing.forEach((ing, iIdx) => {
-    const food = _alimentos.find(a => a.nombre.toLowerCase().includes(ing.buscar));
+    const food = resolveIngFood(ing);
     if (!food) return;
     const qtyEl = $(`#rqty-${rIdx}-${iIdx}`);
     const qty   = qtyEl ? parseFloat(qtyEl.textContent) : ing.qty;
@@ -634,11 +803,11 @@ function renderRecetasList() {
   const listEl = $('#picker-list');
   if (!listEl) return;
 
-  const filtered = RECETAS
+  const filtered = getRecMut()
     .map((r, i) => ({ r, i }))
-    .filter(({ r }) => !srch ||
-      r.nombre.toLowerCase().includes(srch) ||
-      r.ing.some(ing => ing.label.toLowerCase().includes(srch))
+    .filter(({ r }) =>
+      (_pickerRecCat === 'Todos' || r.cat === _pickerRecCat) &&
+      (!srch || r.nombre.toLowerCase().includes(srch) || r.ing.some(ing => ing.label.toLowerCase().includes(srch)))
     );
 
   if (!filtered.length) {
@@ -653,41 +822,96 @@ function renderRecetasList() {
   listEl.innerHTML = `<div style="display:grid;gap:14px;padding-top:14px">` +
     filtered.map(({ r, i: rIdx }) => {
       const ingHtml = r.ing.map((ing, iIdx) => {
-        const food = _alimentos.find(a => a.nombre.toLowerCase().includes(ing.buscar));
+        const food = resolveIngFood(ing);
         if (!food) return '';
+        const em   = ing.alimId ? foodEmoji(food) : ing.emoji;
+        const prot  = +(food.proteina * ing.qty).toFixed(1);
+        const carbs = +(food.carbos   * ing.qty).toFixed(1);
+        const gras  = +(food.grasas   * ing.qty).toFixed(1);
+        const fibra = +(food.fibra    * ing.qty).toFixed(1);
         return `
-        <div style="display:flex;align-items:center;gap:8px;padding:7px 0;
+        <div style="display:flex;align-items:flex-start;gap:8px;padding:8px 0;
                     border-top:1px dashed var(--cream-d)">
-          <span style="font-size:20px;width:28px;text-align:center;flex-shrink:0">${ing.emoji}</span>
+          <span style="font-size:20px;width:28px;text-align:center;flex-shrink:0;margin-top:2px">${em}</span>
           <div style="flex:1;min-width:0">
             <div style="font-size:12px;font-weight:500;color:var(--forest-m)">${food.nombre}</div>
-            <div style="font-size:10px;color:var(--text-l)">${food.porcion_desc}</div>
+            <div style="font-size:10px;color:var(--text-l);margin-bottom:4px">${food.porcion_desc}</div>
+            <div style="display:flex;gap:3px;flex-wrap:wrap">
+              <span style="font-size:9.5px;padding:1px 6px;border-radius:6px;background:var(--terra-l);color:var(--terra);font-weight:600">🥩 P${prot}g</span>
+              <span style="font-size:9.5px;padding:1px 6px;border-radius:6px;background:var(--gold-l);color:var(--gold);font-weight:600">🌾 C${carbs}g</span>
+              <span style="font-size:9.5px;padding:1px 6px;border-radius:6px;background:var(--blush-l);color:var(--blush);font-weight:600">🫒 G${gras}g</span>
+              <span style="font-size:9.5px;padding:1px 6px;border-radius:6px;background:var(--sage-ll);color:var(--sage);font-weight:600">🌿 F${fibra}g</span>
+            </div>
           </div>
-          <!-- Quantity control -->
-          <div style="display:flex;align-items:center;gap:5px">
-            <button onclick="recAdj(${rIdx},${iIdx},-${ing.step})"
-              style="width:26px;height:26px;border-radius:50%;border:1.5px solid var(--cream-dd);
-                     background:var(--white);cursor:pointer;font-size:15px;color:var(--text-m);
-                     display:flex;align-items:center;justify-content:center;line-height:1;
-                     font-weight:300;flex-shrink:0">−</button>
-            <span id="rqty-${rIdx}-${iIdx}"
-              style="font-size:14px;font-weight:700;color:var(--forest);min-width:30px;
-                     text-align:center">${ing.qty}</span>
-            <button onclick="recAdj(${rIdx},${iIdx},${ing.step})"
-              style="width:26px;height:26px;border-radius:50%;border:1.5px solid var(--cream-dd);
-                     background:var(--white);cursor:pointer;font-size:15px;color:var(--text-m);
-                     display:flex;align-items:center;justify-content:center;line-height:1;
-                     font-weight:300;flex-shrink:0">+</button>
+          <div style="display:flex;flex-direction:column;align-items:flex-end;gap:4px;flex-shrink:0">
+            <div style="display:flex;align-items:center;gap:5px">
+              <button onclick="recAdj(${rIdx},${iIdx},-${ing.step || 0.5})"
+                style="width:26px;height:26px;border-radius:50%;border:1.5px solid var(--cream-dd);
+                       background:var(--white);cursor:pointer;font-size:15px;color:var(--text-m);
+                       display:flex;align-items:center;justify-content:center;line-height:1;
+                       font-weight:300;flex-shrink:0">−</button>
+              <span id="rqty-${rIdx}-${iIdx}"
+                style="font-size:14px;font-weight:700;color:var(--forest);min-width:30px;
+                       text-align:center">${ing.qty}</span>
+              <button onclick="recAdj(${rIdx},${iIdx},${ing.step || 0.5})"
+                style="width:26px;height:26px;border-radius:50%;border:1.5px solid var(--cream-dd);
+                       background:var(--white);cursor:pointer;font-size:15px;color:var(--text-m);
+                       display:flex;align-items:center;justify-content:center;line-height:1;
+                       font-weight:300;flex-shrink:0">+</button>
+              <button onclick="recRemoveIng(${rIdx},${iIdx})" title="Quitar ingrediente"
+                style="background:none;border:none;color:var(--text-l);cursor:pointer;font-size:13px;
+                       padding:2px 4px;border-radius:4px;flex-shrink:0;opacity:.6"
+                onmouseover="this.style.opacity='1';this.style.color='var(--terra)'"
+                onmouseout="this.style.opacity='.6';this.style.color='var(--text-l)'">✕</button>
+            </div>
+            <span id="rkcal-${rIdx}-${iIdx}"
+              style="font-size:11px;color:var(--text-l);text-align:right;flex-shrink:0">
+              ${Math.round(food.calorias * ing.qty)} kcal
+            </span>
           </div>
-          <span id="rkcal-${rIdx}-${iIdx}"
-            style="font-size:11px;color:var(--text-l);min-width:52px;text-align:right;flex-shrink:0">
-            ${Math.round(food.calorias * ing.qty)} kcal
-          </span>
         </div>`;
       }).filter(Boolean).join('');
 
+      const addPanelHtml = `
+        <div style="padding:8px 0 4px;border-top:1px dashed var(--cream-d)">
+          ${_recAddOpen === rIdx ? (() => {
+            const cats = ['Todos', ...[...new Set(_alimentos.map(a => a.categoria))].sort()];
+            const catChips = cats.map(c => {
+              const col    = CAT_COL[c] || {};
+              const active = c === _recAddCat;
+              const em     = CAT_EMOJI[c] ? CAT_EMOJI[c] + ' ' : '';
+              return `<button onclick="recSetCat(${rIdx},'${c}')"
+                style="font-size:10.5px;padding:3px 10px;border-radius:20px;cursor:pointer;white-space:nowrap;
+                       font-family:'DM Sans',sans-serif;font-weight:500;transition:all .15s;
+                       border:1.5px solid ${active ? (col.bar||'var(--sage)') : 'var(--cream-dd)'};
+                       background:${active ? (col.bg||'var(--sage-ll)') : 'transparent'};
+                       color:${active ? (col.fg||'var(--sage)') : 'var(--text-l)'}">${em}${c}</button>`;
+            }).join('');
+            return `
+            <div style="background:var(--cream);border-radius:10px;padding:10px;margin-bottom:6px">
+              <input id="rec-srch-${rIdx}" placeholder="Buscar alimento..." autofocus
+                     oninput="_recAddQuery=this.value;recSearchIng(${rIdx})"
+                     onclick="event.stopPropagation()"
+                     style="width:100%;padding:7px 10px;border-radius:6px;border:1.5px solid var(--cream-d);
+                            font-size:11px;background:var(--white);font-family:'DM Sans',sans-serif;outline:none"
+                     onfocus="this.style.borderColor='var(--sage)'"
+                     onblur="this.style.borderColor='var(--cream-d)'">
+              <div style="display:flex;gap:5px;flex-wrap:wrap;margin-top:8px">${catChips}</div>
+              <div id="rec-res-${rIdx}" style="max-height:220px;overflow-y:auto;margin-top:6px"></div>
+            </div>`;
+          })() : ''}
+          <button onclick="recToggleAddIng(${rIdx})"
+            style="font-size:11px;padding:4px 12px;border-radius:20px;cursor:pointer;
+                   border:1.5px dashed var(--sage);background:transparent;color:var(--sage);
+                   font-family:'DM Sans',sans-serif;font-weight:500;transition:all .15s"
+            onmouseover="this.style.background='var(--sage-ll)'"
+            onmouseout="this.style.background='transparent'">
+            ${_recAddOpen === rIdx ? '✕ Cancelar' : '+ Ingrediente'}
+          </button>
+        </div>`;
+
       // If no ingredients resolved, show a warning
-      const hasIngs = r.ing.some(ing => _alimentos.find(a => a.nombre.toLowerCase().includes(ing.buscar)));
+      const hasIngs = r.ing.some(ing => resolveIngFood(ing));
 
       const totals = hasIngs ? calcRecetaTotals(rIdx) : null;
 
@@ -710,6 +934,7 @@ function renderRecetasList() {
         <!-- Ingredients -->
         <div style="padding:4px 18px 14px;background:var(--white)">
           ${hasIngs ? ingHtml : `<div style="padding:12px 0;font-size:12px;color:var(--text-l);text-align:center">Ingredientes no disponibles en la base de datos</div>`}
+          ${addPanelHtml}
           ${hasIngs ? `
           <!-- Totals + add -->
           <div style="display:flex;align-items:center;justify-content:space-between;gap:10px;
@@ -732,26 +957,28 @@ function renderRecetasList() {
 }
 
 function recAdj(rIdx, iIdx, delta) {
-  const ing    = RECETAS[rIdx].ing[iIdx];
+  const ing    = getRecMut()[rIdx].ing[iIdx];
   const qtyEl  = $(`#rqty-${rIdx}-${iIdx}`);
   const kEl    = $(`#rkcal-${rIdx}-${iIdx}`);
   const totEl  = $(`#rtotals-${rIdx}`);
   if (!qtyEl) return;
 
+  const step = ing.step || 0.5;
   let cur = parseFloat(qtyEl.textContent);
-  cur = Math.min(ing.max, Math.max(ing.min, Math.round((cur + delta) * 100) / 100));
+  cur = Math.min(ing.max || 10, Math.max(ing.min || 0, Math.round((cur + delta) * 100) / 100));
+  ing.qty = cur;
   qtyEl.textContent = cur;
 
-  const food = _alimentos.find(a => a.nombre.toLowerCase().includes(ing.buscar));
+  const food = resolveIngFood(ing);
   if (food && kEl) kEl.textContent = `${Math.round(food.calorias * cur)} kcal`;
   if (totEl) totEl.innerHTML = recetaTotalsHtml(calcRecetaTotals(rIdx));
 }
 
 function addRecetaToMeal(rIdx) {
-  const r = RECETAS[rIdx];
+  const r = getRecMut()[rIdx];
   let added = 0;
   r.ing.forEach((ing, iIdx) => {
-    const food  = _alimentos.find(a => a.nombre.toLowerCase().includes(ing.buscar));
+    const food  = resolveIngFood(ing);
     if (!food) return;
     const qtyEl = $(`#rqty-${rIdx}-${iIdx}`);
     const qty   = qtyEl ? parseFloat(qtyEl.textContent) : ing.qty;
@@ -923,4 +1150,271 @@ async function borrarSuple(id) {
   } catch (e) {
     toast('Error al eliminar');
   }
+}
+
+// ── Edición de recetas ────────────────────────────────
+function recRemoveIng(rIdx, iIdx) {
+  getRecMut()[rIdx].ing.splice(iIdx, 1);
+  renderPickerContent();
+}
+
+function recToggleAddIng(rIdx) {
+  _recAddOpen  = _recAddOpen === rIdx ? null : rIdx;
+  _recAddQuery = '';
+  _recAddCat   = 'Todos';
+  renderPickerContent();
+  if (_recAddOpen === rIdx) {
+    setTimeout(() => {
+      const el = $(`#rec-srch-${rIdx}`);
+      if (el) el.focus();
+      recSearchIng(rIdx);
+    }, 30);
+  }
+}
+
+function recSearchIng(rIdx) {
+  const el = $(`#rec-res-${rIdx}`);
+  if (!el) return;
+  const q = (_recAddQuery || '').toLowerCase().trim();
+
+  const results = _alimentos.filter(a =>
+    !a.excluido &&
+    (_recAddCat === 'Todos' || a.categoria === _recAddCat) &&
+    (!q || a.nombre.toLowerCase().includes(q))
+  ).slice(0, 30);
+
+  if (!results.length) {
+    el.innerHTML = `<div style="font-size:11px;color:var(--text-l);padding:8px">Sin resultados</div>`;
+    return;
+  }
+
+  el.innerHTML = results.map(a => {
+    const col = CAT_COL[a.categoria] || { bg:'var(--sage-ll)', fg:'var(--sage)', bar:'var(--sage)' };
+    return `
+      <div onclick="recAddIng(${rIdx},${a.id})"
+           style="display:flex;align-items:center;gap:10px;padding:8px 6px;border-radius:8px;
+                  cursor:pointer;transition:background .1s;border-bottom:1px solid var(--cream-d)"
+           onmouseover="this.style.background='var(--white)'"
+           onmouseout="this.style.background='transparent'">
+        <div style="width:36px;height:36px;border-radius:10px;flex-shrink:0;background:${col.bg};
+                    border:1px solid ${col.bar}22;display:flex;align-items:center;justify-content:center;
+                    font-size:20px">${foodEmoji(a)}</div>
+        <div style="flex:1;min-width:0">
+          <div style="display:flex;align-items:center;gap:6px;flex-wrap:wrap">
+            <span style="font-size:12px;font-weight:600;color:var(--forest)">${a.nombre}</span>
+            <span style="font-size:9.5px;padding:1px 7px;border-radius:20px;background:${col.bg};color:${col.fg};font-weight:500">${a.categoria}</span>
+          </div>
+          <div style="font-size:10px;color:var(--text-l);margin-top:2px">${a.porcion_desc} · <b style="color:var(--forest)">${a.calorias} kcal</b></div>
+          <div style="display:flex;gap:5px;margin-top:4px;flex-wrap:wrap">
+            <span style="font-size:9.5px;padding:1px 6px;border-radius:6px;background:var(--terra-l);color:var(--terra);font-weight:600">🥩 P ${a.proteina}g</span>
+            <span style="font-size:9.5px;padding:1px 6px;border-radius:6px;background:var(--gold-l);color:var(--gold);font-weight:600">🌾 C ${a.carbos}g</span>
+            <span style="font-size:9.5px;padding:1px 6px;border-radius:6px;background:var(--blush-l);color:var(--blush);font-weight:600">🫒 G ${a.grasas}g</span>
+            <span style="font-size:9.5px;padding:1px 6px;border-radius:6px;background:var(--sage-ll);color:var(--sage);font-weight:600">🌿 F ${a.fibra}g</span>
+          </div>
+        </div>
+      </div>`;
+  }).join('');
+}
+
+function recSetCat(rIdx, cat) {
+  _recAddCat = cat;
+  renderPickerContent();
+  setTimeout(() => recSearchIng(rIdx), 30);
+}
+
+function recAddIng(rIdx, alimId) {
+  const food = _alimentos.find(a => a.id === alimId);
+  if (!food) return;
+  getRecMut()[rIdx].ing.push({
+    alimId: alimId,
+    label:  food.nombre,
+    emoji:  foodEmoji(food),
+    qty:    1,
+    step:   0.5,
+    min:    0,
+    max:    10,
+  });
+  _recAddOpen  = null;
+  _recAddQuery = '';
+  renderPickerContent();
+}
+
+// ── Exportar plan como PDF ────────────────────────────
+function generarPlanPDF() {
+  const p = currentPatient;
+  if (!p) return;
+
+  const T       = planTargets(p, _planAct);
+  const C       = planTotals();
+  const fecha   = new Date().toLocaleDateString('es-MX', { day: 'numeric', month: 'long', year: 'numeric' });
+  const logoUrl = new URL('assets/img/logo.png', window.location.href).href;
+
+  const MEAL_LABELS = {
+    desayuno:    '🌅 Desayuno · 7:30 am',
+    colacion_am: '🍎 Colación AM · 10:30 am',
+    comida:      '🍽 Comida · 2:00 pm',
+    colacion_pm: '🥑 Colación PM · 5:30 pm',
+    cena:        '🌙 Cena · 8:00 pm',
+  };
+  const MEAL_COLORS = {
+    desayuno: '#d4a843', colacion_am: '#c4714a', comida: '#4a7c59',
+    colacion_pm: '#c4627a', cena: '#4a6fa5',
+  };
+
+  const mealsHtml = MEALS.map(m => {
+    const items = _planSel[m.key] || [];
+    if (!items.length) return '';
+    const mKcal = Math.round(items.reduce((s, i) => s + i.calorias * i.porciones, 0));
+    const color = MEAL_COLORS[m.key];
+    const rows  = items.map(it => {
+      const kcal  = Math.round(it.calorias * it.porciones);
+      const prot  = +(it.proteina * it.porciones).toFixed(1);
+      const carbs = +(it.carbos   * it.porciones).toFixed(1);
+      const gras  = +(it.grasas   * it.porciones).toFixed(1);
+      return `<tr>
+        <td style="padding:5px 8px;font-size:9pt;color:#2c4a35">${it.nombre}</td>
+        <td style="padding:5px 8px;font-size:9pt;color:#777;text-align:center">${it.porcion_desc} ×${it.porciones}</td>
+        <td style="padding:5px 8px;font-size:9pt;font-weight:600;color:#2c4a35;text-align:center">${kcal}</td>
+        <td style="padding:5px 8px;font-size:9pt;color:#9e5a3a;text-align:center">${prot}g</td>
+        <td style="padding:5px 8px;font-size:9pt;color:#8a6a14;text-align:center">${carbs}g</td>
+        <td style="padding:5px 8px;font-size:9pt;color:#9e3a5a;text-align:center">${gras}g</td>
+      </tr>`;
+    }).join('');
+    return `<div style="margin-bottom:14px;border:1.5px solid ${color}33;border-radius:10px;overflow:hidden">
+      <div style="background:${color}18;border-left:4px solid ${color};padding:8px 14px;display:flex;justify-content:space-between;align-items:center">
+        <span style="font-size:10.5pt;font-weight:700;color:${color}">${MEAL_LABELS[m.key]}</span>
+        <span style="font-size:9pt;font-weight:600;color:#555">${mKcal} kcal</span>
+      </div>
+      <table style="width:100%;border-collapse:collapse">
+        <thead>
+          <tr style="background:#fafaf8">
+            <th style="padding:4px 8px;font-size:8pt;color:#999;text-align:left;font-weight:500">Alimento</th>
+            <th style="padding:4px 8px;font-size:8pt;color:#999;text-align:center;font-weight:500">Porción</th>
+            <th style="padding:4px 8px;font-size:8pt;color:#999;text-align:center;font-weight:500">Kcal</th>
+            <th style="padding:4px 8px;font-size:8pt;color:#c4714a;text-align:center;font-weight:500">Prot</th>
+            <th style="padding:4px 8px;font-size:8pt;color:#d4a843;text-align:center;font-weight:500">Carbs</th>
+            <th style="padding:4px 8px;font-size:8pt;color:#c4627a;text-align:center;font-weight:500">Grasas</th>
+          </tr>
+        </thead>
+        <tbody>${rows}</tbody>
+      </table>
+    </div>`;
+  }).filter(Boolean).join('');
+
+  const supleHtml = (p.suplementacion || []).length
+    ? `<div style="margin-top:14px;border:1.5px solid #4a7c5933;border-radius:10px;overflow:hidden">
+        <div style="background:#4a7c5918;border-left:4px solid #4a7c59;padding:8px 14px">
+          <span style="font-size:10.5pt;font-weight:700;color:#4a7c59">💊 Suplementación</span>
+        </div>
+        <div style="padding:10px 14px;display:flex;flex-wrap:wrap;gap:8px">
+          ${(p.suplementacion || []).map(s =>
+            `<span style="font-size:9pt;padding:3px 10px;border-radius:20px;background:#f0f7f2;border:1px solid #4a7c5944;color:#2c4a35">
+              ${s.nombre}${s.dosis ? ' · ' + s.dosis : ''}${s.frecuencia ? ' · ' + s.frecuencia : ''}
+            </span>`).join('')}
+        </div>
+      </div>`
+    : '';
+
+  const html = `<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<title>Plan de Alimentación · ${p.name}</title>
+<style>
+  * { margin:0; padding:0; box-sizing:border-box; }
+  @page { margin:0; size:A4; }
+  body { font-family:'Helvetica Neue',Arial,sans-serif; font-size:10pt; color:#2c2c2c;
+         line-height:1.5; padding:1.2cm 1.8cm; width:21cm; }
+  .header { border-bottom:2.5px solid #4a7c59; padding-bottom:12px; margin-bottom:14px;
+            display:flex; align-items:center; gap:16px; }
+  .brand-txt { font-size:20pt; font-weight:700; color:#2c4a35; line-height:1.1; }
+  .brand-txt em { color:#c4714a; font-style:normal; }
+  .sub { font-size:8.5pt; color:#888; margin-top:3px; }
+  .info-bar { display:flex; gap:0; margin-bottom:14px; border:1.5px solid #e8e4dc; border-radius:10px; overflow:hidden; }
+  .info-cell { flex:1; padding:10px 14px; border-right:1px solid #e8e4dc; }
+  .info-cell:last-child { border-right:none; }
+  .info-cell .lbl { font-size:7.5pt; text-transform:uppercase; letter-spacing:.6px; color:#aaa; font-weight:600; margin-bottom:3px; }
+  .info-cell .val { font-size:11pt; font-weight:700; color:#2c4a35; }
+  .macros { display:grid; grid-template-columns:repeat(4,1fr); gap:8px; margin-bottom:16px; }
+  .macro-box { border-radius:8px; padding:10px 12px; text-align:center; }
+  .macro-box .mv { font-size:16pt; font-weight:700; line-height:1; }
+  .macro-box .ml { font-size:7.5pt; text-transform:uppercase; letter-spacing:.5px; margin-top:3px; opacity:.7; }
+  .footer { text-align:center; font-size:7.5pt; color:#ccc; border-top:1px solid #eee;
+            padding-top:8px; margin-top:14px; }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <img src="${logoUrl}" style="width:60px;height:60px;object-fit:contain;flex-shrink:0" alt="GestaNut">
+  <div>
+    <div class="brand-txt">Gesta<em>Nut</em></div>
+    <div class="sub">Diana Zavala · Nutrióloga · Cédula 15304166</div>
+    <div class="sub">667 305 6211 · @gestanut · Culiacán, Sinaloa</div>
+  </div>
+  <div style="margin-left:auto;text-align:right">
+    <div style="font-size:8pt;color:#aaa">Plan de Alimentación</div>
+    <div style="font-size:8.5pt;font-weight:600;color:#4a7c59">${fecha}</div>
+  </div>
+</div>
+
+<div class="info-bar">
+  <div class="info-cell"><div class="lbl">Paciente</div><div class="val">${p.name}</div></div>
+  <div class="info-cell"><div class="lbl">Calorías diarias</div><div class="val">${T.kcal} kcal</div></div>
+  <div class="info-cell"><div class="lbl">Actividad</div><div class="val">${ACT_OPTS.find(o=>o.val===_planAct)?.label || 'Moderado'}</div></div>
+  <div class="info-cell"><div class="lbl">Hidratación</div><div class="val">${T.agua} L / día</div></div>
+</div>
+
+<div class="macros">
+  <div class="macro-box" style="background:#fff5f0;border:1.5px solid #c4714a33">
+    <div class="mv" style="color:#c4714a">${T.prot}g</div>
+    <div class="ml" style="color:#c4714a">🥩 Proteína</div>
+  </div>
+  <div class="macro-box" style="background:#fffbf0;border:1.5px solid #d4a84333">
+    <div class="mv" style="color:#d4a843">${T.carbs}g</div>
+    <div class="ml" style="color:#d4a843">🌾 Carbohidratos</div>
+  </div>
+  <div class="macro-box" style="background:#fff5f8;border:1.5px solid #c4627a33">
+    <div class="mv" style="color:#c4627a">${T.grasas}g</div>
+    <div class="ml" style="color:#c4627a">🫒 Grasas</div>
+  </div>
+  <div class="macro-box" style="background:#f0f7f2;border:1.5px solid #4a7c5933">
+    <div class="mv" style="color:#4a7c59">${T.fibra}g</div>
+    <div class="ml" style="color:#4a7c59">🌿 Fibra</div>
+  </div>
+</div>
+
+${mealsHtml || '<div style="text-align:center;padding:30px;color:#aaa;font-size:11pt">Sin alimentos registrados en el plan</div>'}
+
+${supleHtml}
+
+<div style="margin-top:14px;padding:10px 14px;background:#f0f7ff;border-radius:8px;border:1px solid #4a6fa533;display:flex;align-items:center;gap:10px">
+  <span style="font-size:18pt">💧</span>
+  <div>
+    <div style="font-size:10pt;font-weight:700;color:#4a6fa5">Hidratación: ${T.agua} litros de agua al día</div>
+    <div style="font-size:8.5pt;color:#777;margin-top:2px">Distribuida a lo largo del día · Evita bebidas azucaradas</div>
+  </div>
+</div>
+
+<div class="footer">
+  GestaNut · Diana Zavala · Nutrióloga · ${fecha} · Este plan es personalizado y exclusivo para ${p.name}
+</div>
+
+<script>window.onload = function(){ window.print(); }</script>
+</body>
+</html>`;
+
+  const win = window.open('', '_blank', 'width=860,height=960,scrollbars=yes');
+  if (!win) { toast('⚠️ Permite ventanas emergentes para exportar el PDF'); return; }
+  win.document.write(html);
+  win.document.close();
+}
+
+// ── Enviar plan por WhatsApp ──────────────────────────
+function enviarPlanWA() {
+  const p = currentPatient;
+  if (!p) return;
+  const nombre = p.name.split(' ')[0];
+  const msg    = `Hola ${nombre}! Aqui te comparto tu plan de alimentacion:\nCualquier duda me avisas. Vamos con todo!`;
+  window.open(`https://wa.me/?text=${encodeURIComponent(msg)}`, '_blank');
 }

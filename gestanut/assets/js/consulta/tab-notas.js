@@ -56,7 +56,7 @@ async function saveNote() {
     const res = await fetch('api/notas.php', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ paciente_id: currentPatient.id, contenido: t.value.trim(), bienestar: _bienSel || null, fecha: new Date().toISOString().split('T')[0] }),
+      body: JSON.stringify({ paciente_id: currentPatient.id, contenido: t.value.trim(), bienestar: _bienSel || null, fecha: localToday() }),
     });
     if (!res.ok) throw new Error();
     const nueva = await res.json();

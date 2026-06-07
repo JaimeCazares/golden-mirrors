@@ -80,7 +80,10 @@ VIEWS.finanzas = () => {
 
 function openReceipt(id) {
   currentReceipt = FINANZAS.find(m => m.id === id);
-  openModal('receipt-modal');
+  openReceiptModal({
+    concepto: currentReceipt?.concepto || 'Consulta nutricional',
+    monto:    currentReceipt?.monto    || '',
+  });
 }
 
 function exportFinanzasCSV() {

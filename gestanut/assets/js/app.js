@@ -1,3 +1,9 @@
+// Devuelve la fecha local del sistema como YYYY-MM-DD (evita el bug de toISOString en UTC+)
+function localToday() {
+  const d = new Date();
+  return d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2, '0');
+}
+
 // ══════════════════════════════════════════════════════
 // APP · Initialisation
 // ══════════════════════════════════════════════════════
@@ -40,4 +46,7 @@ function actualizarContadores() {
   // Botón filtro "Todas"
   const btnTodas = document.querySelector('.btn[onclick*="todos"]');
   if (btnTodas) btnTodas.textContent = `Todas (${total})`;
+  // Stat card del dashboard
+  const dashStat = document.querySelector('#dash-stat-0 .stat-val');
+  if (dashStat) dashStat.textContent = total;
 }

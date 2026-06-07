@@ -89,7 +89,7 @@ async function subirDocumento(input) {
   fd.append('paciente_id', p.id);
   fd.append('archivo', file);
   fd.append('nombre', nombre.trim() || file.name);
-  fd.append('fecha', new Date().toISOString().split('T')[0]);
+  fd.append('fecha', localToday());
   fd.append('descripcion', '');
 
   toast('Subiendo archivo...');
