@@ -1,13 +1,11 @@
-<?php
+﻿<?php
 // ══════════════════════════════════════════════════════
 // API · Plan nutricional
 // GET  ?paciente_id=X   — plan activo + alimentos seleccionados
 // PUT  body JSON         — crear/actualizar plan activo
 // ══════════════════════════════════════════════════════
 header('Content-Type: application/json; charset=utf-8');
-header('Access-Control-Allow-Origin: *');
 header('Access-Control-Allow-Methods: GET, PUT, OPTIONS');
-header('Access-Control-Allow-Headers: Content-Type');
 if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') exit;
 
 require __DIR__ . '/db.php';

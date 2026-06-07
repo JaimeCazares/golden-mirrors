@@ -1,13 +1,10 @@
-<?php
+﻿<?php
 // ══════════════════════════════════════════════════════
 // API · Progreso de peso  (tabla mediciones)
 // GET    ?paciente_id=X   — historial
 // POST   body JSON         — nuevo registro
 // ══════════════════════════════════════════════════════
 header('Content-Type: application/json; charset=utf-8');
-header('Access-Control-Allow-Origin: *');
-header('Access-Control-Allow-Methods: GET, POST, OPTIONS');
-header('Access-Control-Allow-Headers: Content-Type');
 if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') exit;
 
 require __DIR__ . '/db.php';

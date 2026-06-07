@@ -1,1 +1,6 @@
 DirectoryIndex index.html index.php
+
+# Bloquear archivos de seed y migración desde la web
+<FilesMatch "^(seed_pacientes|seed_finanzas|seed_clinico|migrate_plan)\.php$">
+    Require all denied
+</FilesMatch>

@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="es">
 <head>
 <meta charset="UTF-8">
@@ -6,6 +6,12 @@
 <meta name="description" content="Diana Zavala — Nutrióloga en Culiacán, Sinaloa. Especialista en nutrición materno-infantil, recomposición corporal y control de peso. Consulta presencial y online.">
 <meta name="keywords" content="nutrióloga Culiacán, nutrición embarazo Culiacán, recomposición corporal Culiacán, nutrióloga online Sinaloa, Diana Zavala nutrióloga">
 <title>Diana Zavala | Nutrióloga · Culiacán, Sinaloa</title>
+<link rel="icon" type="image/png" href="assets/img/logo.jpg">
+<meta property="og:title" content="Diana Zavala | Nutrióloga · Culiacán, Sinaloa">
+<meta property="og:description" content="Nutrióloga clínica especializada en planes de alimentación 100% personalizados. Materno-infantil, recomposición corporal y control de peso. Consulta presencial y online.">
+<meta property="og:image" content="assets/img/logo.jpg">
+<meta property="og:type" content="website">
+<meta property="og:locale" content="es_MX">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
 <style>
@@ -546,6 +552,7 @@ footer a{color:rgba(255,255,255,0.5);text-decoration:none}
 .reveal-delay-1{transition-delay:.12s}
 .reveal-delay-2{transition-delay:.24s}
 .reveal-delay-3{transition-delay:.36s}
+.reveal-delay-4{transition-delay:.48s}
 
 /* Hero entrance — staggered */
 .hero-eyebrow{animation:heroFadeUp .8s .08s cubic-bezier(.22,1,.36,1) both}
@@ -713,7 +720,7 @@ footer a{color:rgba(255,255,255,0.5);text-decoration:none}
 
 <!-- NAV -->
 <nav>
-  <a href="#" class="nav-logo"><img src="assets/img/logo.png" alt="GestaNut" class="nav-logo-img">Gesta<span>Nut</span></a>
+  <a href="#" class="nav-logo"><img src="assets/img/logo.jpg" alt="GestaNut" class="nav-logo-img">Gesta<span>Nut</span></a>
   <div class="nav-links">
     <a href="#sobre-mi">Sobre mí</a>
     <a href="#servicios">Servicios</a>
@@ -763,7 +770,7 @@ footer a{color:rgba(255,255,255,0.5);text-decoration:none}
     <div class="blob blob-3"></div>
     <div class="hero-photo-placeholder">
       <div class="hero-img-frame">
-        <img src="diana-hero.png" alt="Diana Zavala · Nutrióloga" style="width:100%;height:100%;object-fit:cover;object-position:top center">
+        <img src="diana-hero.jpg" alt="Diana Zavala · Nutrióloga" style="width:100%;height:100%;object-fit:cover;object-position:top center">
       </div>
       <div class="hero-stat-cards">
         <div class="hero-stat">
@@ -809,7 +816,7 @@ footer a{color:rgba(255,255,255,0.5);text-decoration:none}
   <div class="about-grid">
     <div class="about-img-wrap reveal">
       <div class="about-img">
-        <img src="diana-about.png" alt="Diana Zavala · Nutrióloga" style="width:100%;height:100%;object-fit:cover;object-position:top center">
+        <img src="diana-about.jpg" alt="Diana Zavala · Nutrióloga" style="width:100%;height:100%;object-fit:cover;object-position:top center">
       </div>
       <div class="about-card">
         <div class="about-card-num">+2 años</div>
@@ -919,13 +926,13 @@ footer a{color:rgba(255,255,255,0.5);text-decoration:none}
       <div class="paso-title">Evaluación corporal</div>
       <p class="paso-desc">Medimos composición corporal para tener una base real de tu estado actual.</p>
     </div>
-    <div class="paso reveal reveal-delay-2">
+    <div class="paso reveal reveal-delay-3">
       <div class="paso-num">04</div>
       <span class="paso-icon">🥗</span>
       <div class="paso-title">Tu plan personalizado</div>
       <p class="paso-desc">Diseño un plan de alimentación 100% adaptado a ti, tus gustos y tu vida real.</p>
     </div>
-    <div class="paso reveal reveal-delay-3">
+    <div class="paso reveal reveal-delay-4">
       <div class="paso-num">05</div>
       <span class="paso-icon">💬</span>
       <div class="paso-title">Seguimiento</div>
@@ -1122,7 +1129,7 @@ footer a{color:rgba(255,255,255,0.5);text-decoration:none}
 
 <!-- FOOTER -->
 <footer>
-  <span>© 2025 Diana Zavala · Nutrióloga · Céd. Prof. 15304166</span>
+  <span>© <span id="footer-year"></span> Diana Zavala · Nutrióloga · Céd. Prof. 15304166</span>
   <span>Culiacán, Sinaloa · <a href="https://instagram.com/gestanut" target="_blank">@gestanut</a></span>
 </footer>
 
@@ -1132,6 +1139,8 @@ footer a{color:rgba(255,255,255,0.5);text-decoration:none}
 </a>
 
 <script>
+document.getElementById('footer-year').textContent = new Date().getFullYear();
+
 function toggleFaq(el){
   const isOpen=el.classList.contains('open');
   document.querySelectorAll('.faq-item').forEach(i=>i.classList.remove('open'));

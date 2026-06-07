@@ -1,4 +1,5 @@
-<?php
+﻿<?php
+session_set_cookie_params(['httponly' => true, 'samesite' => 'Strict']);
 session_start();
 if (!empty($_SESSION['usuario_id'])) {
     header('Location: index.php');
@@ -37,7 +38,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 <html lang="es">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1">
+<meta name="viewport" content="width=device-width,initial-scale=1">
 <title>GestaNut · Iniciar sesión</title>
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
 <style>
@@ -74,7 +75,7 @@ body::after{content:'';position:fixed;bottom:-80px;left:-80px;width:320px;height
 .field{margin-bottom:18px}
 .field label{display:block;font-size:12px;font-weight:500;color:var(--text-m);margin-bottom:7px;letter-spacing:.3px;text-transform:uppercase}
 .field-wrap{position:relative}
-.field input{width:100%;padding:13px 16px;border:1.5px solid var(--cream-d);border-radius:var(--rs);font-size:14.5px;font-family:'DM Sans',sans-serif;color:var(--text);background:var(--cream);transition:border-color .2s,box-shadow .2s;outline:none;-webkit-appearance:none}
+.field input{width:100%;padding:13px 16px;border:1.5px solid var(--cream-d);border-radius:var(--rs);font-size:14.5px;font-family:'DM Sans',sans-serif;color:var(--text);background:var(--cream);transition:border-color .2s,box-shadow .2s;outline:none;-webkit-appearance:none;appearance:none}
 .field input:focus{border-color:var(--sage);box-shadow:0 0 0 3px rgba(107,158,120,.15);background:var(--white)}
 .field input::placeholder{color:var(--text-l)}
 .toggle-pass{position:absolute;right:13px;top:50%;transform:translateY(-50%);background:none;border:none;cursor:pointer;color:var(--text-l);padding:4px;font-size:15px;line-height:1;transition:color .2s}
@@ -103,7 +104,7 @@ body::after{content:'';position:fixed;bottom:-80px;left:-80px;width:320px;height
 
 <div class="card">
   <div class="brand">
-    <img src="assets/img/logo.png" class="brand-logo" alt="GestaNut">
+    <img src="assets/img/logo.jpg" class="brand-logo" alt="GestaNut">
     <div class="brand-name">GestaNut</div>
     <div class="brand-sub">Sistema Clínico · v3.0</div>
   </div>

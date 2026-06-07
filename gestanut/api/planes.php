@@ -1,12 +1,9 @@
-<?php
+﻿<?php
 // ══════════════════════════════════════════════════════
 // API · Lista de planes nutricionales activos
 // GET — devuelve todos los planes activos con datos del paciente
 // ══════════════════════════════════════════════════════
 header('Content-Type: application/json; charset=utf-8');
-header('Access-Control-Allow-Origin: *');
-header('Access-Control-Allow-Methods: GET, OPTIONS');
-header('Access-Control-Allow-Headers: Content-Type');
 if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') exit;
 
 require __DIR__ . '/db.php';

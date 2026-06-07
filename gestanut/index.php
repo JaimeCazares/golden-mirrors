@@ -1,4 +1,4 @@
-<?php
+﻿<?php
 session_start();
 if (empty($_SESSION['usuario_id'])) {
     header('Location: login.php');
@@ -10,8 +10,9 @@ $nombre = htmlspecialchars($_SESSION['usuario_nombre'] ?? 'Diana');
 <html lang="es">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1">
+<meta name="viewport" content="width=device-width,initial-scale=1">
 <title>GestaNut · Sistema · Diana Zavala</title>
+<link rel="icon" type="image/png" href="assets/img/logo.jpg">
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400;1,500&family=DM+Sans:wght@300;400;500;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="assets/css/styles.css">
 <style>
@@ -28,14 +29,14 @@ $nombre = htmlspecialchars($_SESSION['usuario_nombre'] ?? 'Diana');
 <aside>
   <div class="brand">
     <div class="brand-mark">
-      <img src="assets/img/logo.png" class="brand-logo" alt="GestaNut">
+      <img src="assets/img/logo.jpg" class="brand-logo" alt="GestaNut">
     </div>
     <div class="brand-tag">Sistema Clínico · v3.0</div>
   </div>
   <nav class="nav">
     <div class="nav-section">Principal</div>
     <button class="nav-btn active" data-view="dashboard"><span class="nav-icon">🏠</span><span>Inicio</span></button>
-    <button class="nav-btn" data-view="pacientes"><span class="nav-icon">👩</span><span>Pacientes</span><span class="nav-badge">12</span></button>
+    <button class="nav-btn" data-view="pacientes"><span class="nav-icon">👩</span><span>Pacientes</span><span class="nav-badge">0</span></button>
     <button class="nav-btn" data-view="agenda"><span class="nav-icon">📅</span><span>Agenda</span></button>
     <button class="nav-btn" data-view="planes"><span class="nav-icon">🥗</span><span>Planes</span></button>
     <button class="nav-btn" data-view="pendientes"><span class="nav-icon">📌</span><span>Pendientes</span></button>
@@ -83,6 +84,9 @@ $nombre = htmlspecialchars($_SESSION['usuario_nombre'] ?? 'Diana');
 <div id="toast-root"></div>
 <div class="sidebar-overlay" id="sidebar-overlay"></div>
 <button type="button" class="fab" onclick="openModal('appt-modal')" title="Nueva cita">+</button>
+
+<!-- Nombre de sesión disponible para todos los scripts -->
+<script>const GESTANUT_NOMBRE = <?= json_encode($nombre) ?>;</script>
 
 <!-- DATA -->
 <script src="assets/js/data/patients.js"></script>

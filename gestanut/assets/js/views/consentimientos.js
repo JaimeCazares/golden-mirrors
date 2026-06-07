@@ -1,11 +1,11 @@
-// ══════════════════════════════════════════════════════
+﻿// ══════════════════════════════════════════════════════
 // VIEW · Consentimientos informados
 // ══════════════════════════════════════════════════════
 
 function descargarConsentimientoPDF(patientName) {
   const nombre  = patientName || '___________________________________';
   const fecha   = new Date().toLocaleDateString('es-MX', { day: 'numeric', month: 'long', year: 'numeric' });
-  const logoUrl = new URL('assets/img/logo.png', window.location.href).href;
+  const logoUrl = new URL('assets/img/logo.jpg', window.location.href).href;
 
   const html = `<!DOCTYPE html>
 <html lang="es">

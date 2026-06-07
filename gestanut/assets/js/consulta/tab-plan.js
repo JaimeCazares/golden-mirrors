@@ -1,4 +1,4 @@
-// ══════════════════════════════════════════════════════
+﻿// ══════════════════════════════════════════════════════
 // TAB · Plan nutricional v2
 // ══════════════════════════════════════════════════════
 
@@ -1247,7 +1247,7 @@ function generarPlanPDF() {
   const T       = planTargets(p, _planAct);
   const C       = planTotals();
   const fecha   = new Date().toLocaleDateString('es-MX', { day: 'numeric', month: 'long', year: 'numeric' });
-  const logoUrl = new URL('assets/img/logo.png', window.location.href).href;
+  const logoUrl = new URL('assets/img/logo.jpg', window.location.href).href;
 
   const MEAL_LABELS = {
     desayuno:    '🌅 Desayuno · 7:30 am',

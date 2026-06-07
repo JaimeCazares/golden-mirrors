@@ -1,12 +1,9 @@
-<?php
+﻿<?php
 // ══════════════════════════════════════════════════════
 // API · Detalle completo de un paciente (todas las tablas)
 // GET api/paciente.php?id=X
 // ══════════════════════════════════════════════════════
 header('Content-Type: application/json; charset=utf-8');
-header('Access-Control-Allow-Origin: *');
-header('Access-Control-Allow-Methods: GET, OPTIONS');
-header('Access-Control-Allow-Headers: Content-Type');
 if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') exit;
 
 require __DIR__ . '/db.php';
