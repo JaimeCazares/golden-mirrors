@@ -23,7 +23,7 @@ function showView(name) {
   const anio   = now.getFullYear();
 
   const ti = {
-    dashboard:      ['Buenos días, <em>Diana</em> 🌿',           ''],
+    dashboard:      [`${(function(){const h=new Date().getHours();return h<12?'Buenos días':h<20?'Buenas tardes':'Buenas noches';})()}, <em>${(typeof GESTANUT_NOMBRE!=='undefined'&&GESTANUT_NOMBRE)||'Diana'}</em> 🌿`, ''],
     pacientes:      ['Mis <em>Pacientes</em>',                   `${total} paciente${total !== 1 ? 's' : ''} · Expedientes digitales completos`],
     agenda:         ['<em>Agenda</em>',                          typeof gcalIsConnected === 'function' && gcalIsConnected() ? 'Sincronizado con Google Calendar' : 'Semana actual'],
     planes:         ['Planes <em>Nutricionales</em>',            'Crea, edita y envía planes personalizados'],

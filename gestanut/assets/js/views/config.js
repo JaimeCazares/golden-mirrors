@@ -47,10 +47,56 @@ VIEWS.config = () => {
         <div class="panel-head"><div class="panel-title" style="font-size:15px"><span class="pt-icon">🔒</span>Seguridad</div></div>
         <div class="panel-body">
           <div style="background:var(--sage-ll);border-radius:var(--rs);padding:12px 14px;font-size:12px;color:var(--forest);margin-bottom:12px">✓ Sesión activa · Diana Zavala</div>
-          <button class="btn btn-outline btn-sm" onclick="toast('Contraseña cambiada ✓')">🔒 Cambiar contraseña</button>
+          <button class="btn btn-outline btn-sm" onclick="abrirCambioPass()">🔒 Cambiar contraseña</button>
         </div>
       </div>
     </div>
   </div>
 </div>`;
 };
+
+function abrirCambioPass() {
+  const id = 'cambio-pass-modal';
+  if (!$('#' + id)) {
+    const el = document.createElement('div');
+    el.className = 'modal'; el.id = id;
+    el.innerHTML = `<div class="modal-content" style="max-width:400px">
+      <div class="modal-head"><div class="modal-title">🔒 Cambiar contraseña</div><button class="modal-close" onclick="closeModal('${id}')">✕</button></div>
+      <div class="modal-body" style="display:flex;flex-direction:column;gap:14px">
+        <div class="field"><label class="field-label">Contraseña actual</label><input class="input" type="password" id="cp-actual" autocomplete="current-password" placeholder="••••••••"></div>
+        <div class="field"><label class="field-label">Nueva contraseña</label><input class="input" type="password" id="cp-nueva" autocomplete="new-password" placeholder="Mínimo 8 caracteres"></div>
+        <div class="field"><label class="field-label">Confirmar contraseña</label><input class="input" type="password" id="cp-confirm" autocomplete="new-password" placeholder="Repite la nueva contraseña"></div>
+      </div>
+      <div class="modal-foot">
+        <button class="btn btn-outline btn-sm" onclick="closeModal('${id}')">Cancelar</button>
+        <button class="btn btn-primary btn-sm" id="cp-submit" onclick="guardarPass('${id}')">Guardar</button>
+      </div>
+    </div>`;
+    $('#modal-root').appendChild(el);
+  }
+  $('#cp-actual').value = ''; $('#cp-nueva').value = ''; $('#cp-confirm').value = '';
+  openModal(id);
+}
+
+async function guardarPass(modalId) {
+  const actual  = ($('#cp-actual')  || {}).value?.trim();
+  const nueva   = ($('#cp-nueva')   || {}).value?.trim();
+  const confirm = ($('#cp-confirm') || {}).value?.trim();
+  if (!actual || !nueva) { toast('Completa todos los campos'); return; }
+  if (nueva.length < 8)  { toast('La contraseña debe tener al menos 8 caracteres'); return; }
+  if (nueva !== confirm)  { toast('Las contraseñas no coinciden'); return; }
+  const btn = $('#cp-submit');
+  if (btn) { btn.disabled = true; btn.textContent = 'Guardando...'; }
+  try {
+    const res  = await fetch('api/cambiar_password.php', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ actual, nueva }),
+    });
+    const data = await res.json();
+    if (!res.ok) { toast(data.error || 'Error al cambiar contraseña'); return; }
+    closeModal(modalId);
+    toast('Contraseña actualizada ✓');
+  } catch { toast('Error de conexión'); }
+  finally { if (btn) { btn.disabled = false; btn.textContent = 'Guardar'; } }
+}

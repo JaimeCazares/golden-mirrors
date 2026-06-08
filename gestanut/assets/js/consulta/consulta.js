@@ -87,7 +87,7 @@ function renderConsulta() {
             <h1 style="font-family:'Cormorant Garamond',serif;font-size:32px;font-weight:500;line-height:1;margin-bottom:6px">${p.name}</h1>
             <div style="color:rgba(250,246,239,.7);font-size:12px;display:flex;gap:12px;flex-wrap:wrap;margin-bottom:14px">
               ${p.age ? `<span>${p.age} años</span>·` : ''}<span>${p.sexo === 'masculino' ? '♂️ Masculino' : p.sexo === 'femenino' ? '♀️ Femenino' : ''}</span>${!p.sexo ? '' : '·'}<span>${p.online ? '💻 Online' : '📍 Presencial'}</span>·<span>📱 ${p.phone}</span>
-              ${p.consentimiento.firmado
+              ${p.consentimiento?.firmado
                 ? `·<span style="color:var(--sage-l)">✓ Consentimiento firmado</span>`
                 : `·<span style="color:var(--terra)">⚠️ Sin consentimiento</span>`}
             </div>

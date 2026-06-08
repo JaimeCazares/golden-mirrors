@@ -2,32 +2,55 @@
 // VIEW · Finanzas
 // ══════════════════════════════════════════════════════
 VIEWS.finanzas = () => {
-  const ing = FINANZAS.filter(m => m.tipo === 'in').reduce((s, m) => s + m.monto, 0);
-  const gas = FINANZAS.filter(m => m.tipo === 'out').reduce((s, m) => s + m.monto, 0);
+  const now   = new Date();
+  const ym    = `${now.getFullYear()}-${String(now.getMonth()+1).padStart(2,'0')}`;
+  const prev  = new Date(now.getFullYear(), now.getMonth()-1, 1);
+  const ym1   = `${prev.getFullYear()}-${String(prev.getMonth()+1).padStart(2,'0')}`;
+  const mesLab  = now.toLocaleString('es-MX',{month:'long'}).replace(/^\w/,c=>c.toUpperCase());
+  const mesAnt  = prev.toLocaleString('es-MX',{month:'long'}).replace(/^\w/,c=>c.toUpperCase());
+  const anio    = now.getFullYear();
+
+  const ing    = FINANZAS.filter(m=>m.tipo==='in').reduce((s,m)=>s+m.monto,0);
+  const gas    = FINANZAS.filter(m=>m.tipo==='out').reduce((s,m)=>s+m.monto,0);
+  const ingMes = FINANZAS.filter(m=>m.tipo==='in'&&(m.fecha||'').startsWith(ym)).reduce((s,m)=>s+m.monto,0);
+  const ingAnt = FINANZAS.filter(m=>m.tipo==='in'&&(m.fecha||'').startsWith(ym1)).reduce((s,m)=>s+m.monto,0);
+  const pct    = ingAnt>0 ? Math.round((ingMes-ingAnt)/ingAnt*100) : null;
+  const pctStr = pct===null ? '' : `${pct>=0?'↑':'↓'} ${Math.abs(pct)}% vs ${mesAnt}`;
+
+  const consMes  = FINANZAS.filter(m=>m.tipo==='in'&&(m.fecha||'').startsWith(ym));
+  const gasMes   = FINANZAS.filter(m=>m.tipo==='out'&&(m.fecha||'').startsWith(ym)).reduce((s,m)=>s+m.monto,0);
+  const ticketPm = consMes.length>0 ? Math.round(ingMes/consMes.length) : 0;
+
+  const mat  = PATIENTS.filter(p=>p.type==='materna').length;
+  const rec  = PATIENTS.filter(p=>p.type==='recomp').length;
+  const pes  = PATIENTS.filter(p=>p.type==='peso').length;
+  const onl  = PATIENTS.filter(p=>p.online).length;
+  const maxT = Math.max(mat,rec,pes,onl,1);
+
   return `<div class="view active">
     <div class="g3 mb">
       <div class="panel" style="background:var(--forest);border:none;padding:24px;border-radius:var(--r);position:relative;overflow:hidden">
         <div style="position:absolute;top:-30px;right:-30px;width:120px;height:120px;border-radius:50%;background:rgba(107,158,120,.18)"></div>
         <div style="position:relative;z-index:1;color:var(--cream)">
-          <div style="font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--sage-l);margin-bottom:4px">Ingresos · Mayo</div>
+          <div style="font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--sage-l);margin-bottom:4px">Ingresos · ${mesLab}</div>
           <div style="font-family:'Cormorant Garamond',serif;font-size:40px;font-weight:600;line-height:1;margin:6px 0">${fmt$(ing)}</div>
-          <div style="color:rgba(250,246,239,.65);font-size:12px">${FINANZAS.filter(m => m.tipo === 'in').length} consultas</div>
+          <div style="color:rgba(250,246,239,.65);font-size:12px">${FINANZAS.filter(m=>m.tipo==='in').length} consultas</div>
         </div>
       </div>
       <div class="panel" style="padding:24px">
         <div style="font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--terra);margin-bottom:4px">Gastos</div>
         <div style="font-family:'Cormorant Garamond',serif;font-size:40px;font-weight:600;color:var(--terra-d);line-height:1;margin:6px 0">${fmt$(gas)}</div>
-        <div class="muted-sm">${FINANZAS.filter(m => m.tipo === 'out').length} movimientos</div>
+        <div class="muted-sm">${FINANZAS.filter(m=>m.tipo==='out').length} movimientos</div>
       </div>
       <div class="panel" style="background:linear-gradient(135deg,var(--sage),var(--forest-l));border:none;padding:24px;border-radius:var(--r)">
         <div style="font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--sage-l);margin-bottom:4px">Utilidad neta</div>
-        <div style="font-family:'Cormorant Garamond',serif;font-size:40px;font-weight:600;color:var(--cream);line-height:1;margin:6px 0">${fmt$(ing - gas)}</div>
-        <div style="color:rgba(250,246,239,.7);font-size:12px">↑ 18% vs Abril</div>
+        <div style="font-family:'Cormorant Garamond',serif;font-size:40px;font-weight:600;color:var(--cream);line-height:1;margin:6px 0">${fmt$(ing-gas)}</div>
+        <div style="color:rgba(250,246,239,.7);font-size:12px">${pctStr}</div>
       </div>
     </div>
     <div class="g-21">
       <div class="panel">
-        <div class="panel-head"><div class="panel-title"><span class="pt-icon">📋</span>Movimientos · Mayo 2025</div>
+        <div class="panel-head"><div class="panel-title"><span class="pt-icon">📋</span>Movimientos · ${mesLab} ${anio}</div>
           <div style="display:flex;gap:8px">
             <button class="btn btn-outline btn-xs" onclick="exportFinanzasCSV()">📊 Excel</button>
             <button class="btn btn-sage btn-xs" onclick="openModal('finanza-modal')">+ Registrar</button>
@@ -35,42 +58,43 @@ VIEWS.finanzas = () => {
         </div>
         <div style="max-height:460px;overflow-y:auto">
           <table style="width:100%;border-collapse:collapse">
-            ${FINANZAS.map(m => `<tr style="border-bottom:1px solid var(--cream-d)">
+            ${FINANZAS.length ? FINANZAS.map(m=>`<tr style="border-bottom:1px solid var(--cream-d)">
               <td style="padding:11px 14px;font-size:11px;color:var(--text-m);width:72px">${m.fecha}</td>
               <td style="padding:11px 6px;font-size:13px">${m.concepto}</td>
               <td style="padding:11px 14px;text-align:right">
-                <div style="font-weight:600;color:${m.tipo === 'in' ? 'var(--sage)' : 'var(--terra)'};font-family:'Cormorant Garamond',serif;font-size:16px">${m.tipo === 'in' ? '+' : '-'}${fmt$(m.monto)}</div>
+                <div style="font-weight:600;color:${m.tipo==='in'?'var(--sage)':'var(--terra)'};font-family:'Cormorant Garamond',serif;font-size:16px">${m.tipo==='in'?'+':'-'}${fmt$(m.monto)}</div>
               </td>
               <td style="padding:11px 14px;text-align:right">
-                ${m.tipo === 'in' ? `<button class="btn btn-xs btn-outline" onclick="openReceipt(${m.id})" title="Generar recibo">🧾</button>` : ''}
+                ${m.tipo==='in'?`<button class="btn btn-xs btn-outline" onclick="openReceipt(${m.id})" title="Generar recibo">🧾</button>`:''}
               </td>
-            </tr>`).join('')}
+            </tr>`).join('') : `<tr><td colspan="4" style="text-align:center;padding:32px;color:var(--text-m)">Sin movimientos registrados</td></tr>`}
           </table>
         </div>
       </div>
       <div>
         <div class="panel mb-sm">
-          <div class="panel-head"><div class="panel-title" style="font-size:15px"><span class="pt-icon">💰</span>Pendientes de cobro</div></div>
+          <div class="panel-head"><div class="panel-title" style="font-size:15px"><span class="pt-icon">📈</span>Este mes · ${mesLab}</div></div>
           <div class="panel-body" style="padding:0">
             ${[
-              { n: 'Sofía López', h: 'Hoy 9:00 AM',         m: 400, av: 'av-c3', ini: 'SL' },
-              { n: 'Karla Vega',  h: 'Hoy 3:00 PM · Online', m: 350, av: 'av-c3', ini: 'KV' },
-            ].map(p => `<div style="display:flex;align-items:center;gap:12px;padding:12px 18px;border-bottom:1px solid var(--cream-d)">
-              <div class="avatar av-sm ${p.av}">${p.ini}</div>
-              <div style="flex:1;min-width:0"><div style="font-size:13px;font-weight:500">${p.n}</div><div class="muted-sm" style="font-size:11px">${p.h}</div></div>
-              <span class="badge b-gold">${fmt$(p.m)}</span>
+              {ic:'🩺', l:'Consultas',       v: consMes.length ? consMes.length + ' registradas' : 'Sin registros'},
+              {ic:'💵', l:'Ticket promedio', v: ticketPm>0 ? fmt$(ticketPm) : '—'},
+              {ic:'💸', l:'Gastos del mes',  v: gasMes>0 ? fmt$(gasMes) : 'Sin gastos'},
+              {ic:'⚖️', l:'Balance mensual', v: fmt$(ingMes-gasMes)},
+            ].map(r=>`<div style="display:flex;align-items:center;gap:12px;padding:12px 18px;border-bottom:1px solid var(--cream-d)">
+              <div style="font-size:20px;width:28px;text-align:center">${r.ic}</div>
+              <div style="flex:1"><div style="font-size:12px;color:var(--text-m)">${r.l}</div><div style="font-size:14px;font-weight:600;color:var(--forest)">${r.v}</div></div>
             </div>`).join('')}
           </div>
         </div>
         <div class="panel">
-          <div class="panel-head"><div class="panel-title" style="font-size:15px"><span class="pt-icon">📊</span>Por tipo · Mayo</div></div>
+          <div class="panel-head"><div class="panel-title" style="font-size:15px"><span class="pt-icon">📊</span>Pacientes por tipo</div></div>
           <div class="panel-body">
             ${[
-              ['Prenatales',    1600, 33, 'blush'],
-              ['Recomposición',  900, 19, 'sage'],
-              ['Control peso',  1300, 27, 'terra'],
-              ['Online',         630, 13, 'gold'],
-            ].map(([l, v, p, c]) => `<div style="margin-bottom:12px"><div style="display:flex;justify-content:space-between;font-size:12px;margin-bottom:4px"><span>${l}</span><span style="font-weight:600">${fmt$(v)}</span></div><div class="progress"><div class="progress-fill" style="width:${p}%;background:var(--${c})"></div></div></div>`).join('')}
+              ['Prenatales',    mat, 'blush'],
+              ['Recomposición', rec, 'sage'],
+              ['Control peso',  pes, 'terra'],
+              ['Online',        onl, 'gold'],
+            ].map(([l,v,c])=>`<div style="margin-bottom:12px"><div style="display:flex;justify-content:space-between;font-size:12px;margin-bottom:4px"><span>${l}</span><span style="font-weight:600">${v} px</span></div><div class="progress"><div class="progress-fill" style="width:${Math.round(v/maxT*100)}%;background:var(--${c})"></div></div></div>`).join('')}
           </div>
         </div>
       </div>

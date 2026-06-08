@@ -36,7 +36,7 @@ function renderGrid() {
           ${p.status === 'new'         ? '<span class="badge b-gold">⭐ Nueva</span>'          : ''}
           ${p.dg                       ? '<span class="badge b-gold">DG</span>'                 : ''}
           ${p.lactancia                ? '<span class="badge b-blush">🤱 Lactancia</span>'      : ''}
-          ${!p.consentimiento.firmado  ? '<span class="badge b-terra">Sin consent.</span>'     : ''}
+          ${!p.consentimiento?.firmado  ? '<span class="badge b-terra">Sin consent.</span>'     : ''}
         </div>
         <div style="background:var(--sage-lll);border-radius:var(--rs);padding:11px 13px;margin-bottom:12px">
           <div style="font-size:11px;color:var(--text-m)">Objetivo</div>
