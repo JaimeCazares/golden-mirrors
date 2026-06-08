@@ -2,23 +2,30 @@
 // VIEW · Finanzas
 // ══════════════════════════════════════════════════════
 VIEWS.finanzas = () => {
-  const now   = new Date();
-  const ym    = `${now.getFullYear()}-${String(now.getMonth()+1).padStart(2,'0')}`;
-  const prev  = new Date(now.getFullYear(), now.getMonth()-1, 1);
-  const ym1   = `${prev.getFullYear()}-${String(prev.getMonth()+1).padStart(2,'0')}`;
-  const mesLab  = now.toLocaleString('es-MX',{month:'long'}).replace(/^\w/,c=>c.toUpperCase());
-  const mesAnt  = prev.toLocaleString('es-MX',{month:'long'}).replace(/^\w/,c=>c.toUpperCase());
-  const anio    = now.getFullYear();
+  const now    = new Date();
+  const currYM = `${now.getFullYear()}-${String(now.getMonth()+1).padStart(2,'0')}`;
+
+  // Detectar el mes más reciente con datos reales
+  const ymSet  = [...new Set(FINANZAS.filter(m=>m.tipo==='in'&&m.fechaRaw).map(m=>m.fechaRaw.substring(0,7)))].sort();
+  const actYM  = ymSet.includes(currYM) ? currYM : (ymSet[ymSet.length-1] || currYM);
+  const [aY, aMo] = actYM.split('-').map(Number);
+  const actDate   = new Date(aY, aMo-1, 1);
+  const prevDate  = new Date(aY, aMo-2, 1);
+  const ym1       = `${prevDate.getFullYear()}-${String(prevDate.getMonth()+1).padStart(2,'0')}`;
+
+  const mesLab  = actDate.toLocaleString('es-MX',{month:'long'}).replace(/^\w/,c=>c.toUpperCase());
+  const mesAnt  = prevDate.toLocaleString('es-MX',{month:'long'}).replace(/^\w/,c=>c.toUpperCase());
+  const anio    = aY;
 
   const ing    = FINANZAS.filter(m=>m.tipo==='in').reduce((s,m)=>s+m.monto,0);
   const gas    = FINANZAS.filter(m=>m.tipo==='out').reduce((s,m)=>s+m.monto,0);
-  const ingMes = FINANZAS.filter(m=>m.tipo==='in'&&(m.fecha||'').startsWith(ym)).reduce((s,m)=>s+m.monto,0);
-  const ingAnt = FINANZAS.filter(m=>m.tipo==='in'&&(m.fecha||'').startsWith(ym1)).reduce((s,m)=>s+m.monto,0);
+  const ingMes = FINANZAS.filter(m=>m.tipo==='in'&&(m.fechaRaw||'').startsWith(actYM)).reduce((s,m)=>s+m.monto,0);
+  const ingAnt = FINANZAS.filter(m=>m.tipo==='in'&&(m.fechaRaw||'').startsWith(ym1)).reduce((s,m)=>s+m.monto,0);
   const pct    = ingAnt>0 ? Math.round((ingMes-ingAnt)/ingAnt*100) : null;
   const pctStr = pct===null ? '' : `${pct>=0?'↑':'↓'} ${Math.abs(pct)}% vs ${mesAnt}`;
 
-  const consMes  = FINANZAS.filter(m=>m.tipo==='in'&&(m.fecha||'').startsWith(ym));
-  const gasMes   = FINANZAS.filter(m=>m.tipo==='out'&&(m.fecha||'').startsWith(ym)).reduce((s,m)=>s+m.monto,0);
+  const consMes  = FINANZAS.filter(m=>m.tipo==='in'&&(m.fechaRaw||'').startsWith(actYM));
+  const gasMes   = FINANZAS.filter(m=>m.tipo==='out'&&(m.fechaRaw||'').startsWith(actYM)).reduce((s,m)=>s+m.monto,0);
   const ticketPm = consMes.length>0 ? Math.round(ingMes/consMes.length) : 0;
 
   const mat  = PATIENTS.filter(p=>p.type==='materna').length;

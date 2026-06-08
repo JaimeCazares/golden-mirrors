@@ -2,17 +2,27 @@
 // VIEW · Reportes y analytics
 // ══════════════════════════════════════════════════════
 VIEWS.reportes = () => {
-  const now  = new Date();
-  const ym   = `${now.getFullYear()}-${String(now.getMonth()+1).padStart(2,'0')}`;
-  const prev = new Date(now.getFullYear(), now.getMonth()-1, 1);
-  const ym1  = `${prev.getFullYear()}-${String(prev.getMonth()+1).padStart(2,'0')}`;
-  const mesAnt = prev.toLocaleString('es-MX',{month:'long'}).replace(/^\w/,c=>c.toUpperCase());
+  const now    = new Date();
+  const currYM = `${now.getFullYear()}-${String(now.getMonth()+1).padStart(2,'0')}`;
 
-  const ingMes  = FINANZAS.filter(m=>m.tipo==='in'&&(m.fecha||'').startsWith(ym)).reduce((s,m)=>s+m.monto,0);
-  const ingAnt  = FINANZAS.filter(m=>m.tipo==='in'&&(m.fecha||'').startsWith(ym1)).reduce((s,m)=>s+m.monto,0);
-  const pct     = ingAnt>0 ? Math.round((ingMes-ingAnt)/ingAnt*100) : null;
-  const pctStr  = pct===null ? '—' : `${pct>=0?'+':''}${pct}%`;
-  const pctTrend = pct===null ? 'Sin datos previos' : `vs ${mesAnt}`;
+  // Meses con ingresos reales, ordenados
+  const ymSet = [...new Set(
+    FINANZAS.filter(m=>m.tipo==='in'&&m.fechaRaw).map(m=>m.fechaRaw.substring(0,7))
+  )].sort();
+  if (!ymSet.includes(currYM)) ymSet.push(currYM);
+
+  // Comparar los dos últimos meses con datos
+  const ymLast = ymSet[ymSet.length-1];
+  const ymPrev = ymSet[ymSet.length-2] || null;
+  const ingMes = FINANZAS.filter(m=>m.tipo==='in'&&(m.fechaRaw||'').startsWith(ymLast)).reduce((s,m)=>s+m.monto,0);
+  const ingAnt = ymPrev ? FINANZAS.filter(m=>m.tipo==='in'&&(m.fechaRaw||'').startsWith(ymPrev)).reduce((s,m)=>s+m.monto,0) : 0;
+  const pct    = ingAnt>0 ? Math.round((ingMes-ingAnt)/ingAnt*100) : null;
+  const pctStr = pct===null ? '—' : `${pct>=0?'+':''}${pct}%`;
+  const mesAntStr = ymPrev ? (() => {
+    const [y,mo] = ymPrev.split('-').map(Number);
+    return new Date(y,mo-1,1).toLocaleString('es-MX',{month:'long'}).replace(/^\w/,c=>c.toUpperCase());
+  })() : '';
+  const pctTrend = pct===null ? 'Sin datos previos' : `vs ${mesAntStr}`;
 
   const totalCons = FINANZAS.filter(m=>m.tipo==='in').length;
   const avgCons   = PATIENTS.length>0 ? (totalCons/PATIENTS.length).toFixed(1) : '0';
@@ -28,22 +38,30 @@ VIEWS.reportes = () => {
     ].map(([c,i,v,l,t])=>`<div class="stat-card ${c}"><div class="stat-deco"></div><div class="stat-icon-w">${i}</div><div class="stat-val">${v}</div><div class="stat-label">${l}</div><div class="stat-trend">${t}</div></div>`).join('')}
   </div>
   <div class="g2">
-    <div class="panel"><div class="panel-head"><div class="panel-title"><span class="pt-icon">💰</span>Ingresos · 6 meses</div></div><div class="panel-body"><canvas id="rep-inc" height="180"></canvas></div></div>
+    <div class="panel"><div class="panel-head"><div class="panel-title"><span class="pt-icon">💰</span>Ingresos · últimos meses</div></div><div class="panel-body"><canvas id="rep-inc" height="180"></canvas></div></div>
     <div class="panel"><div class="panel-head"><div class="panel-title"><span class="pt-icon">👩</span>Por tipo de consulta</div></div><div class="panel-body"><canvas id="rep-typ" height="180"></canvas></div></div>
   </div>
 </div>`;
 };
 
 function initReportes() {
-  const now     = new Date();
-  const months  = [];
-  const incomes = [];
-  for (let i = 5; i >= 0; i--) {
-    const d  = new Date(now.getFullYear(), now.getMonth()-i, 1);
-    const ym = `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}`;
-    months.push(d.toLocaleString('es-MX',{month:'short'}).replace(/^\w/,c=>c.toUpperCase()));
-    incomes.push(FINANZAS.filter(m=>m.tipo==='in'&&(m.fecha||'').startsWith(ym)).reduce((s,m)=>s+m.monto,0));
-  }
+  const now    = new Date();
+  const currYM = `${now.getFullYear()}-${String(now.getMonth()+1).padStart(2,'0')}`;
+
+  // Tomar los meses con datos reales (hasta 6) e incluir mes actual
+  const ymSet = [...new Set(
+    FINANZAS.filter(m=>m.tipo==='in'&&m.fechaRaw).map(m=>m.fechaRaw.substring(0,7))
+  )];
+  if (!ymSet.includes(currYM)) ymSet.push(currYM);
+  const last6 = ymSet.sort().slice(-6);
+
+  const months  = last6.map(ym => {
+    const [y,mo] = ym.split('-').map(Number);
+    return new Date(y,mo-1,1).toLocaleString('es-MX',{month:'short'}).replace(/^\w/,c=>c.toUpperCase());
+  });
+  const incomes = last6.map(ym =>
+    FINANZAS.filter(m=>m.tipo==='in'&&(m.fechaRaw||'').startsWith(ym)).reduce((s,m)=>s+m.monto,0)
+  );
 
   const mat = PATIENTS.filter(p=>p.type==='materna').length;
   const rec = PATIENTS.filter(p=>p.type==='recomp').length;
