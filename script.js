@@ -145,12 +145,25 @@ async function cambiarPestana(nombre) {
         // === NUTRICION ===
         if (nombre === 'nutricion') {
             if (!modulosCargados['nutricion']) {
-                const script = document.createElement('script');
-                script.src = `nutricion/nutricion.js?v=${Date.now()}`;
-                script.onload = () => {
-                    if (typeof initNutricion === 'function') initNutricion();
-                };
-                document.body.appendChild(script);
+                const scripts = [
+                    'nutricion/alimentos_data.js',
+                    'nutricion/nutricion.js'
+                ];
+
+                let cargados = 0;
+
+                scripts.forEach(src => {
+                    const s = document.createElement('script');
+                    s.src = `${src}?v=${Date.now()}`;
+                    s.onload = () => {
+                        cargados++;
+                        if (cargados === scripts.length) {
+                            if (typeof initNutricion === 'function') initNutricion();
+                        }
+                    };
+                    document.body.appendChild(s);
+                });
+
                 modulosCargados['nutricion'] = true;
             } else {
                 if (typeof initNutricion === 'function') initNutricion();

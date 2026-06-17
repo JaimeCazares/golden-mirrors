@@ -1,8 +1,124 @@
+/* ======================================================
+   ESTRUCTURA RAÍZ + ESCENA — Fotografías reales
+   ====================================================== */
+.nutri-root {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+}
+
+.nutri-scene {
+    position: fixed;
+    inset: 0;
+    z-index: 0;
+    overflow: hidden;
+    background: #05080f;
+}
+
+.nutri-layer {
+    position: absolute;
+    inset: 0;
+    opacity: 0;
+    transition: opacity 1.8s cubic-bezier(0.4, 0, 0.2, 1);
+    overflow: hidden;
+    pointer-events: none;
+}
+.nutri-layer.activo { opacity: 1; }
+
+/* Fallback mientras carga la foto */
+.nutri-layer-lluvia    { background: #07111e; }
+.nutri-layer-otono     { background: #1a0a04; }
+.nutri-layer-playa     { background: #051a1c; }
+.nutri-layer-aurora    { background: #010510; }
+.nutri-layer-nieve     { background: #080f1e; }
+.nutri-layer-atardecer { background: #1a0810; }
+
+/* ── FOTOGRAFÍA REAL DE FONDO ── */
+.nutri-real-photo {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center;
+    z-index: 0;
+    filter: saturate(1.25) brightness(0.72) contrast(1.05);
+    animation: nutriKenBurns 28s ease-in-out infinite alternate;
+    will-change: transform;
+    display: block;
+}
+@keyframes nutriKenBurns {
+    0%   { transform: scale(1)    translate(0%,     0%); }
+    30%  { transform: scale(1.06) translate(-1.8%,  -0.6%); }
+    65%  { transform: scale(1.04) translate(0.6%,   -1.2%); }
+    100% { transform: scale(1.09) translate(-1.2%,  0.6%); }
+}
+
+/* ── VIDEO DE FONDO ── */
+.nutri-video-bg {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center center;
+    z-index: 0;
+    filter: brightness(0.72) saturate(1.1) contrast(1.04);
+    display: block;
+    pointer-events: none;
+    will-change: transform;
+    transform: translateZ(0);
+    image-rendering: high-quality;
+}
+
+/* ── OVERLAY DE COLOR (tinte por tema + legibilidad) ── */
+.nutri-photo-overlay {
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+    pointer-events: none;
+}
+.nutri-overlay-lluvia    { background: linear-gradient(180deg, rgba(4,10,22,0.5)  0%, rgba(4,10,22,0.18)  45%, rgba(4,10,22,0.72)  100%); }
+.nutri-overlay-otono     { background: linear-gradient(180deg, rgba(12,4,0,0.45)  0%, rgba(12,4,0,0.12)   45%, rgba(12,4,0,0.68)   100%); }
+.nutri-overlay-playa     { background: linear-gradient(180deg, rgba(2,18,20,0.45)  0%, rgba(2,18,20,0.10)   45%, rgba(2,18,20,0.65)   100%); }
+.nutri-overlay-aurora    { background: linear-gradient(180deg, rgba(0,3,12,0.38)  0%, rgba(0,3,12,0.06)   45%, rgba(0,3,12,0.58)   100%); }
+.nutri-overlay-nieve     { background: linear-gradient(180deg, rgba(4,8,20,0.45)  0%, rgba(4,8,20,0.1)    45%, rgba(4,8,20,0.65)   100%); }
+.nutri-overlay-atardecer { background: linear-gradient(180deg, rgba(15,4,0,0.38)  0%, rgba(15,4,0,0.04)   45%, rgba(15,4,0,0.58)   100%); }
+
+/* ── CANVAS (partículas encima de la foto) ── */
+.nutri-canvas {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 2;
+    pointer-events: none;
+}
+
+/* ── VIÑETA DE BORDE ── */
+.nutri-vignette {
+    position: absolute;
+    inset: 0;
+    z-index: 10;
+    pointer-events: none;
+    background: radial-gradient(ellipse at 50% 30%, rgba(0,0,0,0) 22%, rgba(0,0,0,0.6) 100%);
+}
+
+/* ======================================================
+   CONTENEDOR PRINCIPAL
+   ====================================================== */
 .nutricion-container {
-    padding: 16px;
-    max-width: 480px;
+    position: relative;
+    z-index: 2;
+    height: 100%;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+    padding: 12px 16px;
+    max-width: 940px;
     margin: 0 auto;
     color: #fff;
+    box-sizing: border-box;
 }
 
 /* HEADER */
@@ -10,52 +126,139 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin-bottom: 16px;
+    margin-bottom: 10px;
 }
 .nutri-titulo {
-    font-size: 1.3rem;
-    font-weight: 700;
+    font-size: 1.35rem;
+    font-weight: 800;
+    text-shadow: 0 2px 10px rgba(0,0,0,0.4);
 }
 .nutri-fecha-label {
     font-size: 0.8rem;
-    color: #aaa;
+    color: #c2cae0;
+    text-transform: capitalize;
 }
+
+/* --- Selector de tema --- */
+.nutri-theme-wrap { position: relative; }
+.nutri-theme-btn {
+    position: relative;
+    width: 44px; height: 44px;
+    border-radius: 50%;
+    border: 1.5px solid rgba(255,255,255,0.25);
+    background: rgba(255,255,255,0.08);
+    -webkit-backdrop-filter: blur(6px);
+    backdrop-filter: blur(6px);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 1.2rem;
+    cursor: pointer;
+    overflow: visible;
+    transition: transform 0.2s, border-color 0.2s;
+}
+.nutri-theme-btn:active { transform: scale(0.92); }
+.nutri-theme-btn.activo { border-color: #4ade80; }
+.ntb-glow {
+    position: absolute;
+    inset: -4px;
+    border-radius: 50%;
+    background: conic-gradient(from 0deg, #4ade80, #60a5fa, #facc15, #c084fc, #4ade80);
+    opacity: 0.55;
+    filter: blur(6px);
+    z-index: -1;
+    animation: nutriGiro 5s linear infinite;
+}
+@keyframes nutriGiro { to { transform: rotate(360deg); } }
+.ntb-emoji { position: relative; z-index: 1; }
+
+.nutri-theme-menu {
+    position: absolute;
+    top: 54px; right: 0;
+    background: rgba(15,18,32,0.92);
+    border: 1px solid rgba(255,255,255,0.12);
+    border-radius: 16px;
+    padding: 10px;
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 7px;
+    width: 234px;
+    box-shadow: 0 12px 32px rgba(0,0,0,0.5);
+    -webkit-backdrop-filter: blur(10px);
+    backdrop-filter: blur(10px);
+    z-index: 20;
+    opacity: 0;
+    transform: translateY(-8px) scale(0.95);
+    pointer-events: none;
+    transition: opacity 0.2s, transform 0.2s;
+}
+.nutri-theme-menu.abierto {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+    pointer-events: auto;
+}
+.nutri-theme-opt {
+    display: flex; flex-direction: column; align-items: center; gap: 4px;
+    background: rgba(255,255,255,0.05);
+    border: 1.5px solid transparent;
+    border-radius: 12px;
+    padding: 8px 4px;
+    cursor: pointer;
+    color: #ddd;
+    transition: 0.15s;
+}
+.nutri-theme-opt:active { transform: scale(0.94); }
+.nutri-theme-opt.activo { border-color: #4ade80; background: rgba(74,222,128,0.12); }
+.nto-swatch {
+    width: 100%; height: 24px;
+    border-radius: 8px;
+}
+.nto-lluvia    { background: linear-gradient(180deg, #070c18, #162535); }
+.nto-otono     { background: linear-gradient(180deg, #2c0d3e, #e8844e); }
+.nto-playa     { background: linear-gradient(180deg, #042a2e, #38c9d4); }
+.nto-aurora    { background: linear-gradient(180deg, #000108, #040e22); }
+.nto-nieve     { background: linear-gradient(180deg, #060c1c, #284468); }
+.nto-atardecer { background: linear-gradient(180deg, #18083e, #ffd560); }
+.nto-emoji  { font-size: 1rem; margin-top: 2px; }
+.nto-label  { font-size: 0.62rem; text-transform: uppercase; letter-spacing: 0.4px; }
 
 /* TOP CARDS: BMR + Mi Band */
 .nutri-top-cards {
     display: grid;
     grid-template-columns: 1fr 1fr;
-    gap: 10px;
-    margin-bottom: 14px;
+    gap: 8px;
+    margin-bottom: 10px;
 }
 .nutri-top-card {
-    background: rgba(255,255,255,0.05);
+    background: linear-gradient(160deg, rgba(255,255,255,0.10), rgba(255,255,255,0.03));
+    border: 1px solid rgba(255,255,255,0.08);
+    -webkit-backdrop-filter: blur(8px);
+    backdrop-filter: blur(8px);
     border-radius: 14px;
-    padding: 12px 14px;
+    padding: 9px 12px;
     position: relative;
+    box-shadow: 0 6px 18px rgba(0,0,0,0.25);
 }
 .ntc-label {
-    font-size: 0.68rem;
-    color: #888;
+    font-size: 0.62rem;
+    color: #aab2cc;
     text-transform: uppercase;
     letter-spacing: 0.5px;
-    margin-bottom: 4px;
+    margin-bottom: 3px;
 }
 .ntc-valor {
-    font-size: 1.2rem;
-    font-weight: 700;
-    color: #f97316;
+    font-size: 1.1rem;
+    font-weight: 800;
+    color: #fb923c;
 }
-.ntc-valor small { font-size: 0.7rem; font-weight: 400; color: #aaa; }
+.ntc-valor small { font-size: 0.65rem; font-weight: 400; color: #aab2cc; }
 .ntc-miband-input {
-    font-size: 1.2rem;
-    font-weight: 700;
+    font-size: 1.1rem;
+    font-weight: 800;
     color: #60a5fa;
     display: flex;
     align-items: center;
     gap: 4px;
 }
-.ntc-miband-input small { font-size: 0.7rem; font-weight: 400; color: #aaa; }
+.ntc-miband-input small { font-size: 0.65rem; font-weight: 400; color: #aab2cc; }
 .ntc-edit-btn {
     position: absolute;
     top: 8px;
@@ -64,17 +267,21 @@
     border: none;
     font-size: 0.85rem;
     cursor: pointer;
-    opacity: 0.5;
+    opacity: 0.55;
     padding: 2px;
 }
 .ntc-edit-btn:active { opacity: 1; }
 
 /* DÉFICIT CARD */
 .nutri-deficit-card {
-    background: rgba(255,255,255,0.05);
-    border-radius: 16px;
+    background: linear-gradient(160deg, rgba(255,255,255,0.10), rgba(255,255,255,0.02));
+    border: 1px solid rgba(255,255,255,0.08);
+    -webkit-backdrop-filter: blur(8px);
+    backdrop-filter: blur(8px);
+    border-radius: 18px;
     padding: 16px;
     margin-bottom: 14px;
+    box-shadow: 0 6px 18px rgba(0,0,0,0.25);
 }
 .ndc-row {
     display: flex;
@@ -84,22 +291,22 @@
 }
 .ndc-label {
     font-size: 0.82rem;
-    color: #888;
+    color: #aab2cc;
 }
 .ndc-val {
     font-size: 0.95rem;
     font-weight: 600;
 }
-.ndc-row.quemado .ndc-val  { color: #f97316; }
+.ndc-row.quemado .ndc-val  { color: #fb923c; }
 .ndc-row.consumido .ndc-val { color: #fff; }
 .ndc-divider {
     height: 1px;
-    background: rgba(255,255,255,0.07);
+    background: rgba(255,255,255,0.08);
     margin: 8px 0;
 }
 .ndc-divider.grueso {
     height: 1px;
-    background: rgba(255,255,255,0.15);
+    background: rgba(255,255,255,0.16);
     margin: 10px 0;
 }
 .ndc-resultado {
@@ -112,24 +319,29 @@
     font-weight: 700;
     letter-spacing: 1.5px;
     text-transform: uppercase;
-    color: #888;
+    color: #aab2cc;
 }
 .ndc-resultado-val {
-    font-size: 1.5rem;
+    font-size: 1.55rem;
     font-weight: 800;
     color: #4ade80;
+    text-shadow: 0 0 18px rgba(74,222,128,0.35);
 }
-.ndc-resultado-val.superavit { color: #f87171; }
+.ndc-resultado-val.superavit { color: #f87171; text-shadow: 0 0 18px rgba(248,113,113,0.35); }
 
 /* MACROS */
 .nutri-macros-grid {
     display: flex;
     flex-direction: column;
-    gap: 8px;
-    background: rgba(255,255,255,0.04);
-    border-radius: 14px;
+    gap: 10px;
+    background: linear-gradient(160deg, rgba(255,255,255,0.08), rgba(255,255,255,0.02));
+    border: 1px solid rgba(255,255,255,0.08);
+    -webkit-backdrop-filter: blur(8px);
+    backdrop-filter: blur(8px);
+    border-radius: 16px;
     padding: 14px;
     margin-bottom: 16px;
+    box-shadow: 0 6px 18px rgba(0,0,0,0.25);
 }
 .macro-row {
     display: flex;
@@ -148,7 +360,7 @@
 .macro-nombre.fibra { color: #c084fc; }
 .macro-track {
     flex: 1;
-    height: 8px;
+    height: 9px;
     background: rgba(255,255,255,0.08);
     border-radius: 99px;
     overflow: hidden;
@@ -156,17 +368,25 @@
 .macro-fill {
     height: 100%;
     border-radius: 99px;
-    transition: width 0.4s ease;
+    transition: width 0.5s cubic-bezier(.22,1,.36,1);
     width: 0%;
+    position: relative;
 }
-.macro-fill.prot  { background: #4ade80; }
-.macro-fill.carb  { background: #60a5fa; }
-.macro-fill.gras  { background: #facc15; }
-.macro-fill.fibra { background: #c084fc; }
+.macro-fill::after {
+    content: '';
+    position: absolute; inset: 0;
+    background: linear-gradient(90deg, rgba(255,255,255,0.35), rgba(255,255,255,0));
+    animation: nutriBrillo 2.4s ease-in-out infinite;
+}
+@keyframes nutriBrillo { 0%,100% { opacity: 0.5; } 50% { opacity: 1; } }
+.macro-fill.prot  { background: #4ade80; box-shadow: 0 0 10px rgba(74,222,128,0.55); }
+.macro-fill.carb  { background: #60a5fa; box-shadow: 0 0 10px rgba(96,165,250,0.55); }
+.macro-fill.gras  { background: #facc15; box-shadow: 0 0 10px rgba(250,204,21,0.55); }
+.macro-fill.fibra { background: #c084fc; box-shadow: 0 0 10px rgba(192,132,252,0.55); }
 .macro-val {
     width: 72px;
     font-size: 0.72rem;
-    color: #aaa;
+    color: #aab2cc;
     text-align: right;
     flex-shrink: 0;
 }
@@ -177,21 +397,25 @@
 }
 .nutri-btn-add {
     width: 100%;
-    padding: 13px;
+    padding: 14px;
     border: none;
-    border-radius: 12px;
+    border-radius: 14px;
     font-size: 0.95rem;
     font-weight: 700;
     cursor: pointer;
-    transition: opacity 0.2s;
+    transition: transform 0.15s, box-shadow 0.15s;
 }
-.nutri-btn-add:active { opacity: 0.75; }
-.nutri-btn-add.comida { background: #4ade80; color: #0a0a0a; }
+.nutri-btn-add:active { transform: scale(0.98); }
+.nutri-btn-add.comida {
+    background: linear-gradient(135deg, #4ade80, #22c55e);
+    color: #0a0a0a;
+    box-shadow: 0 8px 22px rgba(34,197,94,0.35);
+}
 
 /* LOG */
 .nutri-log-titulo {
     font-size: 0.78rem;
-    color: #666;
+    color: #aab2cc;
     text-transform: uppercase;
     letter-spacing: 1px;
     margin-bottom: 8px;
@@ -204,17 +428,23 @@
 }
 .nutri-log-vacio {
     text-align: center;
-    color: #555;
+    color: #8088a3;
     padding: 24px;
     font-size: 0.85rem;
 }
 .nutri-entry {
     display: flex;
     align-items: center;
-    background: rgba(255,255,255,0.04);
-    border-radius: 10px;
+    background: linear-gradient(160deg, rgba(255,255,255,0.07), rgba(255,255,255,0.02));
+    border: 1px solid rgba(255,255,255,0.06);
+    border-radius: 12px;
     padding: 10px 12px;
     gap: 10px;
+    animation: nutriEntrada 0.35s ease;
+}
+@keyframes nutriEntrada {
+    from { opacity: 0; transform: translateY(8px); }
+    to   { opacity: 1; transform: translateY(0); }
 }
 .nutri-entry-icon { font-size: 1.1rem; flex-shrink: 0; }
 .nutri-entry-info { flex: 1; min-width: 0; }
@@ -225,12 +455,12 @@
     overflow: hidden;
     text-overflow: ellipsis;
 }
-.nutri-entry-detalle { font-size: 0.7rem; color: #888; margin-top: 1px; }
+.nutri-entry-detalle { font-size: 0.7rem; color: #aab2cc; margin-top: 1px; }
 .nutri-entry-cals { font-size: 0.85rem; font-weight: 700; flex-shrink: 0; color: #4ade80; }
 .nutri-entry-del {
     background: none;
     border: none;
-    color: #555;
+    color: #7a82a0;
     font-size: 1rem;
     cursor: pointer;
     padding: 2px 4px;
@@ -238,36 +468,51 @@
 }
 .nutri-entry-del:active { color: #f87171; }
 
-/* MODAL */
+/* ======================================================
+   MODAL
+   ====================================================== */
 .nutri-modal-overlay {
     position: fixed;
     inset: 0;
-    background: rgba(0,0,0,0.75);
+    background: rgba(0,0,0,0.42);
     display: flex;
     align-items: flex-end;
     justify-content: center;
     z-index: 9000;
     padding-bottom: 70px;
+    -webkit-backdrop-filter: blur(2px);
+    backdrop-filter: blur(2px);
 }
 .nutri-modal-hidden {
     display: none;
 }
 .nutri-modal-box {
-    background: #1a1a1a;
-    border-radius: 20px 20px 0 0;
+    background: linear-gradient(160deg, rgba(10,12,28,0.60), rgba(6,8,20,0.52));
+    border: 1px solid rgba(255,255,255,0.13);
+    border-radius: 22px 22px 0 0;
     width: 100%;
     max-width: 480px;
     padding: 20px 20px 24px;
+    animation: nutriSubir 0.25s ease;
+    -webkit-backdrop-filter: blur(28px) saturate(1.5);
+    backdrop-filter: blur(28px) saturate(1.5);
+    box-shadow: 0 -8px 32px rgba(0,0,0,0.35), inset 0 1px 0 rgba(255,255,255,0.08);
+}
+.nutri-modal-box-grande { max-height: 78vh; display: flex; flex-direction: column; }
+@keyframes nutriSubir {
+    from { transform: translateY(30px); opacity: 0; }
+    to   { transform: translateY(0); opacity: 1; }
 }
 .nutri-modal-titulo {
     font-size: 1.1rem;
     font-weight: 700;
     margin-bottom: 6px;
     text-align: center;
+    flex-shrink: 0;
 }
 .nutri-modal-desc {
     font-size: 0.78rem;
-    color: #888;
+    color: #aab2cc;
     text-align: center;
     margin-bottom: 14px;
 }
@@ -282,8 +527,8 @@
     box-sizing: border-box;
     margin-bottom: 8px;
 }
-.nutri-input::placeholder { color: #666; }
-.nutri-input:focus { outline: none; border-color: rgba(255,255,255,0.3); }
+.nutri-input::placeholder { color: #777fa0; }
+.nutri-input:focus { outline: none; border-color: #4ade80; }
 .nutri-grid-2 {
     display: grid;
     grid-template-columns: 1fr 1fr;
@@ -291,7 +536,7 @@
 }
 .nutri-field label {
     font-size: 0.72rem;
-    color: #888;
+    color: #aab2cc;
     margin-bottom: 3px;
     display: block;
 }
@@ -301,11 +546,12 @@
     display: flex;
     gap: 10px;
     margin-top: 16px;
+    flex-shrink: 0;
 }
 .nutri-btn-guardar {
     flex: 1;
     padding: 12px;
-    background: #4ade80;
+    background: linear-gradient(135deg, #4ade80, #22c55e);
     color: #0a0a0a;
     border: none;
     border-radius: 12px;
@@ -322,4 +568,725 @@
     border-radius: 12px;
     font-size: 0.95rem;
     cursor: pointer;
+}
+
+/* --- Tabs Catálogo / Personalizado --- */
+.nutri-tabs {
+    display: flex;
+    gap: 6px;
+    margin-bottom: 12px;
+    flex-shrink: 0;
+}
+.nutri-tab {
+    flex: 1;
+    padding: 9px;
+    border: 1.5px solid rgba(255,255,255,0.1);
+    background: rgba(255,255,255,0.04);
+    color: #aab2cc;
+    border-radius: 12px;
+    font-size: 0.82rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: 0.15s;
+}
+.nutri-tab.activo {
+    border-color: #4ade80;
+    background: rgba(74,222,128,0.12);
+    color: #4ade80;
+}
+
+.nf-panel { display: flex; flex-direction: column; min-height: 0; flex: 1; }
+.nf-panel-oculto { display: none; }
+
+.nf-cats {
+    display: flex;
+    gap: 6px;
+    overflow-x: auto;
+    padding-bottom: 6px;
+    margin-bottom: 6px;
+    flex-shrink: 0;
+}
+.nf-cats::-webkit-scrollbar { height: 4px; }
+.nf-cat {
+    flex-shrink: 0;
+    padding: 5px 12px;
+    border-radius: 20px;
+    border: 1.5px solid rgba(255,255,255,0.12);
+    background: transparent;
+    color: #aab2cc;
+    font-size: 0.72rem;
+    font-weight: 600;
+    cursor: pointer;
+    white-space: nowrap;
+    transition: 0.15s;
+}
+.nf-cat.activo {
+    border-color: #60a5fa;
+    background: rgba(96,165,250,0.15);
+    color: #60a5fa;
+}
+
+.nf-lista {
+    overflow-y: auto;
+    flex: 1;
+    min-height: 180px;
+    padding-right: 2px;
+}
+.nf-vacio {
+    text-align: center;
+    color: #7a82a0;
+    padding: 30px 10px;
+    font-size: 0.85rem;
+}
+.nf-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    padding: 10px 4px;
+    border-bottom: 1px solid rgba(255,255,255,0.06);
+}
+.nf-item-avatar {
+    width: 38px; height: 38px;
+    border-radius: 11px;
+    background: rgba(255,255,255,0.07);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 1.15rem;
+    flex-shrink: 0;
+}
+.nf-item-info { flex: 1; min-width: 0; }
+.nf-item-nombre { font-size: 0.85rem; font-weight: 600; }
+.nf-item-porcion { font-size: 0.7rem; color: #aab2cc; margin-top: 1px; }
+.nf-item-macros { display: flex; gap: 4px; flex-wrap: wrap; margin-top: 6px; }
+.nf-chip {
+    font-size: 0.62rem;
+    font-weight: 700;
+    padding: 2px 7px;
+    border-radius: 8px;
+}
+.nf-chip.prot  { background: rgba(74,222,128,0.15);  color: #4ade80; }
+.nf-chip.carb  { background: rgba(96,165,250,0.15);  color: #60a5fa; }
+.nf-chip.gras  { background: rgba(250,204,21,0.15);  color: #facc15; }
+.nf-chip.fibra { background: rgba(192,132,252,0.15); color: #c084fc; }
+.nf-item-actions {
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    gap: 5px;
+    flex-shrink: 0;
+}
+.nf-por-select {
+    font-size: 0.72rem;
+    padding: 3px 4px;
+    border-radius: 7px;
+    border: 1px solid rgba(255,255,255,0.2);
+    background: #151827;
+    color: #fff;
+    cursor: pointer;
+    -webkit-appearance: none;
+    appearance: none;
+}
+.nf-por-select option {
+    background: #151827;
+    color: #fff;
+}
+.nf-item-add {
+    font-size: 0.68rem;
+    font-weight: 700;
+    padding: 6px 8px;
+    border-radius: 8px;
+    border: none;
+    background: rgba(74,222,128,0.18);
+    color: #4ade80;
+    cursor: pointer;
+    white-space: nowrap;
+}
+.nf-item-add:active { transform: scale(0.95); }
+
+/* Receta item — sin select de porciones */
+.nf-receta-item .nf-item-actions {
+    justify-content: center;
+}
+.nf-receta-add {
+    font-size: 0.68rem;
+    font-weight: 700;
+    padding: 10px 10px;
+    border-radius: 8px;
+    border: none;
+    background: rgba(251,146,60,0.18);
+    color: #fb923c;
+    cursor: pointer;
+    white-space: nowrap;
+}
+.nf-receta-add:active { transform: scale(0.95); }
+
+.nf-receta-ingredientes {
+    font-size: 0.65rem;
+    color: #7a82a0;
+    margin-top: 2px;
+    line-height: 1.4;
+}
+
+/* ======================================================
+   PLAN NUTRICIONAL — tarjetas, metas, comidas, picker
+   ====================================================== */
+
+/* Tarjeta genérica del plan */
+.nutri-plan-card {
+    background: linear-gradient(160deg, rgba(255,255,255,0.09), rgba(255,255,255,0.02));
+    border: 1px solid rgba(255,255,255,0.09);
+    -webkit-backdrop-filter: blur(8px);
+    backdrop-filter: blur(8px);
+    border-radius: 16px;
+    overflow: hidden;
+    box-shadow: 0 6px 18px rgba(0,0,0,0.22);
+}
+.plan-card-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 10px 14px;
+    border-bottom: 1px solid rgba(255,255,255,0.07);
+    font-size: 0.82rem;
+    font-weight: 700;
+    color: #fff;
+}
+
+/* 2-col grid layout */
+.plan-grid {
+    display: grid;
+    grid-template-columns: minmax(240px, 37%) 1fr;
+    gap: 10px;
+    align-items: start;
+}
+.plan-col-left,
+.plan-col-right {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+.nutri-btn-mini {
+    padding: 5px 12px;
+    border-radius: 20px;
+    border: 1.5px solid rgba(74,222,128,0.4);
+    background: rgba(74,222,128,0.1);
+    color: #4ade80;
+    font-size: 0.68rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: 0.15s;
+    flex-shrink: 0;
+}
+.nutri-btn-mini:active { transform: scale(0.94); }
+
+/* ── METAS: banner kcal ── */
+.plan-kcal-banner {
+    background: linear-gradient(135deg, rgba(74,222,128,0.15), rgba(34,197,94,0.06));
+    border-radius: 12px;
+    padding: 10px 13px;
+    margin: 8px 12px 8px;
+    position: relative;
+    overflow: hidden;
+}
+.plan-kcal-banner::before {
+    content: '🔥';
+    position: absolute;
+    right: 12px;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 2.6rem;
+    opacity: 0.09;
+    pointer-events: none;
+    line-height: 1;
+}
+.plan-kcal-label {
+    font-size: 0.6rem;
+    text-transform: uppercase;
+    letter-spacing: 1.2px;
+    color: rgba(255,255,255,0.6);
+    margin-bottom: 3px;
+}
+.plan-kcal-val {
+    font-size: 1.9rem;
+    font-weight: 800;
+    color: #fff;
+    line-height: 1;
+}
+.plan-kcal-unit {
+    font-size: 1rem;
+    font-weight: 400;
+    color: rgba(255,255,255,0.55);
+}
+.plan-kcal-track {
+    margin-top: 8px;
+    height: 5px;
+    border-radius: 3px;
+    background: rgba(255,255,255,0.12);
+    overflow: hidden;
+}
+.plan-kcal-bar {
+    height: 100%;
+    border-radius: 3px;
+    transition: width 0.5s cubic-bezier(.22,1,.36,1);
+}
+.plan-kcal-sub {
+    display: flex;
+    justify-content: space-between;
+    font-size: 0.62rem;
+    color: rgba(255,255,255,0.5);
+    margin-top: 4px;
+}
+
+/* ── METAS: 4 macro mini-cards ── */
+.plan-macros-row {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 5px;
+    padding: 0 10px 10px;
+}
+.plan-macro-mini {
+    border-radius: 10px;
+    padding: 7px 5px;
+    text-align: center;
+}
+.plan-macro-icon { font-size: 0.9rem; margin-bottom: 2px; }
+.plan-macro-val  { font-size: 0.85rem; font-weight: 800; line-height: 1; }
+.plan-macro-label {
+    font-size: 0.52rem;
+    text-transform: uppercase;
+    letter-spacing: 0.4px;
+    color: #aab2cc;
+    margin: 2px 0 5px;
+}
+.plan-macro-track {
+    height: 4px;
+    border-radius: 2px;
+    background: rgba(255,255,255,0.1);
+    overflow: hidden;
+    margin-bottom: 4px;
+}
+.plan-macro-bar {
+    height: 100%;
+    border-radius: 2px;
+    transition: width 0.5s cubic-bezier(.22,1,.36,1);
+}
+.plan-macro-cur { font-size: 0.55rem; color: #7a82a0; }
+
+/* ── Meal cards ── */
+.plan-meal-card { border-left-style: solid; }
+.plan-meal-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 8px 12px;
+    gap: 8px;
+}
+.plan-meal-info { display: flex; align-items: center; gap: 8px; }
+.plan-meal-emoji {
+    width: 28px;
+    height: 28px;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.95rem;
+    flex-shrink: 0;
+}
+.plan-meal-label { font-size: 0.78rem; font-weight: 700; color: #fff; }
+.plan-meal-hora  { font-size: 0.6rem; color: #7a82a0; margin-top: 1px; }
+.plan-meal-right {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 3px;
+}
+.plan-meal-kcal { font-size: 0.75rem; font-weight: 700; }
+.plan-meal-pct  { font-size: 0.62rem; color: #7a82a0; }
+.plan-add-btn {
+    padding: 5px 10px;
+    border-radius: 20px;
+    border: 1.5px solid rgba(255,255,255,0.14);
+    background: rgba(255,255,255,0.05);
+    color: #aab2cc;
+    font-size: 0.65rem;
+    font-weight: 600;
+    cursor: pointer;
+    white-space: nowrap;
+    transition: 0.15s;
+}
+.plan-add-btn:active { transform: scale(0.94); background: rgba(255,255,255,0.1); }
+.plan-meal-track {
+    height: 3px;
+    background: rgba(255,255,255,0.05);
+    margin: 0 14px;
+}
+.plan-meal-bar { height: 100%; transition: width 0.5s cubic-bezier(.22,1,.36,1); }
+.plan-meal-items { padding: 0 10px 6px; }
+.plan-meal-empty {
+    text-align: center;
+    color: #7a82a0;
+    font-size: 0.65rem;
+    padding: 14px 10px;
+    border-top: 1px dashed rgba(255,255,255,0.07);
+}
+
+/* ── Food rows inside meal cards ── */
+.plan-food-row {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 8px;
+    padding: 9px 0;
+}
+.plan-food-border { border-bottom: 1px solid rgba(255,255,255,0.06); }
+.plan-food-left   { display: flex; align-items: flex-start; gap: 8px; flex: 1; min-width: 0; }
+.plan-food-emoji  { font-size: 1.1rem; line-height: 1.4; flex-shrink: 0; }
+.plan-food-nombre { font-size: 0.8rem; font-weight: 500; color: #dde1ef; }
+.plan-food-macros { font-size: 0.63rem; color: #7a82a0; margin-top: 2px; }
+.plan-food-right  { display: flex; align-items: center; gap: 5px; flex-shrink: 0; }
+.plan-food-kcal   { font-size: 0.7rem; font-weight: 600; color: #aab2cc; min-width: 50px; text-align: right; }
+.plan-food-select {
+    font-size: 0.65rem;
+    padding: 3px 4px;
+    border-radius: 6px;
+    border: 1px solid rgba(255,255,255,0.12);
+    background: rgba(255,255,255,0.07);
+    color: #fff;
+    cursor: pointer;
+}
+.plan-food-del {
+    background: none;
+    border: none;
+    color: #7a82a0;
+    font-size: 0.85rem;
+    cursor: pointer;
+    padding: 2px 4px;
+    border-radius: 4px;
+}
+.plan-food-del:active { color: #f87171; }
+
+.plan-meal-totals {
+    display: flex;
+    gap: 5px;
+    flex-wrap: wrap;
+    align-items: center;
+    padding: 7px 14px 10px;
+    border-top: 1px solid rgba(255,255,255,0.06);
+}
+.plan-meal-tot-kcal {
+    font-size: 0.78rem;
+    font-weight: 700;
+    color: #fff;
+    margin-right: 2px;
+}
+
+/* ── Suplementación ── */
+.plan-suple-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 9px 16px;
+}
+.plan-suple-nombre { font-size: 0.8rem; font-weight: 500; color: #dde1ef; }
+.plan-suple-sub    { font-size: 0.68rem; color: #7a82a0; margin-top: 2px; }
+
+/* ── Hidratación ── */
+.plan-agua-val {
+    font-size: 2rem;
+    font-weight: 800;
+    color: #60a5fa;
+    text-align: center;
+    text-shadow: 0 0 20px rgba(96,165,250,0.35);
+    padding: 8px 12px 4px;
+}
+.plan-agua-sub {
+    text-align: center;
+    color: #7a82a0;
+    font-size: 0.68rem;
+    padding-bottom: 10px;
+}
+.plan-agua-last { margin-bottom: 0; }
+
+/* Exclusión */
+.plan-excluido { opacity: 0.42; }
+.plan-excluir-btn {
+    font-size: 0.6rem; padding: 2px 6px; border-radius: 6px;
+    cursor: pointer; border: none; background: transparent; color: #7a82a0;
+}
+.plan-incluir-btn {
+    font-size: 0.62rem; padding: 5px 8px; border-radius: 8px; cursor: pointer;
+    border: 1.5px solid rgba(248,113,113,0.4); background: rgba(248,113,113,0.08);
+    color: #f87171; text-align: center; white-space: nowrap; line-height: 1.4;
+}
+
+/* ======================================================
+   FOOD PICKER MODAL (bottom sheet alto)
+   ====================================================== */
+.nutri-picker-box {
+    background: linear-gradient(160deg, rgba(10,12,28,0.65), rgba(6,8,20,0.58));
+    border: 1px solid rgba(255,255,255,0.13);
+    -webkit-backdrop-filter: blur(32px) saturate(1.5);
+    backdrop-filter: blur(32px) saturate(1.5);
+    border-radius: 22px 22px 0 0;
+    width: 100%;
+    max-width: 480px;
+    height: 85vh;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    box-shadow: 0 -8px 32px rgba(0,0,0,0.45);
+    animation: nutriSubir 0.25s ease;
+}
+.nutri-picker-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 16px 18px 10px;
+    flex-shrink: 0;
+}
+.nutri-picker-title { font-size: 1.05rem; font-weight: 700; color: #fff; }
+.nutri-picker-title em { font-style: italic; color: #fb923c; }
+.nutri-picker-close {
+    width: 30px; height: 30px; border-radius: 50%;
+    background: rgba(255,255,255,0.08); border: none;
+    color: #aab2cc; cursor: pointer; font-size: 0.85rem;
+    display: flex; align-items: center; justify-content: center;
+}
+.nutri-picker-search-wrap {
+    position: relative;
+    padding: 0 16px 8px;
+    flex-shrink: 0;
+}
+.nutri-picker-search-icon {
+    position: absolute;
+    left: 28px; top: 50%;
+    transform: translateY(-60%);
+    font-size: 0.85rem;
+    pointer-events: none;
+}
+.nutri-picker-search {
+    width: 100%;
+    box-sizing: border-box;
+    padding: 9px 14px 9px 36px;
+    border-radius: 50px;
+    border: 1.5px solid rgba(255,255,255,0.12);
+    background: rgba(255,255,255,0.07);
+    color: #fff;
+    font-size: 0.85rem;
+    outline: none;
+}
+.nutri-picker-search:focus  { border-color: rgba(74,222,128,0.5); }
+.nutri-picker-search::placeholder { color: #7a82a0; }
+.nutri-picker-tabs {
+    display: flex;
+    border-bottom: 1px solid rgba(255,255,255,0.08);
+    flex-shrink: 0;
+    padding: 0 16px;
+}
+.nutri-picker-tab {
+    flex: 1;
+    padding: 8px 10px;
+    background: none;
+    border: none;
+    border-bottom: 2.5px solid transparent;
+    color: #7a82a0;
+    font-size: 0.78rem;
+    font-weight: 400;
+    cursor: pointer;
+    transition: 0.15s;
+    margin-bottom: -1px;
+}
+.nutri-picker-tab.activo {
+    border-bottom-color: #4ade80;
+    color: #4ade80;
+    font-weight: 600;
+}
+.nutri-picker-cats {
+    display: flex;
+    gap: 6px;
+    overflow-x: auto;
+    padding: 8px 16px;
+    flex-shrink: 0;
+    border-bottom: 1px solid rgba(255,255,255,0.06);
+    scrollbar-width: none;
+}
+.nutri-picker-cats::-webkit-scrollbar { display: none; }
+.nutri-picker-list {
+    overflow-y: auto;
+    flex: 1;
+    padding: 0 16px 16px;
+    scrollbar-width: thin;
+    scrollbar-color: rgba(255,255,255,0.12) transparent;
+}
+.nutri-picker-list::-webkit-scrollbar { width: 3px; }
+.nutri-picker-list::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.12); border-radius: 2px; }
+
+/* ── Receta card dentro del picker ── */
+.plan-receta-card {
+    border: 1.5px solid rgba(255,255,255,0.1);
+    border-radius: 16px;
+    overflow: hidden;
+    margin-top: 12px;
+}
+.plan-receta-header {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 12px 14px;
+    background: rgba(255,255,255,0.04);
+}
+.plan-receta-avatar {
+    width: 42px; height: 42px; border-radius: 12px;
+    background: rgba(255,255,255,0.07);
+    border: 1.5px solid rgba(255,255,255,0.1);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 1.4rem; flex-shrink: 0;
+}
+.plan-receta-info   { flex: 1; min-width: 0; }
+.plan-receta-nombre { font-size: 0.88rem; font-weight: 700; color: #dde1ef; }
+.plan-receta-desc   { font-size: 0.7rem; color: #7a82a0; margin-top: 2px; }
+.plan-receta-cat {
+    font-size: 0.6rem; padding: 3px 9px; border-radius: 20px;
+    background: rgba(255,255,255,0.07); color: #aab2cc;
+    border: 1px solid rgba(255,255,255,0.1); flex-shrink: 0;
+}
+.plan-receta-ings { padding: 4px 14px 8px; }
+.plan-rec-ing {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 7px 0;
+    border-top: 1px dashed rgba(255,255,255,0.07);
+}
+.plan-rec-ing-emoji  { font-size: 1.2rem; width: 26px; text-align: center; flex-shrink: 0; }
+.plan-rec-ing-info   { flex: 1; min-width: 0; }
+.plan-rec-ing-nombre { font-size: 0.78rem; font-weight: 500; color: #dde1ef; }
+.plan-rec-ing-sub    { font-size: 0.63rem; color: #7a82a0; margin-top: 1px; }
+.plan-rec-ing-macros {
+    display: flex; flex-wrap: wrap; gap: 3px; margin-top: 4px;
+}
+.plan-rec-ing-macros .nf-chip {
+    font-size: 0.54rem;
+    padding: 1px 5px;
+}
+.plan-rec-qty {
+    display: flex; align-items: center; gap: 6px; flex-shrink: 0;
+}
+.plan-rec-btn {
+    width: 26px; height: 26px; border-radius: 50%;
+    border: 1.5px solid rgba(255,255,255,0.14);
+    background: rgba(255,255,255,0.06);
+    color: #fff; cursor: pointer; font-size: 1rem;
+    display: flex; align-items: center; justify-content: center;
+    font-weight: 300; flex-shrink: 0; line-height: 1;
+    transition: 0.12s;
+}
+.plan-rec-btn:active { transform: scale(0.88); background: rgba(255,255,255,0.12); }
+.plan-rec-qty-val {
+    font-size: 0.9rem; font-weight: 700; color: #fff;
+    min-width: 28px; text-align: center;
+}
+.plan-rec-ing-kcal {
+    font-size: 0.65rem; color: #7a82a0;
+    min-width: 50px; text-align: right; flex-shrink: 0;
+}
+.plan-receta-footer {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+    padding: 10px 14px 12px;
+    border-top: 2px solid rgba(255,255,255,0.07);
+    flex-wrap: wrap;
+}
+.plan-receta-totals {
+    display: flex; align-items: center; gap: 5px; flex-wrap: wrap;
+}
+/* ── Edición de recetas ── */
+.plan-rec-del {
+    background: none; border: none; color: #4a5170; font-size: 1rem;
+    cursor: pointer; padding: 0 2px; flex-shrink: 0; line-height: 1;
+    transition: color 0.15s;
+}
+.plan-rec-del:hover { color: #f87171; }
+
+.plan-rec-add-ing-btn {
+    display: block; width: calc(100% - 28px); margin: 6px 14px 0;
+    padding: 5px; background: rgba(255,255,255,0.04);
+    border: 1px dashed rgba(255,255,255,0.15); border-radius: 8px;
+    color: #7a82a0; font-size: 0.7rem; cursor: pointer;
+    transition: 0.15s; text-align: center;
+}
+.plan-rec-add-ing-btn:hover { background: rgba(255,255,255,0.08); color: #aab2cc; }
+.plan-rec-add-ing-btn.activo {
+    background: rgba(248,113,113,0.08);
+    border-color: rgba(248,113,113,0.3);
+    color: #f87171;
+}
+
+/* Panel inline de añadir ingrediente */
+.plan-rec-inline-add {
+    margin: 8px 14px 0;
+    border: 1px solid rgba(96,165,250,0.2);
+    border-radius: 10px;
+    background: rgba(10,12,28,0.45);
+    overflow: hidden;
+}
+.plan-rec-inline-srch-wrap {
+    padding: 8px 10px 6px;
+}
+.plan-rec-inline-srch {
+    display: block; width: 100%; box-sizing: border-box;
+    background: rgba(255,255,255,0.07);
+    border: 1px solid rgba(255,255,255,0.12);
+    border-radius: 8px; color: #fff;
+    font-size: 0.73rem; padding: 5px 10px; outline: none;
+}
+.plan-rec-inline-srch::placeholder { color: #5a6280; }
+.plan-rec-inline-srch:focus { border-color: rgba(96,165,250,0.4); }
+.plan-rec-inline-cats {
+    display: flex; gap: 4px; padding: 0 10px 6px;
+    overflow-x: auto; scrollbar-width: none;
+}
+.plan-rec-inline-cats::-webkit-scrollbar { display: none; }
+.plan-rec-inline-cats .nf-cat { font-size: 0.62rem; padding: 2px 8px; }
+.plan-rec-inline-list {
+    max-height: 220px; overflow-y: auto;
+    border-top: 1px solid rgba(255,255,255,0.06);
+}
+.nf-item-inline { padding: 6px 10px !important; }
+
+.plan-tot-kcal { font-size: 0.82rem; font-weight: 700; color: #fff; }
+.plan-receta-add-btn {
+    padding: 8px 16px !important;
+    font-size: 0.78rem !important;
+    border-radius: 20px !important;
+    flex-shrink: 0;
+}
+
+/* --- Toast --- */
+.nutri-toast {
+    position: fixed;
+    bottom: 90px;
+    left: 50%;
+    transform: translateX(-50%) translateY(20px);
+    background: rgba(20,22,32,0.95);
+    border: 1px solid rgba(74,222,128,0.4);
+    color: #fff;
+    padding: 10px 18px;
+    border-radius: 30px;
+    font-size: 0.82rem;
+    font-weight: 600;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.4);
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.25s, transform 0.25s;
+    z-index: 9500;
+    max-width: 90%;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+.nutri-toast.mostrar {
+    opacity: 1;
+    transform: translateX(-50%) translateY(0);
 }

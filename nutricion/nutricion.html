@@ -1,130 +1,160 @@
-<div class="nutricion-container">
+<div class="nutri-root" id="nutri-root">
 
-  <!-- HEADER -->
-  <div class="nutri-header">
-    <div class="nutri-titulo">Nutrición</div>
-    <div class="nutri-fecha-label" id="n-fecha-label"></div>
-  </div>
+  <!-- ESCENA ANIMADA DE FONDO — Fotografías reales -->
+  <div class="nutri-scene" id="nutri-scene">
 
-  <!-- BMR + MI BAND ROW -->
-  <div class="nutri-top-cards">
-
-    <!-- BMR -->
-    <div class="nutri-top-card bmr-card">
-      <div class="ntc-label">Solo por existir</div>
-      <div class="ntc-valor"><span id="n-bmr-val">2,500</span> <small>kcal</small></div>
-      <button type="button" class="ntc-edit-btn" onclick="nutriEditarBMR()">✏️</button>
+    <!-- OTOÑO -->
+    <div class="nutri-layer nutri-layer-otono" data-theme-layer="otono">
+      <video class="nutri-video-bg" autoplay loop muted playsinline preload="auto">
+        <source src="nutricion/videos/otono.mp4" type="video/mp4">
+      </video>
+      <div class="nutri-photo-overlay nutri-overlay-otono"></div>
     </div>
 
-    <!-- MI BAND -->
-    <div class="nutri-top-card miband-card">
-      <div class="ntc-label">Actividad Mi Band</div>
-      <div class="ntc-miband-input" id="n-miband-display">
-        <span id="n-miband-val">—</span> <small>kcal</small>
-        <button type="button" class="ntc-edit-btn" onclick="nutriEditarMiBand()">✏️</button>
+    <!-- PLAYA -->
+    <div class="nutri-layer nutri-layer-playa" data-theme-layer="playa">
+      <video class="nutri-video-bg" autoplay loop muted playsinline preload="auto">
+        <source src="nutricion/videos/playa.mp4" type="video/mp4">
+      </video>
+      <div class="nutri-photo-overlay nutri-overlay-playa"></div>
+    </div>
+
+    <!-- AURORA BOREAL -->
+    <div class="nutri-layer nutri-layer-aurora" data-theme-layer="aurora">
+      <video class="nutri-video-bg" autoplay loop muted playsinline preload="auto">
+        <source src="nutricion/videos/aurora.mp4" type="video/mp4">
+      </video>
+      <div class="nutri-photo-overlay nutri-overlay-aurora"></div>
+    </div>
+
+    <!-- NIEVE -->
+    <div class="nutri-layer nutri-layer-nieve" data-theme-layer="nieve">
+      <video class="nutri-video-bg" autoplay loop muted playsinline preload="auto">
+        <source src="nutricion/videos/nieve.mp4" type="video/mp4">
+      </video>
+      <div class="nutri-photo-overlay nutri-overlay-nieve"></div>
+    </div>
+
+    <!-- LLUVIA -->
+    <div class="nutri-layer nutri-layer-lluvia" data-theme-layer="lluvia">
+      <video class="nutri-video-bg" autoplay loop muted playsinline preload="auto">
+        <source src="nutricion/videos/lluvia2.mp4" type="video/mp4">
+      </video>
+      <div class="nutri-photo-overlay nutri-overlay-lluvia"></div>
+    </div>
+
+    <!-- ATARDECER -->
+    <div class="nutri-layer nutri-layer-atardecer" data-theme-layer="atardecer">
+      <video class="nutri-video-bg" autoplay loop muted playsinline preload="auto">
+        <source src="nutricion/videos/atardecer.mp4" type="video/mp4">
+      </video>
+      <div class="nutri-photo-overlay nutri-overlay-atardecer"></div>
+    </div>
+
+    <div class="nutri-vignette"></div>
+  </div>
+
+  <div class="nutricion-container">
+
+    <!-- HEADER -->
+    <div class="nutri-header">
+      <div class="nutri-header-left">
+        <div class="nutri-titulo">Nutrición</div>
+        <div class="nutri-fecha-label" id="n-fecha-label"></div>
+      </div>
+      <div class="nutri-theme-wrap">
+        <button type="button" class="nutri-theme-btn" id="n-theme-btn" onclick="nutriToggleThemeMenu()" title="Cambiar paisaje">
+          <span class="ntb-glow"></span>
+          <span class="ntb-emoji" id="n-theme-btn-emoji">🌧️</span>
+        </button>
+        <div class="nutri-theme-menu" id="n-theme-menu"></div>
       </div>
     </div>
 
-  </div>
+    <!-- BMR + MI BAND ROW -->
+    <div class="nutri-top-cards">
 
-  <!-- DÉFICIT CARD -->
-  <div class="nutri-deficit-card" id="n-deficit-card">
-    <div class="ndc-row quemado">
-      <span class="ndc-label">Total quemado</span>
-      <span class="ndc-val" id="n-total-quemado">2,500 kcal</span>
-    </div>
-    <div class="ndc-divider"></div>
-    <div class="ndc-row consumido">
-      <span class="ndc-label">Consumido</span>
-      <span class="ndc-val" id="n-total-consumido">0 kcal</span>
-    </div>
-    <div class="ndc-divider grueso"></div>
-    <div class="ndc-resultado" id="n-resultado-wrap">
-      <span class="ndc-resultado-label" id="n-resultado-label">DÉFICIT</span>
-      <span class="ndc-resultado-val" id="n-resultado-val">2,500 kcal</span>
-    </div>
-  </div>
-
-  <!-- MACROS -->
-  <div class="nutri-macros-grid">
-
-    <div class="macro-row">
-      <span class="macro-nombre prot">Proteína</span>
-      <div class="macro-track">
-        <div class="macro-fill prot" id="m-fill-prot"></div>
+      <!-- BMR -->
+      <div class="nutri-top-card bmr-card">
+        <div class="ntc-label">Solo por existir</div>
+        <div class="ntc-valor"><span id="n-bmr-val">2,500</span> <small>kcal</small></div>
+        <button type="button" class="ntc-edit-btn" onclick="nutriEditarBMR()">✏️</button>
       </div>
-      <span class="macro-val"><span id="m-prot">0</span>/206g</span>
-    </div>
 
-    <div class="macro-row">
-      <span class="macro-nombre carb">Carbos</span>
-      <div class="macro-track">
-        <div class="macro-fill carb" id="m-fill-carb"></div>
+      <!-- MI BAND -->
+      <div class="nutri-top-card miband-card">
+        <div class="ntc-label">Actividad Mi Band</div>
+        <div class="ntc-miband-input" id="n-miband-display">
+          <span id="n-miband-val">—</span> <small>kcal</small>
+          <button type="button" class="ntc-edit-btn" onclick="nutriEditarMiBand()">✏️</button>
+        </div>
       </div>
-      <span class="macro-val"><span id="m-carb">0</span>/160g</span>
+
     </div>
 
-    <div class="macro-row">
-      <span class="macro-nombre gras">Grasa</span>
-      <div class="macro-track">
-        <div class="macro-fill gras" id="m-fill-gras"></div>
-      </div>
-      <span class="macro-val"><span id="m-gras">0</span>/55g</span>
+    <!-- PLAN NUTRICIONAL -->
+    <div id="plan-root">
+      <div style="text-align:center;padding:40px 20px;color:#7a82a0;font-size:0.85rem">Cargando plan...</div>
     </div>
 
-    <div class="macro-row">
-      <span class="macro-nombre fibra">Fibra</span>
-      <div class="macro-track">
-        <div class="macro-fill fibra" id="m-fill-fibra"></div>
-      </div>
-      <span class="macro-val"><span id="m-fibra">0</span>/30g</span>
-    </div>
-
-  </div>
-
-  <!-- BOTÓN AGREGAR COMIDA -->
-  <div class="nutri-btns-row">
-    <button class="nutri-btn-add comida" onclick="nutriAbrirModal('comida')">+ Agregar Comida</button>
-  </div>
-
-  <!-- LOG DEL DÍA -->
-  <div class="nutri-log-titulo">Registro de hoy</div>
-  <div class="nutri-log" id="n-log">
-    <div class="nutri-log-vacio">Sin registros aún</div>
   </div>
 
 </div>
 
-<!-- MODAL COMIDA -->
-<div id="modalNutriComida" class="nutri-modal-overlay nutri-modal-hidden">
+<!-- FOOD PICKER MODAL -->
+<div id="food-picker-modal" class="nutri-modal-overlay nutri-modal-hidden">
+  <div class="nutri-picker-box">
+
+    <div class="nutri-picker-header">
+      <div class="nutri-picker-title">Agregar a <em id="picker-meal-lbl">comida</em></div>
+      <button type="button" class="nutri-picker-close" onclick="nutriClosePicker()">✕</button>
+    </div>
+
+    <div class="nutri-picker-search-wrap">
+      <span class="nutri-picker-search-icon">🔍</span>
+      <input type="text" id="picker-search" class="nutri-picker-search"
+             placeholder="Buscar alimento o receta..."
+             oninput="nutriRenderPickerContent()">
+    </div>
+
+    <div class="nutri-picker-tabs">
+      <button type="button" data-ptab="alimentos" onclick="nutriSwitchPickerTab('alimentos')" class="nutri-picker-tab activo">🥗 Alimentos</button>
+      <button type="button" data-ptab="recetas"   onclick="nutriSwitchPickerTab('recetas')"   class="nutri-picker-tab">👨‍🍳 Recetas</button>
+    </div>
+
+    <div id="picker-cats-bar" class="nutri-picker-cats"></div>
+    <div id="picker-list"     class="nutri-picker-list"></div>
+  </div>
+</div>
+
+<!-- MODAL SUPLEMENTO -->
+<div id="nutri-suple-modal" class="nutri-modal-overlay nutri-modal-hidden">
   <div class="nutri-modal-box">
-    <div class="nutri-modal-titulo">Agregar Comida</div>
-    <input type="text" id="nf-nombre" class="nutri-input" placeholder="Nombre del alimento">
+    <div class="nutri-modal-titulo">Agregar suplemento</div>
+    <div class="nutri-field">
+      <label>Suplemento *</label>
+      <input type="text" id="suple-nombre" class="nutri-input" placeholder="Ej. Omega 3, Vitamina D...">
+    </div>
     <div class="nutri-grid-2">
       <div class="nutri-field">
-        <label>Calorías</label>
-        <input type="number" id="nf-cals" class="nutri-input" placeholder="kcal" min="0">
+        <label>Dosis</label>
+        <input type="text" id="suple-dosis" class="nutri-input" placeholder="Ej. 1g, 2000UI">
       </div>
       <div class="nutri-field">
-        <label>Proteína (g)</label>
-        <input type="number" id="nf-prot" class="nutri-input" placeholder="g" min="0">
-      </div>
-      <div class="nutri-field">
-        <label>Carbos (g)</label>
-        <input type="number" id="nf-carb" class="nutri-input" placeholder="g" min="0">
-      </div>
-      <div class="nutri-field">
-        <label>Grasa (g)</label>
-        <input type="number" id="nf-gras" class="nutri-input" placeholder="g" min="0">
-      </div>
-      <div class="nutri-field nutri-field-full">
-        <label>Fibra (g)</label>
-        <input type="number" id="nf-fibra" class="nutri-input" placeholder="g" min="0">
+        <label>Momento</label>
+        <select id="suple-frecuencia" class="nutri-input" title="Momento del día">
+          <option>AM</option><option>PM</option><option>con comida</option>
+          <option>con cena</option><option>diario</option><option>en ayunas</option>
+        </select>
       </div>
     </div>
+    <div class="nutri-field">
+      <label>Razón (opcional)</label>
+      <input type="text" id="suple-razon" class="nutri-input" placeholder="Ej. Deficiencia de vitamina D">
+    </div>
     <div class="nutri-modal-btns">
-      <button class="nutri-btn-guardar" onclick="nutriGuardarComida()">Guardar</button>
-      <button class="nutri-btn-cancelar" onclick="nutriCerrarModal('comida')">Cancelar</button>
+      <button type="button" class="nutri-btn-guardar"   onclick="nutriGuardarSuple()">Guardar</button>
+      <button type="button" class="nutri-btn-cancelar"  onclick="nutriCerrarModal('suple')">Cancelar</button>
     </div>
   </div>
 </div>
