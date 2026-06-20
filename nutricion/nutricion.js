@@ -462,6 +462,24 @@ function renderPlanRoot() {
       <div class="plan-col-left">${leftCol}</div>
       <div class="plan-col-right">${rightCol}</div>
     </div>`;
+    nutriUpdateBalanceCards(C.kcal);
+}
+
+// ── Total quemadas + Déficit calórico ─────────────────
+function nutriUpdateBalanceCards(consumidas) {
+    if (consumidas == null) consumidas = planTotals().kcal;
+    const quemado = nutriBMR + nutriMiBand;
+    const deficit = quemado - consumidas;
+
+    const elQuemado = document.getElementById('n-quemado-val');
+    if (elQuemado) elQuemado.textContent = quemado.toLocaleString('es-MX');
+
+    const elDeficit = document.getElementById('n-deficit-val');
+    if (elDeficit) {
+        const signo = deficit < 0 ? '-' : '';
+        elDeficit.innerHTML = `${signo}${Math.abs(deficit).toLocaleString('es-MX')} <small>kcal</small>`;
+        elDeficit.classList.toggle('superavit', deficit < 0);
+    }
 }
 
 // ── Panel de metas ────────────────────────────────────

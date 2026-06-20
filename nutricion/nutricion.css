@@ -271,6 +271,9 @@
     padding: 2px;
 }
 .ntc-edit-btn:active { opacity: 1; }
+.ntc-quemado { color: #fb923c; }
+#n-deficit-val { color: #4ade80; }
+#n-deficit-val.superavit { color: #f87171; }
 
 /* DÉFICIT CARD */
 .nutri-deficit-card {
