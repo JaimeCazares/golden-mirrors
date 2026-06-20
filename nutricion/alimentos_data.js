@@ -62,6 +62,7 @@ const NUTRI_FOOD_DB = [
   { nombre: 'Queso panela', categoria: 'Lácteos', emoji: '🧀', porcion: '50 g', calorias: 95,  proteina: 9,   carbos: 1.5, grasa: 6,   fibra: 0 },
   { nombre: 'Queso cottage', categoria: 'Lácteos', emoji: '🧀', porcion: '1 taza (226 g)', calorias: 206, proteina: 25, carbos: 8,  grasa: 9,   fibra: 0 },
   { nombre: 'Yogurt natural', categoria: 'Lácteos', emoji: '🥛', porcion: '1 taza (245 g)', calorias: 154, proteina: 8.5, carbos: 17, grasa: 8,   fibra: 0 },
+  { nombre: 'Queso asadero', categoria: 'Lácteos', emoji: '🧀', porcion: '50 g', calorias: 153, proteina: 10.5, carbos: 1.5, grasa: 12,  fibra: 0 },
 
   // Grasas
   { nombre: 'Almendras', categoria: 'Grasas', emoji: '🥜', porcion: '23 piezas (28 g)', calorias: 164, proteina: 6,   carbos: 6,  grasa: 14,  fibra: 3.5 },
