@@ -52,6 +52,8 @@ const NUTRI_FOOD_DB = [
   { nombre: 'Calabacita', categoria: 'Verduras', emoji: '🥒', porcion: '1 taza (124 g)', calorias: 20,  proteina: 1.5, carbos: 4.3, grasa: 0.3, fibra: 1.3 },
   { nombre: 'Nopales', categoria: 'Verduras', emoji: '🌵', porcion: '1 taza (86 g)', calorias: 14,  proteina: 1.1, carbos: 3,  grasa: 0.1, fibra: 1.9 },
   { nombre: 'Jitomate', categoria: 'Verduras', emoji: '🍅', porcion: '1 pieza mediana', calorias: 22,  proteina: 1.1, carbos: 4.8, grasa: 0.2, fibra: 1.5 },
+  { nombre: 'Cebolla morada', categoria: 'Verduras', emoji: '🧅', porcion: '1/4 taza picada (40 g)', calorias: 16, proteina: 0.4, carbos: 3.7, grasa: 0, fibra: 0.7 },
+  { nombre: 'Limón', categoria: 'Verduras', emoji: '🍋', porcion: '1 pieza (67 g)', calorias: 20, proteina: 0.5, carbos: 7, grasa: 0.2, fibra: 1.9 },
 
   // Lácteos
   { nombre: 'Yogurt griego natural', categoria: 'Lácteos', emoji: '🥛', porcion: '1 taza (245 g)', calorias: 146, proteina: 25, carbos: 8,  grasa: 4,   fibra: 0 },
