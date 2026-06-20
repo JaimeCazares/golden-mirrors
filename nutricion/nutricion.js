@@ -37,10 +37,7 @@ function initNutricion() {
     nutriInitTema();
     initPlanNutricional();
 
-    document.querySelectorAll('.nutri-video-bg').forEach(v => {
-        v.muted = true;
-        v.play().catch(() => {});
-    });
+    // los videos se cargan de forma lazy en nutriAplicarTema()
 }
 
 // ══════════════════════════════════════════════════════
@@ -93,6 +90,10 @@ function nutriAplicarTema(key) {
         const vid = l.querySelector('.nutri-video-bg');
         if (vid) {
             if (activo) {
+                if (vid.dataset.src && !vid.src) {
+                    vid.src = vid.dataset.src;
+                    vid.load();
+                }
                 vid.muted = true;
                 vid.play().catch(() => {});
             } else {

@@ -22,29 +22,36 @@ if ($method === 'GET') {
     $seleccion = [];
     if ($plan) {
         $stmt = $pdo->prepare("
-            SELECT pas.alimento_id, pas.tiempo_comida AS tiempo, pas.porciones,
+            SELECT pas.alimento_id, pas.tiempo_comida AS tiempo, pas.dia_semana AS dia, pas.porciones,
+                   pas.receta_id, r.nombre AS receta_nombre, r.preparacion,
                    a.nombre, a.categoria, a.porcion_descripcion AS porcion_desc,
                    a.calorias, a.proteina_g AS proteina, a.carbohidratos_g AS carbos,
                    a.grasas_g AS grasas, a.fibra_g AS fibra
             FROM plan_alimentos_seleccionados pas
             JOIN alimentos a ON a.id = pas.alimento_id
+            LEFT JOIN recetas r ON r.id = pas.receta_id
             WHERE pas.plan_id = ?
-            ORDER BY FIELD(pas.tiempo_comida,'desayuno','colacion_am','comida','colacion_pm','cena'), a.nombre
+            ORDER BY FIELD(pas.dia_semana,'lunes','martes','miercoles','jueves','viernes','sabado','domingo'),
+                     FIELD(pas.tiempo_comida,'desayuno','colacion_am','comida','colacion_pm','cena'), a.nombre
         ");
         $stmt->execute([$plan['id']]);
         $seleccion = array_map(function ($r) {
             return [
-                'alimento_id' => (int)$r['alimento_id'],
-                'tiempo'      => $r['tiempo'],
-                'porciones'   => (float)$r['porciones'],
-                'nombre'      => $r['nombre'],
-                'categoria'   => $r['categoria'],
-                'porcion_desc'=> $r['porcion_desc'],
-                'calorias'    => (int)$r['calorias'],
-                'proteina'    => (float)$r['proteina'],
-                'carbos'      => (float)$r['carbos'],
-                'grasas'      => (float)$r['grasas'],
-                'fibra'       => (float)$r['fibra'],
+                'alimento_id'   => (int)$r['alimento_id'],
+                'tiempo'        => $r['tiempo'],
+                'dia'           => $r['dia'],
+                'porciones'     => (float)$r['porciones'],
+                'receta_id'     => $r['receta_id'] ? (int)$r['receta_id'] : null,
+                'receta_nombre' => $r['receta_nombre'],
+                'preparacion'   => $r['preparacion'],
+                'nombre'        => $r['nombre'],
+                'categoria'     => $r['categoria'],
+                'porcion_desc'  => $r['porcion_desc'],
+                'calorias'      => (int)$r['calorias'],
+                'proteina'      => (float)$r['proteina'],
+                'carbos'        => (float)$r['carbos'],
+                'grasas'        => (float)$r['grasas'],
+                'fibra'         => (float)$r['fibra'],
             ];
         }, $stmt->fetchAll());
     }
@@ -83,13 +90,15 @@ if ($method === 'PUT') {
 
     if (!empty($d['seleccion']) && is_array($d['seleccion'])) {
         $ins = $pdo->prepare('INSERT INTO plan_alimentos_seleccionados
-            (plan_id, alimento_id, tiempo_comida, porciones) VALUES (?,?,?,?)');
+            (plan_id, alimento_id, tiempo_comida, dia_semana, porciones, receta_id) VALUES (?,?,?,?,?,?)');
         foreach ($d['seleccion'] as $item) {
             $ins->execute([
                 $planId,
                 (int)$item['alimento_id'],
                 $item['tiempo'],
+                $item['dia'] ?? 'lunes',
                 (float)($item['porciones'] ?? 1.0),
+                !empty($item['receta_id']) ? (int)$item['receta_id'] : null,
             ]);
         }
     }

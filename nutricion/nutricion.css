@@ -1263,6 +1263,58 @@
     flex-shrink: 0;
 }
 
+/* ======================================================
+   RESPONSIVE
+   ====================================================== */
+
+@media (max-width: 760px) {
+    /* 2 columnas → 1 columna */
+    .plan-grid {
+        grid-template-columns: 1fr;
+    }
+
+    /* 4 macros en fila → 2×2 */
+    .plan-macros-row {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 6px;
+    }
+
+    .plan-macro-mini {
+        padding: 8px 6px;
+    }
+}
+
+@media (max-width: 480px) {
+    .nutricion-container {
+        padding: 10px 10px;
+    }
+
+    /* Header de comida: permite que el botón baje si no cabe */
+    .plan-meal-header {
+        flex-wrap: wrap;
+    }
+
+    /* Título kcal un poco más pequeño */
+    .plan-kcal-val {
+        font-size: 1.55rem;
+    }
+
+    /* Picker más alto en pantallas pequeñas */
+    .nutri-picker-box {
+        height: 92vh;
+    }
+
+    /* Chips del total de comida: ajuste menor */
+    .plan-meal-totals {
+        padding: 6px 10px 8px;
+    }
+
+    /* Filas de comida: ajuste de padding */
+    .plan-meal-items {
+        padding: 0 8px 4px;
+    }
+}
+
 /* --- Toast --- */
 .nutri-toast {
     position: fixed;

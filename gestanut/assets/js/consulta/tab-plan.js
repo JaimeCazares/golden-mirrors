@@ -1,14 +1,26 @@
-﻿// ══════════════════════════════════════════════════════
-// TAB · Plan nutricional v2
+// ══════════════════════════════════════════════════════
+// TAB · Plan nutricional v3 — semanal + recetario en BD
 // ══════════════════════════════════════════════════════
 
-let _alimentos  = [];
-let _planSel    = { desayuno:[], colacion_am:[], comida:[], colacion_pm:[], cena:[] };
-let _planAct    = 1.4;
-let _pickerMeal = null;
-let _pickerCat  = 'Todos';
-let _pickerTab  = 'alimentos';
-let _pickerRecCat = 'Todos';
+let _alimentos     = [];
+let _recetasRaw    = [];
+let _planDias      = {};
+let _planDiaActivo = 'lunes';
+let _planAct       = 1.4;
+let _pickerMeal    = null;
+let _pickerCat     = 'Todos';
+let _pickerTab     = 'alimentos';
+let _pickerRecCat  = 'Todos';
+
+const DIAS = [
+  { key:'lunes',     label:'Lunes' },
+  { key:'martes',    label:'Martes' },
+  { key:'miercoles', label:'Miércoles' },
+  { key:'jueves',    label:'Jueves' },
+  { key:'viernes',   label:'Viernes' },
+  { key:'sabado',    label:'Sábado' },
+  { key:'domingo',   label:'Domingo' },
+];
 
 const MEALS = [
   { key:'desayuno',    label:'🌅 Desayuno',    hora:'7:30',  pct:.25 },
@@ -18,6 +30,10 @@ const MEALS = [
   { key:'cena',        label:'🌙 Cena',        hora:'8:00',  pct:.20 },
 ];
 
+const MEAL_KEY_TO_CAT = {
+  desayuno:'Desayuno', colacion_am:'Colación AM', comida:'Comida', colacion_pm:'Colación PM', cena:'Cena',
+};
+
 const ACT_OPTS = [
   { val:1.2,   label:'Sedentario',  desc:'Sin ejercicio' },
   { val:1.375, label:'Ligero',      desc:'1-2 días/sem' },
@@ -26,7 +42,7 @@ const ACT_OPTS = [
   { val:1.9,   label:'Muy intenso', desc:'2 sesiones diarias' },
 ];
 
-// ── Food Picker: emojis / colores / recetas ──────────
+// ── Food Picker: emojis / colores ─────────────────────
 
 const FOOD_EMOJI_MAP = [
   ['huevo','🥚'],['jamón','🥓'],['tocino','🥓'],['chorizo','🌭'],
@@ -73,178 +89,25 @@ const MEAL_REC_EMOJI = {
   'Desayuno':'🌅', 'Colación AM':'🍎', 'Comida':'🍽', 'Colación PM':'🥑', 'Cena':'🌙',
 };
 
-const RECETAS = [
-  // ── Desayuno ─────────────────────────────────────────
-  {
-    nombre:'Huevo con jamón', emoji:'🍳', cat:'Desayuno',
-    desc:'Clásico desayuno proteico', color:'#fff8f5', border:'#c4714a',
-    ing:[
-      { buscar:'huevo entero',  label:'Huevo entero',  emoji:'🥚', qty:2, step:1,   min:1, max:6 },
-      { buscar:'jamón de pavo', label:'Jamón de pavo', emoji:'🥓', qty:2, step:1,   min:0, max:8 },
-      { buscar:'aceite',        label:'Aceite',        emoji:'🫒', qty:1, step:0.5, min:0, max:5 },
-    ]
-  },
-  {
-    nombre:'Omelette de queso', emoji:'🍳', cat:'Desayuno',
-    desc:'Esponjoso y proteico', color:'#fffbf0', border:'#d4a843',
-    ing:[
-      { buscar:'huevo entero', label:'Huevo entero', emoji:'🥚', qty:3,   step:1,   min:1, max:6 },
-      { buscar:'queso',        label:'Queso',        emoji:'🧀', qty:1,   step:0.5, min:0, max:4 },
-      { buscar:'aceite',       label:'Aceite',       emoji:'🫒', qty:1,   step:0.5, min:0, max:5 },
-    ]
-  },
-  {
-    nombre:'Avena con fruta', emoji:'🥣', cat:'Desayuno',
-    desc:'Fibra + energía sostenida', color:'#f0f7ff', border:'#5b8fb0',
-    ing:[
-      { buscar:'avena',   label:'Avena',   emoji:'🌾', qty:1, step:0.5, min:0.5, max:4 },
-      { buscar:'plátano', label:'Plátano', emoji:'🍌', qty:1, step:1,   min:0,   max:3 },
-      { buscar:'leche',   label:'Leche',   emoji:'🥛', qty:1, step:0.5, min:0,   max:4 },
-    ]
-  },
-  {
-    nombre:'Yogur con granola y fruta', emoji:'🥣', cat:'Desayuno',
-    desc:'Desayuno fresco y equilibrado', color:'#fff5f8', border:'#e8739a',
-    ing:[
-      { buscar:'yogur',   label:'Yogur griego', emoji:'🥛', qty:1,   step:0.5, min:0.5, max:4 },
-      { buscar:'granola', label:'Granola',      emoji:'🌾', qty:0.5, step:0.5, min:0,   max:3 },
-      { buscar:'fresa',   label:'Fresa',        emoji:'🍓', qty:1,   step:0.5, min:0,   max:3 },
-    ]
-  },
-  // ── Colación AM ───────────────────────────────────────
-  {
-    nombre:'Yogur con granola', emoji:'🥛', cat:'Colación AM',
-    desc:'Alto en proteína, snack ideal', color:'#fff5f8', border:'#e8739a',
-    ing:[
-      { buscar:'yogur',   label:'Yogur griego', emoji:'🥛', qty:1,   step:0.5, min:0.5, max:4 },
-      { buscar:'granola', label:'Granola',      emoji:'🌾', qty:0.5, step:0.5, min:0,   max:3 },
-    ]
-  },
-  {
-    nombre:'Licuado proteico', emoji:'🥤', cat:'Colación AM',
-    desc:'Post entreno / snack energético', color:'#fff8f5', border:'#c4714a',
-    ing:[
-      { buscar:'leche',   label:'Leche',   emoji:'🥛', qty:1,   step:0.5, min:0.5, max:3 },
-      { buscar:'plátano', label:'Plátano', emoji:'🍌', qty:1,   step:1,   min:0,   max:3 },
-      { buscar:'avena',   label:'Avena',   emoji:'🌾', qty:0.5, step:0.5, min:0,   max:2 },
-    ]
-  },
-  {
-    nombre:'Fruta con nueces', emoji:'🍎', cat:'Colación AM',
-    desc:'Energía rápida y grasas saludables', color:'#fffbf0', border:'#d4a843',
-    ing:[
-      { buscar:'manzana', label:'Manzana', emoji:'🍎', qty:1,   step:1,   min:1, max:3 },
-      { buscar:'nuez',    label:'Nueces',  emoji:'🥜', qty:0.5, step:0.5, min:0, max:3 },
-    ]
-  },
-  // ── Comida ────────────────────────────────────────────
-  {
-    nombre:'Pollo con arroz', emoji:'🍗', cat:'Comida',
-    desc:'Proteína magra + carbohidrato', color:'#f5faf5', border:'#6b9e78',
-    ing:[
-      { buscar:'pechuga', label:'Pechuga', emoji:'🍗', qty:1, step:0.5, min:0.5, max:4 },
-      { buscar:'arroz',   label:'Arroz',   emoji:'🍚', qty:1, step:0.5, min:0,   max:4 },
-      { buscar:'aceite',  label:'Aceite',  emoji:'🫒', qty:1, step:0.5, min:0,   max:5 },
-    ]
-  },
-  {
-    nombre:'Atún con arroz y verduras', emoji:'🐟', cat:'Comida',
-    desc:'Rico en omega-3 y fibra', color:'#f0f7ff', border:'#5b8fb0',
-    ing:[
-      { buscar:'atún',      label:'Atún',     emoji:'🐟', qty:1, step:0.5, min:0.5, max:4 },
-      { buscar:'arroz',     label:'Arroz',    emoji:'🍚', qty:1, step:0.5, min:0,   max:4 },
-      { buscar:'jitomate',  label:'Jitomate', emoji:'🍅', qty:1, step:1,   min:0,   max:4 },
-      { buscar:'aceite',    label:'Aceite',   emoji:'🫒', qty:1, step:0.5, min:0,   max:5 },
-    ]
-  },
-  {
-    nombre:'Pollo con verduras al vapor', emoji:'🥦', cat:'Comida',
-    desc:'Ligero, nutritivo y bajo en grasa', color:'#f0fff4', border:'#4a9e6b',
-    ing:[
-      { buscar:'pechuga',  label:'Pechuga',  emoji:'🍗', qty:1, step:0.5, min:0.5, max:4 },
-      { buscar:'brócoli',  label:'Brócoli',  emoji:'🥦', qty:1, step:0.5, min:0,   max:4 },
-      { buscar:'zanahoria',label:'Zanahoria',emoji:'🥕', qty:1, step:0.5, min:0,   max:4 },
-      { buscar:'aceite',   label:'Aceite',   emoji:'🫒', qty:1, step:0.5, min:0,   max:3 },
-    ]
-  },
-  // ── Colación PM ───────────────────────────────────────
-  {
-    nombre:'Fruta con yogur', emoji:'🍓', cat:'Colación PM',
-    desc:'Snack dulce y proteico', color:'#fff5f8', border:'#e8739a',
-    ing:[
-      { buscar:'yogur', label:'Yogur griego', emoji:'🥛', qty:1, step:0.5, min:0.5, max:4 },
-      { buscar:'fresa', label:'Fresa',        emoji:'🍓', qty:1, step:0.5, min:0,   max:3 },
-    ]
-  },
-  {
-    nombre:'Plátano con almendras', emoji:'🍌', cat:'Colación PM',
-    desc:'Energía + grasas saludables', color:'#fffbf0', border:'#d4a843',
-    ing:[
-      { buscar:'plátano',  label:'Plátano',  emoji:'🍌', qty:1,   step:1,   min:1, max:3 },
-      { buscar:'almendra', label:'Almendras',emoji:'🫘', qty:0.5, step:0.5, min:0, max:3 },
-    ]
-  },
-  {
-    nombre:'Queso cottage con fruta', emoji:'🧀', cat:'Colación PM',
-    desc:'Proteína + antioxidantes', color:'#f0f7ff', border:'#5b8fb0',
-    ing:[
-      { buscar:'queso cottage', label:'Queso cottage', emoji:'🧀', qty:1, step:0.5, min:0.5, max:4 },
-      { buscar:'manzana',       label:'Manzana',       emoji:'🍎', qty:1, step:1,   min:0,   max:3 },
-    ]
-  },
-  // ── Cena ──────────────────────────────────────────────
-  {
-    nombre:'Huevos revueltos con verduras', emoji:'🥚', cat:'Cena',
-    desc:'Ligero y proteico para la noche', color:'#fff8f5', border:'#c4714a',
-    ing:[
-      { buscar:'huevo entero', label:'Huevo entero', emoji:'🥚', qty:2, step:1,   min:1, max:5 },
-      { buscar:'espinaca',     label:'Espinaca',     emoji:'🥬', qty:1, step:0.5, min:0, max:3 },
-      { buscar:'jitomate',     label:'Jitomate',     emoji:'🍅', qty:1, step:1,   min:0, max:3 },
-      { buscar:'aceite',       label:'Aceite',       emoji:'🫒', qty:1, step:0.5, min:0, max:3 },
-    ]
-  },
-  {
-    nombre:'Pechuga a la plancha', emoji:'🍗', cat:'Cena',
-    desc:'Proteína sin exceso de calorías', color:'#f5faf5', border:'#6b9e78',
-    ing:[
-      { buscar:'pechuga', label:'Pechuga', emoji:'🍗', qty:1, step:0.5, min:0.5, max:4 },
-      { buscar:'brócoli', label:'Brócoli', emoji:'🥦', qty:1, step:0.5, min:0,   max:4 },
-      { buscar:'aceite',  label:'Aceite',  emoji:'🫒', qty:1, step:0.5, min:0,   max:3 },
-    ]
-  },
-  {
-    nombre:'Sopa de verduras', emoji:'🥣', cat:'Cena',
-    desc:'Reconfortante y baja en calorías', color:'#f0f7ff', border:'#5b8fb0',
-    ing:[
-      { buscar:'calabaza',  label:'Calabaza',  emoji:'🥦', qty:1, step:0.5, min:0.5, max:4 },
-      { buscar:'zanahoria', label:'Zanahoria', emoji:'🥕', qty:1, step:0.5, min:0,   max:4 },
-      { buscar:'espinaca',  label:'Espinaca',  emoji:'🥬', qty:1, step:0.5, min:0,   max:3 },
-    ]
-  },
-];
-
-// ── Recetas mutables (copia editable en sesión) ───────
+// ── Recetas mutables (copia editable en sesión, clonada de _recetasRaw) ──
 let _recetasMut  = null;
 let _recAddOpen  = null;
 let _recAddQuery = '';
 let _recAddCat   = 'Todos';
 
 function getRecMut() {
-  if (!_recetasMut) _recetasMut = JSON.parse(JSON.stringify(RECETAS));
+  if (!_recetasMut) _recetasMut = JSON.parse(JSON.stringify(_recetasRaw));
   return _recetasMut;
 }
 
-function resolveIngFood(ing) {
-  if (ing.alimId) return _alimentos.find(a => a.id === ing.alimId);
-  return _alimentos.find(a => a.nombre.toLowerCase().includes(ing.buscar || ''));
+function emojiForName(name) {
+  const n = (name || '').toLowerCase();
+  for (const [kw, em] of FOOD_EMOJI_MAP) if (n.includes(kw)) return em;
+  return null;
 }
 
 function foodEmoji(a) {
-  const n = a.nombre.toLowerCase();
-  for (const [kw, em] of FOOD_EMOJI_MAP) {
-    if (n.includes(kw)) return em;
-  }
-  return CAT_EMOJI[a.categoria] || '🍽';
+  return emojiForName(a.nombre) || CAT_EMOJI[a.categoria] || '🍽';
 }
 
 // ── Cálculos ─────────────────────────────────────────
@@ -266,9 +129,13 @@ function planTargets(p, act) {
   };
 }
 
+function diaItems() {
+  return _planDias[_planDiaActivo] || { desayuno:[], colacion_am:[], comida:[], colacion_pm:[], cena:[] };
+}
+
 function planTotals() {
   let kcal=0, prot=0, carbs=0, grasas=0, fibra=0;
-  Object.values(_planSel).flat().forEach(i => {
+  Object.values(diaItems()).flat().forEach(i => {
     kcal   += i.calorias * i.porciones;
     prot   += i.proteina * i.porciones;
     carbs  += i.carbos   * i.porciones;
@@ -284,6 +151,21 @@ function planTotals() {
   };
 }
 
+// Agrupa items consecutivos de la misma receta para mostrar/imprimir su preparación
+function groupMealItems(items) {
+  const groups = [];
+  let cur = null;
+  items.forEach(it => {
+    if (it.receta_id && cur && cur.receta_id === it.receta_id) {
+      cur.items.push(it);
+    } else {
+      cur = { receta_id: it.receta_id || null, receta_nombre: it.receta_nombre || null, preparacion: it.preparacion || null, items: [it] };
+      groups.push(cur);
+    }
+  });
+  return groups;
+}
+
 // ── Entry point (devuelve HTML síncrono, carga async) ─
 function tabPlan(p) {
   setTimeout(() => initPlanTab(p), 0);
@@ -295,77 +177,113 @@ function tabPlan(p) {
   </div>`;
 }
 
-async function initPlanTab(p) {
-  if (!$('#food-picker-modal')) {
-    const mr = $('#modal-root');
-    if (mr) mr.insertAdjacentHTML('beforeend', `
-      <div class="modal-overlay" id="food-picker-modal" style="display:none"
-           onclick="if(event.target===this)closeFoodPicker()">
-        <div style="background:var(--white);border-radius:24px;width:100%;max-width:740px;height:86vh;
-                    display:flex;flex-direction:column;overflow:hidden;
-                    box-shadow:0 24px 64px rgba(26,51,40,.28);animation:slideUp .3s ease">
+function buildPlanModals() {
+  const mr = $('#modal-root');
+  if (!mr) return;
 
-          <!-- Header -->
-          <div style="padding:20px 26px 0;flex-shrink:0;background:linear-gradient(160deg,var(--sage-lll),var(--cream))">
-            <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px">
-              <div style="font-family:'Cormorant Garamond',serif;font-size:22px;color:var(--forest);font-weight:600">
-                Agregar a <em id="picker-meal-lbl" style="color:var(--terra);font-style:italic">comida</em>
-              </div>
-              <button onclick="closeFoodPicker()"
-                style="width:34px;height:34px;border-radius:50%;background:rgba(128,128,128,.15);border:none;
-                       cursor:pointer;font-size:13px;color:var(--text-m);display:flex;align-items:center;
-                       justify-content:center;flex-shrink:0">✕</button>
+  if (!$('#food-picker-modal')) mr.insertAdjacentHTML('beforeend', `
+    <div class="modal-overlay" id="food-picker-modal" style="display:none"
+         onclick="if(event.target===this)closeFoodPicker()">
+      <div style="background:var(--white);border-radius:24px;width:100%;max-width:740px;height:86vh;
+                  display:flex;flex-direction:column;overflow:hidden;
+                  box-shadow:0 24px 64px rgba(26,51,40,.28);animation:slideUp .3s ease">
+
+        <!-- Header -->
+        <div style="padding:20px 26px 0;flex-shrink:0;background:linear-gradient(160deg,var(--sage-lll),var(--cream))">
+          <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px">
+            <div style="font-family:'Cormorant Garamond',serif;font-size:22px;color:var(--forest);font-weight:600">
+              Agregar a <em id="picker-meal-lbl" style="color:var(--terra);font-style:italic">comida</em>
             </div>
-            <div style="position:relative;margin-bottom:12px">
-              <span style="position:absolute;left:14px;top:50%;transform:translateY(-50%);font-size:14px;pointer-events:none">🔍</span>
-              <input id="picker-search" placeholder="Buscar alimento o receta..."
-                     oninput="renderPickerContent()"
-                     style="width:100%;padding:10px 16px 10px 42px;border-radius:50px;
-                            border:2px solid var(--cream-d);background:var(--white);font-size:13px;
-                            color:var(--text);outline:none;font-family:'DM Sans',sans-serif"
-                     onfocus="this.style.borderColor='var(--sage)'"
-                     onblur="this.style.borderColor='var(--cream-d)'">
-            </div>
-            <div id="picker-tabs" style="display:flex;gap:0">
-              <button data-ptab="alimentos" onclick="switchPickerTab('alimentos')"
-                style="padding:8px 20px;background:none;border:none;border-bottom:2.5px solid var(--sage);
-                       cursor:pointer;font-size:12.5px;font-weight:600;color:var(--forest);
-                       font-family:'DM Sans',sans-serif;transition:all .2s">🥗 Alimentos</button>
-              <button data-ptab="recetas" onclick="switchPickerTab('recetas')"
-                style="padding:8px 20px;background:none;border:none;border-bottom:2.5px solid transparent;
-                       cursor:pointer;font-size:12.5px;font-weight:400;color:var(--text-l);
-                       font-family:'DM Sans',sans-serif;transition:all .2s">👨‍🍳 Recetas</button>
-            </div>
+            <button onclick="closeFoodPicker()"
+              style="width:34px;height:34px;border-radius:50%;background:rgba(128,128,128,.15);border:none;
+                     cursor:pointer;font-size:13px;color:var(--text-m);display:flex;align-items:center;
+                     justify-content:center;flex-shrink:0">✕</button>
           </div>
-
-          <!-- Category filter bar -->
-          <div id="picker-cats-bar"
-               style="padding:10px 26px;border-top:1px solid var(--cream-d);border-bottom:1px solid var(--cream-d);
-                      flex-shrink:0;display:flex;gap:6px;flex-wrap:wrap;background:var(--cream);min-height:46px"></div>
-
-          <!-- List -->
-          <div id="picker-list" style="overflow-y:auto;flex:1;padding:0 26px 20px;background:var(--white)"></div>
+          <div style="position:relative;margin-bottom:12px">
+            <span style="position:absolute;left:14px;top:50%;transform:translateY(-50%);font-size:14px;pointer-events:none">🔍</span>
+            <input id="picker-search" placeholder="Buscar alimento o receta..."
+                   oninput="renderPickerContent()"
+                   style="width:100%;padding:10px 16px 10px 42px;border-radius:50px;
+                          border:2px solid var(--cream-d);background:var(--white);font-size:13px;
+                          color:var(--text);outline:none;font-family:'DM Sans',sans-serif"
+                   onfocus="this.style.borderColor='var(--sage)'"
+                   onblur="this.style.borderColor='var(--cream-d)'">
+          </div>
+          <div id="picker-tabs" style="display:flex;gap:0">
+            <button data-ptab="alimentos" onclick="switchPickerTab('alimentos')"
+              style="padding:8px 20px;background:none;border:none;border-bottom:2.5px solid var(--sage);
+                     cursor:pointer;font-size:12.5px;font-weight:600;color:var(--forest);
+                     font-family:'DM Sans',sans-serif;transition:all .2s">🥗 Alimentos</button>
+            <button data-ptab="recetas" onclick="switchPickerTab('recetas')"
+              style="padding:8px 20px;background:none;border:none;border-bottom:2.5px solid transparent;
+                     cursor:pointer;font-size:12.5px;font-weight:400;color:var(--text-l);
+                     font-family:'DM Sans',sans-serif;transition:all .2s">👨‍🍳 Recetas</button>
+          </div>
         </div>
-      </div>`);
-  }
+
+        <!-- Category filter bar -->
+        <div id="picker-cats-bar"
+             style="padding:10px 26px;border-top:1px solid var(--cream-d);border-bottom:1px solid var(--cream-d);
+                    flex-shrink:0;display:flex;gap:6px;flex-wrap:wrap;align-items:center;background:var(--cream);min-height:46px"></div>
+
+        <!-- List -->
+        <div id="picker-list" style="overflow-y:auto;flex:1;padding:0 26px 20px;background:var(--white)"></div>
+      </div>
+    </div>`);
+
+  if (!$('#crear-receta-modal')) mr.insertAdjacentHTML('beforeend', `
+    <div class="modal-overlay" id="crear-receta-modal"
+         onclick="if(event.target===this)closeCrearRecetaModal()">
+      <div style="background:var(--white);border-radius:24px;width:100%;max-width:520px;max-height:88vh;
+                  display:flex;flex-direction:column;overflow:hidden;
+                  box-shadow:0 24px 64px rgba(26,51,40,.28);animation:slideUp .3s ease">
+        <div style="padding:20px 26px;flex-shrink:0;background:linear-gradient(160deg,var(--sage-lll),var(--cream));
+                    display:flex;align-items:center;justify-content:space-between">
+          <div style="font-family:'Cormorant Garamond',serif;font-size:22px;color:var(--forest);font-weight:600">
+            👨‍🍳 Nueva receta
+          </div>
+          <button onclick="closeCrearRecetaModal()"
+            style="width:34px;height:34px;border-radius:50%;background:rgba(128,128,128,.15);border:none;
+                   cursor:pointer;font-size:13px;color:var(--text-m);display:flex;align-items:center;
+                   justify-content:center;flex-shrink:0">✕</button>
+        </div>
+        <div id="crear-receta-body" style="padding:20px 26px;overflow-y:auto;flex:1"></div>
+        <div style="padding:16px 26px;border-top:1px solid var(--cream-d);flex-shrink:0;display:flex;justify-content:flex-end;gap:8px">
+          <button class="btn btn-outline btn-sm" onclick="closeCrearRecetaModal()">Cancelar</button>
+          <button id="nr-guardar-btn" class="btn btn-primary btn-sm" onclick="guardarNuevaReceta()">Guardar receta</button>
+        </div>
+      </div>
+    </div>`);
+}
+
+async function initPlanTab(p) {
+  buildPlanModals();
 
   const root = $('#plan-root');
   if (!root || currentPatient?.id !== p.id) return;
 
   try {
-    const [pr, ar] = await Promise.all([
+    const [pr, ar, rr] = await Promise.all([
       fetch(`api/plan.php?paciente_id=${p.id}`),
       fetch(`api/alimentos.php?paciente_id=${p.id}`),
+      fetch(`api/recetas.php`),
     ]);
     const planData = pr.ok ? await pr.json() : {};
     const alimData = ar.ok ? await ar.json() : [];
+    const recData  = rr.ok ? await rr.json() : [];
 
-    _alimentos = alimData;
-    _planAct   = parseFloat(planData.actividad) || 1.4;
-    _planSel   = { desayuno:[], colacion_am:[], comida:[], colacion_pm:[], cena:[] };
+    _alimentos  = alimData;
+    _recetasRaw = recData;
+    _recetasMut = null;
+    _planAct    = parseFloat(planData.actividad) || 1.4;
+
+    _planDias = {};
+    DIAS.forEach(d => { _planDias[d.key] = { desayuno:[], colacion_am:[], comida:[], colacion_pm:[], cena:[] }; });
     (planData.seleccion || []).forEach(item => {
-      if (_planSel[item.tiempo]) _planSel[item.tiempo].push(item);
+      const dia = (item.dia && _planDias[item.dia]) ? item.dia : 'lunes';
+      if (_planDias[dia][item.tiempo]) _planDias[dia][item.tiempo].push(item);
     });
+
     renderPlanRoot(p);
   } catch(e) {
     const r = $('#plan-root');
@@ -384,6 +302,7 @@ function renderPlanRoot(p) {
 
   root.innerHTML = `<div class="g-21">
     <div>
+      ${renderDayTabs()}
       ${renderTargetsPanel(T, C)}
       ${MEALS.map(m => renderMealCard(m, T)).join('')}
     </div>
@@ -406,6 +325,32 @@ function renderPlanRoot(p) {
       </div>
     </div>
   </div>`;
+}
+
+// ── Tabs de día (plan semanal) ────────────────────────
+function renderDayTabs() {
+  return `<div class="panel mb-sm" style="padding:12px 14px">
+    <div style="display:flex;gap:6px;overflow-x:auto;padding-bottom:2px">
+      ${DIAS.map(d => {
+        const active   = d.key === _planDiaActivo;
+        const hasItems = MEALS.some(m => (_planDias[d.key]?.[m.key] || []).length);
+        return `<button onclick="setPlanDia('${d.key}')"
+          style="padding:8px 16px;border-radius:20px;cursor:pointer;font-size:12px;white-space:nowrap;flex-shrink:0;
+                 font-family:'DM Sans',sans-serif;transition:all .15s;display:flex;align-items:center;gap:6px;
+                 font-weight:${active ? '700' : '500'};
+                 border:1.5px solid ${active ? 'var(--forest)' : 'var(--cream-d)'};
+                 background:${active ? 'var(--forest)' : 'var(--white)'};
+                 color:${active ? 'var(--cream)' : 'var(--text-m)'}">
+          ${d.label}${hasItems ? `<span style="width:6px;height:6px;border-radius:50%;background:${active ? 'var(--cream)' : 'var(--sage)'};flex-shrink:0"></span>` : ''}
+        </button>`;
+      }).join('')}
+    </div>
+  </div>`;
+}
+
+function setPlanDia(key) {
+  _planDiaActivo = key;
+  if (currentPatient) renderPlanRoot(currentPatient);
 }
 
 // ── Panel de metas ────────────────────────────────────
@@ -445,12 +390,14 @@ function renderTargetsPanel(T, C) {
              color:${active ? 'var(--cream)' : 'var(--text-m)'}">${o.label}</button>`;
   };
 
+  const dayLabel = DIAS.find(d => d.key === _planDiaActivo)?.label || '';
+
   return `<div class="panel mb-sm">
     <div class="panel-head">
-      <div class="panel-title"><span class="pt-icon">🎯</span>Metas diarias</div>
+      <div class="panel-title"><span class="pt-icon">🎯</span>Metas diarias <em style="font-size:12px;color:var(--text-m);font-style:italic;margin-left:6px">· ${dayLabel}</em></div>
       <div style="display:flex;gap:6px">
         <button class="btn btn-outline btn-xs" onclick="enviarPlanWA()">📤 WhatsApp</button>
-        <button class="btn btn-sage btn-xs" onclick="generarPlanPDF()">📄 Exportar PDF</button>
+        <button class="btn btn-sage btn-xs" onclick="generarPlanPDF()">📄 Exportar PDF semana</button>
         <button class="btn btn-primary btn-xs" onclick="guardarPlan()">💾 Guardar</button>
       </div>
     </div>
@@ -491,7 +438,7 @@ const MEAL_STYLE = {
 };
 
 function renderMealCard(meal, T) {
-  const items  = _planSel[meal.key] || [];
+  const items  = diaItems()[meal.key] || [];
   const mKcal  = Math.round(items.reduce((s, i) => s + i.calorias * i.porciones, 0));
   const tKcal  = Math.round(T.kcal * meal.pct);
   const mPct   = tKcal ? Math.min(100, Math.round(mKcal / tKcal * 100)) : 0;
@@ -514,6 +461,34 @@ function renderMealCard(meal, T) {
       <span style="font-size:10px;padding:2px 8px;border-radius:8px;background:var(--sage-ll);color:var(--sage);font-weight:600">🌿 F ${mFibra}g</span>
     </div>` : '';
 
+  let bodyHtml;
+  if (!items.length) {
+    bodyHtml = `<div style="text-align:center;padding:18px 10px;color:var(--text-l);font-size:12px;border-top:1px dashed var(--cream-dd)">
+      Sin alimentos · objetivo ~${tKcal} kcal
+    </div>`;
+  } else {
+    const groups = groupMealItems(items);
+    let absIdx = 0;
+    bodyHtml = groups.map(g => {
+      const rowsHtml = g.items.map(it => {
+        const html = renderFoodRow(it, meal.key, absIdx, items.length);
+        absIdx++;
+        return html;
+      }).join('');
+      if (g.receta_nombre) {
+        return `<div style="margin:8px 0;padding:8px 10px;border-radius:10px;background:var(--cream);border-left:3px solid ${ms.border}">
+          <div style="font-size:11px;font-weight:700;color:var(--forest);margin-bottom:4px">👨‍🍳 ${g.receta_nombre}</div>
+          ${rowsHtml}
+          ${g.preparacion ? `<details style="margin-top:6px">
+            <summary style="font-size:10.5px;color:var(--sage);cursor:pointer;font-weight:600">📝 Cómo se prepara</summary>
+            <div style="font-size:11px;color:var(--text-m);margin-top:6px;white-space:pre-line;line-height:1.5">${g.preparacion}</div>
+          </details>` : ''}
+        </div>`;
+      }
+      return rowsHtml;
+    }).join('');
+  }
+
   return `<div class="panel mb-sm" style="border-left:4px solid ${ms.border}">
     <div class="panel-head">
       <div style="display:flex;align-items:center;gap:10px">
@@ -535,11 +510,7 @@ function renderMealCard(meal, T) {
     </div>
     ${mKcal > 0 ? `<div style="height:4px;background:var(--cream-d)"><div style="height:100%;width:${mPct}%;background:${mOver ? 'var(--terra)' : ms.border};transition:width .4s"></div></div>` : ''}
     <div id="meal-${meal.key}" class="panel-body" style="padding:${items.length ? '6px 16px' : '0'}">
-      ${items.length
-        ? items.map((it, i) => renderFoodRow(it, meal.key, i, items.length)).join('')
-        : `<div style="text-align:center;padding:18px 10px;color:var(--text-l);font-size:12px;border-top:1px dashed var(--cream-dd)">
-             Sin alimentos · objetivo ~${tKcal} kcal
-           </div>`}
+      ${bodyHtml}
     </div>
     ${macroFooter}
   </div>`;
@@ -620,7 +591,6 @@ function switchPickerTab(tab) {
   if (!catsBar) return;
 
   if (tab === 'alimentos') {
-    catsBar.style.display = 'flex';
     const cats = ['Todos', ...[...new Set(_alimentos.map(a => a.categoria))].sort()];
     catsBar.innerHTML = cats.map(c => {
       const col    = CAT_COL[c] || {};
@@ -635,7 +605,6 @@ function switchPickerTab(tab) {
       >${em}${c}</button>`;
     }).join('');
   } else {
-    catsBar.style.display = 'flex';
     const mealCats = ['Todos', 'Desayuno', 'Colación AM', 'Comida', 'Colación PM', 'Cena'];
     catsBar.innerHTML = mealCats.map(c => {
       const col    = MEAL_REC_COL[c] || {};
@@ -648,7 +617,11 @@ function switchPickerTab(tab) {
                background:${active ? (col.bg||'var(--sage-ll)') : 'transparent'};
                color:${active ? (col.fg||'var(--sage)') : 'var(--text-l)'}"
       >${em}${c}</button>`;
-    }).join('');
+    }).join('') + `
+      <button onclick="openCrearRecetaModal()"
+        style="font-size:11px;padding:4px 14px;border-radius:20px;cursor:pointer;white-space:nowrap;
+               border:1.5px dashed var(--sage);background:transparent;color:var(--sage);font-weight:600;
+               font-family:'DM Sans',sans-serif;margin-left:auto">+ Nueva receta</button>`;
   }
 
   renderPickerContent();
@@ -711,7 +684,7 @@ function renderAlimentosList() {
   listEl.innerHTML = filtered.map(a => {
     const em     = foodEmoji(a);
     const col    = CAT_COL[a.categoria] || { bg:'var(--sage-ll)', fg:'var(--sage)', bar:'var(--sage)' };
-    const inPlan = (_planSel[_pickerMeal] || []).some(x => (x.alimento_id || x.id) === a.id);
+    const inPlan = (diaItems()[_pickerMeal] || []).some(x => (x.alimento_id || x.id) === a.id);
     const porOpts = Array.from({length:20},(_,i)=>+(i+1)*0.5).map(v =>
       `<option value="${v}"${v===1?' selected':''}>${v}×</option>`).join('');
 
@@ -774,14 +747,12 @@ function calcRecetaTotals(rIdx) {
   const r = getRecMut()[rIdx];
   let kcal=0, prot=0, carbs=0, grasas=0;
   r.ing.forEach((ing, iIdx) => {
-    const food = resolveIngFood(ing);
-    if (!food) return;
     const qtyEl = $(`#rqty-${rIdx}-${iIdx}`);
     const qty   = qtyEl ? parseFloat(qtyEl.textContent) : ing.qty;
-    kcal  += food.calorias * qty;
-    prot  += food.proteina * qty;
-    carbs += food.carbos   * qty;
-    grasas+= food.grasas   * qty;
+    kcal  += ing.calorias * qty;
+    prot  += ing.proteina * qty;
+    carbs += ing.carbos   * qty;
+    grasas+= ing.grasas   * qty;
   });
   return {
     kcal:  Math.round(kcal),
@@ -822,20 +793,18 @@ function renderRecetasList() {
   listEl.innerHTML = `<div style="display:grid;gap:14px;padding-top:14px">` +
     filtered.map(({ r, i: rIdx }) => {
       const ingHtml = r.ing.map((ing, iIdx) => {
-        const food = resolveIngFood(ing);
-        if (!food) return '';
-        const em   = ing.alimId ? foodEmoji(food) : ing.emoji;
-        const prot  = +(food.proteina * ing.qty).toFixed(1);
-        const carbs = +(food.carbos   * ing.qty).toFixed(1);
-        const gras  = +(food.grasas   * ing.qty).toFixed(1);
-        const fibra = +(food.fibra    * ing.qty).toFixed(1);
+        const em    = ing.emoji || emojiForName(ing.label) || CAT_EMOJI[ing.categoria] || '🍽';
+        const prot  = +(ing.proteina * ing.qty).toFixed(1);
+        const carbs = +(ing.carbos   * ing.qty).toFixed(1);
+        const gras  = +(ing.grasas   * ing.qty).toFixed(1);
+        const fibra = +(ing.fibra    * ing.qty).toFixed(1);
         return `
         <div style="display:flex;align-items:flex-start;gap:8px;padding:8px 0;
                     border-top:1px dashed var(--cream-d)">
           <span style="font-size:20px;width:28px;text-align:center;flex-shrink:0;margin-top:2px">${em}</span>
           <div style="flex:1;min-width:0">
-            <div style="font-size:12px;font-weight:500;color:var(--forest-m)">${food.nombre}</div>
-            <div style="font-size:10px;color:var(--text-l);margin-bottom:4px">${food.porcion_desc}</div>
+            <div style="font-size:12px;font-weight:500;color:var(--forest-m)">${ing.label}</div>
+            <div style="font-size:10px;color:var(--text-l);margin-bottom:4px">${ing.porcion_desc || ''}</div>
             <div style="display:flex;gap:3px;flex-wrap:wrap">
               <span style="font-size:9.5px;padding:1px 6px;border-radius:6px;background:var(--terra-l);color:var(--terra);font-weight:600">🥩 P${prot}g</span>
               <span style="font-size:9.5px;padding:1px 6px;border-radius:6px;background:var(--gold-l);color:var(--gold);font-weight:600">🌾 C${carbs}g</span>
@@ -866,11 +835,11 @@ function renderRecetasList() {
             </div>
             <span id="rkcal-${rIdx}-${iIdx}"
               style="font-size:11px;color:var(--text-l);text-align:right;flex-shrink:0">
-              ${Math.round(food.calorias * ing.qty)} kcal
+              ${Math.round(ing.calorias * ing.qty)} kcal
             </span>
           </div>
         </div>`;
-      }).filter(Boolean).join('');
+      }).join('');
 
       const addPanelHtml = `
         <div style="padding:8px 0 4px;border-top:1px dashed var(--cream-d)">
@@ -910,10 +879,14 @@ function renderRecetasList() {
           </button>
         </div>`;
 
-      // If no ingredients resolved, show a warning
-      const hasIngs = r.ing.some(ing => resolveIngFood(ing));
+      const hasIngs = r.ing.length > 0;
+      const totals  = hasIngs ? calcRecetaTotals(rIdx) : null;
 
-      const totals = hasIngs ? calcRecetaTotals(rIdx) : null;
+      const prepHtml = r.preparacion ? `
+        <details style="margin-top:10px;background:var(--cream);border-radius:10px;padding:8px 12px">
+          <summary style="font-size:11.5px;font-weight:700;color:var(--forest);cursor:pointer">📝 Cómo se prepara</summary>
+          <div style="font-size:11.5px;color:var(--text-m);margin-top:8px;white-space:pre-line;line-height:1.6">${r.preparacion}</div>
+        </details>` : '';
 
       return `
       <div style="border:1.5px solid ${r.border}44;border-radius:18px;overflow:hidden">
@@ -933,8 +906,9 @@ function renderRecetasList() {
         </div>
         <!-- Ingredients -->
         <div style="padding:4px 18px 14px;background:var(--white)">
-          ${hasIngs ? ingHtml : `<div style="padding:12px 0;font-size:12px;color:var(--text-l);text-align:center">Ingredientes no disponibles en la base de datos</div>`}
+          ${hasIngs ? ingHtml : `<div style="padding:12px 0;font-size:12px;color:var(--text-l);text-align:center">Sin ingredientes</div>`}
           ${addPanelHtml}
+          ${prepHtml}
           ${hasIngs ? `
           <!-- Totals + add -->
           <div style="display:flex;align-items:center;justify-content:space-between;gap:10px;
@@ -969,8 +943,7 @@ function recAdj(rIdx, iIdx, delta) {
   ing.qty = cur;
   qtyEl.textContent = cur;
 
-  const food = resolveIngFood(ing);
-  if (food && kEl) kEl.textContent = `${Math.round(food.calorias * cur)} kcal`;
+  if (kEl) kEl.textContent = `${Math.round(ing.calorias * cur)} kcal`;
   if (totEl) totEl.innerHTML = recetaTotalsHtml(calcRecetaTotals(rIdx));
 }
 
@@ -978,15 +951,17 @@ function addRecetaToMeal(rIdx) {
   const r = getRecMut()[rIdx];
   let added = 0;
   r.ing.forEach((ing, iIdx) => {
-    const food  = resolveIngFood(ing);
-    if (!food) return;
     const qtyEl = $(`#rqty-${rIdx}-${iIdx}`);
     const qty   = qtyEl ? parseFloat(qtyEl.textContent) : ing.qty;
     if (qty <= 0) return;
-    _planSel[_pickerMeal].push({ ...food, alimento_id: food.id, porciones: qty });
+    diaItems()[_pickerMeal].push({
+      alimento_id: ing.alimId, nombre: ing.label, categoria: ing.categoria, porcion_desc: ing.porcion_desc,
+      calorias: ing.calorias, proteina: ing.proteina, carbos: ing.carbos, grasas: ing.grasas, fibra: ing.fibra,
+      porciones: qty, receta_id: r.id || null, receta_nombre: r.nombre, preparacion: r.preparacion,
+    });
     added++;
   });
-  if (!added) { toast('No se encontraron ingredientes en la base de datos'); return; }
+  if (!added) { toast('La receta no tiene ingredientes'); return; }
   closeFoodPicker();
   renderPlanRoot(currentPatient);
   const mName = MEALS.find(m => m.key === _pickerMeal)?.label.replace(/^\S+\s/, '') || _pickerMeal;
@@ -1010,7 +985,7 @@ function addFoodToMeal(alimId) {
   if (!a || !_pickerMeal) return;
   const porEl    = $(`#por-${alimId}`);
   const porciones = porEl ? parseFloat(porEl.value) : 1;
-  _planSel[_pickerMeal].push({ ...a, alimento_id: a.id, porciones });
+  diaItems()[_pickerMeal].push({ ...a, alimento_id: a.id, porciones, receta_id: null, receta_nombre: null, preparacion: null });
   closeFoodPicker();
   renderPlanRoot(currentPatient);
   const mName = MEALS.find(m => m.key === _pickerMeal)?.label.replace(/^\S+\s/, '') || _pickerMeal;
@@ -1019,13 +994,14 @@ function addFoodToMeal(alimId) {
 
 // ── Modificar porciones / quitar ─────────────────────
 function changePortion(mealKey, idx, val) {
-  if (!_planSel[mealKey]?.[idx]) return;
-  _planSel[mealKey][idx].porciones = parseFloat(val);
+  const list = diaItems()[mealKey];
+  if (!list?.[idx]) return;
+  list[idx].porciones = parseFloat(val);
   renderPlanRoot(currentPatient);
 }
 
 function removeFoodItem(mealKey, idx) {
-  _planSel[mealKey].splice(idx, 1);
+  diaItems()[mealKey].splice(idx, 1);
   renderPlanRoot(currentPatient);
 }
 
@@ -1034,14 +1010,276 @@ function setPlanAct(val) {
   if (currentPatient) renderPlanRoot(currentPatient);
 }
 
-// ── Guardar plan ──────────────────────────────────────
+// ── Edición de recetas (copia de trabajo antes de agregar al plan) ──
+function recRemoveIng(rIdx, iIdx) {
+  getRecMut()[rIdx].ing.splice(iIdx, 1);
+  renderPickerContent();
+}
+
+function recToggleAddIng(rIdx) {
+  _recAddOpen  = _recAddOpen === rIdx ? null : rIdx;
+  _recAddQuery = '';
+  _recAddCat   = 'Todos';
+  renderPickerContent();
+  if (_recAddOpen === rIdx) {
+    setTimeout(() => {
+      const el = $(`#rec-srch-${rIdx}`);
+      if (el) el.focus();
+      recSearchIng(rIdx);
+    }, 30);
+  }
+}
+
+function recSearchIng(rIdx) {
+  const el = $(`#rec-res-${rIdx}`);
+  if (!el) return;
+  const q = (_recAddQuery || '').toLowerCase().trim();
+
+  const results = _alimentos.filter(a =>
+    !a.excluido &&
+    (_recAddCat === 'Todos' || a.categoria === _recAddCat) &&
+    (!q || a.nombre.toLowerCase().includes(q))
+  ).slice(0, 30);
+
+  if (!results.length) {
+    el.innerHTML = `<div style="font-size:11px;color:var(--text-l);padding:8px">Sin resultados</div>`;
+    return;
+  }
+
+  el.innerHTML = results.map(a => {
+    const col = CAT_COL[a.categoria] || { bg:'var(--sage-ll)', fg:'var(--sage)', bar:'var(--sage)' };
+    return `
+      <div onclick="recAddIng(${rIdx},${a.id})"
+           style="display:flex;align-items:center;gap:10px;padding:8px 6px;border-radius:8px;
+                  cursor:pointer;transition:background .1s;border-bottom:1px solid var(--cream-d)"
+           onmouseover="this.style.background='var(--white)'"
+           onmouseout="this.style.background='transparent'">
+        <div style="width:36px;height:36px;border-radius:10px;flex-shrink:0;background:${col.bg};
+                    border:1px solid ${col.bar}22;display:flex;align-items:center;justify-content:center;
+                    font-size:20px">${foodEmoji(a)}</div>
+        <div style="flex:1;min-width:0">
+          <div style="display:flex;align-items:center;gap:6px;flex-wrap:wrap">
+            <span style="font-size:12px;font-weight:600;color:var(--forest)">${a.nombre}</span>
+            <span style="font-size:9.5px;padding:1px 7px;border-radius:20px;background:${col.bg};color:${col.fg};font-weight:500">${a.categoria}</span>
+          </div>
+          <div style="font-size:10px;color:var(--text-l);margin-top:2px">${a.porcion_desc} · <b style="color:var(--forest)">${a.calorias} kcal</b></div>
+          <div style="display:flex;gap:5px;margin-top:4px;flex-wrap:wrap">
+            <span style="font-size:9.5px;padding:1px 6px;border-radius:6px;background:var(--terra-l);color:var(--terra);font-weight:600">🥩 P ${a.proteina}g</span>
+            <span style="font-size:9.5px;padding:1px 6px;border-radius:6px;background:var(--gold-l);color:var(--gold);font-weight:600">🌾 C ${a.carbos}g</span>
+            <span style="font-size:9.5px;padding:1px 6px;border-radius:6px;background:var(--blush-l);color:var(--blush);font-weight:600">🫒 G ${a.grasas}g</span>
+            <span style="font-size:9.5px;padding:1px 6px;border-radius:6px;background:var(--sage-ll);color:var(--sage);font-weight:600">🌿 F ${a.fibra}g</span>
+          </div>
+        </div>
+      </div>`;
+  }).join('');
+}
+
+function recSetCat(rIdx, cat) {
+  _recAddCat = cat;
+  renderPickerContent();
+  setTimeout(() => recSearchIng(rIdx), 30);
+}
+
+function recAddIng(rIdx, alimId) {
+  const food = _alimentos.find(a => a.id === alimId);
+  if (!food) return;
+  getRecMut()[rIdx].ing.push({
+    alimId: alimId,
+    label:  food.nombre,
+    categoria: food.categoria,
+    porcion_desc: food.porcion_desc,
+    emoji:  foodEmoji(food),
+    qty:    1,
+    step:   0.5,
+    min:    0,
+    max:    10,
+    calorias: food.calorias, proteina: food.proteina, carbos: food.carbos, grasas: food.grasas, fibra: food.fibra,
+  });
+  _recAddOpen  = null;
+  _recAddQuery = '';
+  renderPickerContent();
+}
+
+// ── Crear receta nueva (persistida en BD, recetario compartido) ──
+let _nrState      = null;
+let _nrSearchQuery = '';
+
+function openCrearRecetaModal() {
+  const catInicial = MEAL_KEY_TO_CAT[_pickerMeal] || 'Desayuno';
+  _nrState = { nombre:'', categoria: catInicial, emoji:'🍽', desc:'', prep:'', ing:[] };
+  _nrSearchQuery = '';
+  openModal('crear-receta-modal');
+  renderCrearRecetaForm();
+}
+
+function closeCrearRecetaModal() {
+  closeModal('crear-receta-modal');
+}
+
+function renderCrearRecetaForm() {
+  const el = $('#crear-receta-body');
+  if (!el || !_nrState) return;
+  const cats = ['Desayuno','Colación AM','Comida','Colación PM','Cena'];
+
+  el.innerHTML = `
+    <div style="display:flex;gap:10px;margin-bottom:12px">
+      <input id="nr-emoji" value="${_nrState.emoji}" maxlength="4" placeholder="🍽"
+             oninput="_nrState.emoji=this.value"
+             style="width:54px;text-align:center;font-size:22px;padding:8px;border-radius:10px;border:1.5px solid var(--cream-d);font-family:'DM Sans',sans-serif">
+      <input id="nr-nombre" value="${_nrState.nombre}" placeholder="Nombre de la receta"
+             oninput="_nrState.nombre=this.value"
+             style="flex:1;padding:8px 12px;border-radius:10px;border:1.5px solid var(--cream-d);font-size:13px;font-family:'DM Sans',sans-serif">
+    </div>
+    <select id="nr-cat" onchange="_nrState.categoria=this.value"
+            style="width:100%;padding:9px 12px;border-radius:10px;border:1.5px solid var(--cream-d);margin-bottom:10px;font-size:13px;font-family:'DM Sans',sans-serif;background:#fff">
+      ${cats.map(c => `<option value="${c}"${c===_nrState.categoria?' selected':''}>${MEAL_REC_EMOJI[c]||''} ${c}</option>`).join('')}
+    </select>
+    <input id="nr-desc" value="${_nrState.desc}" placeholder="Descripción corta (ej. Proteína magra + fibra)"
+           oninput="_nrState.desc=this.value"
+           style="width:100%;padding:8px 12px;border-radius:10px;border:1.5px solid var(--cream-d);margin-bottom:10px;font-size:13px;font-family:'DM Sans',sans-serif">
+    <textarea id="nr-prep" placeholder="Cómo se prepara (paso a paso)..." rows="4"
+              oninput="_nrState.prep=this.value"
+              style="width:100%;padding:8px 12px;border-radius:10px;border:1.5px solid var(--cream-d);margin-bottom:16px;
+                     font-size:13px;font-family:'DM Sans',sans-serif;resize:vertical">${_nrState.prep}</textarea>
+
+    <div style="font-size:10px;font-weight:600;color:var(--text-m);text-transform:uppercase;letter-spacing:.6px;margin-bottom:8px">Ingredientes</div>
+    <div id="nr-ing-list">${renderNrIngList()}</div>
+    <input id="nr-search" placeholder="Buscar alimento para agregar..." autocomplete="off"
+           oninput="_nrSearchQuery=this.value;renderNrSearchResults()"
+           style="width:100%;padding:8px 12px;border-radius:10px;border:1.5px solid var(--cream-d);margin-top:10px;margin-bottom:6px;
+                  font-size:13px;font-family:'DM Sans',sans-serif">
+    <div id="nr-search-results" style="max-height:180px;overflow-y:auto"></div>
+  `;
+  renderNrSearchResults();
+}
+
+function renderNrIngList() {
+  if (!_nrState.ing.length) {
+    return `<div style="font-size:11px;color:var(--text-l);padding:8px 0">Sin ingredientes agregados todavía</div>`;
+  }
+  let kcal=0, prot=0, carbs=0, gras=0, fibra=0;
+  const rows = _nrState.ing.map((ing, i) => {
+    kcal += ing.calorias*ing.qty; prot += ing.proteina*ing.qty; carbs += ing.carbos*ing.qty;
+    gras += ing.grasas*ing.qty; fibra += ing.fibra*ing.qty;
+    const em = emojiForName(ing.label) || CAT_EMOJI[ing.categoria] || '🍽';
+    return `<div style="display:flex;align-items:center;justify-content:space-between;gap:8px;padding:6px 0;border-bottom:1px solid var(--cream-d)">
+      <span style="font-size:12px;color:var(--forest)">${em} ${ing.label} ×${ing.qty}</span>
+      <div style="display:flex;align-items:center;gap:8px">
+        <span style="font-size:11px;color:var(--text-m)">${Math.round(ing.calorias*ing.qty)} kcal</span>
+        <button onclick="nrRemoveIng(${i})" style="background:none;border:none;color:var(--text-m);cursor:pointer;font-size:13px">✕</button>
+      </div>
+    </div>`;
+  }).join('');
+  return rows + `<div style="display:flex;gap:5px;flex-wrap:wrap;margin-top:8px;align-items:center">
+    <span style="font-size:12px;font-weight:700;color:var(--forest)">${Math.round(kcal)} kcal</span>
+    <span style="font-size:10px;padding:2px 7px;border-radius:8px;background:var(--terra-l);color:var(--terra);font-weight:600">🥩 P${prot.toFixed(1)}g</span>
+    <span style="font-size:10px;padding:2px 7px;border-radius:8px;background:var(--gold-l);color:var(--gold);font-weight:600">🌾 C${carbs.toFixed(1)}g</span>
+    <span style="font-size:10px;padding:2px 7px;border-radius:8px;background:var(--blush-l);color:var(--blush);font-weight:600">🫒 G${gras.toFixed(1)}g</span>
+    <span style="font-size:10px;padding:2px 7px;border-radius:8px;background:var(--sage-ll);color:var(--sage);font-weight:600">🌿 F${fibra.toFixed(1)}g</span>
+  </div>`;
+}
+
+function renderNrSearchResults() {
+  const el = $('#nr-search-results');
+  if (!el) return;
+  const q = (_nrSearchQuery || '').toLowerCase().trim();
+  if (!q) { el.innerHTML = ''; return; }
+  const results = _alimentos.filter(a => !a.excluido && a.nombre.toLowerCase().includes(q)).slice(0, 15);
+  if (!results.length) {
+    el.innerHTML = `<div style="font-size:11px;color:var(--text-l);padding:6px">Sin resultados</div>`;
+    return;
+  }
+  el.innerHTML = results.map(a => `
+    <div onclick="nrAddIng(${a.id})"
+         style="display:flex;justify-content:space-between;align-items:center;padding:7px 8px;border-radius:8px;cursor:pointer;font-size:12px"
+         onmouseover="this.style.background='var(--cream)'" onmouseout="this.style.background='transparent'">
+      <span>${foodEmoji(a)} ${a.nombre}</span><span style="color:var(--text-m);font-size:11px">${a.calorias} kcal</span>
+    </div>`).join('');
+}
+
+function nrAddIng(alimId) {
+  const a = _alimentos.find(x => x.id === alimId);
+  if (!a || !_nrState) return;
+  _nrState.ing.push({
+    alimId: a.id, label: a.nombre, categoria: a.categoria, porcion_desc: a.porcion_desc,
+    qty: 1, calorias: a.calorias, proteina: a.proteina, carbos: a.carbos, grasas: a.grasas, fibra: a.fibra,
+  });
+  const s = $('#nr-search');
+  if (s) s.value = '';
+  _nrSearchQuery = '';
+  const list = $('#nr-ing-list');
+  if (list) list.innerHTML = renderNrIngList();
+  renderNrSearchResults();
+}
+
+function nrRemoveIng(i) {
+  _nrState.ing.splice(i, 1);
+  const list = $('#nr-ing-list');
+  if (list) list.innerHTML = renderNrIngList();
+}
+
+async function guardarNuevaReceta() {
+  if (!_nrState) return;
+  if (!_nrState.nombre.trim()) { toast('Escribe el nombre de la receta'); return; }
+  if (!_nrState.ing.length) { toast('Agrega al menos un ingrediente'); return; }
+
+  const palette = MEAL_REC_COL[_nrState.categoria] || {};
+  const btn = $('#nr-guardar-btn');
+  if (btn) { btn.disabled = true; btn.textContent = 'Guardando...'; }
+
+  try {
+    const res = await fetch('api/recetas.php', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        nombre: _nrState.nombre.trim(),
+        emoji:  _nrState.emoji.trim() || '🍽',
+        categoria: _nrState.categoria,
+        descripcion: _nrState.desc.trim(),
+        preparacion: _nrState.prep.trim(),
+        color:  palette.bg  || '#f5faf5',
+        border: palette.bar || '#6b9e78',
+        ingredientes: _nrState.ing.map(i => ({ alimento_id: i.alimId, cantidad: i.qty })),
+      }),
+    });
+    if (!res.ok) throw new Error();
+
+    const rr = await fetch('api/recetas.php');
+    _recetasRaw = rr.ok ? await rr.json() : _recetasRaw;
+    _recetasMut = null;
+
+    const catGuardada = _nrState.categoria;
+    closeCrearRecetaModal();
+    _pickerRecCat = catGuardada;
+    switchPickerTab('recetas');
+    pickerSetRecCat(catGuardada);
+    toast('Receta creada ✓');
+  } catch (e) {
+    toast('Error al guardar la receta');
+  } finally {
+    if (btn) { btn.disabled = false; btn.textContent = 'Guardar receta'; }
+  }
+}
+
+// ── Guardar plan semanal ──────────────────────────────
 async function guardarPlan() {
   if (!currentPatient) return;
   const p  = currentPatient;
   const T  = planTargets(p, _planAct);
-  const sel = Object.entries(_planSel).flatMap(([tiempo, items]) =>
-    items.map(it => ({ alimento_id: it.alimento_id || it.id, tiempo, porciones: it.porciones }))
-  );
+  const sel = [];
+  DIAS.forEach(d => {
+    MEALS.forEach(m => {
+      (_planDias[d.key]?.[m.key] || []).forEach(it => {
+        sel.push({
+          alimento_id: it.alimento_id || it.id,
+          tiempo:      m.key,
+          dia:         d.key,
+          porciones:   it.porciones,
+          receta_id:   it.receta_id || null,
+        });
+      });
+    });
+  });
 
   const btn = document.querySelector('[onclick="guardarPlan()"]');
   if (btn) { btn.disabled = true; btn.textContent = 'Guardando...'; }
@@ -1067,7 +1305,7 @@ async function guardarPlan() {
   } catch (e) {
     toast('Error al guardar plan');
   } finally {
-    if (btn) { btn.disabled = false; btn.textContent = '💾 Guardar plan'; }
+    if (btn) { btn.disabled = false; btn.textContent = '💾 Guardar'; }
   }
 }
 
@@ -1152,154 +1390,127 @@ async function borrarSuple(id) {
   }
 }
 
-// ── Edición de recetas ────────────────────────────────
-function recRemoveIng(rIdx, iIdx) {
-  getRecMut()[rIdx].ing.splice(iIdx, 1);
-  renderPickerContent();
+// ── Exportar plan semanal como PDF (portada + 1 página por día) ──
+const PDF_MEAL_LABELS = {
+  desayuno:    '🌅 Desayuno · 7:30 am',
+  colacion_am: '🍎 Colación AM · 10:30 am',
+  comida:      '🍽 Comida · 2:00 pm',
+  colacion_pm: '🥑 Colación PM · 5:30 pm',
+  cena:        '🌙 Cena · 8:00 pm',
+};
+const PDF_MEAL_COLORS = {
+  desayuno: '#d4a843', colacion_am: '#c4714a', comida: '#4a7c59',
+  colacion_pm: '#c4627a', cena: '#4a6fa5',
+};
+
+function pdfDayMealsHtml(diaKey) {
+  const dia = _planDias[diaKey] || {};
+
+  const blocks = MEALS.map(m => {
+    const items = dia[m.key] || [];
+    if (!items.length) return '';
+    const mKcal = Math.round(items.reduce((s, i) => s + i.calorias * i.porciones, 0));
+    const color = PDF_MEAL_COLORS[m.key];
+
+    const groupsHtml = groupMealItems(items).map(g => {
+      const rows = g.items.map(it => {
+        const kcal  = Math.round(it.calorias * it.porciones);
+        const prot  = +(it.proteina * it.porciones).toFixed(1);
+        const carbs = +(it.carbos   * it.porciones).toFixed(1);
+        const gras  = +(it.grasas   * it.porciones).toFixed(1);
+        const fib   = +(it.fibra    * it.porciones).toFixed(1);
+        return `<tr>
+          <td style="padding:5px 8px;font-size:9pt;color:#2c4a35">${it.nombre}</td>
+          <td style="padding:5px 8px;font-size:9pt;color:#777;text-align:center">${it.porcion_desc} ×${it.porciones}</td>
+          <td style="padding:5px 8px;font-size:9pt;font-weight:600;color:#2c4a35;text-align:center">${kcal}</td>
+          <td style="padding:5px 8px;font-size:9pt;color:#9e5a3a;text-align:center">${prot}g</td>
+          <td style="padding:5px 8px;font-size:9pt;color:#8a6a14;text-align:center">${carbs}g</td>
+          <td style="padding:5px 8px;font-size:9pt;color:#9e3a5a;text-align:center">${gras}g</td>
+          <td style="padding:5px 8px;font-size:9pt;color:#3a6840;text-align:center">${fib}g</td>
+        </tr>`;
+      }).join('');
+
+      const table = `<table style="width:100%;border-collapse:collapse;margin-top:4px">
+        <thead><tr style="background:#fafaf8">
+          <th style="padding:4px 8px;font-size:8pt;color:#999;text-align:left;font-weight:500">Alimento</th>
+          <th style="padding:4px 8px;font-size:8pt;color:#999;text-align:center;font-weight:500">Porción</th>
+          <th style="padding:4px 8px;font-size:8pt;color:#999;text-align:center;font-weight:500">Kcal</th>
+          <th style="padding:4px 8px;font-size:8pt;color:#c4714a;text-align:center;font-weight:500">Prot</th>
+          <th style="padding:4px 8px;font-size:8pt;color:#d4a843;text-align:center;font-weight:500">Carbs</th>
+          <th style="padding:4px 8px;font-size:8pt;color:#c4627a;text-align:center;font-weight:500">Grasas</th>
+          <th style="padding:4px 8px;font-size:8pt;color:#4a7c59;text-align:center;font-weight:500">Fibra</th>
+        </tr></thead>
+        <tbody>${rows}</tbody>
+      </table>`;
+
+      if (g.receta_nombre) {
+        return `<div style="margin:6px 0;padding:8px 10px;border:1px dashed ${color}55;border-radius:8px">
+          <div style="font-size:9pt;font-weight:700;color:${color}">👨‍🍳 ${g.receta_nombre}</div>
+          ${table}
+          ${g.preparacion ? `<div style="margin-top:6px;padding:7px 9px;background:#fafaf5;border-radius:6px">
+            <div style="font-size:8pt;font-weight:700;color:#777">📝 Preparación</div>
+            <div style="font-size:8pt;color:#555;white-space:pre-line;margin-top:3px;line-height:1.55">${g.preparacion}</div>
+          </div>` : ''}
+        </div>`;
+      }
+      return table;
+    }).join('');
+
+    return `<div style="margin-bottom:12px;border:1.5px solid ${color}33;border-radius:10px;overflow:hidden">
+      <div style="background:${color}18;border-left:4px solid ${color};padding:8px 14px;display:flex;justify-content:space-between;align-items:center">
+        <span style="font-size:10.5pt;font-weight:700;color:${color}">${PDF_MEAL_LABELS[m.key]}</span>
+        <span style="font-size:9pt;font-weight:600;color:#555">${mKcal} kcal</span>
+      </div>
+      <div style="padding:4px 10px 8px">${groupsHtml}</div>
+    </div>`;
+  }).filter(Boolean).join('');
+
+  return blocks || `<div style="text-align:center;padding:40px 20px;color:#aaa;font-size:11pt">Sin comidas asignadas para este día</div>`;
 }
 
-function recToggleAddIng(rIdx) {
-  _recAddOpen  = _recAddOpen === rIdx ? null : rIdx;
-  _recAddQuery = '';
-  _recAddCat   = 'Todos';
-  renderPickerContent();
-  if (_recAddOpen === rIdx) {
-    setTimeout(() => {
-      const el = $(`#rec-srch-${rIdx}`);
-      if (el) el.focus();
-      recSearchIng(rIdx);
-    }, 30);
-  }
+function pdfMacrosBar(T) {
+  return `<div style="display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:16px">
+    <div style="border-radius:8px;padding:10px 12px;text-align:center;background:#fff5f0;border:1.5px solid #c4714a33">
+      <div style="font-size:16pt;font-weight:700;line-height:1;color:#c4714a">${T.prot}g</div>
+      <div style="font-size:7.5pt;text-transform:uppercase;letter-spacing:.5px;margin-top:3px;opacity:.7;color:#c4714a">🥩 Proteína</div>
+    </div>
+    <div style="border-radius:8px;padding:10px 12px;text-align:center;background:#fffbf0;border:1.5px solid #d4a84333">
+      <div style="font-size:16pt;font-weight:700;line-height:1;color:#d4a843">${T.carbs}g</div>
+      <div style="font-size:7.5pt;text-transform:uppercase;letter-spacing:.5px;margin-top:3px;opacity:.7;color:#d4a843">🌾 Carbohidratos</div>
+    </div>
+    <div style="border-radius:8px;padding:10px 12px;text-align:center;background:#fff5f8;border:1.5px solid #c4627a33">
+      <div style="font-size:16pt;font-weight:700;line-height:1;color:#c4627a">${T.grasas}g</div>
+      <div style="font-size:7.5pt;text-transform:uppercase;letter-spacing:.5px;margin-top:3px;opacity:.7;color:#c4627a">🫒 Grasas</div>
+    </div>
+    <div style="border-radius:8px;padding:10px 12px;text-align:center;background:#f0f7f2;border:1.5px solid #4a7c5933">
+      <div style="font-size:16pt;font-weight:700;line-height:1;color:#4a7c59">${T.fibra}g</div>
+      <div style="font-size:7.5pt;text-transform:uppercase;letter-spacing:.5px;margin-top:3px;opacity:.7;color:#4a7c59">🌿 Fibra</div>
+    </div>
+  </div>`;
 }
 
-function recSearchIng(rIdx) {
-  const el = $(`#rec-res-${rIdx}`);
-  if (!el) return;
-  const q = (_recAddQuery || '').toLowerCase().trim();
-
-  const results = _alimentos.filter(a =>
-    !a.excluido &&
-    (_recAddCat === 'Todos' || a.categoria === _recAddCat) &&
-    (!q || a.nombre.toLowerCase().includes(q))
-  ).slice(0, 30);
-
-  if (!results.length) {
-    el.innerHTML = `<div style="font-size:11px;color:var(--text-l);padding:8px">Sin resultados</div>`;
-    return;
-  }
-
-  el.innerHTML = results.map(a => {
-    const col = CAT_COL[a.categoria] || { bg:'var(--sage-ll)', fg:'var(--sage)', bar:'var(--sage)' };
-    return `
-      <div onclick="recAddIng(${rIdx},${a.id})"
-           style="display:flex;align-items:center;gap:10px;padding:8px 6px;border-radius:8px;
-                  cursor:pointer;transition:background .1s;border-bottom:1px solid var(--cream-d)"
-           onmouseover="this.style.background='var(--white)'"
-           onmouseout="this.style.background='transparent'">
-        <div style="width:36px;height:36px;border-radius:10px;flex-shrink:0;background:${col.bg};
-                    border:1px solid ${col.bar}22;display:flex;align-items:center;justify-content:center;
-                    font-size:20px">${foodEmoji(a)}</div>
-        <div style="flex:1;min-width:0">
-          <div style="display:flex;align-items:center;gap:6px;flex-wrap:wrap">
-            <span style="font-size:12px;font-weight:600;color:var(--forest)">${a.nombre}</span>
-            <span style="font-size:9.5px;padding:1px 7px;border-radius:20px;background:${col.bg};color:${col.fg};font-weight:500">${a.categoria}</span>
-          </div>
-          <div style="font-size:10px;color:var(--text-l);margin-top:2px">${a.porcion_desc} · <b style="color:var(--forest)">${a.calorias} kcal</b></div>
-          <div style="display:flex;gap:5px;margin-top:4px;flex-wrap:wrap">
-            <span style="font-size:9.5px;padding:1px 6px;border-radius:6px;background:var(--terra-l);color:var(--terra);font-weight:600">🥩 P ${a.proteina}g</span>
-            <span style="font-size:9.5px;padding:1px 6px;border-radius:6px;background:var(--gold-l);color:var(--gold);font-weight:600">🌾 C ${a.carbos}g</span>
-            <span style="font-size:9.5px;padding:1px 6px;border-radius:6px;background:var(--blush-l);color:var(--blush);font-weight:600">🫒 G ${a.grasas}g</span>
-            <span style="font-size:9.5px;padding:1px 6px;border-radius:6px;background:var(--sage-ll);color:var(--sage);font-weight:600">🌿 F ${a.fibra}g</span>
-          </div>
-        </div>
-      </div>`;
-  }).join('');
+function pdfHeader(p, logoUrl, rightTop, rightBottom) {
+  return `<div style="border-bottom:2.5px solid #4a7c59;padding-bottom:12px;margin-bottom:14px;display:flex;align-items:center;gap:16px">
+    <img src="${logoUrl}" style="width:60px;height:60px;object-fit:contain;flex-shrink:0" alt="GestaNut">
+    <div>
+      <div style="font-size:20pt;font-weight:700;color:#2c4a35;line-height:1.1">Gesta<em style="color:#c4714a;font-style:normal">Nut</em></div>
+      <div style="font-size:8.5pt;color:#888;margin-top:3px">Diana Zavala · Nutrióloga · Cédula 15304166</div>
+      <div style="font-size:8.5pt;color:#888">667 305 6211 · @gestanut · Culiacán, Sinaloa</div>
+    </div>
+    <div style="margin-left:auto;text-align:right">
+      <div style="font-size:8pt;color:#aaa">${rightTop}</div>
+      <div style="font-size:8.5pt;font-weight:600;color:#4a7c59">${rightBottom}</div>
+    </div>
+  </div>`;
 }
 
-function recSetCat(rIdx, cat) {
-  _recAddCat = cat;
-  renderPickerContent();
-  setTimeout(() => recSearchIng(rIdx), 30);
-}
-
-function recAddIng(rIdx, alimId) {
-  const food = _alimentos.find(a => a.id === alimId);
-  if (!food) return;
-  getRecMut()[rIdx].ing.push({
-    alimId: alimId,
-    label:  food.nombre,
-    emoji:  foodEmoji(food),
-    qty:    1,
-    step:   0.5,
-    min:    0,
-    max:    10,
-  });
-  _recAddOpen  = null;
-  _recAddQuery = '';
-  renderPickerContent();
-}
-
-// ── Exportar plan como PDF ────────────────────────────
 function generarPlanPDF() {
   const p = currentPatient;
   if (!p) return;
 
   const T       = planTargets(p, _planAct);
-  const C       = planTotals();
   const fecha   = new Date().toLocaleDateString('es-MX', { day: 'numeric', month: 'long', year: 'numeric' });
   const logoUrl = new URL('assets/img/logo.jpg', window.location.href).href;
-
-  const MEAL_LABELS = {
-    desayuno:    '🌅 Desayuno · 7:30 am',
-    colacion_am: '🍎 Colación AM · 10:30 am',
-    comida:      '🍽 Comida · 2:00 pm',
-    colacion_pm: '🥑 Colación PM · 5:30 pm',
-    cena:        '🌙 Cena · 8:00 pm',
-  };
-  const MEAL_COLORS = {
-    desayuno: '#d4a843', colacion_am: '#c4714a', comida: '#4a7c59',
-    colacion_pm: '#c4627a', cena: '#4a6fa5',
-  };
-
-  const mealsHtml = MEALS.map(m => {
-    const items = _planSel[m.key] || [];
-    if (!items.length) return '';
-    const mKcal = Math.round(items.reduce((s, i) => s + i.calorias * i.porciones, 0));
-    const color = MEAL_COLORS[m.key];
-    const rows  = items.map(it => {
-      const kcal  = Math.round(it.calorias * it.porciones);
-      const prot  = +(it.proteina * it.porciones).toFixed(1);
-      const carbs = +(it.carbos   * it.porciones).toFixed(1);
-      const gras  = +(it.grasas   * it.porciones).toFixed(1);
-      return `<tr>
-        <td style="padding:5px 8px;font-size:9pt;color:#2c4a35">${it.nombre}</td>
-        <td style="padding:5px 8px;font-size:9pt;color:#777;text-align:center">${it.porcion_desc} ×${it.porciones}</td>
-        <td style="padding:5px 8px;font-size:9pt;font-weight:600;color:#2c4a35;text-align:center">${kcal}</td>
-        <td style="padding:5px 8px;font-size:9pt;color:#9e5a3a;text-align:center">${prot}g</td>
-        <td style="padding:5px 8px;font-size:9pt;color:#8a6a14;text-align:center">${carbs}g</td>
-        <td style="padding:5px 8px;font-size:9pt;color:#9e3a5a;text-align:center">${gras}g</td>
-      </tr>`;
-    }).join('');
-    return `<div style="margin-bottom:14px;border:1.5px solid ${color}33;border-radius:10px;overflow:hidden">
-      <div style="background:${color}18;border-left:4px solid ${color};padding:8px 14px;display:flex;justify-content:space-between;align-items:center">
-        <span style="font-size:10.5pt;font-weight:700;color:${color}">${MEAL_LABELS[m.key]}</span>
-        <span style="font-size:9pt;font-weight:600;color:#555">${mKcal} kcal</span>
-      </div>
-      <table style="width:100%;border-collapse:collapse">
-        <thead>
-          <tr style="background:#fafaf8">
-            <th style="padding:4px 8px;font-size:8pt;color:#999;text-align:left;font-weight:500">Alimento</th>
-            <th style="padding:4px 8px;font-size:8pt;color:#999;text-align:center;font-weight:500">Porción</th>
-            <th style="padding:4px 8px;font-size:8pt;color:#999;text-align:center;font-weight:500">Kcal</th>
-            <th style="padding:4px 8px;font-size:8pt;color:#c4714a;text-align:center;font-weight:500">Prot</th>
-            <th style="padding:4px 8px;font-size:8pt;color:#d4a843;text-align:center;font-weight:500">Carbs</th>
-            <th style="padding:4px 8px;font-size:8pt;color:#c4627a;text-align:center;font-weight:500">Grasas</th>
-          </tr>
-        </thead>
-        <tbody>${rows}</tbody>
-      </table>
-    </div>`;
-  }).filter(Boolean).join('');
 
   const supleHtml = (p.suplementacion || []).length
     ? `<div style="margin-top:14px;border:1.5px solid #4a7c5933;border-radius:10px;overflow:hidden">
@@ -1315,91 +1526,69 @@ function generarPlanPDF() {
       </div>`
     : '';
 
+  const hidratacionHtml = `<div style="margin-top:14px;padding:10px 14px;background:#f0f7ff;border-radius:8px;border:1px solid #4a6fa533;display:flex;align-items:center;gap:10px">
+    <span style="font-size:18pt">💧</span>
+    <div>
+      <div style="font-size:10pt;font-weight:700;color:#4a6fa5">Hidratación: ${T.agua} litros de agua al día</div>
+      <div style="font-size:8.5pt;color:#777;margin-top:2px">Distribuida a lo largo del día · Evita bebidas azucaradas</div>
+    </div>
+  </div>`;
+
+  // Portada
+  const coverPage = `<div class="page">
+    ${pdfHeader(p, logoUrl, 'Plan de Alimentación Semanal', fecha)}
+    <div class="info-bar">
+      <div class="info-cell"><div class="lbl">Paciente</div><div class="val">${p.name}</div></div>
+      <div class="info-cell"><div class="lbl">Calorías diarias</div><div class="val">${T.kcal} kcal</div></div>
+      <div class="info-cell"><div class="lbl">Actividad</div><div class="val">${ACT_OPTS.find(o=>o.val===_planAct)?.label || 'Moderado'}</div></div>
+      <div class="info-cell"><div class="lbl">Hidratación</div><div class="val">${T.agua} L / día</div></div>
+    </div>
+    ${pdfMacrosBar(T)}
+    <div style="margin-top:6px;text-align:center;font-size:11pt;color:#4a7c59;font-weight:700">📅 Plan semanal · 7 días</div>
+    <div style="display:flex;gap:8px;margin-top:12px;flex-wrap:wrap;justify-content:center">
+      ${DIAS.map(d => {
+        const hasItems = MEALS.some(m => (_planDias[d.key]?.[m.key] || []).length);
+        return `<span style="padding:6px 16px;border-radius:20px;font-size:9pt;font-weight:600;
+          background:${hasItems ? '#f0f7f2' : '#f7f7f5'};color:${hasItems ? '#2c4a35' : '#bbb'};
+          border:1px solid ${hasItems ? '#4a7c5944' : '#eee'}">${d.label}${hasItems ? ' ✓' : ''}</span>`;
+      }).join('')}
+    </div>
+    ${supleHtml}
+    ${hidratacionHtml}
+    <div class="footer">GestaNut · Diana Zavala · Nutrióloga · ${fecha} · Este plan es personalizado y exclusivo para ${p.name}</div>
+  </div>`;
+
+  // Páginas por día
+  const dayPages = DIAS.map((d, idx) => `<div class="page">
+    ${pdfHeader(p, logoUrl, `Día ${idx + 1} de 7`, d.label)}
+    <div style="margin-bottom:10px;font-size:9pt;color:#777">Meta diaria: <b style="color:#2c4a35">${T.kcal} kcal</b> ·
+      🥩 ${T.prot}g · 🌾 ${T.carbs}g · 🫒 ${T.grasas}g · 🌿 ${T.fibra}g</div>
+    ${pdfDayMealsHtml(d.key)}
+    <div class="footer">GestaNut · Diana Zavala · Nutrióloga · ${d.label} · Plan exclusivo para ${p.name}</div>
+  </div>`).join('');
+
   const html = `<!DOCTYPE html>
 <html lang="es">
 <head>
 <meta charset="UTF-8">
-<title>Plan de Alimentación · ${p.name}</title>
+<title>Plan de Alimentación Semanal · ${p.name}</title>
 <style>
   * { margin:0; padding:0; box-sizing:border-box; }
   @page { margin:0; size:A4; }
-  body { font-family:'Helvetica Neue',Arial,sans-serif; font-size:10pt; color:#2c2c2c;
-         line-height:1.5; padding:1.2cm 1.8cm; width:21cm; }
-  .header { border-bottom:2.5px solid #4a7c59; padding-bottom:12px; margin-bottom:14px;
-            display:flex; align-items:center; gap:16px; }
-  .brand-txt { font-size:20pt; font-weight:700; color:#2c4a35; line-height:1.1; }
-  .brand-txt em { color:#c4714a; font-style:normal; }
-  .sub { font-size:8.5pt; color:#888; margin-top:3px; }
+  body { font-family:'Helvetica Neue',Arial,sans-serif; font-size:10pt; color:#2c2c2c; line-height:1.5; }
+  .page { width:21cm; min-height:29.7cm; padding:1.2cm 1.8cm; page-break-after:always; }
+  .page:last-child { page-break-after:auto; }
   .info-bar { display:flex; gap:0; margin-bottom:14px; border:1.5px solid #e8e4dc; border-radius:10px; overflow:hidden; }
   .info-cell { flex:1; padding:10px 14px; border-right:1px solid #e8e4dc; }
   .info-cell:last-child { border-right:none; }
   .info-cell .lbl { font-size:7.5pt; text-transform:uppercase; letter-spacing:.6px; color:#aaa; font-weight:600; margin-bottom:3px; }
   .info-cell .val { font-size:11pt; font-weight:700; color:#2c4a35; }
-  .macros { display:grid; grid-template-columns:repeat(4,1fr); gap:8px; margin-bottom:16px; }
-  .macro-box { border-radius:8px; padding:10px 12px; text-align:center; }
-  .macro-box .mv { font-size:16pt; font-weight:700; line-height:1; }
-  .macro-box .ml { font-size:7.5pt; text-transform:uppercase; letter-spacing:.5px; margin-top:3px; opacity:.7; }
-  .footer { text-align:center; font-size:7.5pt; color:#ccc; border-top:1px solid #eee;
-            padding-top:8px; margin-top:14px; }
+  .footer { text-align:center; font-size:7.5pt; color:#ccc; border-top:1px solid #eee; padding-top:8px; margin-top:16px; }
 </style>
 </head>
 <body>
-
-<div class="header">
-  <img src="${logoUrl}" style="width:60px;height:60px;object-fit:contain;flex-shrink:0" alt="GestaNut">
-  <div>
-    <div class="brand-txt">Gesta<em>Nut</em></div>
-    <div class="sub">Diana Zavala · Nutrióloga · Cédula 15304166</div>
-    <div class="sub">667 305 6211 · @gestanut · Culiacán, Sinaloa</div>
-  </div>
-  <div style="margin-left:auto;text-align:right">
-    <div style="font-size:8pt;color:#aaa">Plan de Alimentación</div>
-    <div style="font-size:8.5pt;font-weight:600;color:#4a7c59">${fecha}</div>
-  </div>
-</div>
-
-<div class="info-bar">
-  <div class="info-cell"><div class="lbl">Paciente</div><div class="val">${p.name}</div></div>
-  <div class="info-cell"><div class="lbl">Calorías diarias</div><div class="val">${T.kcal} kcal</div></div>
-  <div class="info-cell"><div class="lbl">Actividad</div><div class="val">${ACT_OPTS.find(o=>o.val===_planAct)?.label || 'Moderado'}</div></div>
-  <div class="info-cell"><div class="lbl">Hidratación</div><div class="val">${T.agua} L / día</div></div>
-</div>
-
-<div class="macros">
-  <div class="macro-box" style="background:#fff5f0;border:1.5px solid #c4714a33">
-    <div class="mv" style="color:#c4714a">${T.prot}g</div>
-    <div class="ml" style="color:#c4714a">🥩 Proteína</div>
-  </div>
-  <div class="macro-box" style="background:#fffbf0;border:1.5px solid #d4a84333">
-    <div class="mv" style="color:#d4a843">${T.carbs}g</div>
-    <div class="ml" style="color:#d4a843">🌾 Carbohidratos</div>
-  </div>
-  <div class="macro-box" style="background:#fff5f8;border:1.5px solid #c4627a33">
-    <div class="mv" style="color:#c4627a">${T.grasas}g</div>
-    <div class="ml" style="color:#c4627a">🫒 Grasas</div>
-  </div>
-  <div class="macro-box" style="background:#f0f7f2;border:1.5px solid #4a7c5933">
-    <div class="mv" style="color:#4a7c59">${T.fibra}g</div>
-    <div class="ml" style="color:#4a7c59">🌿 Fibra</div>
-  </div>
-</div>
-
-${mealsHtml || '<div style="text-align:center;padding:30px;color:#aaa;font-size:11pt">Sin alimentos registrados en el plan</div>'}
-
-${supleHtml}
-
-<div style="margin-top:14px;padding:10px 14px;background:#f0f7ff;border-radius:8px;border:1px solid #4a6fa533;display:flex;align-items:center;gap:10px">
-  <span style="font-size:18pt">💧</span>
-  <div>
-    <div style="font-size:10pt;font-weight:700;color:#4a6fa5">Hidratación: ${T.agua} litros de agua al día</div>
-    <div style="font-size:8.5pt;color:#777;margin-top:2px">Distribuida a lo largo del día · Evita bebidas azucaradas</div>
-  </div>
-</div>
-
-<div class="footer">
-  GestaNut · Diana Zavala · Nutrióloga · ${fecha} · Este plan es personalizado y exclusivo para ${p.name}
-</div>
-
+${coverPage}
+${dayPages}
 <script>window.onload = function(){ window.print(); }</script>
 </body>
 </html>`;
@@ -1415,6 +1604,6 @@ function enviarPlanWA() {
   const p = currentPatient;
   if (!p) return;
   const nombre = p.name.split(' ')[0];
-  const msg    = `Hola ${nombre}! Aqui te comparto tu plan de alimentacion:\nCualquier duda me avisas. Vamos con todo!`;
+  const msg    = `Hola ${nombre}! Aqui te comparto tu plan de alimentacion semanal:\nCualquier duda me avisas. Vamos con todo!`;
   window.open(`https://wa.me/?text=${encodeURIComponent(msg)}`, '_blank');
 }
