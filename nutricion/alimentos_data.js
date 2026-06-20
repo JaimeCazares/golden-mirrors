@@ -15,6 +15,7 @@ const NUTRI_FOOD_DB = [
   { nombre: 'Proteína en polvo (whey)', categoria: 'Proteínas', emoji: '🥤', porcion: '1 scoop (30 g)', calorias: 120, proteina: 24, carbos: 3,  grasa: 1.5, fibra: 0 },
   { nombre: 'Jamón de pavo', categoria: 'Proteínas', emoji: '🍖', porcion: '1 rebanada (20 g)', calorias: 26,  proteina: 3.7, carbos: 0.7, grasa: 0.8, fibra: 0 },
   { nombre: 'Jamón de cerdo', categoria: 'Proteínas', emoji: '🍖', porcion: '1 rebanada (20 g)', calorias: 34,  proteina: 3,   carbos: 0.8, grasa: 2,   fibra: 0 },
+  { nombre: 'Birria / consomé de chamberete deshebrado', categoria: 'Proteínas', emoji: '🍲', porcion: '1 tazón', calorias: 380, proteina: 40, carbos: 3, grasa: 22, fibra: 0 },
 
   // Carbohidratos
   { nombre: 'Arroz blanco cocido', categoria: 'Carbohidratos', emoji: '🍚', porcion: '1 taza (158 g)', calorias: 205, proteina: 4.3, carbos: 45, grasa: 0.4, fibra: 0.6 },
