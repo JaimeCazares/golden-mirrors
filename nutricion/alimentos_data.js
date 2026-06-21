@@ -82,7 +82,12 @@ const NUTRI_FOOD_DB = [
   { nombre: 'Barra de proteína', categoria: 'Snacks', emoji: '🍫', porcion: '1 pieza', calorias: 200, proteina: 20,  carbos: 21, grasa: 7,   fibra: 5 },
   { nombre: 'Palomitas naturales', categoria: 'Snacks', emoji: '🍿', porcion: '2 tazas', calorias: 62,  proteina: 2,   carbos: 12, grasa: 0.7, fibra: 2.2 },
   { nombre: 'Chocolate amargo 70%', categoria: 'Snacks', emoji: '🍫', porcion: '1 cuadro (10 g)', calorias: 59,  proteina: 0.8, carbos: 4.6, grasa: 4.2, fibra: 1.1 },
-  { nombre: 'Galletas integrales', categoria: 'Snacks', emoji: '🍪', porcion: '4 piezas', calorias: 140, proteina: 2,   carbos: 21, grasa: 5,   fibra: 2 }
+  { nombre: 'Galletas integrales', categoria: 'Snacks', emoji: '🍪', porcion: '4 piezas', calorias: 140, proteina: 2,   carbos: 21, grasa: 5,   fibra: 2 },
+
+  // Antojitos
+  { nombre: 'Taco de camarón y quesadilla con fresca', categoria: 'Antojitos', emoji: '🌮', porcion: '1 orden', calorias: 975, proteina: 36, carbos: 117, grasa: 37, fibra: 6 },
+  { nombre: 'Ensalada de atún de mamá', categoria: 'Antojitos', emoji: '🥗', porcion: '1 porción', calorias: 430, proteina: 26, carbos: 22, grasa: 28.5, fibra: 4 },
+  { nombre: 'Tostada de maíz', categoria: 'Carbohidratos', emoji: '🌽', porcion: '1 pieza', calorias: 55, proteina: 1.5, carbos: 11, grasa: 0.7, fibra: 1.5 }
 ];
 
 const NUTRI_FOOD_CATS = ['Todos', ...Array.from(new Set(NUTRI_FOOD_DB.map(a => a.categoria)))];

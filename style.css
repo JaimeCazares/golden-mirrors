@@ -155,14 +155,63 @@ body {
     font-weight: 800;
 }
 
+.nav-toggle-btn {
+    background: transparent;
+    border: none;
+    color: #888;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    padding: 8px 10px;
+    border-radius: 10px;
+    transition: all 0.3s ease;
+}
+
+.nav-toggle-btn .icono {
+    font-size: 1.3rem;
+    line-height: 1;
+    transition: transform 0.3s ease;
+}
+
+.nav-toggle-btn:hover {
+    background: rgba(255, 255, 255, 0.05);
+    color: white;
+}
+
+.dock-nav.abierto .nav-toggle-btn {
+    color: #00e0ff;
+}
+
+.dock-nav.abierto .nav-toggle-btn .icono {
+    transform: rotate(90deg);
+}
+
+.nav-extra {
+    display: flex;
+    gap: 10px;
+    max-width: 0;
+    overflow: hidden;
+    opacity: 0;
+    transition: max-width 0.3s ease, opacity 0.2s ease;
+}
+
+.dock-nav.abierto .nav-extra {
+    max-width: 500px;
+    opacity: 1;
+}
+
 /* RESPONSIVE */
 @media (max-width: 450px) {
     .dock-nav {
         left: 50%;
         transform: translateX(-50%);
         bottom: 15px;
-        width: 90%;
+        width: auto;
         justify-content: space-around;
+    }
+    .dock-nav.abierto {
+        width: 90%;
     }
 }
 

@@ -3,12 +3,18 @@
 const modulosCargados = {};
 let seccionActual = 'inicio';
 
+function toggleNavExtra() {
+    document.getElementById('dock-nav')?.classList.toggle('abierto');
+}
+
 async function cambiarPestana(nombre) {
     console.log("Navegando a:", nombre);
 
     const vistaInicio = document.getElementById('vista-inicio');
     const vistaDinamica = document.getElementById('vista-dinamica');
     const contenedor = document.getElementById('contenido-modulo');
+
+    document.getElementById('dock-nav')?.classList.remove('abierto');
 
     // =========================
     // 1️⃣ BOTONES DOCK

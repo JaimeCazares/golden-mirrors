@@ -8,99 +8,120 @@ if (!isset($conexion) || $conexion->connect_error) {
     exit;
 }
 
-// Tabla de comidas
+// Plan/suplementos/actividad de cada día (un registro por fecha)
 $conexion->query("
-    CREATE TABLE IF NOT EXISTS nutricion_log (
-        id         INT AUTO_INCREMENT PRIMARY KEY,
-        fecha      DATE NOT NULL,
-        nombre     VARCHAR(200) NOT NULL,
-        calorias   DECIMAL(8,1) DEFAULT 0,
-        proteina   DECIMAL(8,1) DEFAULT 0,
-        carbos     DECIMAL(8,1) DEFAULT 0,
-        grasa      DECIMAL(8,1) DEFAULT 0,
-        fibra      DECIMAL(8,1) DEFAULT 0,
-        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    CREATE TABLE IF NOT EXISTS nutricion_dias (
+        fecha             DATE NOT NULL PRIMARY KEY,
+        plan_json         LONGTEXT,
+        suplementos_json  LONGTEXT,
+        miband            INT DEFAULT 0,
+        updated_at        TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
     ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4
 ");
 
-// Tabla de actividad diaria (Mi Band)
+// Metas/BMR vigentes a partir de una fecha (histórico, no se modifica retroactivamente)
 $conexion->query("
-    CREATE TABLE IF NOT EXISTS nutricion_actividad (
-        id       INT AUTO_INCREMENT PRIMARY KEY,
-        fecha    DATE NOT NULL UNIQUE,
-        calorias INT DEFAULT 0
+    CREATE TABLE IF NOT EXISTS nutricion_metas (
+        id          INT AUTO_INCREMENT PRIMARY KEY,
+        fecha       DATE NOT NULL UNIQUE,
+        bmr         INT DEFAULT 0,
+        kcal        INT DEFAULT 0,
+        prot        INT DEFAULT 0,
+        carbs       INT DEFAULT 0,
+        grasas      INT DEFAULT 0,
+        fibra       INT DEFAULT 0,
+        created_at  TIMESTAMP DEFAULT CURRENT_TIMESTAMP
     ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4
 ");
 
 $input  = json_decode(file_get_contents('php://input'), true) ?? [];
 $accion = $_GET['accion'] ?? $input['accion'] ?? '';
 
-// GET: obtener entradas + actividad del día
-if ($accion === 'obtener') {
+$DEFAULT_METAS = ['bmr' => 2500, 'kcal' => 1900, 'prot' => 180, 'carbs' => 160, 'grasas' => 60, 'fibra' => 35];
+
+// GET: datos del día (plan + suplementos + miband)
+if ($accion === 'obtener_dia') {
     $fecha = $conexion->real_escape_string($_GET['fecha'] ?? date('Y-m-d'));
 
-    $res = $conexion->query("
-        SELECT id, nombre, calorias, proteina, carbos, grasa, fibra
-        FROM nutricion_log
-        WHERE fecha = '$fecha'
-        ORDER BY created_at ASC
-    ");
-    $entradas = [];
-    while ($row = $res->fetch_assoc()) $entradas[] = $row;
-
-    $resAct = $conexion->query("SELECT calorias FROM nutricion_actividad WHERE fecha = '$fecha'");
-    $miband = 0;
-    if ($resAct && $resAct->num_rows > 0) {
-        $miband = intval($resAct->fetch_assoc()['calorias']);
+    $res = $conexion->query("SELECT plan_json, suplementos_json, miband FROM nutricion_dias WHERE fecha = '$fecha'");
+    if ($res && $res->num_rows > 0) {
+        $row = $res->fetch_assoc();
+        echo json_encode([
+            'plan'         => $row['plan_json'] ? json_decode($row['plan_json']) : null,
+            'suplementos'  => $row['suplementos_json'] ? json_decode($row['suplementos_json']) : [],
+            'miband'       => intval($row['miband']),
+        ]);
+    } else {
+        echo json_encode(['plan' => null, 'suplementos' => [], 'miband' => 0]);
     }
-
-    echo json_encode(['entradas' => $entradas, 'miband' => $miband]);
     exit;
 }
 
-// POST: agregar comida
-if ($accion === 'agregar') {
-    $fecha    = $conexion->real_escape_string($input['fecha']  ?? date('Y-m-d'));
-    $nombre   = $conexion->real_escape_string($input['nombre'] ?? '');
-    $calorias = floatval($input['calorias'] ?? 0);
-    $proteina = floatval($input['proteina'] ?? 0);
-    $carbos   = floatval($input['carbos']   ?? 0);
-    $grasa    = floatval($input['grasa']    ?? 0);
-    $fibra    = floatval($input['fibra']    ?? 0);
-
-    if (!$nombre) { echo json_encode(['error' => 'Nombre requerido']); exit; }
+// POST: guardar (upsert) los datos del día
+if ($accion === 'guardar_dia') {
+    $fecha       = $conexion->real_escape_string($input['fecha'] ?? date('Y-m-d'));
+    $plan        = $conexion->real_escape_string(json_encode($input['plan']        ?? []));
+    $suplementos = $conexion->real_escape_string(json_encode($input['suplementos'] ?? []));
+    $miband      = intval($input['miband'] ?? 0);
 
     $conexion->query("
-        INSERT INTO nutricion_log (fecha, nombre, calorias, proteina, carbos, grasa, fibra)
-        VALUES ('$fecha', '$nombre', $calorias, $proteina, $carbos, $grasa, $fibra)
-    ");
-    echo json_encode(['status' => 'ok', 'id' => $conexion->insert_id]);
-    exit;
-}
-
-// POST: guardar actividad Mi Band (upsert)
-if ($accion === 'guardar_miband') {
-    $fecha    = $conexion->real_escape_string($input['fecha'] ?? date('Y-m-d'));
-    $calorias = intval($input['calorias'] ?? 0);
-
-    $conexion->query("
-        INSERT INTO nutricion_actividad (fecha, calorias)
-        VALUES ('$fecha', $calorias)
-        ON DUPLICATE KEY UPDATE calorias = $calorias
+        INSERT INTO nutricion_dias (fecha, plan_json, suplementos_json, miband)
+        VALUES ('$fecha', '$plan', '$suplementos', $miband)
+        ON DUPLICATE KEY UPDATE plan_json = '$plan', suplementos_json = '$suplementos', miband = $miband
     ");
     echo json_encode(['status' => 'ok']);
     exit;
 }
 
-// POST: eliminar comida
-if ($accion === 'eliminar') {
-    $id = intval($input['id'] ?? 0);
-    if ($id > 0) {
-        $conexion->query("DELETE FROM nutricion_log WHERE id = $id");
-        echo json_encode(['status' => 'ok']);
+// GET: metas vigentes para una fecha (la más reciente con fecha <= la solicitada)
+if ($accion === 'obtener_metas') {
+    $fecha = $conexion->real_escape_string($_GET['fecha'] ?? date('Y-m-d'));
+
+    $res = $conexion->query("
+        SELECT bmr, kcal, prot, carbs, grasas, fibra
+        FROM nutricion_metas
+        WHERE fecha <= '$fecha'
+        ORDER BY fecha DESC
+        LIMIT 1
+    ");
+    if ($res && $res->num_rows > 0) {
+        echo json_encode($res->fetch_assoc());
     } else {
-        echo json_encode(['error' => 'ID inválido']);
+        echo json_encode($DEFAULT_METAS);
     }
+    exit;
+}
+
+// POST: guardar metas vigentes a partir de hoy (no toca fechas pasadas)
+if ($accion === 'guardar_metas') {
+    $fecha  = $conexion->real_escape_string(date('Y-m-d'));
+    $bmr    = intval($input['bmr']    ?? 0);
+    $kcal   = intval($input['kcal']   ?? 0);
+    $prot   = intval($input['prot']   ?? 0);
+    $carbs  = intval($input['carbs']  ?? 0);
+    $grasas = intval($input['grasas'] ?? 0);
+    $fibra  = intval($input['fibra']  ?? 0);
+
+    $conexion->query("
+        INSERT INTO nutricion_metas (fecha, bmr, kcal, prot, carbs, grasas, fibra)
+        VALUES ('$fecha', $bmr, $kcal, $prot, $carbs, $grasas, $fibra)
+        ON DUPLICATE KEY UPDATE bmr=$bmr, kcal=$kcal, prot=$prot, carbs=$carbs, grasas=$grasas, fibra=$fibra
+    ");
+    echo json_encode(['status' => 'ok', 'fecha' => $fecha]);
+    exit;
+}
+
+// POST: guardar solo actividad Mi Band del día
+if ($accion === 'guardar_miband') {
+    $fecha   = $conexion->real_escape_string($input['fecha'] ?? date('Y-m-d'));
+    $miband  = intval($input['miband'] ?? 0);
+
+    $conexion->query("
+        INSERT INTO nutricion_dias (fecha, miband)
+        VALUES ('$fecha', $miband)
+        ON DUPLICATE KEY UPDATE miband = $miband
+    ");
+    echo json_encode(['status' => 'ok']);
     exit;
 }
 

@@ -119,6 +119,24 @@
     margin: 0 auto;
     color: #fff;
     box-sizing: border-box;
+    scrollbar-width: thin;
+    scrollbar-color: #4ade80 rgba(255,255,255,0.05);
+}
+.nutricion-container::-webkit-scrollbar {
+    width: 7px;
+}
+.nutricion-container::-webkit-scrollbar-track {
+    background: rgba(255,255,255,0.05);
+    border-radius: 10px;
+}
+.nutricion-container::-webkit-scrollbar-thumb {
+    background: linear-gradient(180deg, #fb923c, #4ade80 50%, #00e0ff);
+    border-radius: 10px;
+    box-shadow: 0 0 8px rgba(74,222,128,0.45);
+    transition: box-shadow 0.25s ease;
+}
+.nutricion-container::-webkit-scrollbar-thumb:hover {
+    box-shadow: 0 0 14px rgba(0,224,255,0.65);
 }
 
 /* HEADER */
@@ -126,15 +144,18 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
+    gap: 10px;
     margin-bottom: 10px;
 }
+.nutri-header-left { flex-shrink: 0; }
 .nutri-titulo {
-    font-size: 1.35rem;
+    font-size: 1.1rem;
     font-weight: 800;
     text-shadow: 0 2px 10px rgba(0,0,0,0.4);
+    line-height: 1.15;
 }
 .nutri-fecha-label {
-    font-size: 0.8rem;
+    font-size: 0.68rem;
     color: #c2cae0;
     text-transform: capitalize;
 }
@@ -219,6 +240,181 @@
 .nto-atardecer { background: linear-gradient(180deg, #18083e, #ffd560); }
 .nto-emoji  { font-size: 1rem; margin-top: 2px; }
 .nto-label  { font-size: 0.62rem; text-transform: uppercase; letter-spacing: 0.4px; }
+
+/* SELECTOR DE FECHAS — compacto, en línea con el header */
+.nutri-dias-wrap {
+    position: relative;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    min-width: 0;
+}
+.nutri-dias-mes-row {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+}
+.nutri-dias-mes {
+    font-size: 0.55rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    color: #aab2cc;
+    white-space: nowrap;
+}
+.nutri-dias-info-btn {
+    background: none;
+    border: none;
+    color: #7a82a0;
+    font-size: 0.75rem;
+    cursor: pointer;
+    line-height: 1;
+    padding: 0;
+}
+.nutri-dias-info-btn:hover { color: #4ade80; }
+
+.nutri-dias-strip {
+    display: flex;
+    align-items: flex-start;
+    gap: 6px;
+    overflow-x: auto;
+    scroll-behavior: smooth;
+    scrollbar-width: none;
+}
+.nutri-dias-strip::-webkit-scrollbar { display: none; }
+
+.nutri-dia-circ {
+    flex-shrink: 0;
+    width: 30px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0px;
+    background: none;
+    border: none;
+    cursor: pointer;
+    color: #aab2cc;
+    padding: 0;
+}
+.nutri-dia-circ-label {
+    font-size: 0.44rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.2px;
+    white-space: nowrap;
+    line-height: 1.3;
+}
+.nutri-dia-circ-semana {
+    font-size: 0.38rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    color: #7a82a0;
+    white-space: nowrap;
+    line-height: 1.2;
+    margin-bottom: 2px;
+}
+.nutri-dia-circ-num {
+    width: 30px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 2px;
+    padding: 3px 0 4px;
+    border-radius: 9px;
+    background: rgba(255,255,255,0.06);
+    border: 1.5px solid rgba(255,255,255,0.12);
+    transition: all 0.2s ease;
+}
+.nutri-dia-circ-numero {
+    font-size: 0.68rem;
+    font-weight: 700;
+}
+.nutri-dia-circ:hover .nutri-dia-circ-num {
+    border-color: rgba(255,255,255,0.3);
+}
+.nutri-dia-circ.activo {
+    color: #fff;
+}
+.nutri-dia-circ.activo .nutri-dia-circ-num {
+    background: linear-gradient(160deg, rgba(74,222,128,0.18), rgba(0,224,255,0.08));
+    border-color: #4ade80;
+    box-shadow: 0 0 14px rgba(74,222,128,0.4);
+}
+.nutri-dia-circ.hoy .nutri-dia-circ-label {
+    color: #4ade80;
+}
+.nutri-dia-circ.hoy:not(.activo) .nutri-dia-circ-num {
+    border-color: rgba(74,222,128,0.5);
+}
+
+/* Indicadores kc/p/c/g/f dentro del recuadro del día */
+.nutri-dia-inds {
+    display: flex;
+    flex-direction: column;
+    gap: 1px;
+}
+.nutri-dia-ind {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 1.5px;
+}
+.nutri-dia-ind-letra {
+    font-size: 0.36rem;
+    font-weight: 700;
+    color: #7a82a0;
+    width: 7px;
+    text-align: right;
+}
+.nutri-dia-dot {
+    width: 3px;
+    height: 3px;
+    border-radius: 50%;
+    background: rgba(255,255,255,0.14);
+    flex-shrink: 0;
+}
+
+/* Leyenda de indicadores */
+.nutri-dias-legend {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    margin-top: 8px;
+    width: 250px;
+    background: rgba(15,18,32,0.95);
+    border: 1px solid rgba(255,255,255,0.12);
+    border-radius: 14px;
+    padding: 12px 14px;
+    box-shadow: 0 12px 32px rgba(0,0,0,0.5);
+    -webkit-backdrop-filter: blur(10px);
+    backdrop-filter: blur(10px);
+    z-index: 25;
+}
+.nutri-legend-titulo {
+    font-size: 0.72rem;
+    font-weight: 800;
+    color: #fff;
+    margin-bottom: 8px;
+}
+.nutri-legend-row {
+    font-size: 0.62rem;
+    color: #c2cae0;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    flex-wrap: wrap;
+    padding: 3px 0;
+}
+.nutri-legend-row b { color: #4ade80; width: 14px; }
+.nutri-legend-dot {
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    flex-shrink: 0;
+}
+.nutri-legend-dot-verde    { background: #4ade80; }
+.nutri-legend-dot-amarillo { background: #facc15; }
+.nutri-legend-dot-rojo     { background: #f87171; }
 
 /* TOP CARDS: BMR + Mi Band */
 .nutri-top-cards {
@@ -489,6 +685,9 @@
 .nutri-modal-hidden {
     display: none;
 }
+.nutri-suple-otro {
+    margin-top: 6px;
+}
 .nutri-modal-box {
     background: linear-gradient(160deg, rgba(10,12,28,0.60), rgba(6,8,20,0.52));
     border: 1px solid rgba(255,255,255,0.13);
@@ -532,6 +731,8 @@
 }
 .nutri-input::placeholder { color: #777fa0; }
 .nutri-input:focus { outline: none; border-color: #4ade80; }
+select.nutri-input { color-scheme: dark; }
+select.nutri-input option { background: #151827; color: #fff; }
 .nutri-grid-2 {
     display: grid;
     grid-template-columns: 1fr 1fr;
@@ -904,6 +1105,7 @@
 }
 .plan-meal-kcal { font-size: 0.75rem; font-weight: 700; }
 .plan-meal-pct  { font-size: 0.62rem; color: #7a82a0; }
+.plan-meal-pct.rebasado { color: #fb923c; font-weight: 700; }
 .plan-add-btn {
     padding: 5px 10px;
     border-radius: 20px;

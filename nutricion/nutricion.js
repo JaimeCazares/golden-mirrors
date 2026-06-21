@@ -9,35 +9,232 @@ const NUTRI_THEMES = [
     { key: 'atardecer', label: 'Atardecer', emoji: '🌅' }
 ];
 
-let nutriFechaActual  = '';
-let nutriBMR          = 2500;
+const NUTRI_API = 'nutricion/api_nutricion.php';
+const NUTRI_DIAS_SEMANA = ['Dom','Lun','Mar','Mié','Jue','Vie','Sáb'];
+const NUTRI_MESES = ['Enero','Febrero','Marzo','Abril','Mayo','Junio','Julio','Agosto','Septiembre','Octubre','Noviembre','Diciembre'];
+const NUTRI_DIAS_VISIBLES = 2; // por ahora solo Ayer y Hoy
+
+let nutriFechaHoy     = '';
+let nutriFechaSel      = '';
+let nutriMetas        = { bmr:2500, kcal:1900, prot:180, carbs:160, grasas:60, fibra:35 };
 let nutriMiBand       = 0;
 let nutriTema         = 'lluvia';
 let nutriTemaMenuOpen = false;
+let _nutriMidnightTimer = null;
+
+function nutriHoyISO() {
+    return new Date().toISOString().split('T')[0];
+}
+
+function nutriFechaADate(iso) {
+    const [y, m, d] = iso.split('-').map(Number);
+    return new Date(y, m - 1, d);
+}
+
+function nutriSumarDias(iso, n) {
+    const d = nutriFechaADate(iso);
+    d.setDate(d.getDate() + n);
+    return d.toISOString().split('T')[0];
+}
+
+// Migra el plan/suplementos/miband que quedaron en localStorage (de antes del
+// selector de fechas) hacia el registro de "Ayer", y deja "Hoy" en blanco.
+function nutriMigrarDatosLegacy() {
+    const legacyPlan   = localStorage.getItem('nutriPlanSel');
+    const legacySuple  = localStorage.getItem('nutriSuple');
+    const legacyMiBand = localStorage.getItem('nutriMiBand');
+    if (!legacyPlan && !legacySuple && !legacyMiBand) return;
+
+    let plan = { desayuno:[], colacion_am:[], comida:[], colacion_pm:[], cena:[] };
+    let suplementos = [];
+    try { if (legacyPlan)  plan        = JSON.parse(legacyPlan); }  catch(e) {}
+    try { if (legacySuple) suplementos = JSON.parse(legacySuple); } catch(e) {}
+
+    fetch(NUTRI_API, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+            accion: 'guardar_dia',
+            fecha: nutriSumarDias(nutriFechaHoy, -1),
+            plan, suplementos,
+            miband: parseInt(legacyMiBand, 10) || 0,
+        }),
+    }).then(() => {
+        ['nutriPlanSel','nutriSuple','nutriMiBand','nutriBMR'].forEach(k => localStorage.removeItem(k));
+    }).catch(() => {});
+}
 
 function initNutricion() {
-    const hoy = new Date();
-    nutriFechaActual = hoy.toISOString().split('T')[0];
+    nutriFechaHoy = nutriHoyISO();
+    nutriFechaSel = nutriFechaHoy;
 
+    nutriInitTema();
+    nutriInitAlimentos();
+    nutriMigrarDatosLegacy();
+    nutriRenderDiasStrip();
+    nutriCargarFecha(nutriFechaSel);
+    nutriScheduleMidnightRollover();
+
+    // los videos se cargan de forma lazy en nutriAplicarTema()
+}
+
+function nutriScheduleMidnightRollover() {
+    clearTimeout(_nutriMidnightTimer);
+    const ahora = new Date();
+    const medianoche = new Date(ahora.getFullYear(), ahora.getMonth(), ahora.getDate() + 1, 0, 0, 5);
+    _nutriMidnightTimer = setTimeout(() => {
+        const eraHoy = nutriFechaSel === nutriFechaHoy;
+        nutriFechaHoy = nutriHoyISO();
+        if (eraHoy) nutriFechaSel = nutriFechaHoy;
+        nutriRenderDiasStrip();
+        nutriCargarFecha(nutriFechaSel);
+        nutriScheduleMidnightRollover();
+    }, medianoche - ahora);
+}
+
+// ── Indicadores de semáforo por día (kc/p/c/g/f) ──────
+const NUTRI_INDICADORES = [
+    { key:'deficit', letra:'kc', tier:v => v >= 1200 ? 'verde' : (v >= 900 ? 'amarillo' : 'rojo') },
+    { key:'prot',    letra:'p',  tier:v => v >= 180  ? 'verde' : (v >= 160 ? 'amarillo' : 'rojo') },
+    { key:'carbs',   letra:'c',  tier:v => v <= 160  ? 'verde' : (v <= 180 ? 'amarillo' : 'rojo') },
+    { key:'grasas',  letra:'g',  tier:v => v <= 60   ? 'verde' : (v <= 80  ? 'amarillo' : 'rojo') },
+    { key:'fibra',   letra:'f',  tier:v => v >= 35   ? 'verde' : (v >= 20  ? 'amarillo' : 'rojo') },
+];
+const NUTRI_TIER_COLOR = { verde:'#4ade80', amarillo:'#facc15', rojo:'#f87171' };
+let _nutriIndCache = {}; // fecha → totales del día (prot/carbs/grasas/fibra consumidos + déficit calórico)
+
+async function nutriObtenerTotalesDia(fecha) {
+    if (_nutriIndCache[fecha]) return _nutriIndCache[fecha];
+    try {
+        const [diaRes, metasRes] = await Promise.all([
+            fetch(`${NUTRI_API}?accion=obtener_dia&fecha=${fecha}`).then(r => r.json()),
+            fetch(`${NUTRI_API}?accion=obtener_metas&fecha=${fecha}`).then(r => r.json()),
+        ]);
+        const totales = planTotals(diaRes && diaRes.plan ? diaRes.plan : {});
+        const miband  = diaRes  && diaRes.miband ? parseInt(diaRes.miband, 10) : 0;
+        const bmr     = metasRes && metasRes.bmr ? parseInt(metasRes.bmr, 10)  : 0;
+        totales.deficit = (bmr + miband) - totales.kcal;
+        _nutriIndCache[fecha] = totales;
+        return totales;
+    } catch (e) { return null; }
+}
+
+function nutriIndicadoresHtml(totales) {
+    return NUTRI_INDICADORES.map(ind => {
+        const tier = totales ? ind.tier(totales[ind.key]) : null;
+        const dots = ['rojo','amarillo','verde'].map(t => {
+            const activo = t === tier;
+            return `<span class="nutri-dia-dot${activo ? ' activo' : ''}"${activo ? ` style="background:${NUTRI_TIER_COLOR[t]};box-shadow:0 0 4px ${NUTRI_TIER_COLOR[t]}"` : ''}></span>`;
+        }).join('');
+        return `<div class="nutri-dia-ind"><span class="nutri-dia-ind-letra">${ind.letra}</span>${dots}</div>`;
+    }).join('');
+}
+
+function nutriDiaBoxHtml(fecha, ayer, totales) {
+    const d       = nutriFechaADate(fecha);
+    const esHoy   = fecha === nutriFechaHoy;
+    const top     = esHoy ? 'Hoy' : (fecha === ayer ? 'Ayer' : NUTRI_DIAS_SEMANA[d.getDay()]);
+    const semana  = NUTRI_DIAS_SEMANA[d.getDay()];
+    return `<button type="button" class="nutri-dia-circ${esHoy ? ' hoy' : ''}${fecha === nutriFechaSel ? ' activo' : ''}"
+                onclick="nutriSeleccionarDia('${fecha}')">
+        <span class="nutri-dia-circ-label">${top}</span>
+        ${top !== semana ? `<span class="nutri-dia-circ-semana">${semana}</span>` : ''}
+        <div class="nutri-dia-circ-num">
+          <span class="nutri-dia-circ-numero">${d.getDate()}</span>
+          <div class="nutri-dia-inds">${nutriIndicadoresHtml(totales)}</div>
+        </div>
+      </button>`;
+}
+
+// ── Franja de fechas (selector tipo stories) ──────────
+async function nutriRenderDiasStrip() {
+    const mesEl  = document.getElementById('n-dias-mes');
+    const strip  = document.getElementById('n-dias-strip');
+    if (!strip) return;
+
+    const selDate = nutriFechaADate(nutriFechaSel);
+    if (mesEl) mesEl.textContent = `${NUTRI_MESES[selDate.getMonth()]} ${selDate.getFullYear()}`;
+
+    const ayer   = nutriSumarDias(nutriFechaHoy, -1);
+    const fechas = [];
+    for (let i = NUTRI_DIAS_VISIBLES - 1; i >= 0; i--) fechas.push(nutriSumarDias(nutriFechaHoy, -i));
+
+    const pintar = (totalesPorFecha) => {
+        strip.innerHTML = fechas.map((fecha, i) => nutriDiaBoxHtml(fecha, ayer, totalesPorFecha ? totalesPorFecha[i] : _nutriIndCache[fecha])).join('');
+        const activo = strip.querySelector('.nutri-dia-circ.activo');
+        if (activo) activo.scrollIntoView({ inline: 'center', block: 'nearest' });
+    };
+
+    pintar(); // pase inmediato con lo que ya esté en caché (indicadores grises si aún no cargan)
+    const totales = await Promise.all(fechas.map(f => nutriObtenerTotalesDia(f)));
+    pintar(totales);
+}
+
+function nutriToggleLegend() {
+    document.getElementById('n-dias-legend')?.classList.toggle('nutri-modal-hidden');
+}
+
+function nutriSeleccionarDia(fecha) {
+    if (fecha > nutriFechaHoy || fecha === nutriFechaSel) return;
+    nutriFechaSel = fecha;
+    nutriRenderDiasStrip();
+    nutriCargarFecha(fecha);
+}
+
+function nutriFormatFechaLarga(fecha) {
+    const d = nutriFechaADate(fecha);
+    return d.toLocaleDateString('es-MX', { weekday: 'long', day: 'numeric', month: 'short' });
+}
+
+// ── Carga de datos del día seleccionado ───────────────
+async function nutriCargarFecha(fecha) {
     const labelFecha = document.getElementById('n-fecha-label');
-    if (labelFecha) {
-        labelFecha.textContent = hoy.toLocaleDateString('es-MX', {
-            weekday: 'long', day: 'numeric', month: 'short'
-        });
+    if (labelFecha) labelFecha.textContent = nutriFormatFechaLarga(fecha);
+
+    let metasRes = null, diaRes = null;
+    try {
+        [metasRes, diaRes] = await Promise.all([
+            fetch(`${NUTRI_API}?accion=obtener_metas&fecha=${fecha}`).then(r => r.json()),
+            fetch(`${NUTRI_API}?accion=obtener_dia&fecha=${fecha}`).then(r => r.json()),
+        ]);
+    } catch (e) { /* sin conexión: se queda con lo que ya había en memoria */ }
+
+    if (metasRes && !metasRes.error) {
+        nutriMetas = {
+            bmr:    parseInt(metasRes.bmr)    || nutriMetas.bmr,
+            kcal:   parseInt(metasRes.kcal)   || nutriMetas.kcal,
+            prot:   parseInt(metasRes.prot)   || nutriMetas.prot,
+            carbs:  parseInt(metasRes.carbs)  || nutriMetas.carbs,
+            grasas: parseInt(metasRes.grasas) || nutriMetas.grasas,
+            fibra:  parseInt(metasRes.fibra)  || nutriMetas.fibra,
+        };
     }
 
-    nutriBMR    = parseInt(localStorage.getItem('nutriBMR')    || '2500', 10);
-    nutriMiBand = parseInt(localStorage.getItem('nutriMiBand') || '0',    10);
+    _planSel     = (diaRes && diaRes.plan)        ? diaRes.plan        : { desayuno:[], colacion_am:[], comida:[], colacion_pm:[], cena:[] };
+    _suplementos = (diaRes && diaRes.suplementos) ? diaRes.suplementos : [];
+    nutriMiBand  = (diaRes && diaRes.miband)      ? parseInt(diaRes.miband) : 0;
 
     const elBMR    = document.getElementById('n-bmr-val');
     const elMiBand = document.getElementById('n-miband-val');
-    if (elBMR)    elBMR.textContent    = nutriBMR.toLocaleString('es-MX');
+    if (elBMR)    elBMR.textContent    = nutriMetas.bmr.toLocaleString('es-MX');
     if (elMiBand) elMiBand.textContent = nutriMiBand > 0 ? nutriMiBand.toLocaleString('es-MX') : '—';
 
-    nutriInitTema();
-    initPlanNutricional();
+    renderPlanRoot();
+}
 
-    // los videos se cargan de forma lazy en nutriAplicarTema()
+function nutriGuardarDiaActual() {
+    delete _nutriIndCache[nutriFechaSel];
+    fetch(NUTRI_API, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+            accion: 'guardar_dia',
+            fecha: nutriFechaSel,
+            plan: _planSel,
+            suplementos: _suplementos,
+            miband: nutriMiBand,
+        }),
+    }).then(() => nutriRenderDiasStrip()).catch(() => {});
 }
 
 // ══════════════════════════════════════════════════════
@@ -338,14 +535,30 @@ function nutriAbrirModal(tipo) {
         const inp = document.getElementById('nm-valor');
         if (inp) inp.value = nutriMiBand > 0 ? nutriMiBand : '';
     }
+    if (tipo === 'bmr') {
+        const valores = { 'nb-valor': nutriMetas.bmr, 'nb-kcal': nutriMetas.kcal, 'nb-prot': nutriMetas.prot,
+                           'nb-carbs': nutriMetas.carbs, 'nb-grasas': nutriMetas.grasas, 'nb-fibra': nutriMetas.fibra };
+        Object.entries(valores).forEach(([id, v]) => {
+            const inp = document.getElementById(id); if (inp) inp.value = v;
+        });
+    }
     if (tipo === 'suple') {
-        ['suple-nombre','suple-dosis','suple-razon'].forEach(id => {
+        ['suple-nombre','suple-nombre-otro','suple-dosis','suple-razon'].forEach(id => {
             const inp = document.getElementById(id); if (inp) inp.value = '';
         });
+        document.getElementById('suple-nombre-otro')?.classList.add('nutri-modal-hidden');
         const frec = document.getElementById('suple-frecuencia');
         if (frec) frec.value = 'AM';
     }
     el.classList.remove('nutri-modal-hidden');
+}
+
+function nutriToggleSupleOtro() {
+    const sel  = document.getElementById('suple-nombre');
+    const otro = document.getElementById('suple-nombre-otro');
+    if (!sel || !otro) return;
+    otro.classList.toggle('nutri-modal-hidden', sel.value !== 'Otro');
+    if (sel.value === 'Otro') otro.focus();
 }
 
 function nutriCerrarModal(tipo) {
@@ -358,24 +571,45 @@ function nutriEditarBMR()    { nutriAbrirModal('bmr'); }
 function nutriEditarMiBand() { nutriAbrirModal('miband'); }
 
 function nutriGuardarBMR() {
-    const val = parseInt(document.getElementById('nb-valor')?.value, 10);
-    if (!val || val < 1000) { alert('Ingresa un valor válido (mínimo 1000)'); return; }
-    nutriBMR = val;
-    localStorage.setItem('nutriBMR', val);
-    const elBMR = document.getElementById('n-bmr-val');
-    if (elBMR) elBMR.textContent = val.toLocaleString('es-MX');
+    const bmr = parseInt(document.getElementById('nb-valor')?.value, 10);
+    if (!bmr || bmr < 1000) { alert('Ingresa un BMR válido (mínimo 1000)'); return; }
+
+    const nuevasMetas = {
+        bmr,
+        kcal:   parseInt(document.getElementById('nb-kcal')?.value,   10) || nutriMetas.kcal,
+        prot:   parseInt(document.getElementById('nb-prot')?.value,   10) || nutriMetas.prot,
+        carbs:  parseInt(document.getElementById('nb-carbs')?.value,  10) || nutriMetas.carbs,
+        grasas: parseInt(document.getElementById('nb-grasas')?.value, 10) || nutriMetas.grasas,
+        fibra:  parseInt(document.getElementById('nb-fibra')?.value,  10) || nutriMetas.fibra,
+    };
+
+    fetch(NUTRI_API, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ accion: 'guardar_metas', ...nuevasMetas }),
+    }).then(r => r.json()).then(res => {
+        if (res.error) { nutriToast('No se pudo guardar'); return; }
+        // las metas nuevas solo aplican si estás viendo hoy o un día futuro a la fecha en que se guardaron
+        if (nutriFechaSel >= res.fecha) {
+            nutriMetas = nuevasMetas;
+            const elBMR = document.getElementById('n-bmr-val');
+            if (elBMR) elBMR.textContent = bmr.toLocaleString('es-MX');
+            renderPlanRoot();
+        }
+        nutriToast('✓ Metas actualizadas desde hoy');
+    }).catch(() => nutriToast('No se pudo guardar (sin conexión)'));
+
     nutriCerrarModal('bmr');
-    renderPlanRoot();
 }
 
 function nutriGuardarMiBand() {
     const val = parseInt(document.getElementById('nm-valor')?.value, 10) || 0;
     nutriMiBand = val;
-    localStorage.setItem('nutriMiBand', val);
     const elMiBand = document.getElementById('n-miband-val');
     if (elMiBand) elMiBand.textContent = val > 0 ? val.toLocaleString('es-MX') : '—';
     nutriCerrarModal('miband');
     renderPlanRoot();
+    nutriGuardarDiaActual();
 }
 
 // ══════════════════════════════════════════════════════
@@ -405,17 +639,17 @@ const PLAN_MEALS = [
 
 function planTargets() {
     return {
-        kcal:   2500,
-        prot:   180,
-        carbs:  275,
-        grasas: 75,
-        fibra:  40,
+        kcal:   nutriMetas.kcal,
+        prot:   nutriMetas.prot,
+        carbs:  nutriMetas.carbs,
+        grasas: nutriMetas.grasas,
+        fibra:  nutriMetas.fibra,
     };
 }
 
-function planTotals() {
+function planTotals(plan) {
     let kcal=0, prot=0, carbs=0, grasas=0, fibra=0;
-    Object.values(_planSel).flat().forEach(i => {
+    Object.values(plan || _planSel).flat().forEach(i => {
         kcal   += i.calorias * i.porciones;
         prot   += i.proteina * i.porciones;
         carbs  += (i.carbos || 0) * i.porciones;
@@ -431,7 +665,7 @@ function planTotals() {
     };
 }
 
-function initPlanNutricional() {
+function nutriInitAlimentos() {
     if (typeof NUTRI_FOOD_DB !== 'undefined') {
         _alimentos = NUTRI_FOOD_DB.map((a, i) => ({
             ...a,
@@ -441,13 +675,6 @@ function initPlanNutricional() {
             excluido:     false,
         }));
     }
-    try {
-        const sp = localStorage.getItem('nutriPlanSel');
-        const ss = localStorage.getItem('nutriSuple');
-        if (sp) _planSel     = JSON.parse(sp);
-        if (ss) _suplementos = JSON.parse(ss);
-    } catch(e) {}
-    renderPlanRoot();
 }
 
 // ── Render principal ──────────────────────────────────
@@ -468,7 +695,7 @@ function renderPlanRoot() {
 // ── Total quemadas + Déficit calórico ─────────────────
 function nutriUpdateBalanceCards(consumidas) {
     if (consumidas == null) consumidas = planTotals().kcal;
-    const quemado = nutriBMR + nutriMiBand;
+    const quemado = nutriMetas.bmr + nutriMiBand;
     const deficit = quemado - consumidas;
 
     const elQuemado = document.getElementById('n-quemado-val');
@@ -530,10 +757,11 @@ function renderPlanMetasCard(T, C) {
 // ── Meal cards ────────────────────────────────────────
 function renderPlanMealCard(meal, T) {
     const items = _planSel[meal.key] || [];
-    const mKcal = Math.round(items.reduce((s, i) => s + i.calorias * i.porciones, 0));
-    const tKcal = Math.round(T.kcal * meal.pct);
-    const mPct  = tKcal ? Math.min(100, Math.round(mKcal / tKcal * 100)) : 0;
-    const mOver = mKcal > tKcal;
+    const mKcal    = Math.round(items.reduce((s, i) => s + i.calorias * i.porciones, 0));
+    const tKcal    = Math.round(T.kcal * meal.pct);
+    const mPctReal = tKcal ? Math.round(mKcal / tKcal * 100) : 0;
+    const mPct     = Math.min(100, mPctReal);
+    const mOver    = mKcal > tKcal;
 
     const itemsHtml = items.length
         ? items.map((it, i) => renderPlanFoodRow(it, meal.key, i, items.length)).join('')
@@ -570,7 +798,7 @@ function renderPlanMealCard(meal, T) {
           <div class="plan-meal-kcal" style="color:${mKcal > 0 ? meal.col : '#7a82a0'}">
             ${mKcal > 0 ? `${mKcal} / ${tKcal}` : `~${tKcal}`} kcal
           </div>
-          ${mKcal > 0 ? `<div class="plan-meal-pct">${mPct}%</div>` : ''}
+          ${mKcal > 0 ? `<div class="plan-meal-pct${mOver ? ' rebasado' : ''}">${mPctReal}%${mOver ? ' 🔥' : ''}</div>` : ''}
           <button type="button" class="plan-add-btn" onclick="nutriOpenPicker('${meal.key}')">+ Alimento</button>
         </div>
       </div>
@@ -639,7 +867,7 @@ function renderPlanSupleCard() {
 
 // ── Hidratación ───────────────────────────────────────
 function renderPlanAguaCard() {
-    const peso   = parseFloat(localStorage.getItem('nutriPeso') || '70');
+    const peso   = parseFloat(localStorage.getItem('nutriPeso') || '103.75');
     const litros = (peso * 35 / 1000).toFixed(1);
     return `<div class="nutri-plan-card plan-agua-last">
       <div class="plan-card-header"><span>💧 Hidratación</span></div>
@@ -663,7 +891,7 @@ function nutriRemoveFood(mealKey, idx) {
 }
 
 function nutriGuardarPlanLocal() {
-    localStorage.setItem('nutriPlanSel', JSON.stringify(_planSel));
+    nutriGuardarDiaActual();
 }
 
 function nutriGuardarPlan() {
@@ -673,15 +901,18 @@ function nutriGuardarPlan() {
 
 // ── Suplementos ───────────────────────────────────────
 function nutriGuardarSuple() {
-    const nombre = document.getElementById('suple-nombre')?.value.trim();
-    if (!nombre) { nutriToast('Escribe el nombre del suplemento'); return; }
+    const sel = document.getElementById('suple-nombre')?.value || '';
+    const nombre = sel === 'Otro'
+        ? document.getElementById('suple-nombre-otro')?.value.trim()
+        : sel.trim();
+    if (!nombre) { nutriToast('Selecciona o escribe el nombre del suplemento'); return; }
     _suplementos.push({
         nombre,
         dosis:      document.getElementById('suple-dosis')?.value.trim()  || '',
         frecuencia: document.getElementById('suple-frecuencia')?.value    || '',
         razon:      document.getElementById('suple-razon')?.value.trim()  || '',
     });
-    localStorage.setItem('nutriSuple', JSON.stringify(_suplementos));
+    nutriGuardarDiaActual();
     nutriCerrarModal('suple');
     renderPlanRoot();
     nutriToast('💊 Suplemento agregado');
@@ -689,7 +920,7 @@ function nutriGuardarSuple() {
 
 function nutriBorrarSuple(idx) {
     _suplementos.splice(idx, 1);
-    localStorage.setItem('nutriSuple', JSON.stringify(_suplementos));
+    nutriGuardarDiaActual();
     renderPlanRoot();
 }
 

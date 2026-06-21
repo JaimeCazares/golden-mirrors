@@ -56,6 +56,44 @@
         <div class="nutri-titulo">Nutrición</div>
         <div class="nutri-fecha-label" id="n-fecha-label"></div>
       </div>
+
+      <!-- SELECTOR DE FECHAS -->
+      <div class="nutri-dias-wrap">
+        <div class="nutri-dias-mes-row">
+          <span class="nutri-dias-mes" id="n-dias-mes"></span>
+          <button type="button" class="nutri-dias-info-btn" onclick="nutriToggleLegend()" title="¿Qué significan los indicadores?">ⓘ</button>
+        </div>
+        <div class="nutri-dias-strip" id="n-dias-strip"></div>
+        <div class="nutri-dias-legend nutri-modal-hidden" id="n-dias-legend">
+          <div class="nutri-legend-titulo">Indicadores diarios</div>
+          <div class="nutri-legend-row"><b>kc</b> Déficit calórico &nbsp;
+            <span class="nutri-legend-dot nutri-legend-dot-verde"></span>≥1200
+            <span class="nutri-legend-dot nutri-legend-dot-amarillo"></span>900–1199
+            <span class="nutri-legend-dot nutri-legend-dot-rojo"></span>≤899
+          </div>
+          <div class="nutri-legend-row"><b>p</b> Proteína &nbsp;
+            <span class="nutri-legend-dot nutri-legend-dot-verde"></span>≥180g
+            <span class="nutri-legend-dot nutri-legend-dot-amarillo"></span>160–179g
+            <span class="nutri-legend-dot nutri-legend-dot-rojo"></span>&lt;160g
+          </div>
+          <div class="nutri-legend-row"><b>c</b> Carbohidratos &nbsp;
+            <span class="nutri-legend-dot nutri-legend-dot-verde"></span>≤160g
+            <span class="nutri-legend-dot nutri-legend-dot-amarillo"></span>161–180g
+            <span class="nutri-legend-dot nutri-legend-dot-rojo"></span>&gt;180g
+          </div>
+          <div class="nutri-legend-row"><b>g</b> Grasa &nbsp;
+            <span class="nutri-legend-dot nutri-legend-dot-verde"></span>≤60g
+            <span class="nutri-legend-dot nutri-legend-dot-amarillo"></span>61–80g
+            <span class="nutri-legend-dot nutri-legend-dot-rojo"></span>&gt;80g
+          </div>
+          <div class="nutri-legend-row"><b>f</b> Fibra &nbsp;
+            <span class="nutri-legend-dot nutri-legend-dot-verde"></span>≥35g
+            <span class="nutri-legend-dot nutri-legend-dot-amarillo"></span>20–34g
+            <span class="nutri-legend-dot nutri-legend-dot-rojo"></span>&lt;20g
+          </div>
+        </div>
+      </div>
+
       <div class="nutri-theme-wrap">
         <button type="button" class="nutri-theme-btn" id="n-theme-btn" onclick="nutriToggleThemeMenu()" title="Cambiar paisaje">
           <span class="ntb-glow"></span>
@@ -139,7 +177,29 @@
     <div class="nutri-modal-titulo">Agregar suplemento</div>
     <div class="nutri-field">
       <label>Suplemento *</label>
-      <input type="text" id="suple-nombre" class="nutri-input" placeholder="Ej. Omega 3, Vitamina D...">
+      <select id="suple-nombre" class="nutri-input" title="Suplemento" onchange="nutriToggleSupleOtro()">
+        <option value="">Selecciona un suplemento...</option>
+        <option>Proteína Whey</option>
+        <option>Creatina monohidratada</option>
+        <option>Multivitamínico</option>
+        <option>Vitamina D3</option>
+        <option>Vitamina C</option>
+        <option>Complejo B</option>
+        <option>Omega 3</option>
+        <option>Magnesio</option>
+        <option>Zinc</option>
+        <option>Hierro</option>
+        <option>Calcio</option>
+        <option>Colágeno hidrolizado</option>
+        <option>Glutamina</option>
+        <option>BCAA</option>
+        <option>Pre-entreno</option>
+        <option>Melatonina</option>
+        <option>Probióticos</option>
+        <option>Electrolitos</option>
+        <option>Otro</option>
+      </select>
+      <input type="text" id="suple-nombre-otro" class="nutri-input nutri-modal-hidden nutri-suple-otro" placeholder="Escribe el nombre del suplemento">
     </div>
     <div class="nutri-grid-2">
       <div class="nutri-field">
@@ -165,14 +225,38 @@
   </div>
 </div>
 
-<!-- MODAL EDITAR BMR -->
+<!-- MODAL EDITAR BMR + METAS -->
 <div id="modalNutriBMR" class="nutri-modal-overlay nutri-modal-hidden">
   <div class="nutri-modal-box">
-    <div class="nutri-modal-titulo">Calorías base (BMR)</div>
-    <p class="nutri-modal-desc">Calorías que quemas solo por existir. Actualízalo cada semana al pesarte.</p>
+    <div class="nutri-modal-titulo">Metas semanales</div>
+    <p class="nutri-modal-desc">Actualízalo cada semana al pesarte. Aplica desde hoy en adelante — no cambia los días pasados.</p>
     <div class="nutri-field">
-      <label>kcal/día</label>
+      <label>Solo por existir (BMR) kcal/día</label>
       <input type="number" id="nb-valor" class="nutri-input" placeholder="ej. 2500" min="1000" max="5000">
+    </div>
+    <div class="nutri-field">
+      <label>Calorías diarias a consumir</label>
+      <input type="number" id="nb-kcal" class="nutri-input" placeholder="ej. 1900" min="500" max="6000">
+    </div>
+    <div class="nutri-grid-2">
+      <div class="nutri-field">
+        <label>Proteína (g)</label>
+        <input type="number" id="nb-prot" class="nutri-input" placeholder="ej. 180" min="0">
+      </div>
+      <div class="nutri-field">
+        <label>Carbohidratos (g)</label>
+        <input type="number" id="nb-carbs" class="nutri-input" placeholder="ej. 160" min="0">
+      </div>
+    </div>
+    <div class="nutri-grid-2">
+      <div class="nutri-field">
+        <label>Grasas (g)</label>
+        <input type="number" id="nb-grasas" class="nutri-input" placeholder="ej. 60" min="0">
+      </div>
+      <div class="nutri-field">
+        <label>Fibra (g)</label>
+        <input type="number" id="nb-fibra" class="nutri-input" placeholder="ej. 35" min="0">
+      </div>
     </div>
     <div class="nutri-modal-btns">
       <button class="nutri-btn-guardar" onclick="nutriGuardarBMR()">Guardar</button>
