@@ -13,7 +13,7 @@ const NUTRI_FOOD_DB = [
   { nombre: 'Tofu firme', categoria: 'Proteínas', emoji: '🧈', porcion: '100 g', calorias: 144, proteina: 15, carbos: 3,  grasa: 9,   fibra: 1.9 },
   { nombre: 'Camarón cocido', categoria: 'Proteínas', emoji: '🦐', porcion: '100 g', calorias: 99,  proteina: 24, carbos: 0.2, grasa: 0.3, fibra: 0 },
   { nombre: 'Proteína en polvo (whey)', categoria: 'Proteínas', emoji: '🥤', porcion: '1 scoop (30 g)', calorias: 120, proteina: 24, carbos: 3,  grasa: 1.5, fibra: 0 },
-  { nombre: 'Jamón de pavo', categoria: 'Proteínas', emoji: '🍖', porcion: '1 rebanada (20 g)', calorias: 26,  proteina: 3.7, carbos: 0.7, grasa: 0.8, fibra: 0 },
+  { nombre: 'Jamón de pavo', categoria: 'Proteínas', emoji: '🍖', porcion: '1 rebanada (20 g)', calorias: 19,  proteina: 1.9, carbos: 1.3, grasa: 0.7, fibra: 0 },
   { nombre: 'Jamón de cerdo', categoria: 'Proteínas', emoji: '🍖', porcion: '1 rebanada (20 g)', calorias: 34,  proteina: 3,   carbos: 0.8, grasa: 2,   fibra: 0 },
   { nombre: 'Birria / consomé de chamberete deshebrado', categoria: 'Proteínas', emoji: '🍲', porcion: '1 tazón', calorias: 380, proteina: 40, carbos: 3, grasa: 22, fibra: 0 },
 
@@ -87,7 +87,10 @@ const NUTRI_FOOD_DB = [
   // Antojitos
   { nombre: 'Taco de camarón y quesadilla con fresca', categoria: 'Antojitos', emoji: '🌮', porcion: '1 orden', calorias: 975, proteina: 36, carbos: 117, grasa: 37, fibra: 6 },
   { nombre: 'Ensalada de atún de mamá', categoria: 'Antojitos', emoji: '🥗', porcion: '1 porción', calorias: 430, proteina: 26, carbos: 22, grasa: 28.5, fibra: 4 },
-  { nombre: 'Tostada de maíz', categoria: 'Carbohidratos', emoji: '🌽', porcion: '1 pieza', calorias: 55, proteina: 1.5, carbos: 11, grasa: 0.7, fibra: 1.5 }
+  { nombre: 'Tostada de maíz', categoria: 'Carbohidratos', emoji: '🌽', porcion: '1 pieza', calorias: 55, proteina: 1.5, carbos: 11, grasa: 0.7, fibra: 1.5 },
+  { nombre: 'Pan telera de ley', categoria: 'Carbohidratos', emoji: '🍞', porcion: '1 pieza', calorias: 220, proteina: 7, carbos: 40, grasa: 3, fibra: 2 },
+  { nombre: 'Torta de jamón mamá', categoria: 'Antojitos', emoji: '🥪', porcion: '1 pieza', calorias: 420, proteina: 17, carbos: 44, grasa: 15, fibra: 4 },
+  { nombre: 'Ceviche de camarón mixto mamá', categoria: 'Antojitos', emoji: '🍤', porcion: '1 porción', calorias: 290, proteina: 40, carbos: 14, grasa: 2, fibra: 3 }
 ];
 
 const NUTRI_FOOD_CATS = ['Todos', ...Array.from(new Set(NUTRI_FOOD_DB.map(a => a.categoria)))];
@@ -205,12 +208,11 @@ const PLAN_RECETAS = [
   {
     nombre: 'Huevos con Jamón',
     emoji:  '🍳',
-    desc:   'Huevos estrellados con jamón y tortillas',
+    desc:   'Huevos estrellados con jamón',
     cat:    'Desayuno',
     ing: [
-      { buscar:'huevo entero',     emoji:'🥚', label:'Huevo',         qty:2,   step:0.5, min:0.5, max:10 },
-      { buscar:'tortilla de maíz', emoji:'🌽', label:'Tortilla maíz', qty:3,   step:0.5, min:0.5, max:10 },
-      { buscar:'jitomate',         emoji:'🍅', label:'Jitomate',      qty:1,   step:0.5, min:0,   max:10 },
+      { buscar:'huevo entero',   emoji:'🥚', label:'Huevo',       qty:2, step:0.5, min:0.5, max:10 },
+      { buscar:'jamón de pavo',  emoji:'🍖', label:'Jamón pavo',  qty:1, step:0.5, min:0,   max:10 },
     ]
   },
   {

@@ -12,7 +12,7 @@ const NUTRI_THEMES = [
 const NUTRI_API = 'nutricion/api_nutricion.php';
 const NUTRI_DIAS_SEMANA = ['Dom','Lun','Mar','Mié','Jue','Vie','Sáb'];
 const NUTRI_MESES = ['Enero','Febrero','Marzo','Abril','Mayo','Junio','Julio','Agosto','Septiembre','Octubre','Noviembre','Diciembre'];
-const NUTRI_DIAS_VISIBLES = 2; // por ahora solo Ayer y Hoy
+const NUTRI_DIAS_VISIBLES = 3; // Viernes (o el día más viejo con datos), Ayer y Hoy
 
 let nutriFechaHoy     = '';
 let nutriFechaSel      = '';
@@ -22,8 +22,17 @@ let nutriTema         = 'lluvia';
 let nutriTemaMenuOpen = false;
 let _nutriMidnightTimer = null;
 
+// Formatea un Date a 'YYYY-MM-DD' usando la fecha LOCAL (toISOString() usa UTC
+// y en zonas con offset negativo como México adelanta el día por la noche).
+function nutriDateAISO(d) {
+    const y = d.getFullYear();
+    const m = String(d.getMonth() + 1).padStart(2, '0');
+    const dd = String(d.getDate()).padStart(2, '0');
+    return `${y}-${m}-${dd}`;
+}
+
 function nutriHoyISO() {
-    return new Date().toISOString().split('T')[0];
+    return nutriDateAISO(new Date());
 }
 
 function nutriFechaADate(iso) {
@@ -34,7 +43,7 @@ function nutriFechaADate(iso) {
 function nutriSumarDias(iso, n) {
     const d = nutriFechaADate(iso);
     d.setDate(d.getDate() + n);
-    return d.toISOString().split('T')[0];
+    return nutriDateAISO(d);
 }
 
 // Migra el plan/suplementos/miband que quedaron en localStorage (de antes del
@@ -138,7 +147,7 @@ function nutriDiaBoxHtml(fecha, ayer, totales) {
     return `<button type="button" class="nutri-dia-circ${esHoy ? ' hoy' : ''}${fecha === nutriFechaSel ? ' activo' : ''}"
                 onclick="nutriSeleccionarDia('${fecha}')">
         <span class="nutri-dia-circ-label">${top}</span>
-        ${top !== semana ? `<span class="nutri-dia-circ-semana">${semana}</span>` : ''}
+        <span class="nutri-dia-circ-semana">${top !== semana ? semana : ' '}</span>
         <div class="nutri-dia-circ-num">
           <span class="nutri-dia-circ-numero">${d.getDate()}</span>
           <div class="nutri-dia-inds">${nutriIndicadoresHtml(totales)}</div>
@@ -168,10 +177,6 @@ async function nutriRenderDiasStrip() {
     pintar(); // pase inmediato con lo que ya esté en caché (indicadores grises si aún no cargan)
     const totales = await Promise.all(fechas.map(f => nutriObtenerTotalesDia(f)));
     pintar(totales);
-}
-
-function nutriToggleLegend() {
-    document.getElementById('n-dias-legend')?.classList.toggle('nutri-modal-hidden');
 }
 
 function nutriSeleccionarDia(fecha) {

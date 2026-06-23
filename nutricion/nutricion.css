@@ -144,8 +144,8 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
-    gap: 10px;
-    margin-bottom: 10px;
+    gap: 8px;
+    margin-bottom: 8px;
 }
 .nutri-header-left { flex-shrink: 0; }
 .nutri-titulo {
@@ -241,18 +241,14 @@
 .nto-emoji  { font-size: 1rem; margin-top: 2px; }
 .nto-label  { font-size: 0.62rem; text-transform: uppercase; letter-spacing: 0.4px; }
 
-/* SELECTOR DE FECHAS — compacto, en línea con el header */
+/* SELECTOR DE FECHAS — compacto, mes arriba y círculos abajo */
 .nutri-dias-wrap {
     position: relative;
     display: flex;
-    align-items: center;
-    gap: 8px;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 3px;
     min-width: 0;
-}
-.nutri-dias-mes-row {
-    display: flex;
-    align-items: center;
-    gap: 4px;
 }
 .nutri-dias-mes {
     font-size: 0.55rem;
@@ -261,17 +257,8 @@
     letter-spacing: 0.5px;
     color: #aab2cc;
     white-space: nowrap;
-}
-.nutri-dias-info-btn {
-    background: none;
-    border: none;
-    color: #7a82a0;
-    font-size: 0.75rem;
-    cursor: pointer;
     line-height: 1;
-    padding: 0;
 }
-.nutri-dias-info-btn:hover { color: #4ade80; }
 
 .nutri-dias-strip {
     display: flex;
@@ -374,43 +361,41 @@
     flex-shrink: 0;
 }
 
-/* Leyenda de indicadores */
-.nutri-dias-legend {
-    position: absolute;
-    top: 100%;
-    left: 0;
-    margin-top: 8px;
-    width: 250px;
-    background: rgba(15,18,32,0.95);
-    border: 1px solid rgba(255,255,255,0.12);
-    border-radius: 14px;
-    padding: 12px 14px;
-    box-shadow: 0 12px 32px rgba(0,0,0,0.5);
-    -webkit-backdrop-filter: blur(10px);
-    backdrop-filter: blur(10px);
-    z-index: 25;
+/* BARRA DE INDICADORES — fija, siempre visible, en el renglón del header */
+.nutri-ind-bar {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    overflow-x: auto;
+    scrollbar-width: none;
+    flex: 1;
+    min-width: 0;
+    height: 26px;
+    background: rgba(255,255,255,0.05);
+    border: 1px solid rgba(255,255,255,0.08);
+    border-radius: 8px;
+    padding: 0 8px;
 }
-.nutri-legend-titulo {
-    font-size: 0.72rem;
-    font-weight: 800;
-    color: #fff;
-    margin-bottom: 8px;
-}
-.nutri-legend-row {
-    font-size: 0.62rem;
+.nutri-ind-bar::-webkit-scrollbar { display: none; }
+.nutri-ind-bar-item {
+    flex-shrink: 0;
+    font-size: 0.46rem;
     color: #c2cae0;
     display: flex;
     align-items: center;
-    gap: 4px;
-    flex-wrap: wrap;
-    padding: 3px 0;
+    gap: 2px;
+    white-space: nowrap;
+    padding-right: 6px;
+    border-right: 1px solid rgba(255,255,255,0.08);
 }
-.nutri-legend-row b { color: #4ade80; width: 14px; }
+.nutri-ind-bar-item:last-child { border-right: none; padding-right: 0; }
+.nutri-ind-bar-item b { color: #4ade80; }
 .nutri-legend-dot {
-    width: 7px;
-    height: 7px;
+    width: 6px;
+    height: 6px;
     border-radius: 50%;
     flex-shrink: 0;
+    display: inline-block;
 }
 .nutri-legend-dot-verde    { background: #4ade80; }
 .nutri-legend-dot-amarillo { background: #facc15; }
