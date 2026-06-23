@@ -39,6 +39,20 @@ $accion = $_GET['accion'] ?? $input['accion'] ?? '';
 
 $DEFAULT_METAS = ['bmr' => 2500, 'kcal' => 1900, 'prot' => 180, 'carbs' => 160, 'grasas' => 60, 'fibra' => 35];
 
+// GET: fecha más vieja con datos (plan/suplementos/miband o metas guardadas)
+if ($accion === 'obtener_fecha_inicio') {
+    $res = $conexion->query("
+        SELECT MIN(fecha) AS fecha FROM (
+            SELECT fecha FROM nutricion_dias
+            UNION
+            SELECT fecha FROM nutricion_metas
+        ) t
+    ");
+    $fecha = ($res && $res->num_rows > 0) ? $res->fetch_assoc()['fecha'] : null;
+    echo json_encode(['fecha' => $fecha]);
+    exit;
+}
+
 // GET: datos del día (plan + suplementos + miband)
 if ($accion === 'obtener_dia') {
     $fecha = $conexion->real_escape_string($_GET['fecha'] ?? date('Y-m-d'));

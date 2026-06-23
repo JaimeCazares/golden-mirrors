@@ -12,7 +12,7 @@ const NUTRI_THEMES = [
 const NUTRI_API = 'nutricion/api_nutricion.php';
 const NUTRI_DIAS_SEMANA = ['Dom','Lun','Mar','Mié','Jue','Vie','Sáb'];
 const NUTRI_MESES = ['Enero','Febrero','Marzo','Abril','Mayo','Junio','Julio','Agosto','Septiembre','Octubre','Noviembre','Diciembre'];
-const NUTRI_DIAS_VISIBLES = 3; // Viernes (o el día más viejo con datos), Ayer y Hoy
+let NUTRI_DIAS_VISIBLES = 3; // se recalcula en initNutricion() según el día más viejo con datos
 
 let nutriFechaHoy     = '';
 let nutriFechaSel      = '';
@@ -80,11 +80,26 @@ function initNutricion() {
     nutriInitTema();
     nutriInitAlimentos();
     nutriMigrarDatosLegacy();
-    nutriRenderDiasStrip();
-    nutriCargarFecha(nutriFechaSel);
+    nutriCalcularDiasVisibles().then(() => {
+        nutriRenderDiasStrip();
+        nutriCargarFecha(nutriFechaSel);
+    });
     nutriScheduleMidnightRollover();
 
     // los videos se cargan de forma lazy en nutriAplicarTema()
+}
+
+// Calcula cuántos días mostrar en la franja: desde el día más viejo con datos hasta hoy.
+async function nutriCalcularDiasVisibles() {
+    try {
+        const res = await fetch(`${NUTRI_API}?accion=obtener_fecha_inicio`).then(r => r.json());
+        if (res && res.fecha) {
+            const inicio = nutriFechaADate(res.fecha);
+            const hoy    = nutriFechaADate(nutriFechaHoy);
+            const dias   = Math.round((hoy - inicio) / 86400000) + 1;
+            NUTRI_DIAS_VISIBLES = Math.max(3, dias);
+        }
+    } catch (e) { /* se queda con el valor por defecto */ }
 }
 
 function nutriScheduleMidnightRollover() {
