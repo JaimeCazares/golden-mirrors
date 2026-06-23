@@ -246,7 +246,7 @@
     position: relative;
     display: flex;
     flex-direction: column;
-    align-items: flex-start;
+    align-items: center;
     gap: 3px;
     min-width: 0;
 }
@@ -263,6 +263,7 @@
 .nutri-dias-strip {
     display: flex;
     align-items: flex-start;
+    justify-content: center;
     gap: 6px;
     overflow-x: auto;
     scroll-behavior: smooth;
@@ -365,6 +366,7 @@
 .nutri-ind-bar {
     display: flex;
     align-items: center;
+    justify-content: center;
     gap: 6px;
     overflow-x: auto;
     scrollbar-width: none;
