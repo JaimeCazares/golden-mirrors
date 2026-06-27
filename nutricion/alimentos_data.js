@@ -102,7 +102,9 @@ const NUTRI_FOOD_DB = [
   { nombre: 'Té (refill, restaurante de sushi)', categoria: 'Bebidas', emoji: '🍵', porcion: '1.5 vasos (525 ml)', calorias: 10, proteina: 0, carbos: 2, grasa: 0, fibra: 0 },
   { nombre: 'Espagueti con salsa roja', categoria: 'Carbohidratos', emoji: '🍝', porcion: '1 plato (300 g)', calorias: 310, proteina: 9, carbos: 55, grasa: 6, fibra: 4 },
   { nombre: 'Tostitos Flaming Hot (bolsa individual)', categoria: 'Snacks', emoji: '🌶️', porcion: '1 bolsa (50 g)', calorias: 260, proteina: 3, carbos: 30, grasa: 14, fibra: 2 },
-  { nombre: 'Té Jaztea (normal)', categoria: 'Bebidas', emoji: '🧃', porcion: '1 litro', calorias: 240, proteina: 0, carbos: 60, grasa: 0, fibra: 0 }
+  { nombre: 'Té Jaztea (normal)', categoria: 'Bebidas', emoji: '🧃', porcion: '1 litro', calorias: 240, proteina: 0, carbos: 60, grasa: 0, fibra: 0 },
+  { nombre: 'Pollo en caldillo con papa y zanahoria', categoria: 'Antojitos', emoji: '🍗', porcion: '1 plato (300 g)', calorias: 280, proteina: 28, carbos: 22, grasa: 9, fibra: 3 },
+  { nombre: 'Nieve de vainilla McDonald\'s (cono $10)', categoria: 'Snacks', emoji: '🍦', porcion: '1 cono', calorias: 130, proteina: 3, carbos: 20, grasa: 4, fibra: 0 }
 ];
 
 const NUTRI_FOOD_CATS = ['Todos', ...Array.from(new Set(NUTRI_FOOD_DB.map(a => a.categoria)))];
