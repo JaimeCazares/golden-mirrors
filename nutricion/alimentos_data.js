@@ -99,7 +99,9 @@ const NUTRI_FOOD_DB = [
   { nombre: 'Rollo tempura de surimi', categoria: 'Antojitos', emoji: '🍣', porcion: '1 orden (8-10 piezas)', calorias: 580, proteina: 18, carbos: 55, grasa: 28, fibra: 3 },
   { nombre: 'Tostada de camarón y pulpo (aguachile)', categoria: 'Antojitos', emoji: '🍤', porcion: '1/2 tostada', calorias: 225, proteina: 25, carbos: 17, grasa: 8, fibra: 4 },
   { nombre: 'Costillitas en caldillo enchiloso con papa y zanahoria', categoria: 'Antojitos', emoji: '🍖', porcion: '1 plato (300 g)', calorias: 380, proteina: 26, carbos: 22, grasa: 22, fibra: 3 },
-  { nombre: 'Té (refill, restaurante de sushi)', categoria: 'Bebidas', emoji: '🍵', porcion: '1.5 vasos (525 ml)', calorias: 10, proteina: 0, carbos: 2, grasa: 0, fibra: 0 }
+  { nombre: 'Té (refill, restaurante de sushi)', categoria: 'Bebidas', emoji: '🍵', porcion: '1.5 vasos (525 ml)', calorias: 10, proteina: 0, carbos: 2, grasa: 0, fibra: 0 },
+  { nombre: 'Espagueti con salsa roja', categoria: 'Carbohidratos', emoji: '🍝', porcion: '1 plato (300 g)', calorias: 310, proteina: 9, carbos: 55, grasa: 6, fibra: 4 },
+  { nombre: 'Tostitos Flaming Hot (bolsa individual)', categoria: 'Snacks', emoji: '🌶️', porcion: '1 bolsa (50 g)', calorias: 260, proteina: 3, carbos: 30, grasa: 14, fibra: 2 }
 ];
 
 const NUTRI_FOOD_CATS = ['Todos', ...Array.from(new Set(NUTRI_FOOD_DB.map(a => a.categoria)))];
