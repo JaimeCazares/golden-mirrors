@@ -26,3 +26,9 @@ jobs:
             **/.git*/**
             **/.github/**
             **/node_modules/**
+            uploads/**
+            nutricion/videos/**
+            img/**
+            gestanut/**
+            .claude/**
+            memory/**
