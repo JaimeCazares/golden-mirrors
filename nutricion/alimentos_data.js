@@ -94,7 +94,8 @@ const NUTRI_FOOD_DB = [
 
   // Agregados después
   { nombre: 'Pescado frito', categoria: 'Proteínas', emoji: '🐟', porcion: '100 g', calorias: 220, proteina: 19, carbos: 8,  grasa: 13,  fibra: 0.5 },
-  { nombre: 'Pepino', categoria: 'Verduras', emoji: '🥒', porcion: '1 taza (104 g)', calorias: 16, proteina: 0.7, carbos: 3.8, grasa: 0.1, fibra: 0.5 }
+  { nombre: 'Pepino', categoria: 'Verduras', emoji: '🥒', porcion: '1 taza (104 g)', calorias: 16, proteina: 0.7, carbos: 3.8, grasa: 0.1, fibra: 0.5 },
+  { nombre: 'Fresca (refresco de toronja)', categoria: 'Bebidas', emoji: '🥤', porcion: '1 botella (500 ml)', calorias: 200, proteina: 0, carbos: 55, grasa: 0, fibra: 0 }
 ];
 
 const NUTRI_FOOD_CATS = ['Todos', ...Array.from(new Set(NUTRI_FOOD_DB.map(a => a.categoria)))];
