@@ -97,7 +97,8 @@ const NUTRI_FOOD_DB = [
   { nombre: 'Pepino', categoria: 'Verduras', emoji: '🥒', porcion: '1 taza (104 g)', calorias: 16, proteina: 0.7, carbos: 3.8, grasa: 0.1, fibra: 0.5 },
   { nombre: 'Fresca (refresco de toronja)', categoria: 'Bebidas', emoji: '🥤', porcion: '1 botella (500 ml)', calorias: 200, proteina: 0, carbos: 55, grasa: 0, fibra: 0 },
   { nombre: 'Rollo tempura de surimi', categoria: 'Antojitos', emoji: '🍣', porcion: '1 orden (8-10 piezas)', calorias: 580, proteina: 18, carbos: 55, grasa: 28, fibra: 3 },
-  { nombre: 'Tostada de camarón y pulpo (aguachile)', categoria: 'Antojitos', emoji: '🍤', porcion: '1/2 tostada', calorias: 225, proteina: 25, carbos: 17, grasa: 8, fibra: 4 }
+  { nombre: 'Tostada de camarón y pulpo (aguachile)', categoria: 'Antojitos', emoji: '🍤', porcion: '1/2 tostada', calorias: 225, proteina: 25, carbos: 17, grasa: 8, fibra: 4 },
+  { nombre: 'Costillitas en caldillo enchiloso con papa y zanahoria', categoria: 'Antojitos', emoji: '🍖', porcion: '1 plato (300 g)', calorias: 380, proteina: 26, carbos: 22, grasa: 22, fibra: 3 }
 ];
 
 const NUTRI_FOOD_CATS = ['Todos', ...Array.from(new Set(NUTRI_FOOD_DB.map(a => a.categoria)))];
