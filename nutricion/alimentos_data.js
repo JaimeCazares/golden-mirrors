@@ -90,7 +90,11 @@ const NUTRI_FOOD_DB = [
   { nombre: 'Tostada de maíz', categoria: 'Carbohidratos', emoji: '🌽', porcion: '1 pieza', calorias: 55, proteina: 1.5, carbos: 11, grasa: 0.7, fibra: 1.5 },
   { nombre: 'Pan telera de ley', categoria: 'Carbohidratos', emoji: '🍞', porcion: '1 pieza', calorias: 220, proteina: 7, carbos: 40, grasa: 3, fibra: 2 },
   { nombre: 'Torta de jamón mamá', categoria: 'Antojitos', emoji: '🥪', porcion: '1 pieza', calorias: 420, proteina: 17, carbos: 44, grasa: 15, fibra: 4 },
-  { nombre: 'Ceviche de camarón mixto mamá', categoria: 'Antojitos', emoji: '🍤', porcion: '1 porción', calorias: 290, proteina: 40, carbos: 14, grasa: 2, fibra: 3 }
+  { nombre: 'Ceviche de camarón mixto mamá', categoria: 'Antojitos', emoji: '🍤', porcion: '1 porción', calorias: 290, proteina: 40, carbos: 14, grasa: 2, fibra: 3 },
+
+  // Agregados después
+  { nombre: 'Pescado frito', categoria: 'Proteínas', emoji: '🐟', porcion: '100 g', calorias: 220, proteina: 19, carbos: 8,  grasa: 13,  fibra: 0.5 },
+  { nombre: 'Pepino', categoria: 'Verduras', emoji: '🥒', porcion: '1 taza (104 g)', calorias: 16, proteina: 0.7, carbos: 3.8, grasa: 0.1, fibra: 0.5 }
 ];
 
 const NUTRI_FOOD_CATS = ['Todos', ...Array.from(new Set(NUTRI_FOOD_DB.map(a => a.categoria)))];
