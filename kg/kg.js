@@ -79,14 +79,19 @@ function initKg() {
             });
     }
 
+    function fotoOPlaceholder(ruta) {
+        if (ruta) return `<img src="${ruta}">`;
+        return `<div class="foto-sin-imagen">Sin foto</div>`;
+    }
+
     function generarHTMLFotos(r) {
         return `
             <div style="width:100%; border-bottom: 1px solid #30475e; margin: 15px 0; padding-bottom: 15px; text-align: center;">
                 <h4 style="color:#00e0ff; margin-bottom:10px;">Semana ${r.semana} (${r.peso}kg)</h4>
                 <div style="display:flex; gap:10px; justify-content:center; flex-wrap:wrap;">
-                    <div class="foto-container"><small>Frente</small><img src="${r.foto_frente || 'img/no-photo.png'}"></div>
-                    <div class="foto-container"><small>Lado</small><img src="${r.foto_lado || 'img/no-photo.png'}"></div>
-                    <div class="foto-container"><small>Atrás</small><img src="${r.foto_atras || 'img/no-photo.png'}"></div>
+                    <div class="foto-container"><small>Frente</small>${fotoOPlaceholder(r.foto_frente)}</div>
+                    <div class="foto-container"><small>Lado</small>${fotoOPlaceholder(r.foto_lado)}</div>
+                    <div class="foto-container"><small>Atrás</small>${fotoOPlaceholder(r.foto_atras)}</div>
                 </div>
             </div>`;
     }
@@ -94,9 +99,9 @@ function initKg() {
     function mostrarVisorRegistro(data) {
         document.getElementById("tituloVerFotos").innerText = "Semana " + data.semana;
         document.getElementById("contenedorGaleriaDinamica").innerHTML = `
-            <div class="foto-container"><small>Frente</small><img src="${data.foto_frente || 'img/no-photo.png'}"></div>
-            <div class="foto-container"><small>Lado</small><img src="${data.foto_lado || 'img/no-photo.png'}"></div>
-            <div class="foto-container"><small>Atrás</small><img src="${data.foto_atras || 'img/no-photo.png'}"></div>`;
+            <div class="foto-container"><small>Frente</small>${fotoOPlaceholder(data.foto_frente)}</div>
+            <div class="foto-container"><small>Lado</small>${fotoOPlaceholder(data.foto_lado)}</div>
+            <div class="foto-container"><small>Atrás</small>${fotoOPlaceholder(data.foto_atras)}</div>`;
         document.getElementById("infoPesoModal").innerText = "Peso: " + data.peso + " kg";
         modalVerFotos.style.display = "flex";
     }
