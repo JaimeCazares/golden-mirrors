@@ -120,7 +120,7 @@ function initKg() {
 
     function actualizarIMC(pesoKg) {
         if (!pesoKg || pesoKg <= 0) return;
-        const imc = (pesoKg / (1.8 * 1.8)).toFixed(1);
+        const imc = (pesoKg / (1.83 * 1.83)).toFixed(1);
         const valDisplay = document.getElementById('val-imc');
         const indicador = document.getElementById('imc-indicador');
         if (valDisplay) valDisplay.innerText = imc;
