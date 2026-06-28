@@ -205,9 +205,11 @@
 .semana-btn.completada { background: #00e0ff; color: #000; font-weight: bold; border: none; box-shadow: 0 0 5px #00e0ff; }
 
 .fila-peso-semana { display: flex; gap: 6px; margin-bottom: 6px; flex-shrink: 0; }
-#nuevaSemana { width: 90px; flex-shrink: 0; }
-#nuevaSemana, #nuevoPeso { padding: 8px; background: #0f0f1e; border: 1px solid #333; color: white; border-radius: 8px; text-align: center; font-size: 15px; box-sizing: border-box; }
-#nuevoPeso { width: 100%; flex-shrink: 0; }
+.campo-semana { display: flex; align-items: center; gap: 6px; flex-shrink: 0; background: #0f0f1e; border: 1px solid #333; border-radius: 8px; padding: 0 8px; }
+.campo-semana-label { color: #00e0ff; font-size: 12px; font-weight: bold; white-space: nowrap; }
+#nuevaSemana { width: 50px; border: none !important; background: transparent !important; padding: 8px 0 !important; }
+#nuevaSemana, #nuevoPeso { color: white; text-align: center; font-size: 15px; box-sizing: border-box; }
+#nuevoPeso { width: 100%; flex-shrink: 0; padding: 8px; background: #0f0f1e; border: 1px solid #333; border-radius: 8px; }
 .upload-grid-modern { display: flex; flex-direction: column; gap: 5px; flex-shrink: 0; }
 .upload-item-cool input[type="file"] { display: none !important; }
 .upload-item-cool label { 

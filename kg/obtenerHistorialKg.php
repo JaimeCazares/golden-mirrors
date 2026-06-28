@@ -2,7 +2,7 @@
 require_once "../conexion.php";
 
 $res = $conexion->query(
-    "SELECT * FROM peso_historial ORDER BY fecha DESC"
+    "SELECT * FROM peso_historial ORDER BY semana DESC"
 );
 
 $data = [];
