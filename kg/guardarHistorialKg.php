@@ -15,10 +15,14 @@ if (!isset($_POST['peso']) || empty($_POST['peso'])) {
 $peso  = floatval($_POST['peso']);
 $fecha = date("Y-m-d");
 
-// 2. Calcular el número de semana (auto-incremento manual basado en la última registrada)
-$res = $conexion->query("SELECT MAX(semana) as ultima FROM peso_historial");
-$row = $res->fetch_assoc();
-$semana = ($row && $row['ultima'] !== null) ? intval($row['ultima']) + 1 : 0;
+// 2. Determinar el número de semana: se usa la enviada por el usuario, o si no llega, se calcula automáticamente
+if (isset($_POST['semana']) && $_POST['semana'] !== '') {
+    $semana = intval($_POST['semana']);
+} else {
+    $res = $conexion->query("SELECT MAX(semana) as ultima FROM peso_historial");
+    $row = $res->fetch_assoc();
+    $semana = ($row && $row['ultima'] !== null) ? intval($row['ultima']) + 1 : 0;
+}
 
 /**
  * Función para procesar y mover las imágenes

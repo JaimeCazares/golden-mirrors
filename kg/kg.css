@@ -204,7 +204,10 @@
 }
 .semana-btn.completada { background: #00e0ff; color: #000; font-weight: bold; border: none; box-shadow: 0 0 5px #00e0ff; }
 
-#nuevoPeso { width: 100%; padding: 8px; background: #0f0f1e; border: 1px solid #333; color: white; border-radius: 8px; margin-bottom: 6px; text-align: center; font-size: 15px; box-sizing: border-box; flex-shrink: 0; }
+.fila-peso-semana { display: flex; gap: 6px; margin-bottom: 6px; flex-shrink: 0; }
+#nuevaSemana { width: 90px; flex-shrink: 0; }
+#nuevaSemana, #nuevoPeso { padding: 8px; background: #0f0f1e; border: 1px solid #333; color: white; border-radius: 8px; text-align: center; font-size: 15px; box-sizing: border-box; }
+#nuevoPeso { width: 100%; flex-shrink: 0; }
 .upload-grid-modern { display: flex; flex-direction: column; gap: 5px; flex-shrink: 0; }
 .upload-item-cool input[type="file"] { display: none !important; }
 .upload-item-cool label { 
