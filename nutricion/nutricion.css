@@ -127,7 +127,7 @@
     display: flex;
     gap: 8px;
     flex-shrink: 0;
-    margin-bottom: 8px;
+    margin-bottom: 6px;
 }
 .nutri-tab-btn {
     flex: 1;
@@ -435,8 +435,8 @@
 .nutri-top-cards {
     display: grid;
     grid-template-columns: 1fr 1fr;
-    gap: 8px;
-    margin-bottom: 10px;
+    gap: 6px;
+    margin-bottom: 6px;
 }
 .nutri-top-card {
     background: linear-gradient(160deg, rgba(255,255,255,0.10), rgba(255,255,255,0.03));
@@ -444,7 +444,7 @@
     -webkit-backdrop-filter: blur(8px);
     backdrop-filter: blur(8px);
     border-radius: 14px;
-    padding: 9px 12px;
+    padding: 6px 12px;
     position: relative;
     box-shadow: 0 6px 18px rgba(0,0,0,0.25);
 }
@@ -487,7 +487,7 @@
 #n-deficit-val.superavit { color: #f87171; }
 
 /* SUEÑO + GYM */
-.nutri-sueno-row { margin-bottom: 10px; }
+.nutri-sueno-row { margin-bottom: 6px; }
 .ntc-sueno-input {
     display: flex;
     align-items: baseline;
@@ -550,8 +550,8 @@
     -webkit-backdrop-filter: blur(8px);
     backdrop-filter: blur(8px);
     border-radius: 18px;
-    padding: 14px;
-    margin-bottom: 14px;
+    padding: 10px;
+    margin-bottom: 0;
     box-shadow: 0 6px 18px rgba(0,0,0,0.25);
 }
 .nutri-progreso-head {
@@ -559,7 +559,7 @@
     align-items: center;
     justify-content: space-between;
     gap: 8px;
-    margin-bottom: 10px;
+    margin-bottom: 6px;
     flex-wrap: wrap;
 }
 .nutri-progreso-titulo { font-size: 0.85rem; font-weight: 800; }
@@ -582,7 +582,7 @@
 }
 .nutri-progreso-chart-wrap {
     position: relative;
-    height: 220px;
+    height: 160px;
 }
 
 /* DÉFICIT CARD */
