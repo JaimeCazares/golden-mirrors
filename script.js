@@ -23,11 +23,11 @@ async function cambiarPestana(nombre) {
         .forEach(btn => btn.classList.remove('activo'));
 
     const mapa = {
-        inicio: 0,
-        escalera: 1,
-        espejo: 2,
-        registro: 3,
-        nutricion: 4
+        nutricion: 0,
+        inicio: 1,
+        escalera: 2,
+        espejo: 3,
+        registro: 4
     };
 
     document.querySelectorAll('.nav-btn')[mapa[nombre]]

@@ -37,9 +37,9 @@ if (empty($_SESSION['rol']) || $_SESSION['rol'] !== 'admin') {
   </section>
 
   <nav class="dock-nav" id="dock-nav">
-      <button class="nav-btn activo" onclick="cambiarPestana('inicio')">
-          <span class="icono">🏠</span>
-          <span class="label">Inicio</span>
+      <button class="nav-btn" onclick="cambiarPestana('nutricion')">
+          <span class="icono">🥗</span>
+          <span class="label">Nutrición</span>
       </button>
 
       <button type="button" class="nav-toggle-btn" id="nav-toggle-btn" onclick="toggleNavExtra()" title="Más opciones">
@@ -47,6 +47,11 @@ if (empty($_SESSION['rol']) || $_SESSION['rol'] !== 'admin') {
       </button>
 
       <div class="nav-extra" id="nav-extra">
+          <button class="nav-btn activo" onclick="cambiarPestana('inicio')">
+              <span class="icono">🏠</span>
+              <span class="label">Inicio</span>
+          </button>
+
           <button class="nav-btn" onclick="cambiarPestana('escalera')">
               <span class="icono">🔥</span>
               <span class="label">Escalera</span>
@@ -60,11 +65,6 @@ if (empty($_SESSION['rol']) || $_SESSION['rol'] !== 'admin') {
           <button class="nav-btn" onclick="cambiarPestana('registro')">
               <span class="icono">📝</span>
               <span class="label">Normales</span>
-          </button>
-
-          <button class="nav-btn" onclick="cambiarPestana('nutricion')">
-              <span class="icono">🥗</span>
-              <span class="label">Nutrición</span>
           </button>
       </div>
   </nav>
