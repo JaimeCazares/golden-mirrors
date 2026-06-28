@@ -124,7 +124,10 @@ function nutriGuardarSuenoGym() {
     const elSueno  = document.getElementById('n-sueno-val');
     const elGym    = document.getElementById('n-gym-check');
     const elGymTxt = document.getElementById('n-gym-txt');
-    if (elGymTxt) elGymTxt.textContent = elGym?.checked ? 'Sí' : 'No';
+    if (elGymTxt) {
+        elGymTxt.textContent = elGym?.checked ? 'Sí' : 'No';
+        elGymTxt.classList.toggle('activo', !!elGym?.checked);
+    }
 
     fetch(NUTRI_API, {
         method: 'POST',
@@ -390,7 +393,10 @@ async function nutriCargarFecha(fecha) {
     const elGymTxt = document.getElementById('n-gym-txt');
     if (elSueno) elSueno.value = nutriHorasDecimalAStr(diaRes && diaRes.horas_sueno);
     if (elGym)   elGym.checked = !!(diaRes && diaRes.gym);
-    if (elGymTxt) elGymTxt.textContent = elGym?.checked ? 'Sí' : 'No';
+    if (elGymTxt) {
+        elGymTxt.textContent = elGym?.checked ? 'Sí' : 'No';
+        elGymTxt.classList.toggle('activo', !!elGym?.checked);
+    }
 
     renderPlanRoot();
 }
