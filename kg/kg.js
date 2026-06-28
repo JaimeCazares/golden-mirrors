@@ -59,8 +59,8 @@ function initKg() {
                 const datosSemana = {};
                 registros.forEach(r => { datosSemana[r.semana] = r; });
                 const nuevaSemana = document.getElementById("nuevaSemana");
-                if (nuevaSemana && !nuevaSemana.value) {
-                    const ultima = registros.reduce((max, r) => Math.max(max, r.semana), -1);
+                if (nuevaSemana) {
+                    const ultima = registros.reduce((max, r) => Math.max(max, Number(r.semana)), -1);
                     nuevaSemana.value = ultima + 1;
                 }
                 for (let i = 25; i <= 51; i++) {
