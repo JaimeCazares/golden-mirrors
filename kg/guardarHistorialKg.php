@@ -33,7 +33,7 @@ function guardarFoto($campo)
         return null;
     }
 
-    $dir = "../uploads/peso/";
+    $dir = __DIR__ . "/../uploads/peso/";
     // Crear carpeta si no existe
     if (!is_dir($dir)) {
         mkdir($dir, 0777, true);
