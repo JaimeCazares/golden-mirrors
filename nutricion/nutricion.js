@@ -104,7 +104,7 @@ async function nutriCalcularDiasVisibles() {
 
 document.addEventListener('keydown', (e) => {
     if (e.key !== 'Escape') return;
-    document.querySelectorAll('#nutri-root .nutri-modal-overlay:not(.nutri-modal-hidden)')
+    document.querySelectorAll('.nutri-modal-overlay:not(.nutri-modal-hidden)')
         .forEach(modal => modal.classList.add('nutri-modal-hidden'));
 });
 
