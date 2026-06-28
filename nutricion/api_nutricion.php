@@ -1,5 +1,6 @@
 <?php
 error_reporting(0);
+mysqli_report(MYSQLI_REPORT_OFF); // PHP 8.1+ lanza excepciones por defecto; este archivo asume que query() solo devuelve false en error
 header('Content-Type: application/json');
 include '../conexion.php';
 
