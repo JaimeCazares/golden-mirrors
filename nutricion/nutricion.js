@@ -965,7 +965,6 @@ function renderPlanMealCard(meal, T) {
             tF += (it.fibra    || 0) * it.porciones;
         });
         totalsHtml = `<div class="plan-meal-totals">
-          <span class="plan-meal-tot-kcal">${mKcal} kcal</span>
           <span class="nf-chip prot">P${Math.round(tP)}g</span>
           <span class="nf-chip carb">C${Math.round(tC)}g</span>
           <span class="nf-chip gras">G${Math.round(tG)}g</span>
@@ -991,10 +990,10 @@ function renderPlanMealCard(meal, T) {
           <span class="plan-meal-caret">${colapsado ? '▸' : '▾'}</span>
         </div>
       </div>
+      ${totalsHtml}
       ${!colapsado ? `
       ${mKcal > 0 ? `<div class="plan-meal-track"><div class="plan-meal-bar" style="width:${mPct}%;background:${mOver ? '#f87171' : meal.col}"></div></div>` : ''}
-      <div class="plan-meal-items">${itemsHtml}</div>
-      ${totalsHtml}` : ''}
+      <div class="plan-meal-items">${itemsHtml}</div>` : ''}
     </div>`;
 }
 
