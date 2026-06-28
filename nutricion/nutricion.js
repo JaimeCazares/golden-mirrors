@@ -978,7 +978,7 @@ function renderPlanMealCard(meal, T) {
           <div class="plan-meal-emoji" style="background:${meal.col}22">${meal.emoji}</div>
           <div>
             <div class="plan-meal-label">${meal.label}</div>
-            <div class="plan-meal-hora">${meal.hora}</div>
+            ${totalsHtml || `<div class="plan-meal-hora">${meal.hora}</div>`}
           </div>
         </div>
         <div class="plan-meal-right">
@@ -990,7 +990,6 @@ function renderPlanMealCard(meal, T) {
           <span class="plan-meal-caret">${colapsado ? '▸' : '▾'}</span>
         </div>
       </div>
-      ${totalsHtml}
       ${!colapsado ? `
       ${mKcal > 0 ? `<div class="plan-meal-track"><div class="plan-meal-bar" style="width:${mPct}%;background:${mOver ? '#f87171' : meal.col}"></div></div>` : ''}
       <div class="plan-meal-items">${itemsHtml}</div>` : ''}

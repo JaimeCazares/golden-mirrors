@@ -1217,6 +1217,13 @@ select.nutri-input option { background: #151827; color: #fff; }
 }
 .plan-meal-label { font-size: 0.78rem; font-weight: 700; color: #fff; }
 .plan-meal-hora  { font-size: 0.6rem; color: #7a82a0; margin-top: 1px; }
+.plan-meal-info .plan-meal-totals {
+    padding: 0;
+    border-top: none;
+    margin-top: 2px;
+    gap: 4px;
+}
+.plan-meal-info .nf-chip { font-size: 0.56rem; padding: 1px 5px; }
 .plan-meal-right {
     display: flex;
     flex-direction: column;
