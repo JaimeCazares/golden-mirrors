@@ -834,7 +834,7 @@ function renderPlanRoot() {
     if (!root) return;
     const T = planTargets();
     const C = planTotals();
-    const leftCol  = renderPlanMetasCard(T, C) + renderPlanSupleCard() + renderPlanAguaCard();
+    const leftCol  = renderPlanMetasCard(T, C) + renderPlanSupleCard();
     const rightCol = PLAN_MEALS.map(m => renderPlanMealCard(m, T)).join('');
     root.innerHTML = `<div class="plan-grid">
       <div class="plan-col-left">${leftCol}</div>
@@ -905,8 +905,17 @@ function renderPlanMetasCard(T, C) {
     </div>`;
 }
 
-// ── Meal cards ────────────────────────────────────────
+// ── Meal cards (colapsables, para que las 5 quepan sin scroll) ──
+let _mealColapsado = {};
+
+function nutriToggleMeal(mealKey, evt) {
+    if (evt) evt.stopPropagation();
+    _mealColapsado[mealKey] = !(_mealColapsado[mealKey] ?? true);
+    renderPlanRoot();
+}
+
 function renderPlanMealCard(meal, T) {
+    const colapsado = _mealColapsado[meal.key] ?? true;
     const items = _planSel[meal.key] || [];
     const mKcal    = Math.round(items.reduce((s, i) => s + i.calorias * i.porciones, 0));
     const tKcal    = Math.round(T.kcal * meal.pct);
@@ -936,8 +945,8 @@ function renderPlanMealCard(meal, T) {
         </div>`;
     }
 
-    return `<div class="nutri-plan-card plan-meal-card" style="border-left:3px solid ${meal.col}">
-      <div class="plan-meal-header">
+    return `<div class="nutri-plan-card plan-meal-card${colapsado ? ' colapsado' : ''}" style="border-left:3px solid ${meal.col}">
+      <div class="plan-meal-header" onclick="nutriToggleMeal('${meal.key}')">
         <div class="plan-meal-info">
           <div class="plan-meal-emoji" style="background:${meal.col}22">${meal.emoji}</div>
           <div>
@@ -950,12 +959,14 @@ function renderPlanMealCard(meal, T) {
             ${mKcal > 0 ? `${mKcal} / ${tKcal}` : `~${tKcal}`} kcal
           </div>
           ${mKcal > 0 ? `<div class="plan-meal-pct${mOver ? ' rebasado' : ''}">${mPctReal}%${mOver ? ' 🔥' : ''}</div>` : ''}
-          <button type="button" class="plan-add-btn" onclick="nutriOpenPicker('${meal.key}')">+ Alimento</button>
+          <button type="button" class="plan-add-btn" onclick="event.stopPropagation(); nutriOpenPicker('${meal.key}')">+ Alimento</button>
+          <span class="plan-meal-caret">${colapsado ? '▸' : '▾'}</span>
         </div>
       </div>
+      ${!colapsado ? `
       ${mKcal > 0 ? `<div class="plan-meal-track"><div class="plan-meal-bar" style="width:${mPct}%;background:${mOver ? '#f87171' : meal.col}"></div></div>` : ''}
       <div class="plan-meal-items">${itemsHtml}</div>
-      ${totalsHtml}
+      ${totalsHtml}` : ''}
     </div>`;
 }
 
@@ -1013,17 +1024,6 @@ function renderPlanSupleCard() {
         <button type="button" class="nutri-btn-mini" onclick="nutriAbrirModal('suple')">+ Agregar</button>
       </div>
       <div id="plan-suple-list">${body}</div>
-    </div>`;
-}
-
-// ── Hidratación ───────────────────────────────────────
-function renderPlanAguaCard() {
-    const peso   = parseFloat(localStorage.getItem('nutriPeso') || '103.75');
-    const litros = (peso * 35 / 1000).toFixed(1);
-    return `<div class="nutri-plan-card plan-agua-last">
-      <div class="plan-card-header"><span>💧 Hidratación</span></div>
-      <div class="plan-agua-val">${litros}L</div>
-      <div class="plan-agua-sub">35 ml × kg de peso</div>
     </div>`;
 }
 

@@ -1189,7 +1189,7 @@ select.nutri-input option { background: #151827; color: #fff; }
 }
 .plan-macro-cur { font-size: 0.55rem; color: #7a82a0; }
 
-/* ── Meal cards ── */
+/* ── Meal cards (colapsables) ── */
 .plan-meal-card { border-left-style: solid; }
 .plan-meal-header {
     display: flex;
@@ -1197,7 +1197,9 @@ select.nutri-input option { background: #151827; color: #fff; }
     justify-content: space-between;
     padding: 8px 12px;
     gap: 8px;
+    cursor: pointer;
 }
+.plan-meal-caret { font-size: 0.65rem; color: #7a82a0; margin-left: 2px; }
 .plan-meal-info { display: flex; align-items: center; gap: 8px; }
 .plan-meal-emoji {
     width: 28px;
@@ -1313,22 +1315,6 @@ select.nutri-input option { background: #151827; color: #fff; }
 .plan-suple-nombre { font-size: 0.8rem; font-weight: 500; color: #dde1ef; }
 .plan-suple-sub    { font-size: 0.68rem; color: #7a82a0; margin-top: 2px; }
 
-/* ── Hidratación ── */
-.plan-agua-val {
-    font-size: 2rem;
-    font-weight: 800;
-    color: #60a5fa;
-    text-align: center;
-    text-shadow: 0 0 20px rgba(96,165,250,0.35);
-    padding: 8px 12px 4px;
-}
-.plan-agua-sub {
-    text-align: center;
-    color: #7a82a0;
-    font-size: 0.68rem;
-    padding-bottom: 10px;
-}
-.plan-agua-last { margin-bottom: 0; }
 
 /* Exclusión */
 .plan-excluido { opacity: 0.42; }
