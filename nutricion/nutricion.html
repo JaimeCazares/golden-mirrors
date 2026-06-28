@@ -134,6 +134,44 @@
 
     </div>
 
+    <!-- SUEÑO + GYM -->
+    <div class="nutri-top-cards nutri-sueno-row">
+
+      <div class="nutri-top-card sueno-card">
+        <div class="ntc-label">😴 Horas de sueño</div>
+        <div class="ntc-sueno-input">
+          <input type="number" id="n-sueno-val" class="nutri-sueno-num" min="0" max="16" step="0.5"
+                 placeholder="—" title="Horas de sueño" onchange="nutriGuardarSuenoGym()">
+          <small>hrs</small>
+        </div>
+      </div>
+
+      <div class="nutri-top-card gym-card">
+        <div class="ntc-label">🏋️ ¿Fuiste al gym?</div>
+        <label class="nutri-gym-toggle">
+          <input type="checkbox" id="n-gym-check" onchange="nutriGuardarSuenoGym()">
+          <span class="nutri-gym-slider"></span>
+          <span class="nutri-gym-txt" id="n-gym-txt">No</span>
+        </label>
+      </div>
+
+    </div>
+
+    <!-- PROGRESO / EVOLUCIÓN -->
+    <div class="nutri-progreso">
+      <div class="nutri-progreso-head">
+        <div class="nutri-progreso-titulo">📈 Progreso</div>
+        <div class="nutri-progreso-tabs">
+          <button type="button" class="nutri-prog-tab activo" data-prog="kcal"    onclick="nutriCambiarGraficaProgreso('kcal')">Calorías</button>
+          <button type="button" class="nutri-prog-tab"        data-prog="deficit" onclick="nutriCambiarGraficaProgreso('deficit')">Déficit</button>
+          <button type="button" class="nutri-prog-tab"        data-prog="sueno"   onclick="nutriCambiarGraficaProgreso('sueno')">Sueño</button>
+        </div>
+      </div>
+      <div class="nutri-progreso-chart-wrap">
+        <canvas id="n-prog-canvas"></canvas>
+      </div>
+    </div>
+
     <!-- PLAN NUTRICIONAL -->
     <div id="plan-root">
       <div style="text-align:center;padding:40px 20px;color:#7a82a0;font-size:0.85rem">Cargando plan...</div>

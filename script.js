@@ -151,10 +151,14 @@ async function cambiarPestana(nombre) {
         // === NUTRICION ===
         if (nombre === 'nutricion') {
             if (!modulosCargados['nutricion']) {
-                const scripts = [
+                const scripts = [];
+                if (typeof window.Chart === 'undefined') {
+                    scripts.push('https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js');
+                }
+                scripts.push(
                     'nutricion/alimentos_data.js',
                     'nutricion/nutricion.js'
-                ];
+                );
 
                 let cargados = 0;
 

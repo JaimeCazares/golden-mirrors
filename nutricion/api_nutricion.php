@@ -19,6 +19,11 @@ $conexion->query("
     ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4
 ");
 
+// Columnas de sueño/gym (se agregan una sola vez; si ya existen, MySQL falla en
+// silencio porque error_reporting está apagado arriba)
+$conexion->query("ALTER TABLE nutricion_dias ADD COLUMN horas_sueno DECIMAL(3,1) DEFAULT NULL");
+$conexion->query("ALTER TABLE nutricion_dias ADD COLUMN gym TINYINT(1) DEFAULT 0");
+
 // Metas/BMR vigentes a partir de una fecha (histórico, no se modifica retroactivamente)
 $conexion->query("
     CREATE TABLE IF NOT EXISTS nutricion_metas (
@@ -57,16 +62,18 @@ if ($accion === 'obtener_fecha_inicio') {
 if ($accion === 'obtener_dia') {
     $fecha = $conexion->real_escape_string($_GET['fecha'] ?? date('Y-m-d'));
 
-    $res = $conexion->query("SELECT plan_json, suplementos_json, miband FROM nutricion_dias WHERE fecha = '$fecha'");
+    $res = $conexion->query("SELECT plan_json, suplementos_json, miband, horas_sueno, gym FROM nutricion_dias WHERE fecha = '$fecha'");
     if ($res && $res->num_rows > 0) {
         $row = $res->fetch_assoc();
         echo json_encode([
             'plan'         => $row['plan_json'] ? json_decode($row['plan_json']) : null,
             'suplementos'  => $row['suplementos_json'] ? json_decode($row['suplementos_json']) : [],
             'miband'       => intval($row['miband']),
+            'horas_sueno'  => $row['horas_sueno'] !== null ? floatval($row['horas_sueno']) : null,
+            'gym'          => intval($row['gym']),
         ]);
     } else {
-        echo json_encode(['plan' => null, 'suplementos' => [], 'miband' => 0]);
+        echo json_encode(['plan' => null, 'suplementos' => [], 'miband' => 0, 'horas_sueno' => null, 'gym' => 0]);
     }
     exit;
 }
@@ -136,6 +143,84 @@ if ($accion === 'guardar_miband') {
         ON DUPLICATE KEY UPDATE miband = $miband
     ");
     echo json_encode(['status' => 'ok']);
+    exit;
+}
+
+// POST: guardar solo horas de sueño y si fue al gym
+if ($accion === 'guardar_sueno_gym') {
+    $fecha = $conexion->real_escape_string($input['fecha'] ?? date('Y-m-d'));
+    $gym   = intval($input['gym'] ?? 0);
+    $horas = isset($input['horas_sueno']) && $input['horas_sueno'] !== '' && $input['horas_sueno'] !== null
+        ? (float) $input['horas_sueno']
+        : null;
+    $horasSql = $horas === null ? 'NULL' : $horas;
+
+    $conexion->query("
+        INSERT INTO nutricion_dias (fecha, horas_sueno, gym)
+        VALUES ('$fecha', $horasSql, $gym)
+        ON DUPLICATE KEY UPDATE horas_sueno = $horasSql, gym = $gym
+    ");
+    echo json_encode(['status' => 'ok']);
+    exit;
+}
+
+// GET: evolución de los últimos N días para las gráficas de progreso
+if ($accion === 'obtener_evolucion') {
+    $dias = max(1, min(180, intval($_GET['dias'] ?? 30)));
+
+    $metasPorFecha = [];
+    $resMetas = $conexion->query("SELECT fecha, kcal, prot, carbs, grasas, fibra FROM nutricion_metas ORDER BY fecha ASC");
+    while ($resMetas && ($m = $resMetas->fetch_assoc())) {
+        $metasPorFecha[] = $m;
+    }
+
+    $metaVigenteEn = function ($fecha) use ($metasPorFecha, $DEFAULT_METAS) {
+        $vigente = $DEFAULT_METAS;
+        foreach ($metasPorFecha as $m) {
+            if ($m['fecha'] <= $fecha) {
+                $vigente = $m;
+            } else {
+                break;
+            }
+        }
+        return $vigente;
+    };
+
+    $res = $conexion->query("
+        SELECT fecha, plan_json, miband, horas_sueno, gym
+        FROM nutricion_dias
+        WHERE fecha >= DATE_SUB(CURDATE(), INTERVAL $dias DAY)
+        ORDER BY fecha ASC
+    ");
+
+    $out = [];
+    while ($res && ($row = $res->fetch_assoc())) {
+        $plan = $row['plan_json'] ? json_decode($row['plan_json'], true) : [];
+        $kcal = $prot = $carbs = $grasas = $fibra = 0;
+        foreach (($plan ?: []) as $items) {
+            foreach (($items ?: []) as $it) {
+                $porc = floatval($it['porciones'] ?? 1);
+                $kcal   += floatval($it['calorias'] ?? 0) * $porc;
+                $prot   += floatval($it['proteina'] ?? 0) * $porc;
+                $carbs  += floatval($it['carbos']   ?? 0) * $porc;
+                $grasas += floatval($it['grasas'] ?? $it['grasa'] ?? 0) * $porc;
+                $fibra  += floatval($it['fibra']    ?? 0) * $porc;
+            }
+        }
+        $meta = $metaVigenteEn($row['fecha']);
+        $out[] = [
+            'fecha'           => $row['fecha'],
+            'kcal_consumido'  => round($kcal),
+            'kcal_meta'       => intval($meta['kcal']),
+            'bmr'             => intval($meta['bmr'] ?? 0),
+            'prot_consumido'  => round($prot, 1),
+            'miband'          => intval($row['miband']),
+            'horas_sueno'     => $row['horas_sueno'] !== null ? floatval($row['horas_sueno']) : null,
+            'gym'             => intval($row['gym']),
+        ];
+    }
+
+    echo json_encode($out);
     exit;
 }
 

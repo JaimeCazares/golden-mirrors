@@ -85,8 +85,119 @@ function initNutricion() {
         nutriCargarFecha(nutriFechaSel);
     });
     nutriScheduleMidnightRollover();
+    nutriCargarProgreso();
 
     // los videos se cargan de forma lazy en nutriAplicarTema()
+}
+
+// ── Sueño + Gym ────────────────────────────────────────
+function nutriGuardarSuenoGym() {
+    const elSueno  = document.getElementById('n-sueno-val');
+    const elGym    = document.getElementById('n-gym-check');
+    const elGymTxt = document.getElementById('n-gym-txt');
+    if (elGymTxt) elGymTxt.textContent = elGym?.checked ? 'Sí' : 'No';
+
+    fetch(NUTRI_API, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+            accion: 'guardar_sueno_gym',
+            fecha: nutriFechaSel,
+            horas_sueno: elSueno?.value || null,
+            gym: elGym?.checked ? 1 : 0,
+        }),
+    }).then(() => {
+        nutriToast('✓ Guardado');
+        nutriCargarProgreso();
+    }).catch(() => nutriToast('No se pudo guardar (sin conexión)'));
+}
+
+// ── Progreso / evolución (gráficas) ───────────────────
+let _nutriProgChart = null;
+let _nutriProgData  = [];
+let _nutriProgTab   = 'kcal';
+
+async function nutriCargarProgreso() {
+    if (typeof Chart === 'undefined') return;
+    try {
+        _nutriProgData = await fetch(`${NUTRI_API}?accion=obtener_evolucion&dias=30`).then(r => r.json());
+        if (!Array.isArray(_nutriProgData)) _nutriProgData = [];
+    } catch (e) { _nutriProgData = []; }
+    nutriRenderGraficaProgreso();
+}
+
+function nutriCambiarGraficaProgreso(tab) {
+    _nutriProgTab = tab;
+    document.querySelectorAll('.nutri-prog-tab').forEach(b => {
+        b.classList.toggle('activo', b.dataset.prog === tab);
+    });
+    nutriRenderGraficaProgreso();
+}
+
+function nutriRenderGraficaProgreso() {
+    const canvas = document.getElementById('n-prog-canvas');
+    if (!canvas || typeof Chart === 'undefined') return;
+
+    const datos  = _nutriProgData;
+    const labels = datos.map(d => {
+        const dt = nutriFechaADate(d.fecha);
+        return `${dt.getDate()} ${NUTRI_DIAS_SEMANA[dt.getDay()]}`;
+    });
+
+    let config;
+    if (_nutriProgTab === 'deficit') {
+        const valores = datos.map(d => (d.bmr + d.miband) - d.kcal_consumido);
+        config = {
+            type: 'bar',
+            data: {
+                labels,
+                datasets: [{
+                    label: 'Déficit calórico',
+                    data: valores,
+                    backgroundColor: valores.map(v => v >= 0 ? 'rgba(74,222,128,0.7)' : 'rgba(248,113,113,0.7)'),
+                    borderRadius: 6,
+                }],
+            },
+        };
+    } else if (_nutriProgTab === 'sueno') {
+        config = {
+            type: 'bar',
+            data: {
+                labels,
+                datasets: [{
+                    label: 'Horas de sueño (verde = fue al gym)',
+                    data: datos.map(d => d.horas_sueno),
+                    backgroundColor: datos.map(d => d.gym ? 'rgba(74,222,128,0.75)' : 'rgba(96,165,250,0.6)'),
+                    borderRadius: 6,
+                }],
+            },
+        };
+    } else {
+        config = {
+            type: 'line',
+            data: {
+                labels,
+                datasets: [
+                    { label: 'Consumidas', data: datos.map(d => d.kcal_consumido), borderColor: '#60a5fa', backgroundColor: 'rgba(96,165,250,0.15)', tension: 0.35, fill: true, pointRadius: 3 },
+                    { label: 'Meta',       data: datos.map(d => d.kcal_meta),      borderColor: '#4ade80', borderDash: [5, 4], tension: 0.35, pointRadius: 0 },
+                ],
+            },
+        };
+    }
+
+    config.options = {
+        responsive: true,
+        maintainAspectRatio: false,
+        animation: { duration: 700, easing: 'easeOutQuart' },
+        plugins: { legend: { labels: { color: '#c2cae0', font: { size: 10 } } } },
+        scales: {
+            x: { ticks: { color: '#7a82a0', font: { size: 9 } }, grid: { color: 'rgba(255,255,255,0.05)' } },
+            y: { ticks: { color: '#7a82a0', font: { size: 9 } }, grid: { color: 'rgba(255,255,255,0.05)' } },
+        },
+    };
+
+    if (_nutriProgChart) _nutriProgChart.destroy();
+    _nutriProgChart = new Chart(canvas, config);
 }
 
 // Calcula cuántos días mostrar en la franja: desde el día más viejo con datos hasta hoy.
@@ -244,6 +355,13 @@ async function nutriCargarFecha(fecha) {
     const elMiBand = document.getElementById('n-miband-val');
     if (elBMR)    elBMR.textContent    = nutriMetas.bmr.toLocaleString('es-MX');
     if (elMiBand) elMiBand.textContent = nutriMiBand > 0 ? nutriMiBand.toLocaleString('es-MX') : '—';
+
+    const elSueno  = document.getElementById('n-sueno-val');
+    const elGym    = document.getElementById('n-gym-check');
+    const elGymTxt = document.getElementById('n-gym-txt');
+    if (elSueno) elSueno.value = (diaRes && diaRes.horas_sueno !== null && diaRes.horas_sueno !== undefined) ? diaRes.horas_sueno : '';
+    if (elGym)   elGym.checked = !!(diaRes && diaRes.gym);
+    if (elGymTxt) elGymTxt.textContent = elGym?.checked ? 'Sí' : 'No';
 
     renderPlanRoot();
 }
