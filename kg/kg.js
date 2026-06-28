@@ -67,7 +67,7 @@ function initKg() {
                     const btn = document.createElement("div");
                     const data = datosSemana[i];
                     btn.className = data ? "semana-btn completada" : "semana-btn pendiente";
-                    btn.innerHTML = `<b>${i}</b><span>${data ? Math.round(data.peso) : '-'}</span>`;
+                    btn.innerHTML = `<b>${i}</b><span>${data ? parseFloat(data.peso) : '-'}</span>`;
                     if (data) {
                         btn.onclick = (e) => {
                             e.stopPropagation();

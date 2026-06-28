@@ -201,7 +201,9 @@
     aspect-ratio: 1/1; border-radius: 4px; cursor: pointer;
     font-size: clamp(7px, 1.6vh, 11px);
     color: #555; background: #0f0f1e; border: 1px solid #333;
+    overflow: hidden; padding: 2px;
 }
+.semana-btn span { font-size: 0.75em; white-space: nowrap; }
 .semana-btn.completada { background: #00e0ff; color: #000; font-weight: bold; border: none; box-shadow: 0 0 5px #00e0ff; }
 
 .fila-peso-semana { display: flex; gap: 6px; margin-bottom: 6px; flex-shrink: 0; }
