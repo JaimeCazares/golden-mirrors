@@ -112,31 +112,59 @@
     position: relative;
     z-index: 2;
     height: 100%;
-    overflow-y: auto;
-    -webkit-overflow-scrolling: touch;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
     padding: 12px 16px;
     max-width: 940px;
     margin: 0 auto;
     color: #fff;
     box-sizing: border-box;
+}
+
+/* PESTAÑAS RESUMEN / PLAN — toda la pantalla, sin scroll de página */
+.nutri-tabs-nav {
+    display: flex;
+    gap: 8px;
+    flex-shrink: 0;
+    margin-bottom: 8px;
+}
+.nutri-tab-btn {
+    flex: 1;
+    background: rgba(255,255,255,0.06);
+    border: 1px solid rgba(255,255,255,0.12);
+    border-radius: 10px;
+    color: #c2cae0;
+    font-size: 0.75rem;
+    font-weight: 700;
+    padding: 7px 0;
+    cursor: pointer;
+    transition: 0.15s;
+}
+.nutri-tab-btn.activo {
+    background: rgba(74,222,128,0.18);
+    border-color: #4ade80;
+    color: #4ade80;
+}
+.nutri-tab-panel {
+    display: none;
+    flex: 1;
+    min-height: 0;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
     scrollbar-width: thin;
     scrollbar-color: #4ade80 rgba(255,255,255,0.05);
 }
-.nutricion-container::-webkit-scrollbar {
-    width: 7px;
-}
-.nutricion-container::-webkit-scrollbar-track {
+.nutri-tab-panel.activo { display: block; }
+.nutri-tab-panel::-webkit-scrollbar { width: 7px; }
+.nutri-tab-panel::-webkit-scrollbar-track {
     background: rgba(255,255,255,0.05);
     border-radius: 10px;
 }
-.nutricion-container::-webkit-scrollbar-thumb {
+.nutri-tab-panel::-webkit-scrollbar-thumb {
     background: linear-gradient(180deg, #fb923c, #4ade80 50%, #00e0ff);
     border-radius: 10px;
     box-shadow: 0 0 8px rgba(74,222,128,0.45);
-    transition: box-shadow 0.25s ease;
-}
-.nutricion-container::-webkit-scrollbar-thumb:hover {
-    box-shadow: 0 0 14px rgba(0,224,255,0.65);
 }
 
 /* HEADER */

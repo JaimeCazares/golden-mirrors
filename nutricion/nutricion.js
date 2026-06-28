@@ -90,6 +90,13 @@ function initNutricion() {
     // los videos se cargan de forma lazy en nutriAplicarTema()
 }
 
+// ── Pestañas Resumen / Plan ───────────────────────────
+function nutriCambiarTab(tab) {
+    document.querySelectorAll('.nutri-tab-btn').forEach(b => b.classList.toggle('activo', b.dataset.tab === tab));
+    document.querySelectorAll('.nutri-tab-panel').forEach(p => p.classList.toggle('activo', p.id === `nutri-tab-${tab}`));
+    if (tab === 'resumen') nutriRenderGraficaProgreso();
+}
+
 // ── Sueño + Gym ────────────────────────────────────────
 function nutriGuardarSuenoGym() {
     const elSueno  = document.getElementById('n-sueno-val');
