@@ -207,7 +207,8 @@
 .fila-peso-semana { display: flex; gap: 6px; margin-bottom: 6px; flex-shrink: 0; }
 .campo-semana { display: flex; align-items: center; gap: 6px; flex-shrink: 0; background: #0f0f1e; border: 1px solid #333; border-radius: 8px; padding: 0 8px; }
 .campo-semana-label { color: #00e0ff; font-size: 12px; font-weight: bold; white-space: nowrap; }
-#nuevaSemana { width: 3.5ch; min-width: 28px; border: none !important; background: transparent !important; padding: 8px 0 !important; cursor: default; }
+#nuevaSemana { width: 5ch; min-width: 36px; border: none !important; background: transparent !important; padding: 8px 0 !important; cursor: default; -moz-appearance: textfield; }
+#nuevaSemana::-webkit-inner-spin-button, #nuevaSemana::-webkit-outer-spin-button { -webkit-appearance: none; margin: 0; }
 #nuevaSemana, #nuevoPeso { color: white; text-align: center; font-size: 15px; box-sizing: border-box; }
 #nuevoPeso { width: 100%; min-width: 0; flex: 1; padding: 8px; background: #0f0f1e; border: 1px solid #333; border-radius: 8px; }
 .upload-grid-modern { display: flex; flex-direction: column; gap: 5px; flex-shrink: 0; }
