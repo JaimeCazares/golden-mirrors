@@ -58,7 +58,7 @@ function initKg() {
                 registrosCache = registros;
                 const datosSemana = {};
                 registros.forEach(r => { datosSemana[r.semana] = r; });
-                for (let i = 0; i <= 51; i++) {
+                for (let i = 25; i <= 51; i++) {
                     const btn = document.createElement("div");
                     const data = datosSemana[i];
                     btn.className = data ? "semana-btn completada" : "semana-btn pendiente";

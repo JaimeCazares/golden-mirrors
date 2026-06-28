@@ -13,7 +13,7 @@ if ($_SERVER['SERVER_NAME'] === 'localhost') {
         "root",
         "",
         "golden",
-        3306
+        3307
     );
 } else {
     // 🔹 HOSTINGER
