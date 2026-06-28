@@ -102,6 +102,12 @@ async function nutriCalcularDiasVisibles() {
     } catch (e) { /* se queda con el valor por defecto */ }
 }
 
+document.addEventListener('keydown', (e) => {
+    if (e.key !== 'Escape') return;
+    document.querySelectorAll('#nutri-root .nutri-modal-overlay:not(.nutri-modal-hidden)')
+        .forEach(modal => modal.classList.add('nutri-modal-hidden'));
+});
+
 function nutriScheduleMidnightRollover() {
     clearTimeout(_nutriMidnightTimer);
     const ahora = new Date();
