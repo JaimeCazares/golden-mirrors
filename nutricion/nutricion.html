@@ -149,8 +149,9 @@
         <div class="nutri-top-card sueno-card">
           <div class="ntc-label">😴 Horas de sueño</div>
           <div class="ntc-sueno-input">
-            <input type="number" id="n-sueno-val" class="nutri-sueno-num" min="0" max="16" step="0.5"
-                   placeholder="—" title="Horas de sueño" onchange="nutriGuardarSuenoGym()">
+            <input type="text" id="n-sueno-val" class="nutri-sueno-num" inputmode="numeric" maxlength="5"
+                   placeholder="0:00" title="Horas de sueño (h:mm)"
+                   oninput="nutriFormatHorasInput(this)" onchange="nutriGuardarSuenoGym()">
             <small>hrs</small>
           </div>
         </div>

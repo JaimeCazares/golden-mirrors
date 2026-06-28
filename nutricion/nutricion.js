@@ -98,6 +98,28 @@ function nutriCambiarTab(tab) {
 }
 
 // ── Sueño + Gym ────────────────────────────────────────
+// Formatea el input de horas mientras se escribe: solo dígitos, inserta el ":"
+// antes de los últimos 2 (estilo "7:30"). Máx 4 dígitos (HH + MM).
+function nutriFormatHorasInput(el) {
+    const digitos = el.value.replace(/\D/g, '').slice(0, 4);
+    el.value = digitos.length > 2
+        ? digitos.slice(0, digitos.length - 2) + ':' + digitos.slice(-2)
+        : digitos;
+}
+
+function nutriHorasStrADecimal(str) {
+    if (!str) return null;
+    const [h, m] = str.split(':').map(n => parseInt(n, 10) || 0);
+    return +(h + m / 60).toFixed(2);
+}
+
+function nutriHorasDecimalAStr(dec) {
+    if (dec === null || dec === undefined || dec === '') return '';
+    const h = Math.floor(dec);
+    const m = Math.round((dec - h) * 60);
+    return `${h}:${String(m).padStart(2, '0')}`;
+}
+
 function nutriGuardarSuenoGym() {
     const elSueno  = document.getElementById('n-sueno-val');
     const elGym    = document.getElementById('n-gym-check');
@@ -110,7 +132,7 @@ function nutriGuardarSuenoGym() {
         body: JSON.stringify({
             accion: 'guardar_sueno_gym',
             fecha: nutriFechaSel,
-            horas_sueno: elSueno?.value || null,
+            horas_sueno: nutriHorasStrADecimal(elSueno?.value),
             gym: elGym?.checked ? 1 : 0,
         }),
     }).then(() => {
@@ -366,7 +388,7 @@ async function nutriCargarFecha(fecha) {
     const elSueno  = document.getElementById('n-sueno-val');
     const elGym    = document.getElementById('n-gym-check');
     const elGymTxt = document.getElementById('n-gym-txt');
-    if (elSueno) elSueno.value = (diaRes && diaRes.horas_sueno !== null && diaRes.horas_sueno !== undefined) ? diaRes.horas_sueno : '';
+    if (elSueno) elSueno.value = nutriHorasDecimalAStr(diaRes && diaRes.horas_sueno);
     if (elGym)   elGym.checked = !!(diaRes && diaRes.gym);
     if (elGymTxt) elGymTxt.textContent = elGym?.checked ? 'Sí' : 'No';
 
