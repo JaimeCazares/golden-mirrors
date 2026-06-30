@@ -109,7 +109,8 @@ const NUTRI_FOOD_DB = [
   { nombre: 'Refresco Sprite (500 ml)', categoria: 'Bebidas', emoji: '🥤', porcion: '1 botella (500 ml)', calorias: 200, proteina: 0, carbos: 53, grasa: 0, fibra: 0 },
   { nombre: 'Hamburguesa con tocino y cebolla + papas', categoria: 'Antojitos', emoji: '🍔', porcion: '1 orden', calorias: 1050, proteina: 35, carbos: 75, grasa: 60, fibra: 5 },
   { nombre: 'Muslos de pollo asado con piel', categoria: 'Proteínas', emoji: '🍗', porcion: '2 piezas (240 g)', calorias: 420, proteina: 46, carbos: 0, grasa: 24, fibra: 0 },
-  { nombre: 'Papas fritas caseras', categoria: 'Carbohidratos', emoji: '🥔', porcion: '1 porción (200 g)', calorias: 310, proteina: 4, carbos: 38, grasa: 14, fibra: 3 }
+  { nombre: 'Papas fritas caseras', categoria: 'Carbohidratos', emoji: '🥔', porcion: '1 porción (200 g)', calorias: 310, proteina: 4, carbos: 38, grasa: 14, fibra: 3 },
+  { nombre: 'Crujitos Sabritas (bolsa $20)', categoria: 'Snacks', emoji: '🧀', porcion: '1 bolsa (47 g)', calorias: 260, proteina: 3, carbos: 27, grasa: 16, fibra: 1 }
 ];
 
 const NUTRI_FOOD_CATS = ['Todos', ...Array.from(new Set(NUTRI_FOOD_DB.map(a => a.categoria)))];
