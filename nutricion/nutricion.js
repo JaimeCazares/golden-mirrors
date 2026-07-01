@@ -73,12 +73,12 @@ function nutriMigrarDatosLegacy() {
     }).catch(() => {});
 }
 
-function initNutricion() {
+async function initNutricion() {
     nutriFechaHoy = nutriHoyISO();
     nutriFechaSel = nutriFechaHoy;
 
     nutriInitTema();
-    nutriInitAlimentos();
+    await nutriInitAlimentos();
     nutriMigrarDatosLegacy();
     nutriCalcularDiasVisibles().then(() => {
         nutriRenderDiasStrip();
@@ -808,6 +808,31 @@ let _recetaAddQ    = '';
 
 const PORC_OPTS = Array.from({ length: 20 }, (_, i) => +((i + 1) * 0.5).toFixed(1));
 
+// ── Crear alimento / receta ────────────────────────────────
+let _crearTipo      = 'alimento';
+let _crearEmoji     = '🍽️';
+let _crearNombre    = '';
+let _crearCat       = 'Proteínas';
+let _crearPorcion   = '';
+let _crearUnidad    = 'g';
+let _crearKcal      = '';
+let _crearProt      = '';
+let _crearCarbs     = '';
+let _crearGrasa     = '';
+let _crearFibra     = '';
+let _crearEmojiOpen = false;
+
+const _CREAR_EMOJIS = [
+  '🍗','🥩','🐟','🥚','🍖','🦐','🐔','🥓','🦑','🍣',
+  '🌽','🍚','🥔','🍠','🫘','🍞','🥐','🧇','🥨','🫓',
+  '🥑','🥦','🥕','🧅','🍅','🥒','🥗','🫛','🧆','🌿',
+  '🧀','🥛','🧈','🫙','🍯','🥜','🌰','🧂','🫒','🌶️',
+  '🍕','🌮','🌯','🥙','🫔','🥘','🍲','🫕','🍜','🍝',
+  '🍔','🌭','🥪','🍱','🍛','🥡','🍩','🎂','🍫','🧁',
+  '🍎','🍊','🍋','🍇','🍓','🫐','🍌','🥭','🍑','🍒',
+  '🥤','🧃','☕','🍵','🧋','🥛','🍺','🧊','💧','🫖',
+];
+
 const PLAN_MEALS = [
     { key:'desayuno',    label:'Desayuno',    hora:'7:30',  pct:.25, emoji:'🌅', col:'#fb923c' },
     { key:'colacion_am', label:'Colación AM', hora:'10:30', pct:.10, emoji:'🍎', col:'#f87171' },
@@ -844,7 +869,7 @@ function planTotals(plan) {
     };
 }
 
-function nutriInitAlimentos() {
+async function nutriInitAlimentos() {
     if (typeof NUTRI_FOOD_DB !== 'undefined') {
         _alimentos = NUTRI_FOOD_DB.map((a, i) => ({
             ...a,
@@ -854,6 +879,15 @@ function nutriInitAlimentos() {
             excluido:     false,
         }));
     }
+    try {
+        const custom = await fetch(`${NUTRI_API}?accion=obtener_custom_alimentos`).then(r => r.json());
+        (Array.isArray(custom) ? custom : []).forEach(a => {
+            _alimentos.push({
+                ...a, grasas: a.grasa, porcion_desc: a.porcion,
+                excluido: false, id: _alimentos.length + 1,
+            });
+        });
+    } catch (e) {}
 }
 
 // ── Render principal ──────────────────────────────────
@@ -862,7 +896,7 @@ function renderPlanRoot() {
     if (!root) return;
     const T = planTargets();
     const C = planTotals();
-    const leftCol  = renderPlanMetasCard(T, C) + renderPlanSupleCard();
+    const leftCol  = renderPlanMetasCard(T, C) + renderPlanCrearAlimentoCard() + renderPlanSupleCard();
     const rightCol = PLAN_MEALS.map(m => renderPlanMealCard(m, T)).join('');
     root.innerHTML = `<div class="plan-grid">
       <div class="plan-col-left">${leftCol}</div>
@@ -1026,6 +1060,172 @@ function renderPlanFoodRow(item, mealKey, idx, total) {
         </select>
         <button type="button" class="plan-food-del"
                 onclick="nutriRemoveFood('${mealKey}',${idx})" title="Quitar">✕</button>
+      </div>
+    </div>`;
+}
+
+// ── Crear alimento / receta ───────────────────────────
+function nutriCrearSetTipo(tipo) {
+    _crearTipo = tipo;
+    renderPlanRoot();
+}
+
+function nutriCrearSet(field, val) {
+    switch (field) {
+        case 'nombre':  _crearNombre  = val; break;
+        case 'porcion': _crearPorcion = val; break;
+        case 'unidad':  _crearUnidad  = val; break;
+        case 'kcal':    _crearKcal    = val; break;
+        case 'prot':    _crearProt    = val; break;
+        case 'carbs':   _crearCarbs   = val; break;
+        case 'grasa':   _crearGrasa   = val; break;
+        case 'fibra':   _crearFibra   = val; break;
+        case 'cat':     _crearCat     = val; break;
+    }
+}
+
+function nutriCrearToggleEmoji() {
+    _crearEmojiOpen = !_crearEmojiOpen;
+    document.getElementById('crear-emoji-grid')?.classList.toggle('activo', _crearEmojiOpen);
+}
+
+function nutriCrearPickEmoji(emoji) {
+    _crearEmoji = emoji;
+    _crearEmojiOpen = false;
+    const btn  = document.getElementById('crear-emoji-btn');
+    const grid = document.getElementById('crear-emoji-grid');
+    if (btn)  btn.textContent = emoji;
+    if (grid) grid.classList.remove('activo');
+}
+
+async function nutriCrearGuardar() {
+    const nombre  = document.getElementById('crear-nombre')?.value.trim() || '';
+    const porcion = document.getElementById('crear-porcion')?.value.trim() || '';
+    const unidad  = document.getElementById('crear-unidad')?.value || _crearUnidad;
+    const cat     = _crearTipo === 'receta' ? 'Mis recetas'
+                  : (document.getElementById('crear-cat')?.value || _crearCat);
+    const kcal    = parseFloat(document.getElementById('crear-kcal')?.value)  || 0;
+    const prot    = parseFloat(document.getElementById('crear-prot')?.value)  || 0;
+    const carbs   = parseFloat(document.getElementById('crear-carbs')?.value) || 0;
+    const grasa   = parseFloat(document.getElementById('crear-grasa')?.value) || 0;
+    const fibra   = parseFloat(document.getElementById('crear-fibra')?.value) || 0;
+
+    if (!nombre) { nutriToast('⚠️ Escribe un nombre'); return; }
+    if (!kcal)   { nutriToast('⚠️ Agrega las calorías'); return; }
+
+    const porcionStr = porcion ? `${porcion} ${unidad}` : `1 ${unidad}`;
+    const payload = { accion: 'guardar_custom_alimento', nombre, categoria: cat,
+                      emoji: _crearEmoji, porcion: porcionStr,
+                      calorias: kcal, proteina: prot, carbos, grasa, fibra };
+
+    try {
+        const res = await fetch(NUTRI_API, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(payload),
+        }).then(r => r.json());
+
+        if (res.error) { nutriToast('⚠️ ' + res.error); return; }
+
+        _alimentos.push({ nombre, categoria: cat, emoji: _crearEmoji, porcion: porcionStr,
+                          calorias: kcal, proteina: prot, carbos, grasa, fibra,
+                          grasas: grasa, porcion_desc: porcionStr,
+                          excluido: false, id: res.id || _alimentos.length + 1 });
+
+        _crearNombre = ''; _crearEmoji = '🍽️'; _crearKcal = ''; _crearProt = '';
+        _crearCarbs  = ''; _crearGrasa = ''; _crearFibra = ''; _crearPorcion = '';
+
+        nutriToast(`✓ "${nombre}" guardado en la base de datos`);
+        renderPlanRoot();
+    } catch (e) {
+        nutriToast('⚠️ Error al guardar, intenta de nuevo');
+    }
+}
+
+function renderPlanCrearAlimentoCard() {
+    const cats     = ['Proteínas','Carbohidratos','Grasas','Verduras','Lácteos','Snacks','Bebidas','Antojitos'];
+    const unidades = ['g','ml','pieza','porción','rebanada','taza','cucharada'];
+
+    const emojiGrid = _CREAR_EMOJIS.map(e =>
+        `<button type="button" class="crear-emoji-item" onclick="nutriCrearPickEmoji('${e}')">${e}</button>`
+    ).join('');
+
+    const catHtml = _crearTipo === 'alimento' ? `
+      <div class="nutri-field crear-field-span2">
+        <label>Categoría</label>
+        <select id="crear-cat" class="nutri-input crear-input" title="Categoría" onchange="nutriCrearSet('cat',this.value)">
+          ${cats.map(c => `<option${c === _crearCat ? ' selected' : ''}>${c}</option>`).join('')}
+        </select>
+      </div>` : '';
+
+    return `<div class="nutri-plan-card">
+      <div class="plan-card-header">
+        <span>➕ Crear</span>
+        <div class="crear-tipo-toggle">
+          <button type="button" class="crear-tipo-btn${_crearTipo==='alimento'?' activo':''}" onclick="nutriCrearSetTipo('alimento')">Alimento</button>
+          <button type="button" class="crear-tipo-btn${_crearTipo==='receta'?' activo':''}" onclick="nutriCrearSetTipo('receta')">Receta</button>
+        </div>
+      </div>
+      <div class="crear-body">
+
+        <div class="crear-top-row">
+          <div class="crear-emoji-wrap">
+            <button type="button" id="crear-emoji-btn" class="crear-emoji-btn" onclick="nutriCrearToggleEmoji()">${_crearEmoji}</button>
+            <div id="crear-emoji-grid" class="crear-emoji-grid">${emojiGrid}</div>
+          </div>
+          <input type="text" id="crear-nombre" class="nutri-input crear-input crear-nombre-input"
+                 placeholder="Nombre del ${_crearTipo}" value="${_crearNombre.replace(/"/g,'&quot;')}"
+                 oninput="nutriCrearSet('nombre',this.value)">
+        </div>
+
+        <div class="crear-grid2">
+          ${catHtml}
+          <div class="nutri-field">
+            <label>Cantidad</label>
+            <input type="text" id="crear-porcion" class="nutri-input crear-input"
+                   placeholder="ej. 100" value="${_crearPorcion}"
+                   oninput="nutriCrearSet('porcion',this.value)">
+          </div>
+          <div class="nutri-field">
+            <label>Unidad</label>
+            <select id="crear-unidad" class="nutri-input crear-input" title="Unidad" onchange="nutriCrearSet('unidad',this.value)">
+              ${unidades.map(u => `<option${u===_crearUnidad?' selected':''}>${u}</option>`).join('')}
+            </select>
+          </div>
+        </div>
+
+        <div class="crear-macros-grid">
+          <div class="nutri-field">
+            <label>kcal</label>
+            <input type="number" id="crear-kcal" class="nutri-input crear-input" placeholder="0"
+                   value="${_crearKcal}" min="0" oninput="nutriCrearSet('kcal',this.value)">
+          </div>
+          <div class="nutri-field">
+            <label>Prot</label>
+            <input type="number" id="crear-prot" class="nutri-input crear-input" placeholder="0"
+                   value="${_crearProt}" min="0" oninput="nutriCrearSet('prot',this.value)">
+          </div>
+          <div class="nutri-field">
+            <label>Carbs</label>
+            <input type="number" id="crear-carbs" class="nutri-input crear-input" placeholder="0"
+                   value="${_crearCarbs}" min="0" oninput="nutriCrearSet('carbs',this.value)">
+          </div>
+          <div class="nutri-field">
+            <label>Grasa</label>
+            <input type="number" id="crear-grasa" class="nutri-input crear-input" placeholder="0"
+                   value="${_crearGrasa}" min="0" oninput="nutriCrearSet('grasa',this.value)">
+          </div>
+          <div class="nutri-field">
+            <label>Fibra</label>
+            <input type="number" id="crear-fibra" class="nutri-input crear-input" placeholder="0"
+                   value="${_crearFibra}" min="0" oninput="nutriCrearSet('fibra',this.value)">
+          </div>
+        </div>
+
+        <button type="button" class="crear-guardar-btn" onclick="nutriCrearGuardar()">
+          ✓ Guardar ${_crearTipo}
+        </button>
+
       </div>
     </div>`;
 }

@@ -9,6 +9,23 @@ if (!isset($conexion) || $conexion->connect_error) {
     exit;
 }
 
+// Alimentos y recetas personalizados creados por el usuario
+$conexion->query("
+    CREATE TABLE IF NOT EXISTS nutricion_custom_alimentos (
+        id         INT AUTO_INCREMENT PRIMARY KEY,
+        nombre     VARCHAR(200) NOT NULL,
+        categoria  VARCHAR(60)  NOT NULL DEFAULT 'Mis alimentos',
+        emoji      VARCHAR(10)  NOT NULL DEFAULT '🍽️',
+        porcion    VARCHAR(100) NOT NULL DEFAULT '1 porción',
+        calorias   DECIMAL(8,1) NOT NULL DEFAULT 0,
+        proteina   DECIMAL(8,1) NOT NULL DEFAULT 0,
+        carbos     DECIMAL(8,1) NOT NULL DEFAULT 0,
+        grasa      DECIMAL(8,1) NOT NULL DEFAULT 0,
+        fibra      DECIMAL(8,1) NOT NULL DEFAULT 0,
+        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4
+");
+
 // Plan/suplementos/actividad de cada día (un registro por fecha)
 $conexion->query("
     CREATE TABLE IF NOT EXISTS nutricion_dias (
@@ -222,6 +239,58 @@ if ($accion === 'obtener_evolucion') {
     }
 
     echo json_encode($out);
+    exit;
+}
+
+// GET: obtener todos los alimentos/recetas personalizados
+if ($accion === 'obtener_custom_alimentos') {
+    $res = $conexion->query("SELECT * FROM nutricion_custom_alimentos ORDER BY id ASC");
+    $out = [];
+    while ($res && ($row = $res->fetch_assoc())) {
+        $out[] = [
+            'id'       => intval($row['id']),
+            'nombre'   => $row['nombre'],
+            'categoria'=> $row['categoria'],
+            'emoji'    => $row['emoji'],
+            'porcion'  => $row['porcion'],
+            'calorias' => floatval($row['calorias']),
+            'proteina' => floatval($row['proteina']),
+            'carbos'   => floatval($row['carbos']),
+            'grasa'    => floatval($row['grasa']),
+            'fibra'    => floatval($row['fibra']),
+        ];
+    }
+    echo json_encode($out);
+    exit;
+}
+
+// POST: guardar un nuevo alimento/receta personalizado
+if ($accion === 'guardar_custom_alimento') {
+    $nombre    = $conexion->real_escape_string($input['nombre']    ?? '');
+    $categoria = $conexion->real_escape_string($input['categoria'] ?? 'Mis alimentos');
+    $emoji     = $conexion->real_escape_string($input['emoji']     ?? '🍽️');
+    $porcion   = $conexion->real_escape_string($input['porcion']   ?? '1 porción');
+    $calorias  = floatval($input['calorias'] ?? 0);
+    $proteina  = floatval($input['proteina'] ?? 0);
+    $carbos    = floatval($input['carbos']   ?? 0);
+    $grasa     = floatval($input['grasa']    ?? 0);
+    $fibra     = floatval($input['fibra']    ?? 0);
+
+    if (!$nombre) { echo json_encode(['error' => 'Nombre requerido']); exit; }
+
+    $conexion->query("
+        INSERT INTO nutricion_custom_alimentos (nombre, categoria, emoji, porcion, calorias, proteina, carbos, grasa, fibra)
+        VALUES ('$nombre', '$categoria', '$emoji', '$porcion', $calorias, $proteina, $carbos, $grasa, $fibra)
+    ");
+    echo json_encode(['status' => 'ok', 'id' => intval($conexion->insert_id)]);
+    exit;
+}
+
+// POST: eliminar un alimento personalizado
+if ($accion === 'borrar_custom_alimento') {
+    $id = intval($input['id'] ?? 0);
+    if ($id > 0) $conexion->query("DELETE FROM nutricion_custom_alimentos WHERE id = $id");
+    echo json_encode(['status' => 'ok']);
     exit;
 }
 

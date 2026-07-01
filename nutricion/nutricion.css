@@ -1663,3 +1663,125 @@ select.nutri-input option { background: #151827; color: #fff; }
     opacity: 1;
     transform: translateX(-50%) translateY(0);
 }
+
+/* ── Crear alimento / receta ────────────────────────── */
+.crear-tipo-toggle {
+    display: flex;
+    gap: 4px;
+}
+.crear-tipo-btn {
+    padding: 3px 10px;
+    border-radius: 20px;
+    border: 1.5px solid rgba(255,255,255,0.15);
+    background: transparent;
+    color: #7a82a0;
+    font-size: 0.67rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: 0.15s;
+}
+.crear-tipo-btn.activo {
+    border-color: rgba(74,222,128,0.5);
+    background: rgba(74,222,128,0.12);
+    color: #4ade80;
+}
+.crear-body {
+    padding: 10px 12px 12px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+.crear-top-row {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+.crear-emoji-wrap {
+    position: relative;
+    flex-shrink: 0;
+}
+.crear-emoji-btn {
+    width: 40px;
+    height: 40px;
+    border-radius: 10px;
+    border: 1.5px solid rgba(255,255,255,0.15);
+    background: rgba(255,255,255,0.07);
+    font-size: 1.3rem;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: border-color 0.15s;
+    line-height: 1;
+}
+.crear-emoji-btn:hover { border-color: rgba(74,222,128,0.4); }
+.crear-emoji-grid {
+    display: none;
+    position: absolute;
+    top: 46px;
+    left: 0;
+    z-index: 200;
+    background: #181b2e;
+    border: 1px solid rgba(255,255,255,0.12);
+    border-radius: 12px;
+    padding: 8px;
+    width: 220px;
+    flex-wrap: wrap;
+    gap: 2px;
+    box-shadow: 0 8px 24px rgba(0,0,0,0.5);
+}
+.crear-emoji-grid.activo { display: flex; }
+.crear-emoji-item {
+    width: 30px;
+    height: 30px;
+    border: none;
+    background: transparent;
+    font-size: 1.1rem;
+    cursor: pointer;
+    border-radius: 6px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background 0.1s;
+}
+.crear-emoji-item:hover { background: rgba(255,255,255,0.1); }
+.crear-nombre-input {
+    flex: 1;
+    margin-bottom: 0 !important;
+}
+.crear-grid2 {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 6px;
+}
+.crear-field-span2 { grid-column: span 2; }
+.crear-macros-grid {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 5px;
+}
+.crear-macros-grid .nutri-field label {
+    font-size: 0.65rem;
+    text-align: center;
+}
+.crear-macros-grid .nutri-input {
+    padding: 7px 4px;
+    text-align: center;
+    font-size: 0.8rem;
+}
+.crear-input { margin-bottom: 0 !important; }
+.crear-guardar-btn {
+    width: 100%;
+    padding: 9px;
+    border-radius: 10px;
+    border: none;
+    background: linear-gradient(135deg, #4ade80, #22c55e);
+    color: #0a0a0a;
+    font-size: 0.82rem;
+    font-weight: 700;
+    cursor: pointer;
+    transition: opacity 0.15s, transform 0.1s;
+    margin-top: 2px;
+}
+.crear-guardar-btn:hover   { opacity: 0.88; }
+.crear-guardar-btn:active  { transform: scale(0.97); }
