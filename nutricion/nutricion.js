@@ -1122,7 +1122,7 @@ async function nutriCrearGuardar() {
     const porcionStr = porcion ? `${porcion} ${unidad}` : `1 ${unidad}`;
     const payload = { accion: 'guardar_custom_alimento', nombre, categoria: cat,
                       emoji: _crearEmoji, porcion: porcionStr,
-                      calorias: kcal, proteina: prot, carbos, grasa, fibra };
+                      calorias: kcal, proteina: prot, carbos: carbs, grasa, fibra };
 
     try {
         const res = await fetch(NUTRI_API, {
@@ -1134,7 +1134,7 @@ async function nutriCrearGuardar() {
         if (res.error) { nutriToast('⚠️ ' + res.error); return; }
 
         _alimentos.push({ nombre, categoria: cat, emoji: _crearEmoji, porcion: porcionStr,
-                          calorias: kcal, proteina: prot, carbos, grasa, fibra,
+                          calorias: kcal, proteina: prot, carbos: carbs, grasa, fibra,
                           grasas: grasa, porcion_desc: porcionStr,
                           excluido: false, id: res.id || _alimentos.length + 1 });
 
