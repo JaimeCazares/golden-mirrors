@@ -1062,6 +1062,9 @@ select.nutri-input option { background: #151827; color: #fff; }
     overflow: hidden;
     box-shadow: 0 6px 18px rgba(0,0,0,0.22);
 }
+.nutri-plan-card.crear-card {
+    overflow: visible;
+}
 .plan-card-header {
     display: flex;
     align-items: center;
@@ -1725,7 +1728,9 @@ select.nutri-input option { background: #151827; color: #fff; }
     border: 1px solid rgba(255,255,255,0.12);
     border-radius: 12px;
     padding: 8px;
-    width: 220px;
+    width: 260px;
+    max-height: 260px;
+    overflow-y: auto;
     flex-wrap: wrap;
     gap: 2px;
     box-shadow: 0 8px 24px rgba(0,0,0,0.5);

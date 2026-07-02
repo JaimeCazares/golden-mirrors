@@ -1164,7 +1164,7 @@ function renderPlanCrearAlimentoCard() {
         </select>
       </div>` : '';
 
-    return `<div class="nutri-plan-card">
+    return `<div class="nutri-plan-card crear-card">
       <div class="plan-card-header">
         <span>➕ Crear</span>
         <div class="crear-tipo-toggle">
