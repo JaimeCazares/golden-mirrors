@@ -112,7 +112,8 @@ const NUTRI_FOOD_DB = [
   { nombre: 'Papas fritas caseras', categoria: 'Carbohidratos', emoji: '🥔', porcion: '1 porción (200 g)', calorias: 310, proteina: 4, carbos: 38, grasa: 14, fibra: 3 },
   { nombre: 'Crujitos Sabritas (bolsa $20)', categoria: 'Snacks', emoji: '🧀', porcion: '1 bolsa (47 g)', calorias: 260, proteina: 3, carbos: 27, grasa: 16, fibra: 1 },
   { nombre: 'Barbacoa con doble frijol', categoria: 'Antojitos', emoji: '🫘', porcion: '1 porción', calorias: 1100, proteina: 65, carbos: 100, grasa: 60, fibra: 24 },
-  { nombre: 'Barbacoa con frijol', categoria: 'Antojitos', emoji: '🫘', porcion: '1 porción', calorias: 850, proteina: 60, carbos: 75, grasa: 50, fibra: 16 }
+  { nombre: 'Barbacoa con frijol', categoria: 'Antojitos', emoji: '🫘', porcion: '1 porción', calorias: 850, proteina: 60, carbos: 75, grasa: 50, fibra: 16 },
+  { nombre: 'Barbacoa de puerco', categoria: 'Antojitos', emoji: '🍖', porcion: '1 porción', calorias: 600, proteina: 45, carbos: 30, grasa: 49, fibra: 1 }
 ];
 
 const NUTRI_FOOD_CATS = ['Todos', ...Array.from(new Set(NUTRI_FOOD_DB.map(a => a.categoria)))];
