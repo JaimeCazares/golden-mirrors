@@ -1136,7 +1136,7 @@ async function nutriCrearGuardar() {
         _alimentos.push({ nombre, categoria: cat, emoji: _crearEmoji, porcion: porcionStr,
                           calorias: kcal, proteina: prot, carbos: carbs, grasa, fibra,
                           grasas: grasa, porcion_desc: porcionStr,
-                          excluido: false, id: res.id || _alimentos.length + 1 });
+                          excluido: false, id: _alimentos.length + 1 });
 
         _crearNombre = ''; _crearEmoji = '🍽️'; _crearKcal = ''; _crearProt = '';
         _crearCarbs  = ''; _crearGrasa = ''; _crearFibra = ''; _crearPorcion = '';
