@@ -280,6 +280,7 @@
     align-items: center;
     gap: 3px;
     min-width: 0;
+    margin-bottom: 12px;
 }
 .nutri-dias-mes-row {
     display: flex;
@@ -322,8 +323,12 @@
     justify-content: center;
     gap: 6px;
     overflow-x: auto;
+    overflow-y: visible;
     scroll-behavior: smooth;
     scrollbar-width: none;
+    padding: 4px 6px;
+    width: 100%;
+    box-sizing: border-box;
 }
 .nutri-dias-strip::-webkit-scrollbar { display: none; }
 
