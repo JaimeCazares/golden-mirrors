@@ -34,7 +34,12 @@ function initKg() {
     // --- CERRAR MODALES ---
     if(cerrarKgModal) cerrarKgModal.onclick = () => modalKg.style.display = "none";
     if(cerrarVerFotos) cerrarVerFotos.onclick = () => modalVerFotos.style.display = "none";
-    if(cerrarAnguloFotos) cerrarAnguloFotos.onclick = () => modalAnguloFotos.style.display = "none";
+    // Al cerrar el visor de ángulo, se vuelve a mostrar el historial (en vez de depender
+    // de que el z-index gane la pelea contra el modal de historial que queda debajo).
+    if(cerrarAnguloFotos) cerrarAnguloFotos.onclick = () => {
+        modalAnguloFotos.style.display = "none";
+        modalKg.style.display = "flex";
+    };
 
     window.onclick = (e) => {
         if (e.target == modalKg) modalKg.style.display = "none";
@@ -47,6 +52,7 @@ function initKg() {
             // El visor de un solo ángulo es el que queda más "encima"
             if (modalAnguloFotos && modalAnguloFotos.style.display === "flex") {
                 modalAnguloFotos.style.display = "none";
+                modalKg.style.display = "flex";
             }
             // Si el visor de fotos está abierto, cerramos SOLO ese para volver al historial
             else if (modalVerFotos.style.display === "flex") {
@@ -181,6 +187,7 @@ function initKg() {
                 <h4>Semana ${r.semana} (${r.peso}kg)</h4>
                 ${fotoOPlaceholder(r[campo])}
             </div>`).join('');
+        modalKg.style.display = "none";
         modalAnguloFotos.style.display = "flex";
     }
 
