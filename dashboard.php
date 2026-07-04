@@ -13,7 +13,7 @@ if (empty($_SESSION['rol']) || $_SESSION['rol'] !== 'admin') {
   <title>Mi Dashboard</title>
 
   <link rel="stylesheet" href="style.css?v=2.0">
-  <link rel="stylesheet" href="kg/kg.css?v=1.0">
+  <link rel="stylesheet" href="kg/kg.css?v=1.1">
   <link rel="stylesheet" href="deuda/deuda.css?v=1.0">
   <link rel="stylesheet" href="escalera/escalera.css?v=1.0">
   <link rel="stylesheet" href="espejo/css/espejo-layout.css">
