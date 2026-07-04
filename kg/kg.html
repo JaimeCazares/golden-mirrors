@@ -57,8 +57,12 @@
         <hr style="border: 0; border-top: 1px solid #30475e; margin: 15px 0;">
         <div class="fila-linea-unica">
             <button id="btnVerTodo" class="btn-accion-lateral">🖼️ Progreso</button>
-            <h3 class="titulo-central-registro">➕ Nuevo registro</h3>
+            <h3 class="titulo-central-registro" id="tituloRegistroForm">➕ Nuevo registro</h3>
             <button id="btnAntesDespues" class="btn-accion-lateral">⚖️ Comparar</button>
+        </div>
+        <div id="avisoEdicionSemana" style="display:none; text-align:center; margin:-8px 0 10px; font-size:0.8rem; color:#00e0ff;">
+            Dejar una foto vacía conserva la que ya estaba guardada.
+            <a href="#" id="cancelarEdicionSemana" style="color:#f87171; margin-left:6px;">Cancelar edición ✖</a>
         </div>
         <form id="formHistorialKg">
             <div class="fila-peso-semana">

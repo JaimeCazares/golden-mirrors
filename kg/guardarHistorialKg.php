@@ -50,19 +50,33 @@ function guardarFoto($campo)
     return null;
 }
 
-// 3. Procesar las tres fotos
-$f1 = guardarFoto("foto_frente");
-$f2 = guardarFoto("foto_lado");
-$f3 = guardarFoto("foto_atras");
+// 3. ¿Ya existe un registro para esa semana? (permite editar: re-subir fotos o corregir el peso)
+$existente = null;
+$resExistente = $conexion->prepare("SELECT id, foto_frente, foto_lado, foto_atras FROM peso_historial WHERE semana = ? ORDER BY id ASC LIMIT 1");
+$resExistente->bind_param("i", $semana);
+$resExistente->execute();
+$rowExistente = $resExistente->get_result()->fetch_assoc();
+if ($rowExistente) $existente = $rowExistente;
+$resExistente->close();
 
-// 4. Preparar la inserción en la base de datos
-// Asegúrate de que los nombres de las columnas coincidan con tu tabla
-$sql = "INSERT INTO peso_historial (peso, fecha, semana, foto_frente, foto_lado, foto_atras) VALUES (?, ?, ?, ?, ?, ?)";
-$stmt = $conexion->prepare($sql);
+// 4. Procesar las tres fotos. Si no se sube una nueva y ya había una foto guardada
+// para esa semana, se conserva la anterior en vez de borrarla.
+$f1 = guardarFoto("foto_frente") ?? ($existente['foto_frente'] ?? null);
+$f2 = guardarFoto("foto_lado")   ?? ($existente['foto_lado']   ?? null);
+$f3 = guardarFoto("foto_atras")  ?? ($existente['foto_atras']  ?? null);
+
+// 5. Insertar (semana nueva) o actualizar (edición de una semana ya guardada)
+if ($existente) {
+    $sql  = "UPDATE peso_historial SET peso = ?, fecha = ?, foto_frente = ?, foto_lado = ?, foto_atras = ? WHERE id = ?";
+    $stmt = $conexion->prepare($sql);
+    if ($stmt) $stmt->bind_param("dssssi", $peso, $fecha, $f1, $f2, $f3, $existente['id']);
+} else {
+    $sql  = "INSERT INTO peso_historial (peso, fecha, semana, foto_frente, foto_lado, foto_atras) VALUES (?, ?, ?, ?, ?, ?)";
+    $stmt = $conexion->prepare($sql);
+    if ($stmt) $stmt->bind_param("dsisss", $peso, $fecha, $semana, $f1, $f2, $f3);
+}
 
 if ($stmt) {
-    $stmt->bind_param("dsisss", $peso, $fecha, $semana, $f1, $f2, $f3);
-
     if ($stmt->execute()) {
         echo json_encode([
             "ok" => true,

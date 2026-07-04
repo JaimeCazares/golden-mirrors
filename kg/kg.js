@@ -10,7 +10,10 @@ function initKg() {
     const cerrarVerFotos = document.getElementById("cerrarVerFotos");
     const formHistorial = document.getElementById("formHistorialKg");
     const btnGuardarRegistro = document.getElementById("guardarPesoHistorial");
-    
+    const tituloRegistroForm = document.getElementById("tituloRegistroForm");
+    const avisoEdicionSemana = document.getElementById("avisoEdicionSemana");
+    const cancelarEdicionSemana = document.getElementById("cancelarEdicionSemana");
+
     let pesoActual = 0;
     let modoEdicion = false;
     let registrosCache = [];
@@ -102,9 +105,42 @@ function initKg() {
             <div class="foto-container"><small>Frente</small>${fotoOPlaceholder(data.foto_frente)}</div>
             <div class="foto-container"><small>Lado</small>${fotoOPlaceholder(data.foto_lado)}</div>
             <div class="foto-container"><small>Atrás</small>${fotoOPlaceholder(data.foto_atras)}</div>`;
-        document.getElementById("infoPesoModal").innerText = "Peso: " + data.peso + " kg";
+        document.getElementById("infoPesoModal").innerHTML = `Peso: ${data.peso} kg
+            <div style="margin-top:10px;">
+                <button type="button" id="btnEditarEstaSemana" class="btn-mini">✏️ Editar esta semana</button>
+            </div>`;
         modalVerFotos.style.display = "flex";
+
+        const btnEditar = document.getElementById("btnEditarEstaSemana");
+        if (btnEditar) btnEditar.onclick = () => {
+            modalVerFotos.style.display = "none";
+            entrarModoEdicionSemana(data);
+        };
     }
+
+    function entrarModoEdicionSemana(data) {
+        document.getElementById("nuevaSemana").value = data.semana;
+        document.getElementById("nuevoPeso").value = data.peso;
+        ['Frente', 'Lado', 'Atras'].forEach(id => {
+            const label = document.getElementById('fileName' + id);
+            if (label) label.textContent = "Sin archivo";
+        });
+        if (tituloRegistroForm) tituloRegistroForm.innerText = "✏️ Editando semana " + data.semana;
+        if (avisoEdicionSemana) avisoEdicionSemana.style.display = "block";
+        formHistorial.scrollIntoView({ behavior: "smooth", block: "center" });
+    }
+
+    function salirModoEdicionSemana() {
+        if (tituloRegistroForm) tituloRegistroForm.innerText = "➕ Nuevo registro";
+        if (avisoEdicionSemana) avisoEdicionSemana.style.display = "none";
+        formHistorial.reset();
+        cargarHistorialKg();
+    }
+
+    if (cancelarEdicionSemana) cancelarEdicionSemana.onclick = (e) => {
+        e.preventDefault();
+        salirModoEdicionSemana();
+    };
 
     document.getElementById("btnVerTodo").onclick = () => {
         if(registrosCache.length === 0) return alert("No hay registros.");
@@ -183,7 +219,7 @@ function initKg() {
         btnGuardarRegistro.disabled = true; btnGuardarRegistro.innerText = "GUARDANDO...";
         fetch("kg/guardarHistorialKg.php", { method: "POST", body: formData })
             .then(res => res.json()).then(data => {
-                if (data.ok) { alert("¡Guardado!"); formHistorial.reset(); cargarHistorialKg(); }
+                if (data.ok) { alert("¡Guardado!"); salirModoEdicionSemana(); }
                 else alert("Error: " + data.error);
             }).finally(() => { btnGuardarRegistro.disabled = false; btnGuardarRegistro.innerText = "GUARDAR REGISTRO"; });
     };
