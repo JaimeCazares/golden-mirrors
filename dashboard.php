@@ -12,15 +12,23 @@ if (empty($_SESSION['rol']) || $_SESSION['rol'] !== 'admin') {
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" />
   <title>Mi Dashboard</title>
 
-  <link rel="stylesheet" href="style.css?v=2.0">
-  <link rel="stylesheet" href="kg/kg.css?v=1.1">
-  <link rel="stylesheet" href="deuda/deuda.css?v=1.0">
-  <link rel="stylesheet" href="escalera/escalera.css?v=1.0">
+  <?php
+    // Version = fecha de modificacion real del archivo, para que el navegador
+    // siempre detecte cambios y nunca sirva una copia vieja en cache.
+    function assetV($rel) {
+        $abs = __DIR__ . '/' . $rel;
+        return $rel . '?v=' . (file_exists($abs) ? filemtime($abs) : time());
+    }
+  ?>
+  <link rel="stylesheet" href="<?php echo assetV('style.css'); ?>">
+  <link rel="stylesheet" href="<?php echo assetV('kg/kg.css'); ?>">
+  <link rel="stylesheet" href="<?php echo assetV('deuda/deuda.css'); ?>">
+  <link rel="stylesheet" href="<?php echo assetV('escalera/escalera.css'); ?>">
   <link rel="stylesheet" href="espejo/css/espejo-layout.css">
   <link rel="stylesheet" href="espejo/css/espejo-ui.css">
   <link rel="stylesheet" href="espejo/css/espejo-selector.css">
-  <link rel="stylesheet" href="gastos/gastos.css?v=1.0">
-  <link rel="stylesheet" href="nutricion/nutricion.css?v=1.0">
+  <link rel="stylesheet" href="<?php echo assetV('gastos/gastos.css'); ?>">
+  <link rel="stylesheet" href="<?php echo assetV('nutricion/nutricion.css'); ?>">
 </head>
 
 <body>
