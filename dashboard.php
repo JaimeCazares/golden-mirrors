@@ -84,8 +84,10 @@ if (empty($_SESSION['rol']) || $_SESSION['rol'] !== 'admin') {
         document.getElementById('kg-wrapper').innerHTML = h;
         const modal = document.getElementById('modalKg');
         const modalFotos = document.getElementById('modalVerFotos');
+        const modalAngulo = document.getElementById('modalAnguloFotos');
         if (modal) document.body.appendChild(modal);
         if (modalFotos) document.body.appendChild(modalFotos);
+        if (modalAngulo) document.body.appendChild(modalAngulo);
         let s = document.createElement('script');
         s.src = 'kg/kg.js?v=' + Date.now();
         s.onload = () => { if (typeof initKg === 'function') initKg() };
