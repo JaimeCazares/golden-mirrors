@@ -527,7 +527,6 @@
 .ntc-consumidas { color: #60a5fa; }
 
 /* SUEÑO + GYM */
-.nutri-sueno-row { margin-bottom: 6px; }
 .ntc-sueno-input {
     display: flex;
     align-items: baseline;
@@ -587,8 +586,8 @@
 .nutri-gym-txt { font-size: 0.95rem; font-weight: 700; color: #aab2cc; }
 .nutri-gym-txt.activo { color: #4ade80; }
 
-/* CAMINADORA — mismas tarjetas (.nutri-top-card) que el resto, 3 por fila */
-.nutri-camina-row { grid-template-columns: repeat(3, 1fr); margin-bottom: 6px; }
+/* GYM + CAMINADORA — mismas tarjetas (.nutri-top-card) que el resto, 4 por fila */
+.nutri-camina-row { grid-template-columns: repeat(4, 1fr); margin-bottom: 6px; }
 .ntc-stepper-row {
     display: flex;
     align-items: center;
@@ -1668,6 +1667,11 @@ select.nutri-input option { background: #151827; color: #fff; }
 
     .plan-macro-mini {
         padding: 8px 6px;
+    }
+
+    /* Gym + caminadora: 4 en fila → 2×2 */
+    .nutri-camina-row {
+        grid-template-columns: repeat(2, 1fr);
     }
 }
 
