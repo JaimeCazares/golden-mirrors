@@ -392,34 +392,37 @@
 
 /* BARRA DE INDICADORES — fija, siempre visible, en el renglón del header */
 .nutri-ind-bar {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 6px;
-    overflow-x: auto;
-    scrollbar-width: none;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(92px, 1fr));
+    gap: 3px 10px;
     flex: 1;
     min-width: 0;
-    height: 26px;
     background: rgba(255,255,255,0.05);
     border: 1px solid rgba(255,255,255,0.08);
     border-radius: 8px;
-    padding: 0 8px;
+    padding: 5px 8px;
 }
-.nutri-ind-bar::-webkit-scrollbar { display: none; }
 .nutri-ind-bar-item {
-    flex-shrink: 0;
-    font-size: 0.46rem;
+    font-size: 0.48rem;
+    line-height: 1.35;
     color: #c2cae0;
     display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    column-gap: 5px;
+    row-gap: 0;
+}
+.nutri-ind-bar-item b {
+    flex-basis: 100%;
+    color: #4ade80;
+    font-size: 0.52rem;
+}
+.nutri-ind-bar-item span {
+    display: inline-flex;
     align-items: center;
     gap: 2px;
     white-space: nowrap;
-    padding-right: 6px;
-    border-right: 1px solid rgba(255,255,255,0.08);
 }
-.nutri-ind-bar-item:last-child { border-right: none; padding-right: 0; }
-.nutri-ind-bar-item b { color: #4ade80; }
 .nutri-legend-dot {
     width: 6px;
     height: 6px;
