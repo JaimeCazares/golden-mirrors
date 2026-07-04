@@ -60,6 +60,11 @@
             <h3 class="titulo-central-registro" id="tituloRegistroForm">➕ Nuevo registro</h3>
             <button id="btnAntesDespues" class="btn-accion-lateral">⚖️ Comparar</button>
         </div>
+        <div class="fila-angulos-btns">
+            <button type="button" id="btnVerFrenteHist" class="btn-accion-lateral">📷 Frente</button>
+            <button type="button" id="btnVerLadoHist" class="btn-accion-lateral">📷 Lado</button>
+            <button type="button" id="btnVerAtrasHist" class="btn-accion-lateral">📷 Atrás</button>
+        </div>
         <div id="avisoEdicionSemana" style="display:none; text-align:center; margin:-8px 0 10px; font-size:0.8rem; color:#00e0ff;">
             Dejar una foto vacía conserva la que ya estaba guardada.
             <a href="#" id="cancelarEdicionSemana" style="color:#f87171; margin-left:6px;">Cancelar edición ✖</a>
@@ -111,4 +116,10 @@
              </div>
         <div id="infoPesoModal" style="text-align:center; margin-top:15px; font-weight:bold; color:#fff;"></div>
     </div>
+</div>
+
+<div id="modalAnguloFotos" class="modal-angulo-fullscreen" style="display:none;">
+    <span id="cerrarAnguloFotos" class="close-visor">&times;</span>
+    <h2 id="tituloAnguloFotos" class="angulo-titulo">📷 Frente</h2>
+    <div id="contenedorAnguloFotos" class="angulo-fila-completa"></div>
 </div>

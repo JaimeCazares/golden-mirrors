@@ -8,6 +8,8 @@ function initKg() {
     const historialKgLista = document.getElementById("historialKgLista");
     const modalVerFotos = document.getElementById("modalVerFotos");
     const cerrarVerFotos = document.getElementById("cerrarVerFotos");
+    const modalAnguloFotos = document.getElementById("modalAnguloFotos");
+    const cerrarAnguloFotos = document.getElementById("cerrarAnguloFotos");
     const formHistorial = document.getElementById("formHistorialKg");
     const btnGuardarRegistro = document.getElementById("guardarPesoHistorial");
     const tituloRegistroForm = document.getElementById("tituloRegistroForm");
@@ -32,6 +34,7 @@ function initKg() {
     // --- CERRAR MODALES ---
     if(cerrarKgModal) cerrarKgModal.onclick = () => modalKg.style.display = "none";
     if(cerrarVerFotos) cerrarVerFotos.onclick = () => modalVerFotos.style.display = "none";
+    if(cerrarAnguloFotos) cerrarAnguloFotos.onclick = () => modalAnguloFotos.style.display = "none";
 
     window.onclick = (e) => {
         if (e.target == modalKg) modalKg.style.display = "none";
@@ -41,10 +44,14 @@ function initKg() {
     // --- FUNCIONALIDAD ESC SECUENCIAL (CORREGIDO) ---
     document.addEventListener("keydown", (e) => {
         if (e.key === "Escape") {
+            // El visor de un solo ángulo es el que queda más "encima"
+            if (modalAnguloFotos && modalAnguloFotos.style.display === "flex") {
+                modalAnguloFotos.style.display = "none";
+            }
             // Si el visor de fotos está abierto, cerramos SOLO ese para volver al historial
-            if (modalVerFotos.style.display === "flex") {
+            else if (modalVerFotos.style.display === "flex") {
                 modalVerFotos.style.display = "none";
-            } 
+            }
             // Si el visor de fotos está cerrado pero el historial está abierto, cerramos el historial
             else if (modalKg.style.display === "flex") {
                 modalKg.style.display = "none";
@@ -163,6 +170,23 @@ function initKg() {
         document.getElementById("infoPesoModal").innerText = `Bajada total: ${Math.abs(p.peso - u.peso).toFixed(1)} kg`;
         modalVerFotos.style.display = "flex";
     };
+
+    // --- VISOR DE UN SOLO ÁNGULO (Frente / Lado / Atrás), todas las semanas en fila, pantalla completa ---
+    function mostrarAngulo(campo, titulo) {
+        if (registrosCache.length === 0) return alert("No hay registros.");
+        const ordenado = [...registrosCache].sort((a, b) => a.semana - b.semana);
+        document.getElementById("tituloAnguloFotos").innerText = titulo;
+        document.getElementById("contenedorAnguloFotos").innerHTML = ordenado.map(r => `
+            <div class="angulo-semana-card">
+                <h4>Semana ${r.semana} (${r.peso}kg)</h4>
+                ${fotoOPlaceholder(r[campo])}
+            </div>`).join('');
+        modalAnguloFotos.style.display = "flex";
+    }
+
+    document.getElementById("btnVerFrenteHist").onclick = () => mostrarAngulo("foto_frente", "📷 Frente");
+    document.getElementById("btnVerLadoHist").onclick   = () => mostrarAngulo("foto_lado",   "📷 Lado");
+    document.getElementById("btnVerAtrasHist").onclick  = () => mostrarAngulo("foto_atras",  "📷 Atrás");
 
     function actualizarIMC(pesoKg) {
         if (!pesoKg || pesoKg <= 0) return;
