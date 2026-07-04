@@ -180,38 +180,35 @@
       </div>
 
       <!-- CAMINADORA -->
-      <div class="nutri-top-card caminadora-card">
-        <div class="ntc-label">🏃 Caminadora</div>
-        <div class="nutri-camina-grid">
+      <div class="nutri-top-cards nutri-camina-row">
 
-          <div class="nutri-camina-item">
-            <span class="nutri-camina-label">Inclinación</span>
-            <div class="nutri-camina-stepper">
-              <button type="button" class="nutri-camina-btn" onclick="nutriAjustarCaminadora('inclinacion', -0.5)">−</button>
-              <span class="nutri-camina-num"><span id="n-camina-inclinacion">0</span><small>°</small></span>
-              <button type="button" class="nutri-camina-btn" onclick="nutriAjustarCaminadora('inclinacion', 0.5)">+</button>
-            </div>
+        <div class="nutri-top-card">
+          <div class="ntc-label">📐 Inclinación</div>
+          <div class="ntc-stepper-row">
+            <button type="button" class="ntc-step-btn" onclick="nutriAjustarCaminadora('inclinacion', -0.5)">−</button>
+            <div class="ntc-valor"><span id="n-camina-inclinacion">0.0</span> <small>°</small></div>
+            <button type="button" class="ntc-step-btn" onclick="nutriAjustarCaminadora('inclinacion', 0.5)">+</button>
           </div>
-
-          <div class="nutri-camina-item">
-            <span class="nutri-camina-label">Tiempo</span>
-            <div class="nutri-camina-stepper">
-              <button type="button" class="nutri-camina-btn" onclick="nutriAjustarCaminadora('tiempo', -1)">−</button>
-              <span class="nutri-camina-num"><span id="n-camina-tiempo">0</span><small>min</small></span>
-              <button type="button" class="nutri-camina-btn" onclick="nutriAjustarCaminadora('tiempo', 1)">+</button>
-            </div>
-          </div>
-
-          <div class="nutri-camina-item">
-            <span class="nutri-camina-label">Velocidad</span>
-            <div class="nutri-camina-stepper">
-              <button type="button" class="nutri-camina-btn" onclick="nutriAjustarCaminadora('velocidad', -0.1)">−</button>
-              <span class="nutri-camina-num"><span id="n-camina-velocidad">0</span><small>km/h</small></span>
-              <button type="button" class="nutri-camina-btn" onclick="nutriAjustarCaminadora('velocidad', 0.1)">+</button>
-            </div>
-          </div>
-
         </div>
+
+        <div class="nutri-top-card">
+          <div class="ntc-label">⏱️ Tiempo</div>
+          <div class="ntc-stepper-row">
+            <button type="button" class="ntc-step-btn" onclick="nutriAjustarCaminadora('tiempo', -1)">−</button>
+            <div class="ntc-valor"><span id="n-camina-tiempo">0</span> <small>min</small></div>
+            <button type="button" class="ntc-step-btn" onclick="nutriAjustarCaminadora('tiempo', 1)">+</button>
+          </div>
+        </div>
+
+        <div class="nutri-top-card">
+          <div class="ntc-label">⚡ Velocidad</div>
+          <div class="ntc-stepper-row">
+            <button type="button" class="ntc-step-btn" onclick="nutriAjustarCaminadora('velocidad', -0.1)">−</button>
+            <div class="ntc-valor"><span id="n-camina-velocidad">0.0</span> <small>km/h</small></div>
+            <button type="button" class="ntc-step-btn" onclick="nutriAjustarCaminadora('velocidad', 0.1)">+</button>
+          </div>
+        </div>
+
       </div>
 
       <!-- PROGRESO / EVOLUCIÓN -->

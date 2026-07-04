@@ -524,7 +524,6 @@
 .ntc-quemado { color: #fb923c; }
 #n-deficit-val { color: #4ade80; }
 #n-deficit-val.superavit { color: #f87171; }
-.consumidas-card { grid-column: 1 / -1; }
 .ntc-consumidas { color: #60a5fa; }
 
 /* SUEÑO + GYM */
@@ -588,53 +587,28 @@
 .nutri-gym-txt { font-size: 0.95rem; font-weight: 700; color: #aab2cc; }
 .nutri-gym-txt.activo { color: #4ade80; }
 
-/* CAMINADORA */
-.caminadora-card { margin-bottom: 6px; }
-.nutri-camina-grid {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 6px;
-    margin-top: 4px;
-}
-.nutri-camina-item {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 3px;
-}
-.nutri-camina-label {
-    font-size: 0.58rem;
-    color: #aab2cc;
-    text-transform: uppercase;
-    letter-spacing: 0.3px;
-    white-space: nowrap;
-}
-.nutri-camina-stepper {
+/* CAMINADORA — mismas tarjetas (.nutri-top-card) que el resto, 3 por fila */
+.nutri-camina-row { grid-template-columns: repeat(3, 1fr); margin-bottom: 6px; }
+.ntc-stepper-row {
     display: flex;
     align-items: center;
+    justify-content: space-between;
     gap: 4px;
 }
-.nutri-camina-btn {
+.ntc-step-btn {
     flex-shrink: 0;
-    width: 22px;
-    height: 22px;
+    width: 20px;
+    height: 20px;
     border-radius: 50%;
     border: 1px solid rgba(255,255,255,0.18);
     background: rgba(255,255,255,0.06);
     color: #c2cae0;
-    font-size: 0.85rem;
+    font-size: 0.8rem;
     line-height: 1;
+    padding: 0;
     cursor: pointer;
 }
-.nutri-camina-btn:active { background: rgba(74,222,128,0.2); border-color: #4ade80; }
-.nutri-camina-num {
-    min-width: 40px;
-    text-align: center;
-    font-size: 0.95rem;
-    font-weight: 800;
-    color: #fff;
-}
-.nutri-camina-num small { font-size: 0.58rem; font-weight: 400; color: #aab2cc; margin-left: 1px; }
+.ntc-step-btn:active { background: rgba(74,222,128,0.2); border-color: #4ade80; }
 
 /* PROGRESO / EVOLUCIÓN */
 .nutri-progreso {
