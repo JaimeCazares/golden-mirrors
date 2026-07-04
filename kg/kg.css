@@ -278,7 +278,7 @@
 .angulo-titulo { text-align: center; color: #00e0ff; margin: 0 0 15px; flex-shrink: 0; }
 .angulo-fila-completa {
     flex: 1; min-height: 0;
-    display: flex; flex-direction: row; align-items: flex-start;
+    display: flex; flex-direction: row; align-items: stretch;
     gap: 16px;
     overflow-x: auto; overflow-y: hidden;
     padding: 10px 24px;
@@ -287,9 +287,14 @@
 .angulo-fila-completa::-webkit-scrollbar { height: 6px; }
 .angulo-fila-completa::-webkit-scrollbar-thumb { background: #00e0ff; border-radius: 4px; }
 .angulo-semana-card {
-    flex: 0 0 auto; width: min(260px, 70vw);
-    text-align: center; background: rgba(0,0,0,0.2);
+    flex: 1 1 0; min-width: 180px;
+    display: flex; flex-direction: column;
+    text-align: center; background: rgba(0,0,0,0.15);
     border-radius: 10px; padding: 10px; box-sizing: border-box;
 }
-.angulo-semana-card h4 { color: #00e0ff; margin: 0 0 8px; font-size: 14px; }
-.angulo-semana-card img { width: 100%; border-radius: 8px; border: 1px solid #333; object-fit: cover; aspect-ratio: 3/4; }
+.angulo-semana-card h4 { color: #00e0ff; margin: 0 0 10px; font-size: 16px; flex-shrink: 0; }
+.angulo-semana-card img,
+.angulo-semana-card .foto-sin-imagen {
+    flex: 1; min-height: 0; width: 100%;
+    border-radius: 8px; border: 1px solid #333; object-fit: cover;
+}
