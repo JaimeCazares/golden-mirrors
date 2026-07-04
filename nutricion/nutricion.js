@@ -155,7 +155,9 @@ let _nutriProgTab   = 'kcal';
 async function nutriCargarProgreso() {
     if (typeof Chart === 'undefined') return;
     try {
-        _nutriProgData = await fetch(`${NUTRI_API}?accion=obtener_evolucion&dias=30`).then(r => r.json());
+        // 180 (máximo permitido por la API) para tener siempre suficiente historial
+        // y poder filtrar por cualquier mes visible sin volver a pedir datos.
+        _nutriProgData = await fetch(`${NUTRI_API}?accion=obtener_evolucion&dias=180`).then(r => r.json());
         if (!Array.isArray(_nutriProgData)) _nutriProgData = [];
     } catch (e) { _nutriProgData = []; }
     nutriRenderGraficaProgreso();
@@ -173,7 +175,10 @@ function nutriRenderGraficaProgreso() {
     const canvas = document.getElementById('n-prog-canvas');
     if (!canvas || typeof Chart === 'undefined') return;
 
-    const datos  = _nutriProgData;
+    const datos = _nutriProgData.filter(d => {
+        const dt = nutriFechaADate(d.fecha);
+        return dt.getFullYear() === nutriMesVisible.year && dt.getMonth() === nutriMesVisible.month;
+    });
     const labels = datos.map(d => {
         const dt = nutriFechaADate(d.fecha);
         return `${dt.getDate()} ${NUTRI_DIAS_SEMANA[dt.getDay()]}`;
@@ -262,6 +267,7 @@ function nutriCambiarMes(delta) {
     nutriMesVisible = { year: Math.floor(idx / 12), month: ((idx % 12) + 12) % 12 };
     nutriClampMesVisible();
     nutriRenderDiasStrip();
+    nutriRenderGraficaProgreso();
 }
 
 document.addEventListener('keydown', (e) => {
