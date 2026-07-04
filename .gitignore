@@ -1,0 +1,4 @@
+# Contenido subido por usuarios en producción (fotos de peso, galería, documentos, etc).
+# No se trackea porque el auto-deploy de Hostinger hace un pull que puede borrar del
+# servidor cualquier archivo subido en vivo que no esté commiteado en el repo.
+/uploads/
