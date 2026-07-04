@@ -267,7 +267,7 @@ function nutriScheduleMidnightRollover() {
 
 // ── Indicadores de semáforo por día (kc/p/c/g/f) ──────
 const NUTRI_INDICADORES = [
-    { key:'deficit', letra:'kc', tier:v => v >= 1200 ? 'verde' : (v >= 900 ? 'amarillo' : 'rojo') },
+    { key:'deficit', letra:'dc', tier:v => v >= 1200 ? 'verde' : (v >= 900 ? 'amarillo' : 'rojo') },
     { key:'prot',    letra:'p',  tier:v => v >= 180  ? 'verde' : (v >= 160 ? 'amarillo' : 'rojo') },
     { key:'carbs',   letra:'c',  tier:v => v <= 160  ? 'verde' : (v <= 180 ? 'amarillo' : 'rojo') },
     { key:'grasas',  letra:'g',  tier:v => v <= 60   ? 'verde' : (v <= 80  ? 'amarillo' : 'rojo') },
