@@ -281,6 +281,12 @@
     gap: 3px;
     min-width: 0;
 }
+.nutri-dias-mes-row {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+}
 .nutri-dias-mes {
     font-size: 0.55rem;
     font-weight: 700;
@@ -289,6 +295,25 @@
     color: #aab2cc;
     white-space: nowrap;
     line-height: 1;
+    min-width: 74px;
+    text-align: center;
+}
+.nutri-mes-nav-btn {
+    flex-shrink: 0;
+    width: 16px;
+    height: 16px;
+    line-height: 14px;
+    padding: 0;
+    border-radius: 50%;
+    border: 1px solid rgba(255,255,255,0.18);
+    background: rgba(255,255,255,0.06);
+    color: #c2cae0;
+    font-size: 0.65rem;
+    cursor: pointer;
+}
+.nutri-mes-nav-btn:disabled {
+    opacity: 0.3;
+    cursor: default;
 }
 
 .nutri-dias-strip {

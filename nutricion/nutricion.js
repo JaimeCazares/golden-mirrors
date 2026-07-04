@@ -12,10 +12,11 @@ const NUTRI_THEMES = [
 const NUTRI_API = 'nutricion/api_nutricion.php';
 const NUTRI_DIAS_SEMANA = ['Dom','Lun','Mar','Mié','Jue','Vie','Sáb'];
 const NUTRI_MESES = ['Enero','Febrero','Marzo','Abril','Mayo','Junio','Julio','Agosto','Septiembre','Octubre','Noviembre','Diciembre'];
-let NUTRI_DIAS_VISIBLES = 3; // se recalcula en initNutricion() según el día más viejo con datos
 
 let nutriFechaHoy     = '';
 let nutriFechaSel      = '';
+let nutriFechaInicio  = ''; // fecha más antigua con datos (limita cuánto se puede retroceder de mes)
+let nutriMesVisible   = { year: 0, month: 0 }; // mes que se muestra actualmente en la franja de días
 let nutriMetas        = { bmr:2500, kcal:1900, prot:180, carbs:160, grasas:60, fibra:35 };
 let nutriMiBand       = 0;
 let nutriTema         = 'lluvia';
@@ -76,6 +77,8 @@ function nutriMigrarDatosLegacy() {
 async function initNutricion() {
     nutriFechaHoy = nutriHoyISO();
     nutriFechaSel = nutriFechaHoy;
+    const hoyDate = nutriFechaADate(nutriFechaHoy);
+    nutriMesVisible = { year: hoyDate.getFullYear(), month: hoyDate.getMonth() };
 
     nutriInitTema();
     await nutriInitAlimentos();
@@ -232,17 +235,33 @@ function nutriRenderGraficaProgreso() {
     _nutriProgChart = new Chart(canvas, config);
 }
 
-// Calcula cuántos días mostrar en la franja: desde el día más viejo con datos hasta hoy.
+// Obtiene el día más viejo con datos, para limitar hasta qué mes se puede retroceder.
 async function nutriCalcularDiasVisibles() {
     try {
         const res = await fetch(`${NUTRI_API}?accion=obtener_fecha_inicio`).then(r => r.json());
-        if (res && res.fecha) {
-            const inicio = nutriFechaADate(res.fecha);
-            const hoy    = nutriFechaADate(nutriFechaHoy);
-            const dias   = Math.round((hoy - inicio) / 86400000) + 1;
-            NUTRI_DIAS_VISIBLES = Math.max(3, dias);
-        }
-    } catch (e) { /* se queda con el valor por defecto */ }
+        if (res && res.fecha) nutriFechaInicio = res.fecha;
+    } catch (e) { /* se queda sin fecha de inicio: solo se podrá ver el mes actual */ }
+}
+
+function nutriMesIndice(year, month) { return year * 12 + month; }
+
+// Evita que nutriMesVisible quede antes del mes con datos más antiguo o después del mes actual.
+function nutriClampMesVisible() {
+    const hoy    = nutriFechaADate(nutriFechaHoy);
+    const inicio = nutriFechaInicio ? nutriFechaADate(nutriFechaInicio) : hoy;
+    const minIdx = nutriMesIndice(inicio.getFullYear(), inicio.getMonth());
+    const maxIdx = nutriMesIndice(hoy.getFullYear(), hoy.getMonth());
+    let idx = nutriMesIndice(nutriMesVisible.year, nutriMesVisible.month);
+    if (idx < minIdx) idx = minIdx;
+    if (idx > maxIdx) idx = maxIdx;
+    nutriMesVisible = { year: Math.floor(idx / 12), month: ((idx % 12) + 12) % 12 };
+}
+
+function nutriCambiarMes(delta) {
+    const idx = nutriMesIndice(nutriMesVisible.year, nutriMesVisible.month) + delta;
+    nutriMesVisible = { year: Math.floor(idx / 12), month: ((idx % 12) + 12) % 12 };
+    nutriClampMesVisible();
+    nutriRenderDiasStrip();
 }
 
 document.addEventListener('keydown', (e) => {
@@ -257,8 +276,14 @@ function nutriScheduleMidnightRollover() {
     const medianoche = new Date(ahora.getFullYear(), ahora.getMonth(), ahora.getDate() + 1, 0, 0, 5);
     _nutriMidnightTimer = setTimeout(() => {
         const eraHoy = nutriFechaSel === nutriFechaHoy;
+        const hoyDateAnterior = nutriFechaADate(nutriFechaHoy);
+        const veiaMesActual = nutriMesVisible.year === hoyDateAnterior.getFullYear() && nutriMesVisible.month === hoyDateAnterior.getMonth();
         nutriFechaHoy = nutriHoyISO();
         if (eraHoy) nutriFechaSel = nutriFechaHoy;
+        if (veiaMesActual) {
+            const hoyDate = nutriFechaADate(nutriFechaHoy);
+            nutriMesVisible = { year: hoyDate.getFullYear(), month: hoyDate.getMonth() };
+        }
         nutriRenderDiasStrip();
         nutriCargarFecha(nutriFechaSel);
         nutriScheduleMidnightRollover();
@@ -319,18 +344,37 @@ function nutriDiaBoxHtml(fecha, ayer, totales) {
       </button>`;
 }
 
-// ── Franja de fechas (selector tipo stories) ──────────
+// ── Franja de fechas (selector tipo stories, un mes a la vez) ──────────
 async function nutriRenderDiasStrip() {
-    const mesEl  = document.getElementById('n-dias-mes');
-    const strip  = document.getElementById('n-dias-strip');
+    const mesEl   = document.getElementById('n-dias-mes');
+    const strip   = document.getElementById('n-dias-strip');
+    const btnPrev = document.getElementById('n-mes-prev');
+    const btnNext = document.getElementById('n-mes-next');
     if (!strip) return;
 
-    const selDate = nutriFechaADate(nutriFechaSel);
-    if (mesEl) mesEl.textContent = `${NUTRI_MESES[selDate.getMonth()]} ${selDate.getFullYear()}`;
+    nutriClampMesVisible();
+    if (mesEl) mesEl.textContent = `${NUTRI_MESES[nutriMesVisible.month]} ${nutriMesVisible.year}`;
 
-    const ayer   = nutriSumarDias(nutriFechaHoy, -1);
+    const hoy    = nutriFechaADate(nutriFechaHoy);
+    const inicio = nutriFechaInicio ? nutriFechaADate(nutriFechaInicio) : hoy;
+    const minIdx = nutriMesIndice(inicio.getFullYear(), inicio.getMonth());
+    const maxIdx = nutriMesIndice(hoy.getFullYear(), hoy.getMonth());
+    const curIdx = nutriMesIndice(nutriMesVisible.year, nutriMesVisible.month);
+
+    if (btnPrev) btnPrev.disabled = curIdx <= minIdx;
+    if (btnNext) btnNext.disabled = curIdx >= maxIdx;
+
+    const primerDiaMes = new Date(nutriMesVisible.year, nutriMesVisible.month, 1);
+    const ultimoDiaMes = new Date(nutriMesVisible.year, nutriMesVisible.month + 1, 0);
+    const inicioRango  = (curIdx === minIdx && inicio > primerDiaMes) ? inicio : primerDiaMes;
+    const finRango     = (curIdx === maxIdx && hoy < ultimoDiaMes) ? hoy : ultimoDiaMes;
+
     const fechas = [];
-    for (let i = NUTRI_DIAS_VISIBLES - 1; i >= 0; i--) fechas.push(nutriSumarDias(nutriFechaHoy, -i));
+    for (let d = new Date(inicioRango); d <= finRango; d.setDate(d.getDate() + 1)) {
+        fechas.push(nutriDateAISO(d));
+    }
+
+    const ayer = nutriSumarDias(nutriFechaHoy, -1);
 
     const pintar = (totalesPorFecha) => {
         strip.innerHTML = fechas.map((fecha, i) => nutriDiaBoxHtml(fecha, ayer, totalesPorFecha ? totalesPorFecha[i] : _nutriIndCache[fecha])).join('');

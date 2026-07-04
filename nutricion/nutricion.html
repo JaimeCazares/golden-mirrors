@@ -97,7 +97,11 @@
 
     <!-- SELECTOR DE FECHAS -->
     <div class="nutri-dias-wrap">
-      <span class="nutri-dias-mes" id="n-dias-mes"></span>
+      <div class="nutri-dias-mes-row">
+        <button type="button" class="nutri-mes-nav-btn" id="n-mes-prev" onclick="nutriCambiarMes(-1)" title="Mes anterior">‹</button>
+        <span class="nutri-dias-mes" id="n-dias-mes"></span>
+        <button type="button" class="nutri-mes-nav-btn" id="n-mes-next" onclick="nutriCambiarMes(1)" title="Mes siguiente">›</button>
+      </div>
       <div class="nutri-dias-strip" id="n-dias-strip"></div>
     </div>
 
