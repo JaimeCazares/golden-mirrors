@@ -448,7 +448,50 @@ async function nutriCargarFecha(fecha) {
         elGymTxt.classList.toggle('activo', !!elGym?.checked);
     }
 
+    nutriCaminadora = {
+        inclinacion: (diaRes && diaRes.caminadora_inclinacion) ? parseFloat(diaRes.caminadora_inclinacion) : 0,
+        tiempo:      (diaRes && diaRes.caminadora_tiempo)      ? parseInt(diaRes.caminadora_tiempo, 10)     : 0,
+        velocidad:   (diaRes && diaRes.caminadora_velocidad)   ? parseFloat(diaRes.caminadora_velocidad)    : 0,
+    };
+    nutriPintarCaminadora();
+
     renderPlanRoot();
+}
+
+// ── Caminadora (gym): inclinación / tiempo / velocidad ────
+let nutriCaminadora = { inclinacion: 0, tiempo: 0, velocidad: 0 };
+let _nutriCaminadoraSaveTimer = null;
+
+function nutriPintarCaminadora() {
+    const elI = document.getElementById('n-camina-inclinacion');
+    const elT = document.getElementById('n-camina-tiempo');
+    const elV = document.getElementById('n-camina-velocidad');
+    if (elI) elI.textContent = nutriCaminadora.inclinacion.toFixed(1);
+    if (elT) elT.textContent = nutriCaminadora.tiempo;
+    if (elV) elV.textContent = nutriCaminadora.velocidad.toFixed(1);
+}
+
+function nutriAjustarCaminadora(campo, delta) {
+    const esEntero = campo === 'tiempo';
+    let val = (nutriCaminadora[campo] || 0) + delta;
+    val = Math.max(0, Math.round(val * 10) / 10);
+    nutriCaminadora[campo] = esEntero ? Math.round(val) : val;
+    nutriPintarCaminadora();
+
+    clearTimeout(_nutriCaminadoraSaveTimer);
+    _nutriCaminadoraSaveTimer = setTimeout(() => {
+        fetch(NUTRI_API, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                accion: 'guardar_caminadora',
+                fecha: nutriFechaSel,
+                inclinacion: nutriCaminadora.inclinacion,
+                tiempo: nutriCaminadora.tiempo,
+                velocidad: nutriCaminadora.velocidad,
+            }),
+        }).catch(() => nutriToast('No se pudo guardar (sin conexión)'));
+    }, 500);
 }
 
 function nutriGuardarDiaActual() {
@@ -966,6 +1009,9 @@ function nutriUpdateBalanceCards(consumidas) {
     if (consumidas == null) consumidas = planTotals().kcal;
     const quemado = nutriMetas.bmr + nutriMiBand;
     const deficit = quemado - consumidas;
+
+    const elConsumidas = document.getElementById('n-consumidas-val');
+    if (elConsumidas) elConsumidas.textContent = consumidas.toLocaleString('es-MX');
 
     const elQuemado = document.getElementById('n-quemado-val');
     if (elQuemado) elQuemado.textContent = quemado.toLocaleString('es-MX');

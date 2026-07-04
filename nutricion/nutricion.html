@@ -145,6 +145,12 @@
           <div class="ntc-valor" id="n-deficit-val">0 <small>kcal</small></div>
         </div>
 
+        <!-- CALORÍAS CONSUMIDAS (tomado del Plan) -->
+        <div class="nutri-top-card consumidas-card">
+          <div class="ntc-label">Calorías consumidas</div>
+          <div class="ntc-valor ntc-consumidas"><span id="n-consumidas-val">0</span> <small>kcal</small></div>
+        </div>
+
       </div>
 
       <!-- SUEÑO + GYM -->
@@ -171,6 +177,41 @@
           </div>
         </div>
 
+      </div>
+
+      <!-- CAMINADORA -->
+      <div class="nutri-top-card caminadora-card">
+        <div class="ntc-label">🏃 Caminadora</div>
+        <div class="nutri-camina-grid">
+
+          <div class="nutri-camina-item">
+            <span class="nutri-camina-label">Inclinación</span>
+            <div class="nutri-camina-stepper">
+              <button type="button" class="nutri-camina-btn" onclick="nutriAjustarCaminadora('inclinacion', -0.5)">−</button>
+              <span class="nutri-camina-num"><span id="n-camina-inclinacion">0</span><small>°</small></span>
+              <button type="button" class="nutri-camina-btn" onclick="nutriAjustarCaminadora('inclinacion', 0.5)">+</button>
+            </div>
+          </div>
+
+          <div class="nutri-camina-item">
+            <span class="nutri-camina-label">Tiempo</span>
+            <div class="nutri-camina-stepper">
+              <button type="button" class="nutri-camina-btn" onclick="nutriAjustarCaminadora('tiempo', -1)">−</button>
+              <span class="nutri-camina-num"><span id="n-camina-tiempo">0</span><small>min</small></span>
+              <button type="button" class="nutri-camina-btn" onclick="nutriAjustarCaminadora('tiempo', 1)">+</button>
+            </div>
+          </div>
+
+          <div class="nutri-camina-item">
+            <span class="nutri-camina-label">Velocidad</span>
+            <div class="nutri-camina-stepper">
+              <button type="button" class="nutri-camina-btn" onclick="nutriAjustarCaminadora('velocidad', -0.1)">−</button>
+              <span class="nutri-camina-num"><span id="n-camina-velocidad">0</span><small>km/h</small></span>
+              <button type="button" class="nutri-camina-btn" onclick="nutriAjustarCaminadora('velocidad', 0.1)">+</button>
+            </div>
+          </div>
+
+        </div>
       </div>
 
       <!-- PROGRESO / EVOLUCIÓN -->
