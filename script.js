@@ -27,7 +27,8 @@ async function cambiarPestana(nombre) {
         inicio: 1,
         escalera: 2,
         espejo: 3,
-        registro: 4
+        registro: 4,
+        ruleta: 5
     };
 
     document.querySelectorAll('.nav-btn')[mapa[nombre]]
@@ -145,6 +146,21 @@ async function cambiarPestana(nombre) {
                 if (typeof initEscalera === 'function') {
                     initEscalera();
                 }
+            }
+        }
+
+        // === RULETA ===
+        if (nombre === 'ruleta') {
+            if (!modulosCargados['ruleta']) {
+                const script = document.createElement('script');
+                script.src = `ruleta/ruleta.js?v=${Date.now()}`;
+                script.onload = () => {
+                    if (typeof window.initRuleta === 'function') window.initRuleta();
+                };
+                document.body.appendChild(script);
+                modulosCargados['ruleta'] = true;
+            } else {
+                if (typeof window.initRuleta === 'function') window.initRuleta();
             }
         }
 

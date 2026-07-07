@@ -29,6 +29,7 @@ if (empty($_SESSION['rol']) || $_SESSION['rol'] !== 'admin') {
   <link rel="stylesheet" href="espejo/css/espejo-selector.css">
   <link rel="stylesheet" href="<?php echo assetV('gastos/gastos.css'); ?>">
   <link rel="stylesheet" href="<?php echo assetV('nutricion/nutricion.css'); ?>">
+  <link rel="stylesheet" href="<?php echo assetV('ruleta/ruleta.css'); ?>">
 </head>
 
 <body>
@@ -73,6 +74,11 @@ if (empty($_SESSION['rol']) || $_SESSION['rol'] !== 'admin') {
           <button class="nav-btn" onclick="cambiarPestana('registro')">
               <span class="icono">📝</span>
               <span class="label">Normales</span>
+          </button>
+
+          <button class="nav-btn" onclick="cambiarPestana('ruleta')">
+              <span class="icono">🎡</span>
+              <span class="label">Ruleta</span>
           </button>
       </div>
   </nav>
