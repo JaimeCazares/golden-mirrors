@@ -1,15 +1,37 @@
-<div class="ruleta-wrap">
-  <h2 class="ruleta-title">🎡 ¿Qué hacemos hoy?</h2>
-  <p class="ruleta-subtitle">Gira la ruleta y déjate sorprender 💕</p>
+<div class="rl">
 
-  <div class="ruleta-canvas-wrap">
-    <div class="ruleta-pointer"></div>
-    <canvas id="ruleta-canvas" width="300" height="300"></canvas>
+  <header class="rl-head">
+    <h1 class="rl-title"><em>¿qué hacemos?</em></h1>
+    <p class="rl-sub">giren · dejen que el destino decida 💕</p>
+  </header>
+
+  <!-- ── Ruleta 1: Categoría ── -->
+  <div class="rl-card">
+    <div class="rl-card-tag">01 · tipo de actividad</div>
+    <div class="rl-wcanvas-wrap">
+      <div class="rl-pin"></div>
+      <canvas id="rl-cat-c" width="270" height="270"></canvas>
+    </div>
+    <button class="rl-btn rl-btn--cat" id="rl-cat-btn" onclick="rlSpinCat()">girar ✦</button>
+    <div id="rl-cat-result" class="rl-cat-result" style="display:none"></div>
   </div>
 
-  <div class="ruleta-legend" id="ruleta-legend"></div>
+  <!-- ── Ruleta 2: Actividad específica ── -->
+  <div class="rl-card" id="rl-act-card">
+    <div class="rl-card-tag">02 · actividad específica</div>
+    <div class="rl-wcanvas-wrap" style="position:relative">
+      <div class="rl-pin"></div>
+      <canvas id="rl-act-c" width="270" height="270"></canvas>
+      <div class="rl-canvas-lock" id="rl-canvas-lock">
+        <span>primero elige<br>el tipo 👆</span>
+      </div>
+    </div>
+    <button class="rl-btn rl-btn--act" id="rl-act-btn" onclick="rlSpinAct()" disabled>girar ✦</button>
+    <div id="rl-act-result" class="rl-act-result" style="display:none"></div>
+  </div>
 
-  <button id="ruleta-girar-btn" onclick="girarRuleta()">🎰 GIRAR</button>
+  <!-- ── Paneles de actividades ── -->
+  <div class="rl-panels-label">todas las actividades</div>
+  <div class="rl-panels" id="rl-panels"></div>
 
-  <div id="ruleta-resultado" class="ruleta-resultado" style="display:none"></div>
 </div>
