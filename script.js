@@ -28,7 +28,8 @@ async function cambiarPestana(nombre) {
         escalera: 2,
         espejo: 3,
         registro: 4,
-        ruleta: 5
+        ruleta: 5,
+        clientes: 6
     };
 
     document.querySelectorAll('.nav-btn')[mapa[nombre]]
@@ -161,6 +162,21 @@ async function cambiarPestana(nombre) {
                 modulosCargados['ruleta'] = true;
             } else {
                 if (typeof window.initRuleta === 'function') window.initRuleta();
+            }
+        }
+
+        // === CLIENTES (Panel de Control CRM) ===
+        if (nombre === 'clientes') {
+            if (!modulosCargados['clientes']) {
+                const script = document.createElement('script');
+                script.src = `clientes/clientes.js?v=${Date.now()}`;
+                script.onload = () => {
+                    if (typeof initClientes === 'function') initClientes();
+                };
+                document.body.appendChild(script);
+                modulosCargados['clientes'] = true;
+            } else {
+                if (typeof initClientes === 'function') initClientes();
             }
         }
 

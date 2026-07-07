@@ -1,0 +1,458 @@
+<div class="cl-wrap">
+
+  <div class="cl-header">
+    <div class="cl-title-group">
+      <h2 class="cl-title">📊 Panel de Clientes</h2>
+      <p class="cl-sub">Prospectos de páginas web &amp; sistemas</p>
+    </div>
+    <div class="cl-header-actions">
+      <button class="cl-btn cl-btn-ghost" onclick="clAbrirGuia()">📖 Guía de venta</button>
+      <button class="cl-btn cl-btn-primary" onclick="clAbrirModalNuevo()">+ Nuevo</button>
+    </div>
+  </div>
+
+  <div class="cl-stats" id="cl-stats"></div>
+
+  <div class="cl-toolbar">
+    <input type="text" id="cl-buscar" class="cl-input" placeholder="🔍 Buscar negocio, cliente o ubicación..." oninput="clRender()">
+    <div class="cl-filtros" id="cl-filtros"></div>
+  </div>
+
+  <div class="cl-lista" id="cl-lista">
+    <div class="cl-vacio">Cargando prospectos...</div>
+  </div>
+
+</div>
+
+<!-- ══ MODAL: NUEVO / EDITAR DATOS ══ -->
+<div class="cl-overlay" id="cl-modal-overlay" onclick="clCerrarOverlay(event,'cl-modal-overlay')">
+  <div class="cl-modal" onclick="event.stopPropagation()">
+    <div class="cl-modal-head">
+      <h3 id="cl-modal-titulo">Nuevo prospecto</h3>
+      <button class="cl-x" onclick="clCerrarModal('cl-modal-overlay')">✕</button>
+    </div>
+    <div class="cl-modal-body">
+      <input type="hidden" id="cl-f-id">
+
+      <label class="cl-label">Nombre del negocio *</label>
+      <input type="text" id="cl-f-negocio" class="cl-input" placeholder="Ej. Taquería El Compa">
+
+      <label class="cl-label">Nombre del contacto / dueño</label>
+      <input type="text" id="cl-f-contacto" class="cl-input" placeholder="Ej. Don Beto">
+
+      <div class="cl-row2">
+        <div>
+          <label class="cl-label">Teléfono / WhatsApp</label>
+          <input type="text" id="cl-f-telefono" class="cl-input" placeholder="667 000 0000">
+        </div>
+        <div>
+          <label class="cl-label">Ubicación</label>
+          <input type="text" id="cl-f-ubicacion" class="cl-input" placeholder="Colonia, ciudad">
+        </div>
+      </div>
+
+      <div class="cl-row2">
+        <div>
+          <label class="cl-label">Giro del negocio</label>
+          <select id="cl-f-giro" class="cl-input">
+            <option value="restaurante">🍽️ Restaurante / comida</option>
+            <option value="retail">🛍️ Tienda / retail</option>
+            <option value="servicios">💼 Servicios profesionales</option>
+            <option value="salud_belleza">💇 Salud / belleza</option>
+            <option value="taller">🔧 Taller / técnico / construcción</option>
+            <option value="educacion">🎓 Educación</option>
+            <option value="otro">📦 Otro</option>
+          </select>
+        </div>
+        <div>
+          <label class="cl-label">Canal de contacto</label>
+          <select id="cl-f-canal" class="cl-input">
+            <option value="whatsapp">💬 WhatsApp</option>
+            <option value="llamada">📞 Llamada</option>
+            <option value="presencial">🚶 Presencial</option>
+            <option value="redes">📱 Redes sociales</option>
+            <option value="referido">🤝 Referido</option>
+          </select>
+        </div>
+      </div>
+
+      <button class="cl-btn cl-btn-primary cl-btn-full" onclick="clGuardarNuevo()">Guardar prospecto</button>
+    </div>
+  </div>
+</div>
+
+<!-- ══ MODAL: DETALLE / BITÁCORA ══ -->
+<div class="cl-overlay" id="cl-detalle-overlay" onclick="clCerrarOverlay(event,'cl-detalle-overlay')">
+  <div class="cl-modal cl-modal-detalle" onclick="event.stopPropagation()">
+    <div class="cl-modal-head">
+      <h3 id="cl-det-titulo">Prospecto</h3>
+      <button class="cl-x" onclick="clCerrarModal('cl-detalle-overlay')">✕</button>
+    </div>
+    <div class="cl-modal-body" id="cl-det-body">
+      <!-- generado por JS -->
+    </div>
+  </div>
+</div>
+
+<!-- ══ MODAL: GUÍA DE VENTA ══ -->
+<div class="cl-overlay" id="cl-guia-overlay" onclick="clCerrarOverlay(event,'cl-guia-overlay')">
+  <div class="cl-modal cl-modal-guia" onclick="event.stopPropagation()">
+    <div class="cl-modal-head">
+      <h3>📖 Guía de venta &amp; investigación</h3>
+      <button class="cl-x" onclick="clCerrarModal('cl-guia-overlay')">✕</button>
+    </div>
+    <div class="cl-modal-body">
+      <div class="cl-guia-tabs">
+        <button class="cl-guia-tab activa" data-tab="venta" onclick="clGuiaTab('venta')">💬 Qué decir</button>
+        <button class="cl-guia-tab" data-tab="investigar" onclick="clGuiaTab('investigar')">🔎 Cómo investigar</button>
+      </div>
+      <div id="cl-guia-venta" class="cl-guia-panel">
+
+        <p>Guía completa para ofrecer páginas web a otros negocios. Trae mensajes listos para copiar y pegar en WhatsApp, un guion para hablar en persona o por teléfono, respuestas a las objeciones más comunes y los pasos para cerrar y entregar. Ajusta el nombre del negocio y los detalles entre <strong>[corchetes]</strong> antes de enviar.</p>
+
+        <h2>1. Mensaje de primer contacto (WhatsApp)</h2>
+
+        <h3>Variante A — Negocio que NO tiene página web</h3>
+        <div class="cl-plantilla">
+          <button class="cl-copy-btn" onclick="clCopiarBloque(this)">Copiar</button>
+          <div class="cl-plantilla-texto">Hola, buenas [tarde/noche]. Mi nombre es Jaime, soy de Golden Tech aquí en Culiacán 👋
+
+Le escribo porque vi su negocio [nombre del negocio] y me di cuenta que no cuenta con una página web. Ahorita ayudo a negocios de la zona a tener su propia página para que la gente los encuentre en Google, vean sus productos/servicios, horarios y puedan contactarlos más fácil, sin depender solo de Facebook.
+
+¿Le interesaría que le platique 5 minutos cómo funciona? Sin compromiso.</div>
+        </div>
+
+        <h3>Variante B — Ya tiene página, pero se ve anticuada o no funciona bien</h3>
+        <div class="cl-plantilla">
+          <button class="cl-copy-btn" onclick="clCopiarBloque(this)">Copiar</button>
+          <div class="cl-plantilla-texto">Hola, buenas [tarde/noche]. Soy Jaime, de Golden Tech, aquí en Culiacán.
+
+Estuve viendo la página de [nombre del negocio] y noté que [se ve algo desactualizada / no carga bien en el celular / no aparece en Google / no tiene forma de contactarlos rápido]. Me dedico a hacer páginas web modernas y funcionales para negocios locales, y se me ocurrió que le podría ayudar a renovarla o hacerle una nueva que sí le esté generando clientes.
+
+¿Tiene un momento para que le cuente cómo lo trabajo? No hay ningún compromiso.</div>
+        </div>
+
+        <h3>Variante C — Contacto por referido</h3>
+        <div class="cl-plantilla">
+          <button class="cl-copy-btn" onclick="clCopiarBloque(this)">Copiar</button>
+          <div class="cl-plantilla-texto">Hola, buenas [tarde/noche]. Mi nombre es Jaime, de Golden Tech. Le hablo porque [nombre de quien lo recomendó] me pasó su contacto y me comentó que tiene el negocio [nombre del negocio].
+
+Yo me dedico a hacer páginas web para negocios de aquí de Culiacán, y le hice una a [nombre de quien recomendó / a otro negocio conocido suyo] con muy buenos resultados. Pensé que le podría servir también a usted.
+
+¿Le late que le platique un poco de qué se trata? Es rapidito.</div>
+        </div>
+
+        <h2>2. Cómo abrir la conversación en persona o por llamada</h2>
+        <p>Esto no es para leerlo palabra por palabra — es para tener la idea clara y decirlo natural, con tus palabras.</p>
+
+        <h3>Al entrar o al saludar</h3>
+        <div class="cl-plantilla">
+          <button class="cl-copy-btn" onclick="clCopiarBloque(this)">Copiar</button>
+          <div class="cl-plantilla-texto">Buenas, ¿cómo está? Mire, disculpe que lo interrumpa un momento, no le voy a quitar mucho tiempo. Yo soy Jaime, tengo un taller de cómputo aquí en Culiacán, Golden Tech, y últimamente también estoy ayudando a negocios de la zona a tener su página web. Nada más quería preguntarle: ¿usted ya cuenta con una página para su negocio, o solo maneja Facebook e Instagram?</div>
+        </div>
+
+        <h3>Si dice que no tiene / solo redes sociales</h3>
+        <div class="cl-plantilla">
+          <button class="cl-copy-btn" onclick="clCopiarBloque(this)">Copiar</button>
+          <div class="cl-plantilla-texto">Ah, ok, perfecto. Mire, lo que pasa es que muchas personas cuando buscan un [tipo de negocio] en Google, si usted no aparece ahí, se van directo con el que sí sale. Facebook está bien, pero no todos entran a Facebook a buscar un negocio, y a veces ni les carga rápido. Una página web es como su "tarjeta de presentación" en internet: la gente busca, lo encuentra, ve sus servicios, sus horarios, su ubicación y le manda mensaje directo. ¿Le interesaría que le explique cómo lo manejo y cuánto le llevaría tenerla lista?</div>
+        </div>
+
+        <h3>Si dice que ya tiene página</h3>
+        <div class="cl-plantilla">
+          <button class="cl-copy-btn" onclick="clCopiarBloque(this)">Copiar</button>
+          <div class="cl-plantilla-texto">Qué bueno que ya tiene, eso ya lo pone por delante de muchos. Nada más por curiosidad, ¿la hizo usted mismo, se la hicieron, o la trae contratada con algún tercero? Es que muchas páginas que veo por aquí ya están algo viejitas o no se ven bien desde el celular, y hoy en día casi todo mundo busca desde el teléfono. Si gusta, le puedo echar un ojo rápido sin compromiso y le digo qué tan bien está funcionando.</div>
+        </div>
+
+        <h3>Cierre de la apertura (siempre)</h3>
+        <div class="cl-plantilla">
+          <button class="cl-copy-btn" onclick="clCopiarBloque(this)">Copiar</button>
+          <div class="cl-plantilla-texto">De hecho, si me da 2 minutitos le explico cómo trabajo, y usted ve si le late o no, sin ninguna presión.</div>
+        </div>
+
+        <h2>3. Cómo presentar la propuesta (sin sonar a vendedor de humo)</h2>
+        <p>La clave: hablar de <strong>resultados concretos para su negocio</strong>, no de tecnología ni de "lo último en diseño web". Evita palabras huecas como "revolucionar" o "impulsar tu marca al siguiente nivel". Elige 3 o 4 puntos, no sueltes todos de jalón — se siente a discurso.</p>
+        <ul>
+          <li><strong>Lo encuentran en Google.</strong> Si no tiene página, esos clientes se van con la competencia que sí aparece.</li>
+          <li><strong>Se ve más profesional y da más confianza</strong> que solo una página de Facebook con pocas fotos.</li>
+          <li><strong>Tiene un link para compartir en todos lados</strong> — tarjeta, redes, WhatsApp — en vez de solo mandar ubicación o Face.</li>
+          <li><strong>Sus clientes ven todo de un vistazo:</strong> servicios, precios, horarios, mapa, botón directo a WhatsApp.</li>
+          <li><strong>Funciona las 24 horas</strong>, aunque el negocio esté cerrado.</li>
+          <li><strong>Es suya, no depende de un algoritmo</strong> como Facebook o Instagram.</li>
+        </ul>
+        <div class="cl-plantilla">
+          <button class="cl-copy-btn" onclick="clCopiarBloque(this)">Copiar</button>
+          <div class="cl-plantilla-texto">Mire, la idea es simple: usted ya tiene el negocio y los clientes de toda la vida, pero hoy en día mucha gente nueva primero busca en internet antes de ir a un lugar. Si no aparece nada, o aparece algo viejo, se van con otro. Lo que yo le hago es una página sencilla, profesional, que se vea bien desde el celular, con sus servicios, fotos, ubicación y un botón para que le escriban directo a su WhatsApp. No es magia ni le va a llenar el negocio de la noche a la mañana, pero sí es una puerta más por donde le pueden llegar clientes que hoy está dejando pasar.</div>
+        </div>
+
+        <h2>4. Manejo de objeciones</h2>
+
+        <h3>"Está caro"</h3>
+        <div class="cl-plantilla">
+          <button class="cl-copy-btn" onclick="clCopiarBloque(this)">Copiar</button>
+          <div class="cl-plantilla-texto">Le entiendo, y quiero ser honesto: no le voy a decir que es barato solo por cerrar el trato. Lo que sí le puedo decir es que se lo cobro pensando en que usted es un negocio local, no una empresa grande, y que sea una inversión que se le regrese. Platíqueme qué presupuesto tenía en mente y vemos qué podemos armar — a veces se puede empezar con algo más sencillo e ir creciendo la página después, para que no sea un gasto fuerte de un jalón.</div>
+        </div>
+        <p class="cl-aside">Nunca trates el precio como si fuera fijo de la industria — en el CRM tenlo siempre como punto de partida a validar según tu costo y el mercado en Culiacán.</p>
+
+        <h3>"Lo voy a pensar"</h3>
+        <div class="cl-plantilla">
+          <button class="cl-copy-btn" onclick="clCopiarBloque(this)">Copiar</button>
+          <div class="cl-plantilla-texto">Claro, tómese su tiempo, no hay ningún problema. Nada más le comento: mientras más rápido la tengamos lista, más rápido empieza a trabajar para usted. Si gusta le dejo aquí un resumen de lo que platicamos por si quiere revisarlo con calma, y si le surge alguna duda me escribe, aquí ando.</div>
+        </div>
+        <p class="cl-aside">Después de este mensaje, manda el resumen por escrito en el mismo chat — servicios incluidos, tiempo estimado y el rango de precio que platicaron. Ayuda a que no se enfríe.</p>
+
+        <h3>"Ya tengo Facebook/Instagram, para qué quiero página web"</h3>
+        <div class="cl-plantilla">
+          <button class="cl-copy-btn" onclick="clCopiarBloque(this)">Copiar</button>
+          <div class="cl-plantilla-texto">Está bien que las tenga, eso ayuda. Nada más piénselo así: en Facebook o Insta, si usted no paga publicidad, muy poquita gente ve lo que publica, y encima depende de que la persona ya tenga esa red y sepa buscarlo ahí. Con una página web, cuando alguien busca en Google "[su tipo de negocio] en Culiacán", usted puede aparecer ahí, aunque esa persona ni siquiera lo siga en redes. Además la página web es un lugar fijo, siempre disponible, con toda su información ordenada — y se puede conectar con sus redes, no es que una reemplace a la otra, se complementan.</div>
+        </div>
+
+        <h3>"No tengo tiempo ahorita"</h3>
+        <div class="cl-plantilla">
+          <button class="cl-copy-btn" onclick="clCopiarBloque(this)">Copiar</button>
+          <div class="cl-plantilla-texto">Lo entiendo perfecto, sé que traen su negocio a full. Justo por eso lo hago fácil de su lado: usted nada más me manda su logo, un par de fotos y la info básica (servicios, horarios, ubicación) cuando pueda, aunque sea poco a poco por WhatsApp, y yo me encargo de armar todo. No necesita sentarse horas conmigo. ¿Le parece si empezamos cuando usted tenga chance de mandarme esos datos, sin presión de fecha?</div>
+        </div>
+
+        <h3>Cliente con dudas técnicas (dominio, hosting, etc.)</h3>
+        <div class="cl-plantilla">
+          <button class="cl-copy-btn" onclick="clCopiarBloque(this)">Copiar</button>
+          <div class="cl-plantilla-texto">Buena pregunta, se lo explico bien sencillo: el dominio es como la "dirección" de su página en internet — por ejemplo www.sunegocio.com — es el nombre que la gente escribe o que sale en Google para llegar a usted. El hosting es como "la casa" donde vive esa página, el espacio en internet donde está guardada para que siempre esté disponible cuando alguien la visite. Yo me encargo de dejarle todo eso configurado y funcionando; usted nada más necesita saber que existen y para qué son, no tiene que meterse a lo técnico. Cualquier cosa yo le explico paso a paso o se lo dejo por escrito.</div>
+        </div>
+
+        <h3>Cliente que no responde (máximo 2 seguimientos, sin insistir más)</h3>
+        <p><strong>Primer seguimiento (3-4 días después):</strong></p>
+        <div class="cl-plantilla">
+          <button class="cl-copy-btn" onclick="clCopiarBloque(this)">Copiar</button>
+          <div class="cl-plantilla-texto">Hola [nombre], buenas [tarde/noche]. Nada más para saber si alcanzó a ver mi mensaje de hace unos días sobre la página web para [nombre del negocio]. Sin ningún compromiso, cualquier duda aquí ando 🙂</div>
+        </div>
+        <p><strong>Segundo y último seguimiento (una semana después):</strong></p>
+        <div class="cl-plantilla">
+          <button class="cl-copy-btn" onclick="clCopiarBloque(this)">Copiar</button>
+          <div class="cl-plantilla-texto">Hola [nombre], espero se encuentre bien. Le hago este último mensajito nada más para dejarle la puerta abierta — si más adelante le interesa lo de la página web, aquí sigo, sin ninguna prisa de su parte. Que le vaya muy bien con el negocio 👍</div>
+        </div>
+        <p class="cl-aside">Si no contesta después del segundo mensaje, no insistas más. Márcalo como "en pausa" en el panel y retómalo solo si el cliente vuelve a mostrar interés o pasan varios meses.</p>
+
+        <h2>5. Cómo cerrar el trato</h2>
+        <p>Cuando el cliente ya dijo que sí, deja todo muy claro y concreto para que no se enfríe ni queden dudas.</p>
+        <div class="cl-plantilla">
+          <button class="cl-copy-btn" onclick="clCopiarBloque(this)">Copiar</button>
+          <div class="cl-plantilla-texto">¡Qué bueno que le late! Para arrancar necesito de su parte:
+
+1. Su logo (si no tiene uno, también se lo puedo ayudar a hacer).
+2. Unas fotos de su negocio, productos o servicios (entre mejores y con más luz, mejor se ve la página).
+3. La información básica: nombre del negocio, a qué se dedican, servicios o productos principales, horarios y ubicación.
+4. Sus redes sociales y número de WhatsApp para vincularlos en la página.
+5. Si tiene algún texto de cómo quiere que se presente su negocio, o si prefiere yo se lo redacto según lo que platicamos.
+
+Para arrancar el trabajo le pido un anticipo de [monto/porcentaje], y el resto se liquida cuando la página esté lista y usted la revise y le dé el visto bueno. ¿Le parece bien así?</div>
+        </div>
+        <p class="cl-aside">El anticipo asegura el lugar en tu agenda de trabajo — eso da seriedad sin sonar agresivo. El monto es punto de partida a validar, no una cifra fija.</p>
+
+        <h2>6. Seguimiento durante el desarrollo</h2>
+        <p>Mandar avances cada cierto tiempo (no todos los días, pero sí que sienta que está en proceso) genera confianza.</p>
+        <div class="cl-plantilla">
+          <button class="cl-copy-btn" onclick="clCopiarBloque(this)">Copiar</button>
+          <div class="cl-plantilla-texto">Hola [nombre], buenas [tarde/noche]. Le paso un avance rápido de su página 👇 [foto/captura o link de vista previa]
+
+Ya llevamos [sección/parte] lista, seguimos con [lo que sigue]. Cualquier cosa que quiera ajustar, cambiar texto, foto o color, con confianza me dice.</div>
+        </div>
+
+        <h2>7. Entrega final + pedir reseña o referido</h2>
+        <p><strong>Mensaje de entrega:</strong></p>
+        <div class="cl-plantilla">
+          <button class="cl-copy-btn" onclick="clCopiarBloque(this)">Copiar</button>
+          <div class="cl-plantilla-texto">¡Buenas noticias [nombre]! Su página ya está lista 🎉 Aquí se la dejo: [link]
+
+Échele un ojo con calma, revise que todo esté correcto (textos, fotos, horarios, teléfono) y si quiere ajustar algo, sin problema lo hacemos. Cuando esté conforme, se la dejo funcionando al 100% y le explico rapidito cómo pedirme cambios a futuro si los llega a necesitar.</div>
+        </div>
+        <p><strong>Pedir reseña (unos días después, cuando ya esté contento):</strong></p>
+        <div class="cl-plantilla">
+          <button class="cl-copy-btn" onclick="clCopiarBloque(this)">Copiar</button>
+          <div class="cl-plantilla-texto">Oiga [nombre], qué gusto que le gustó cómo quedó la página. Le quiero pedir un favor: si tiene un minuto, ¿me ayudaría con una reseña en Google o Facebook de Golden Tech contando su experiencia? Me ayuda muchísimo a que más negocios como el suyo confíen en el servicio. ¡Se lo agradezco de corazón!</div>
+        </div>
+        <p><strong>Pedir referido (de forma natural):</strong></p>
+        <div class="cl-plantilla">
+          <button class="cl-copy-btn" onclick="clCopiarBloque(this)">Copiar</button>
+          <div class="cl-plantilla-texto">Por cierto [nombre], si conoce a algún otro dueño de negocio que le interese tener su página también, con confianza me lo recomienda o le pasa mi número. Con gusto le doy el mismo trato que a usted.</div>
+        </div>
+
+        <h2>8. Tips generales de tono</h2>
+        <ul>
+          <li><strong>No prometas resultados que no puedes garantizar.</strong> Di "es una puerta más para que te encuentren", no "te va a llenar el negocio de clientes".</li>
+          <li><strong>Evita sonar a discurso memorizado.</strong> Si sientes que estás "recitando", para y habla natural.</li>
+          <li><strong>Tu edad no es una debilidad, es un plus si lo manejas bien.</strong> Conecta tu juventud con la parte técnica: "por eso mismo entiendo bien de tecnología e internet".</li>
+          <li><strong>No hables mal de la página vieja del cliente.</strong> Di "se ve algo desactualizada", nunca "está fea" o "mal hecha" — muchas veces la hizo un familiar o amigo del dueño.</li>
+          <li><strong>Genera urgencia con hechos, no con presión.</strong> "Entre más pronto la tengamos lista, antes empieza a trabajar para ti" en vez de amenazas.</li>
+          <li><strong>Da seguimiento sin perseguir.</strong> Máximo 2 mensajes sin respuesta (ver sección 4) — insistir más resta profesionalismo y poder de negociación.</li>
+        </ul>
+
+      </div>
+
+      <div id="cl-guia-investigar" class="cl-guia-panel" style="display:none">
+
+        <p>Objetivo: antes de tocar una sola línea de código, reunir en 15-30 minutos toda la información pública que exista sobre el negocio del prospecto, para construir un sitio rápido, simple y profesional — y llegar a la reunión hablando de <strong>su</strong> negocio, no de generalidades, pidiéndole solo lo que de verdad no se puede conseguir solo.</p>
+
+        <h2>1. Google Maps / Perfil de Negocio de Google</h2>
+        <p>Buscar el negocio por nombre + "Culiacán". Si no aparece, probar variantes (con/sin acentos, con el giro agregado: "taller X Culiacán").</p>
+        <ul class="cl-checklist-ref">
+          <li>☐ Nombre exacto registrado, categoría/giro exacto que le asignó Google</li>
+          <li>☐ Calificación general y número total de reseñas</li>
+          <li>☐ Leer 8-15 reseñas: las 3-5 más recientes (¿sigue activo?), las mejores (gancho de venta / testimonios) y las peores (dicen exactamente qué duda hay que despejar en la web: "nunca contestan" → WhatsApp visible, "se tardaron mucho" → tiempos de entrega, "cobraron de más" → precios claros)</li>
+          <li>☐ Horario publicado (confirmar con el cliente si parece desactualizado)</li>
+          <li>☐ Dirección exacta, colonia/zona (para SEO local y mapa embebido)</li>
+          <li>☐ Teléfono publicado — ¿es el mismo WhatsApp que van a usar en el sitio?</li>
+          <li>☐ Fotos ya subidas (fachada, interior, productos) aprovechables para el sitio, y foto de fachada/logo como referencia de colores</li>
+          <li>☐ ¿Ya tiene sitio web enlazado? Si sí, auditarlo (sección 2). Si no, argumento directo de venta.</li>
+          <li>☐ ¿Responde sus reseñas? (indica qué tan activo está en su presencia digital)</li>
+          <li>☐ Preguntas y respuestas de Maps, si existen (dudas frecuentes → posibles FAQ del sitio)</li>
+        </ul>
+
+        <h2>2. Auditoría rápida de un sitio existente</h2>
+        <p>Meta: decidir en 5-10 minutos qué se recicla y qué se rehace. No es una auditoría técnica exhaustiva.</p>
+        <ul class="cl-checklist-ref">
+          <li>☐ Abrirlo desde el celular primero — así lo ve el 90% de sus clientes</li>
+          <li>☐ ¿Se ve bien o "roto" en pantalla chica? ¿Texto legible sin zoom? ¿Botones de contacto fáciles de tocar?</li>
+          <li>☐ Percepción de velocidad: ¿carga en 2-3s o se queda pegado?</li>
+          <li>☐ ¿Qué tan actualizado se ve? (fechas, promos vencidas, año de copyright, precios viejos)</li>
+          <li>☐ ¿Es claro en 5 segundos qué hace el negocio y dónde está?</li>
+          <li>☐ ¿Contacto directo y visible (WhatsApp, teléfono, botón de llamar)?</li>
+          <li>☐ Qué texto se puede reutilizar casi tal cual, y qué fotos/logo tienen buena resolución (clic derecho → abrir imagen en pestaña nueva para ver tamaño real)</li>
+          <li>☐ Qué le falta claramente (mapa, horarios, catálogo, testimonios, redes, botón WhatsApp) — se vuelve el argumento de venta</li>
+          <li>☐ Si es de Wix/Facebook/Google Sites gratis con anuncios o marca de agua — señalarlo, es argumento fácil de mejora</li>
+        </ul>
+
+        <h2>3. Redes sociales (Facebook, Instagram, TikTok)</h2>
+        <ul class="cl-checklist-ref">
+          <li>☐ ¿Cuál red es la más activa? Fecha y frecuencia de la última publicación</li>
+          <li>☐ Tipo de contenido: fotos de productos/servicios/trabajos (candidatas para el sitio si hay buena resolución), promos vigentes, fotos del equipo/dueño</li>
+          <li>☐ Tono de marca en los textos (formal, chistoso, familiar, técnico) — el copy del sitio debe sonar consistente, no inventar un tono nuevo</li>
+          <li>☐ Colores y logo consistentes en posts/portada (ver sección 7)</li>
+          <li>☐ Bio/descripción de la cuenta — suele ser base lista para el texto de inicio o "Quiénes somos"</li>
+          <li>☐ Comentarios recientes: elogios repetidos (confirman qué destacar) y quejas o preguntas repetidas ("¿hasta qué hora abren?", "¿hacen envíos?") → info que debe estar visible sin preguntar, o FAQ</li>
+          <li>☐ ¿WhatsApp Business o catálogo enlazado? (fuente de precios ya estructurada)</li>
+          <li>☐ TikTok: revisar videos con más vistas — muestran el ambiente real o el producto estrella</li>
+        </ul>
+
+        <h2>4. Identificar 2-3 competidores cercanos</h2>
+        <p>Buscar en Maps: "[giro] cerca de [colonia]" o "[giro] Culiacán".</p>
+        <ul class="cl-checklist-ref">
+          <li>☐ ¿Cuáles SÍ tienen página web propia (no solo redes)?</li>
+          <li>☐ De esos, revisar 2-3 min cada uno: qué secciones tienen que el prospecto no tiene (catálogo, precios, reservación en línea, testimonios, mapa, galería), y cómo se ven visualmente</li>
+          <li>☐ Qué promocionan como diferenciador (garantía, rapidez, precio, ubicación, experiencia)</li>
+          <li>☐ Comparar calificación/reseñas del prospecto contra ellos (si el prospecto tiene mejor calificación pero peor web, argumento de venta clarísimo)</li>
+          <li>☐ Anotar 1-2 ideas concretas de diferenciación a proponer — no hace falta un reporte exhaustivo, solo 2-3 ideas accionables</li>
+        </ul>
+
+        <h2>5. Qué SIEMPRE hay que pedirle directamente al cliente</h2>
+        <p>Esto no se puede scrapear de forma confiable ni es ético asumirlo. Mandarlo como checklist por WhatsApp antes o durante la primera plática.</p>
+        <ul class="cl-checklist-ref">
+          <li>☐ Logo en alta calidad (PNG con fondo transparente si es posible)</li>
+          <li>☐ Fotos propias en buena resolución (o tomarlas con celular como parte del servicio)</li>
+          <li>☐ Textos definitivos: descripción del negocio, historia breve, misión si aplica</li>
+          <li>☐ Lista exacta de servicios/productos y cómo los quiere nombrar</li>
+          <li>☐ Precios actualizados, o si prefiere "cotización a solicitud" — nunca copiar precios viejos sin confirmar</li>
+          <li>☐ Redes sociales oficiales (links exactos) y número de WhatsApp de negocio (puede ser distinto al de Maps)</li>
+          <li>☐ Horario real y actualizado (confirmar aunque ya se vio en Google)</li>
+          <li>☐ Zonas de servicio/entrega, métodos de pago que acepta</li>
+          <li>☐ Preferencia de dominio, o si quiere que se lo sugieran</li>
+          <li>☐ Certificaciones, garantía o años de experiencia que quiera destacar</li>
+          <li>☐ Confirmar que tiene derechos sobre las fotos/logo entregado</li>
+        </ul>
+
+        <h2>6. Estructura de sitio recomendada según el giro</h2>
+        <p>Punto de partida para armar el esqueleto rápido. El orden va de "qué es y por qué confiar" a "cómo actuar ahora".</p>
+
+        <h3>🍽️ Restaurante / comida</h3>
+        <ol>
+          <li>Portada con foto/video del platillo estrella o ambiente + nombre y frase corta</li>
+          <li>Botón fijo de WhatsApp / "Ordenar ahora" siempre visible</li>
+          <li>Platillos destacados con fotos (5-8 más pedidos, no hace falta el menú completo)</li>
+          <li>Ubicación y horario (mapa embebido, horario claro incl. domingos/festivos)</li>
+          <li>Galería de ambiente/platillos</li>
+          <li>Reseñas/testimonios destacados</li>
+          <li>Redes sociales y contacto</li>
+        </ol>
+
+        <h3>🛍️ Tienda / retail</h3>
+        <ol>
+          <li>Portada con propuesta de valor clara (qué vende + qué lo distingue)</li>
+          <li>Categorías o productos destacados</li>
+          <li>Botón de WhatsApp para pedidos/cotización siempre visible</li>
+          <li>Promociones vigentes</li>
+          <li>Ubicación, horario, si hace envíos/domicilio</li>
+          <li>Testimonios y redes sociales</li>
+        </ol>
+
+        <h3>💼 Servicios profesionales (abogado, contador, consultorio)</h3>
+        <ol>
+          <li>Portada con nombre, especialidad y foto profesional — transmite confianza</li>
+          <li>Servicios/especialidades en lenguaje simple, sin jerga técnica</li>
+          <li>Sobre el profesional: credenciales, experiencia, certificaciones</li>
+          <li>Testimonios de clientes/pacientes</li>
+          <li>Cómo agendar cita (WhatsApp, teléfono, formulario simple)</li>
+          <li>Ubicación, horario, mapa</li>
+          <li>Preguntas frecuentes (FAQ)</li>
+        </ol>
+
+        <h3>💇 Salón de belleza / spa</h3>
+        <ol>
+          <li>Portada visual con fotos de resultados — este giro vive de lo visual</li>
+          <li>Servicios con precios o rango de precios</li>
+          <li>Galería de trabajos (antes/después si hay material)</li>
+          <li>Botón de WhatsApp para agendar, siempre visible</li>
+          <li>Promociones o paquetes vigentes</li>
+          <li>Testimonios, ubicación, horario, redes (Instagram prominente)</li>
+        </ol>
+
+        <h3>🏋️ Gimnasio</h3>
+        <ol>
+          <li>Portada con energía visual + llamado a la acción ("agenda tu clase de prueba")</li>
+          <li>Planes/membresías (aunque sea rango de precios)</li>
+          <li>Horarios de clases, instalaciones y equipo (galería)</li>
+          <li>Entrenadores/instructores (foto y especialidad)</li>
+          <li>Testimonios/transformaciones de clientes</li>
+          <li>Ubicación, horario, WhatsApp para inscripción</li>
+        </ol>
+
+        <h3>🔧 Taller / construcción / servicios técnicos</h3>
+        <ol>
+          <li>Portada clara: qué arregla/hace + zona que cubre + botón WhatsApp inmediato</li>
+          <li>Servicios específicos (concretos: "reparación de laptops", no "servicio técnico")</li>
+          <li>Galería de trabajos realizados (antes/después)</li>
+          <li>Por qué elegirnos (rapidez, garantía, honestidad — tomado de reseñas reales)</li>
+          <li>Testimonios, ubicación, horario, zona de servicio a domicilio</li>
+        </ol>
+
+        <h2>7. Derivar paleta de colores del negocio (sin inventar al azar)</h2>
+        <ul class="cl-checklist-ref">
+          <li>☐ Reunir 3-5 imágenes fuente: logo, fachada, fotos de producto/local, empaques o uniformes</li>
+          <li>☐ Si hay logo con colores definidos → esos son los colores primarios, no inventar otros (usar un color picker en línea sobre la imagen)</li>
+          <li>☐ Si el logo es blanco/negro → buscar el color dominante en fachada, letrero físico o material impreso</li>
+          <li>☐ Si no hay ningún color consistente → proponer uno acorde al giro (cálidos para comida, verdes/azules para salud, tonos serios para servicios profesionales) dejando claro que es sugerencia a validar</li>
+          <li>☐ Definir 1 color primario, 1 de acento (botones/CTA con buen contraste) y neutros — máximo 2-3 colores fuertes</li>
+          <li>☐ Revisar que el botón de WhatsApp/CTA tenga contraste suficiente para "saltar a la vista"</li>
+          <li>☐ Tipografía acorde al tono (redondeada/juguetona para casual, serif limpia para profesional serio, sans moderna para gym/tech) — máximo 2 tipografías en todo el sitio</li>
+          <li>☐ Revisar estilo fotográfico ya existente en redes para mantener consistencia con lo que su audiencia ya reconoce</li>
+        </ul>
+
+        <h2>8. Checklist final antes de empezar a construir</h2>
+        <ul class="cl-checklist-ref">
+          <li>☐ Nombre exacto, giro y zona confirmados</li>
+          <li>☐ Reseñas de Google revisadas (mejores y peores), con 2-3 puntos fuertes y 1-2 objeciones identificadas</li>
+          <li>☐ Horario, dirección y WhatsApp confirmados y coherentes entre Google, redes y el cliente</li>
+          <li>☐ Sitio anterior auditado (si existe) y decidido qué se recicla</li>
+          <li>☐ Redes sociales revisadas: tono, contenido reciente, colores/logo detectados</li>
+          <li>☐ 2-3 competidores revisados con ideas de diferenciación anotadas</li>
+          <li>☐ Logo en alta calidad recibido (o alternativa acordada)</li>
+          <li>☐ Fotos utilizables reunidas</li>
+          <li>☐ Textos base definidos: descripción, servicios, precios o política de precios</li>
+          <li>☐ Redes oficiales y WhatsApp de negocio confirmados por el cliente (no asumidos)</li>
+          <li>☐ Estructura de secciones elegida según el giro, adaptada si hace falta</li>
+          <li>☐ Paleta de colores y tipografía definidas a partir de material existente</li>
+          <li>☐ Pendientes claros enviados al cliente para no detener la construcción a medias</li>
+          <li>☐ Lo que no se pudo conseguir queda anotado como "pendiente" explícito — nunca inventar un dato como si fuera real (precio, experiencia, testimonio, certificación)</li>
+        </ul>
+
+      </div>
+    </div>
+  </div>
+</div>
