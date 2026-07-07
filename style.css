@@ -89,20 +89,20 @@ body {
 /* --- DOCK DE NAVEGACIÓN --- */
 .dock-nav {
     position: fixed;
-    bottom: 20px;
-    left: 20px;
-    
+    top: 12px;
+    right: 12px;
+
     background: rgba(15, 15, 30, 0.9) !important;
     backdrop-filter: blur(10px);
-    padding: 10px 15px;
-    border-radius: 10px !important;
+    padding: 6px 8px;
+    border-radius: 8px !important;
     border: none !important;
-    
+
     display: flex;
-    gap: 10px;
-    
+    gap: 5px;
+
     box-shadow: 0 0 15px rgba(0, 200, 255, 0.2) !important;
-    
+
     z-index: 8 !important;
     pointer-events: auto !important;
 }
@@ -116,20 +116,20 @@ body {
     align-items: center;
     justify-content: center;
     cursor: pointer;
-    padding: 8px 12px;
-    border-radius: 10px;
+    padding: 4px 7px;
+    border-radius: 8px;
     transition: all 0.3s ease;
-    min-width: 60px;
+    min-width: 38px;
 }
 
 .nav-btn .icono {
-    font-size: 1.4rem;
-    margin-bottom: 2px;
+    font-size: 0.95rem;
+    margin-bottom: 1px;
     transition: transform 0.2s;
 }
 
 .nav-btn .label {
-    font-size: 0.7rem;
+    font-size: 0.55rem;
     font-weight: 600;
 }
 
@@ -163,13 +163,13 @@ body {
     align-items: center;
     justify-content: center;
     cursor: pointer;
-    padding: 8px 10px;
-    border-radius: 10px;
+    padding: 4px 6px;
+    border-radius: 8px;
     transition: all 0.3s ease;
 }
 
 .nav-toggle-btn .icono {
-    font-size: 1.3rem;
+    font-size: 0.9rem;
     line-height: 1;
     transition: transform 0.3s ease;
 }
@@ -204,14 +204,13 @@ body {
 /* RESPONSIVE */
 @media (max-width: 450px) {
     .dock-nav {
-        left: 50%;
-        transform: translateX(-50%);
-        bottom: 15px;
+        top: 8px;
+        right: 8px;
         width: auto;
         justify-content: space-around;
     }
     .dock-nav.abierto {
-        width: 90%;
+        width: auto;
     }
 }
 

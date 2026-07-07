@@ -134,7 +134,7 @@ function rlDrawCatWheel(angleDeg) {
 
         // Emoji (60% radio)
         const ed = r*0.60;
-        ctx.font = '22px serif';
+        ctx.font = '22px "Times New Roman", serif';
         ctx.textAlign = 'center';
         ctx.textBaseline = 'middle';
         ctx.fillText(cat.emoji, cx+Math.cos(m)*ed, cy+Math.sin(m)*ed);
@@ -145,7 +145,7 @@ function rlDrawCatWheel(angleDeg) {
         ctx.translate(cx+Math.cos(m)*td, cy+Math.sin(m)*td);
         ctx.rotate(m + Math.PI/2);
         ctx.fillStyle = 'rgba(255,255,255,0.92)';
-        ctx.font = 'bold 8px system-ui';
+        ctx.font = 'bold 8px "Times New Roman", serif';
         ctx.textAlign = 'center';
         ctx.textBaseline = 'middle';
         ctx.fillText(cat.titulo.toUpperCase(), 0, 0);
@@ -165,7 +165,7 @@ function rlDrawCatWheel(angleDeg) {
     ctx.beginPath(); ctx.arc(cx,cy,18,0,2*Math.PI);
     ctx.fillStyle=g; ctx.fill();
     ctx.strokeStyle='rgba(255,255,255,0.18)'; ctx.lineWidth=2; ctx.stroke();
-    ctx.font='12px serif'; ctx.textAlign='center'; ctx.textBaseline='middle';
+    ctx.font='12px "Times New Roman", serif'; ctx.textAlign='center'; ctx.textBaseline='middle';
     ctx.fillText('💞',cx,cy);
 }
 
@@ -215,13 +215,13 @@ function rlDrawActWheel(angleDeg) {
         ctx.translate(cx+Math.cos(m)*nd, cy+Math.sin(m)*nd);
         ctx.rotate(m+Math.PI/2);
         ctx.fillStyle = state==='done' ? 'rgba(255,255,255,0.2)' : 'rgba(255,255,255,0.95)';
-        ctx.font = 'bold 11px system-ui';
+        ctx.font = 'bold 11px "Times New Roman", serif';
         ctx.textAlign='center'; ctx.textBaseline='middle';
         ctx.fillText(i+1, 0, -5);
 
         // Etiqueta corta (debajo del número)
         ctx.fillStyle = state==='done' ? 'rgba(255,255,255,0.15)' : 'rgba(255,255,255,0.75)';
-        ctx.font = '6.5px system-ui';
+        ctx.font = '6.5px "Times New Roman", serif';
         ctx.fillText(rlShortLabel(act), 0, 5);
         ctx.restore();
     });
@@ -236,7 +236,7 @@ function rlDrawActWheel(angleDeg) {
     ctx.beginPath(); ctx.arc(cx,cy,18,0,2*Math.PI);
     ctx.fillStyle=g; ctx.fill();
     ctx.strokeStyle='rgba(255,255,255,0.15)'; ctx.lineWidth=2; ctx.stroke();
-    ctx.font='11px serif'; ctx.textAlign='center'; ctx.textBaseline='middle';
+    ctx.font='11px "Times New Roman", serif'; ctx.textAlign='center'; ctx.textBaseline='middle';
     ctx.fillText('💕',cx,cy);
 }
 
