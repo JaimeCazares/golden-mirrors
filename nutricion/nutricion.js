@@ -466,9 +466,32 @@ function nutriPintarCaminadora() {
     const elI = document.getElementById('n-camina-inclinacion');
     const elT = document.getElementById('n-camina-tiempo');
     const elV = document.getElementById('n-camina-velocidad');
-    if (elI) elI.textContent = nutriCaminadora.inclinacion.toFixed(1);
-    if (elT) elT.textContent = nutriCaminadora.tiempo;
-    if (elV) elV.textContent = nutriCaminadora.velocidad.toFixed(1);
+    if (elI) elI.value = nutriCaminadora.inclinacion.toFixed(1);
+    if (elT) elT.value = nutriCaminadora.tiempo;
+    if (elV) elV.value = nutriCaminadora.velocidad.toFixed(1);
+}
+
+function nutriSetCaminadora(campo, rawVal) {
+    const esEntero = campo === 'tiempo';
+    let val = parseFloat(rawVal);
+    if (isNaN(val)) val = 0;
+    val = Math.max(0, Math.round(val * 10) / 10);
+    nutriCaminadora[campo] = esEntero ? Math.round(val) : val;
+    nutriPintarCaminadora();
+    clearTimeout(_nutriCaminadoraSaveTimer);
+    _nutriCaminadoraSaveTimer = setTimeout(() => {
+        fetch(NUTRI_API, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                accion: 'guardar_caminadora',
+                fecha: nutriFechaSel,
+                inclinacion: nutriCaminadora.inclinacion,
+                tiempo: nutriCaminadora.tiempo,
+                velocidad: nutriCaminadora.velocidad,
+            }),
+        }).catch(() => nutriToast('No se pudo guardar (sin conexión)'));
+    }, 500);
 }
 
 function nutriAjustarCaminadora(campo, delta) {

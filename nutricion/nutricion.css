@@ -500,6 +500,22 @@
     color: #fb923c;
 }
 .ntc-valor small { font-size: 0.65rem; font-weight: 400; color: #aab2cc; }
+.ntc-input {
+    background: none;
+    border: none;
+    border-bottom: 1px solid transparent;
+    color: #fb923c;
+    font-size: 1.1rem;
+    font-weight: 800;
+    width: 3.5rem;
+    text-align: center;
+    outline: none;
+    -moz-appearance: textfield;
+    padding: 0;
+}
+.ntc-input::-webkit-outer-spin-button,
+.ntc-input::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
+.ntc-input:focus { border-bottom-color: #fb923c; }
 .ntc-miband-input {
     font-size: 1.1rem;
     font-weight: 800;
