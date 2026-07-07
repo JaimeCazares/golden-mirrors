@@ -220,25 +220,42 @@ function girarRuleta() {
 }
 
 // ─── result ───────────────────────────────────────────────────────────────────
-function mostrarResultado(segIndex) {
-    const cat       = CATEGORIAS_RULETA[segIndex];
-    const lista     = ACTIVIDADES_RULETA[cat.key];
-    const actividad = lista[Math.floor(Math.random() * lista.length)];
+function mostrarResultado(segIndex, pickedIdx) {
+    const cat   = CATEGORIAS_RULETA[segIndex];
+    const lista = ACTIVIDADES_RULETA[cat.key];
+    const idx   = (pickedIdx !== undefined)
+                  ? pickedIdx
+                  : Math.floor(Math.random() * lista.length);
 
     const el = document.getElementById('ruleta-resultado');
     if (!el) return;
 
-    el.style.display    = 'block';
-    el.style.background = `linear-gradient(135deg, ${cat.color}28, ${cat.color}10)`;
-    el.style.borderColor = cat.color + '44';
+    el.style.display     = 'block';
+    el.style.background  = `linear-gradient(160deg, ${cat.color}22, ${cat.color}0a)`;
+    el.style.borderColor = `${cat.color}55`;
+
+    const actHtml = lista.map((act, i) => {
+        const sel = i === idx;
+        return `<div class="ruleta-act-item${sel ? ' ruleta-act-sel' : ''}"
+                     style="${sel
+                         ? `background:${cat.color}30;border-left-color:${cat.color};color:#f8fafc;font-weight:700`
+                         : `border-left-color:transparent;color:#94a3b8`}"
+                     onclick="window._rulePickAct(${segIndex},${i})">${act}</div>`;
+    }).join('');
 
     el.innerHTML = `
         <div class="ruleta-resultado-emoji">${cat.emoji}</div>
         <div class="ruleta-resultado-cat" style="color:${cat.color}">${cat.titulo}</div>
-        <div class="ruleta-resultado-actividad">${actividad}</div>
-        <button class="ruleta-otra-btn" style="color:${cat.color}"
-                onclick="mostrarResultado(${segIndex})">
-            Otra de esta categoría ↻
-        </button>
+        <div class="ruleta-act-destacada" style="border-color:${cat.color};color:#f8fafc">
+            ${lista[idx]}
+        </div>
+        <p class="ruleta-act-hint">Toca otra actividad si quieres cambiarla</p>
+        <div class="ruleta-act-lista">${actHtml}</div>
     `;
+
+    setTimeout(() => el.scrollIntoView({ behavior: 'smooth', block: 'start' }), 80);
 }
+
+window._rulePickAct = function (segIndex, idx) {
+    mostrarResultado(segIndex, idx);
+};

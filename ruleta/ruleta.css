@@ -107,35 +107,63 @@
 }
 
 .ruleta-resultado-emoji {
-    font-size: 2.8rem;
+    font-size: 2.4rem;
     line-height: 1;
-    margin-bottom: 8px;
+    margin-bottom: 6px;
 }
 .ruleta-resultado-cat {
     font-size: 0.68rem;
     font-weight: 800;
     letter-spacing: 0.14em;
     text-transform: uppercase;
-    margin-bottom: 12px;
+    margin-bottom: 10px;
     opacity: 0.9;
 }
-.ruleta-resultado-actividad {
-    font-size: 1.1rem;
-    font-weight: 700;
-    color: #f8fafc;
-    line-height: 1.45;
-    margin-bottom: 16px;
+
+/* Actividad destacada (la elegida al azar) */
+.ruleta-act-destacada {
+    font-size: 1.05rem;
+    font-weight: 800;
+    line-height: 1.4;
+    padding: 12px 14px;
+    border-radius: 12px;
+    border: 1.5px solid;
+    background: rgba(255,255,255,0.06);
+    margin-bottom: 10px;
+    text-align: left;
 }
-.ruleta-otra-btn {
-    padding: 8px 22px;
-    border-radius: 999px;
-    background: none;
-    border: 1.5px solid currentColor;
-    font-size: 0.82rem;
-    font-weight: 600;
+
+.ruleta-act-hint {
+    font-size: 0.7rem;
+    color: #475569;
+    margin-bottom: 8px;
+    text-align: center;
+}
+
+/* Lista de todas las actividades */
+.ruleta-act-lista {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    width: 100%;
+    text-align: left;
+}
+
+.ruleta-act-item {
+    padding: 9px 12px;
+    border-radius: 10px;
+    font-size: 0.83rem;
+    font-weight: 500;
     cursor: pointer;
-    opacity: 0.75;
-    transition: opacity 0.15s, transform 0.1s;
+    transition: background 0.15s, color 0.15s;
+    border-left: 3px solid transparent;
+    line-height: 1.35;
+    background: none;
+    border-top: none;
+    border-right: none;
+    border-bottom: none;
+    text-align: left;
+    width: 100%;
 }
-.ruleta-otra-btn:hover  { opacity: 1; }
-.ruleta-otra-btn:active { transform: scale(0.95); }
+.ruleta-act-item:hover { background: rgba(255,255,255,0.06) !important; }
+.ruleta-act-sel { border-radius: 10px; }
