@@ -604,28 +604,7 @@
 
 /* GYM + CAMINADORA — mismas tarjetas (.nutri-top-card) que el resto, 4 por fila */
 .nutri-camina-row { grid-template-columns: repeat(auto-fit, minmax(130px, 1fr)); margin-bottom: 6px; }
-.nutri-maquina-row {
-    display: flex;
-    flex-direction: column;
-    gap: 4px;
-}
-.nutri-maquina-btn {
-    background: rgba(255,255,255,0.06);
-    border: 1px solid rgba(255,255,255,0.14);
-    border-radius: 8px;
-    color: #c2cae0;
-    font-size: 0.72rem;
-    font-weight: 700;
-    padding: 4px 6px;
-    cursor: pointer;
-    text-align: left;
-    transition: background 0.2s, border-color 0.2s, color 0.2s;
-}
-.nutri-maquina-btn.activo {
-    background: rgba(74,222,128,0.18);
-    border-color: #4ade80;
-    color: #4ade80;
-}
+#n-maquina-txt { font-size: 0.78rem; white-space: nowrap; }
 .ntc-stepper-row {
     display: flex;
     align-items: center;

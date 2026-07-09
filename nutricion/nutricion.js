@@ -472,10 +472,10 @@ function nutriPintarCaminadora() {
     if (elV) elV.value = nutriCaminadora.velocidad.toFixed(1);
 
     const esCaminadora = nutriCaminadora.maquina !== 'escaladora';
-    const btnCamina = document.getElementById('n-maquina-caminadora');
-    const btnEscala = document.getElementById('n-maquina-escaladora');
-    if (btnCamina) btnCamina.classList.toggle('activo', esCaminadora);
-    if (btnEscala) btnEscala.classList.toggle('activo', !esCaminadora);
+    const elMaquinaCheck = document.getElementById('n-maquina-check');
+    const elMaquinaTxt = document.getElementById('n-maquina-txt');
+    if (elMaquinaCheck) elMaquinaCheck.checked = !esCaminadora;
+    if (elMaquinaTxt) elMaquinaTxt.textContent = esCaminadora ? '🏃 Caminadora' : '🧗 Escaladora';
 
     const cardInclinacion = document.getElementById('n-inclinacion-card');
     if (cardInclinacion) cardInclinacion.style.display = esCaminadora ? '' : 'none';

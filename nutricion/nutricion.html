@@ -180,9 +180,12 @@
 
         <div class="nutri-top-card" id="n-maquina-card">
           <div class="ntc-label">🚶 Máquina</div>
-          <div class="nutri-maquina-row">
-            <button type="button" class="nutri-maquina-btn" id="n-maquina-caminadora" onclick="nutriSetMaquina('caminadora')">🏃 Caminadora</button>
-            <button type="button" class="nutri-maquina-btn" id="n-maquina-escaladora" onclick="nutriSetMaquina('escaladora')">🧗 Escaladora</button>
+          <div class="nutri-gym-row">
+            <label class="nutri-gym-toggle">
+              <input type="checkbox" id="n-maquina-check" onchange="nutriSetMaquina(this.checked ? 'escaladora' : 'caminadora')">
+              <span class="nutri-gym-slider"></span>
+            </label>
+            <span class="nutri-gym-txt activo" id="n-maquina-txt">🏃 Caminadora</span>
           </div>
         </div>
 
