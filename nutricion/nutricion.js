@@ -188,15 +188,13 @@ function nutriRenderGraficaProgreso() {
     if (_nutriProgTab === 'deficit') {
         const valores = datos.map(d => (d.bmr + d.miband) - d.kcal_consumido);
         config = {
-            type: 'bar',
+            type: 'line',
             data: {
                 labels,
-                datasets: [{
-                    label: 'Déficit calórico',
-                    data: valores,
-                    backgroundColor: valores.map(v => v >= 0 ? 'rgba(74,222,128,0.7)' : 'rgba(248,113,113,0.7)'),
-                    borderRadius: 6,
-                }],
+                datasets: [
+                    { label: 'Déficit calórico', data: valores, borderColor: '#4ade80', backgroundColor: 'rgba(74,222,128,0.15)', tension: 0.35, fill: true, pointRadius: 3 },
+                    { label: 'Mínimo (1,200)',   data: valores.map(() => 1200), borderColor: '#f87171', borderDash: [5, 4], tension: 0, pointRadius: 0 },
+                ],
             },
         };
     } else if (_nutriProgTab === 'sueno') {
