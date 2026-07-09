@@ -449,6 +449,7 @@ async function nutriCargarFecha(fecha) {
     }
 
     nutriCaminadora = {
+        maquina:     (diaRes && diaRes.caminadora_tipo)        ? diaRes.caminadora_tipo                     : 'caminadora',
         inclinacion: (diaRes && diaRes.caminadora_inclinacion) ? parseFloat(diaRes.caminadora_inclinacion) : 0,
         tiempo:      (diaRes && diaRes.caminadora_tiempo)      ? parseInt(diaRes.caminadora_tiempo, 10)     : 0,
         velocidad:   (diaRes && diaRes.caminadora_velocidad)   ? parseFloat(diaRes.caminadora_velocidad)    : 0,
@@ -458,8 +459,8 @@ async function nutriCargarFecha(fecha) {
     renderPlanRoot();
 }
 
-// ── Caminadora (gym): inclinación / tiempo / velocidad ────
-let nutriCaminadora = { inclinacion: 0, tiempo: 0, velocidad: 0 };
+// ── Caminadora / escaladora (gym): máquina / inclinación / tiempo / velocidad ────
+let nutriCaminadora = { maquina: 'caminadora', inclinacion: 0, tiempo: 0, velocidad: 0 };
 let _nutriCaminadoraSaveTimer = null;
 
 function nutriPintarCaminadora() {
@@ -469,6 +470,36 @@ function nutriPintarCaminadora() {
     if (elI) elI.value = nutriCaminadora.inclinacion.toFixed(1);
     if (elT) elT.value = nutriCaminadora.tiempo;
     if (elV) elV.value = nutriCaminadora.velocidad.toFixed(1);
+
+    const esCaminadora = nutriCaminadora.maquina !== 'escaladora';
+    const btnCamina = document.getElementById('n-maquina-caminadora');
+    const btnEscala = document.getElementById('n-maquina-escaladora');
+    if (btnCamina) btnCamina.classList.toggle('activo', esCaminadora);
+    if (btnEscala) btnEscala.classList.toggle('activo', !esCaminadora);
+
+    const cardInclinacion = document.getElementById('n-inclinacion-card');
+    if (cardInclinacion) cardInclinacion.style.display = esCaminadora ? '' : 'none';
+}
+
+function nutriGuardarCaminadora() {
+    fetch(NUTRI_API, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+            accion: 'guardar_caminadora',
+            fecha: nutriFechaSel,
+            maquina: nutriCaminadora.maquina,
+            inclinacion: nutriCaminadora.inclinacion,
+            tiempo: nutriCaminadora.tiempo,
+            velocidad: nutriCaminadora.velocidad,
+        }),
+    }).catch(() => nutriToast('No se pudo guardar (sin conexión)'));
+}
+
+function nutriSetMaquina(tipo) {
+    nutriCaminadora.maquina = tipo;
+    nutriPintarCaminadora();
+    nutriGuardarCaminadora();
 }
 
 function nutriSetCaminadora(campo, rawVal) {
@@ -479,19 +510,7 @@ function nutriSetCaminadora(campo, rawVal) {
     nutriCaminadora[campo] = esEntero ? Math.round(val) : val;
     nutriPintarCaminadora();
     clearTimeout(_nutriCaminadoraSaveTimer);
-    _nutriCaminadoraSaveTimer = setTimeout(() => {
-        fetch(NUTRI_API, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-                accion: 'guardar_caminadora',
-                fecha: nutriFechaSel,
-                inclinacion: nutriCaminadora.inclinacion,
-                tiempo: nutriCaminadora.tiempo,
-                velocidad: nutriCaminadora.velocidad,
-            }),
-        }).catch(() => nutriToast('No se pudo guardar (sin conexión)'));
-    }, 500);
+    _nutriCaminadoraSaveTimer = setTimeout(nutriGuardarCaminadora, 500);
 }
 
 function nutriAjustarCaminadora(campo, delta) {
@@ -502,19 +521,7 @@ function nutriAjustarCaminadora(campo, delta) {
     nutriPintarCaminadora();
 
     clearTimeout(_nutriCaminadoraSaveTimer);
-    _nutriCaminadoraSaveTimer = setTimeout(() => {
-        fetch(NUTRI_API, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-                accion: 'guardar_caminadora',
-                fecha: nutriFechaSel,
-                inclinacion: nutriCaminadora.inclinacion,
-                tiempo: nutriCaminadora.tiempo,
-                velocidad: nutriCaminadora.velocidad,
-            }),
-        }).catch(() => nutriToast('No se pudo guardar (sin conexión)'));
-    }, 500);
+    _nutriCaminadoraSaveTimer = setTimeout(nutriGuardarCaminadora, 500);
 }
 
 function nutriGuardarDiaActual() {

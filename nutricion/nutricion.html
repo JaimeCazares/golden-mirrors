@@ -178,7 +178,15 @@
           </div>
         </div>
 
-        <div class="nutri-top-card">
+        <div class="nutri-top-card" id="n-maquina-card">
+          <div class="ntc-label">🚶 Máquina</div>
+          <div class="nutri-maquina-row">
+            <button type="button" class="nutri-maquina-btn" id="n-maquina-caminadora" onclick="nutriSetMaquina('caminadora')">🏃 Caminadora</button>
+            <button type="button" class="nutri-maquina-btn" id="n-maquina-escaladora" onclick="nutriSetMaquina('escaladora')">🧗 Escaladora</button>
+          </div>
+        </div>
+
+        <div class="nutri-top-card" id="n-inclinacion-card">
           <div class="ntc-label">📐 Inclinación</div>
           <div class="ntc-stepper-row">
             <button type="button" class="ntc-step-btn" onclick="nutriAjustarCaminadora('inclinacion', -0.5)">−</button>

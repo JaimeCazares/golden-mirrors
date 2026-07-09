@@ -42,10 +42,11 @@ $conexion->query("
 $conexion->query("ALTER TABLE nutricion_dias ADD COLUMN horas_sueno DECIMAL(3,1) DEFAULT NULL");
 $conexion->query("ALTER TABLE nutricion_dias ADD COLUMN gym TINYINT(1) DEFAULT 0");
 
-// Columnas de la caminadora (gym): inclinación en grados, tiempo en minutos, velocidad en km/h
+// Columnas de la caminadora/escaladora (gym): tipo de máquina, inclinación en grados, tiempo en minutos, velocidad en km/h
 $conexion->query("ALTER TABLE nutricion_dias ADD COLUMN caminadora_inclinacion DECIMAL(4,1) DEFAULT NULL");
 $conexion->query("ALTER TABLE nutricion_dias ADD COLUMN caminadora_tiempo INT DEFAULT NULL");
 $conexion->query("ALTER TABLE nutricion_dias ADD COLUMN caminadora_velocidad DECIMAL(4,1) DEFAULT NULL");
+$conexion->query("ALTER TABLE nutricion_dias ADD COLUMN caminadora_tipo VARCHAR(20) DEFAULT 'caminadora'");
 
 // Metas/BMR vigentes a partir de una fecha (histórico, no se modifica retroactivamente)
 $conexion->query("
@@ -85,7 +86,7 @@ if ($accion === 'obtener_fecha_inicio') {
 if ($accion === 'obtener_dia') {
     $fecha = $conexion->real_escape_string($_GET['fecha'] ?? date('Y-m-d'));
 
-    $res = $conexion->query("SELECT plan_json, suplementos_json, miband, horas_sueno, gym, caminadora_inclinacion, caminadora_tiempo, caminadora_velocidad FROM nutricion_dias WHERE fecha = '$fecha'");
+    $res = $conexion->query("SELECT plan_json, suplementos_json, miband, horas_sueno, gym, caminadora_inclinacion, caminadora_tiempo, caminadora_velocidad, caminadora_tipo FROM nutricion_dias WHERE fecha = '$fecha'");
     if ($res && $res->num_rows > 0) {
         $row = $res->fetch_assoc();
         echo json_encode([
@@ -97,10 +98,11 @@ if ($accion === 'obtener_dia') {
             'caminadora_inclinacion' => $row['caminadora_inclinacion'] !== null ? floatval($row['caminadora_inclinacion']) : 0,
             'caminadora_tiempo'      => $row['caminadora_tiempo']      !== null ? intval($row['caminadora_tiempo'])       : 0,
             'caminadora_velocidad'   => $row['caminadora_velocidad']   !== null ? floatval($row['caminadora_velocidad'])  : 0,
+            'caminadora_tipo'        => $row['caminadora_tipo']        ?: 'caminadora',
         ]);
     } else {
         echo json_encode(['plan' => null, 'suplementos' => [], 'miband' => 0, 'horas_sueno' => null, 'gym' => 0,
-            'caminadora_inclinacion' => 0, 'caminadora_tiempo' => 0, 'caminadora_velocidad' => 0]);
+            'caminadora_inclinacion' => 0, 'caminadora_tiempo' => 0, 'caminadora_velocidad' => 0, 'caminadora_tipo' => 'caminadora']);
     }
     exit;
 }
@@ -191,17 +193,18 @@ if ($accion === 'guardar_sueno_gym') {
     exit;
 }
 
-// POST: guardar inclinación/tiempo/velocidad de la caminadora del día
+// POST: guardar máquina/inclinación/tiempo/velocidad de la caminadora o escaladora del día
 if ($accion === 'guardar_caminadora') {
     $fecha       = $conexion->real_escape_string($input['fecha'] ?? date('Y-m-d'));
+    $maquina     = ($input['maquina'] ?? 'caminadora') === 'escaladora' ? 'escaladora' : 'caminadora';
     $inclinacion = floatval($input['inclinacion'] ?? 0);
     $tiempo      = intval($input['tiempo'] ?? 0);
     $velocidad   = floatval($input['velocidad'] ?? 0);
 
     $conexion->query("
-        INSERT INTO nutricion_dias (fecha, caminadora_inclinacion, caminadora_tiempo, caminadora_velocidad)
-        VALUES ('$fecha', $inclinacion, $tiempo, $velocidad)
-        ON DUPLICATE KEY UPDATE caminadora_inclinacion = $inclinacion, caminadora_tiempo = $tiempo, caminadora_velocidad = $velocidad
+        INSERT INTO nutricion_dias (fecha, caminadora_tipo, caminadora_inclinacion, caminadora_tiempo, caminadora_velocidad)
+        VALUES ('$fecha', '$maquina', $inclinacion, $tiempo, $velocidad)
+        ON DUPLICATE KEY UPDATE caminadora_tipo = '$maquina', caminadora_inclinacion = $inclinacion, caminadora_tiempo = $tiempo, caminadora_velocidad = $velocidad
     ");
     echo json_encode(['status' => 'ok']);
     exit;
