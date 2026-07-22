@@ -296,8 +296,8 @@ function hbRenderChart() {
     if (hbChart) hbChart.destroy();
 
     const gradient = ctx.createLinearGradient(0, 0, 0, 160);
-    gradient.addColorStop(0, 'rgba(0,217,255,0.35)');
-    gradient.addColorStop(1, 'rgba(0,217,255,0)');
+    gradient.addColorStop(0, 'rgba(239,68,68,0.35)');
+    gradient.addColorStop(1, 'rgba(239,68,68,0)');
 
     hbChart = new Chart(ctx, {
         type: 'line',
@@ -305,12 +305,12 @@ function hbRenderChart() {
             labels,
             datasets: [{
                 data: valores,
-                borderColor: '#00d9ff',
+                borderColor: '#ef4444',
                 backgroundColor: gradient,
                 borderWidth: 2,
                 pointRadius: 0,
                 pointHoverRadius: 4,
-                pointBackgroundColor: '#00d9ff',
+                pointBackgroundColor: '#ef4444',
                 tension: 0.35,
                 fill: true,
             }]
@@ -323,8 +323,8 @@ function hbRenderChart() {
                 tooltip: { callbacks: { label: (c) => `${c.parsed.y}% completado` } }
             },
             scales: {
-                x: { grid: { display: false }, ticks: { color: '#64748b', font: { size: 9 }, maxTicksLimit: 8 } },
-                y: { min: 0, max: 100, grid: { color: 'rgba(255,255,255,0.06)' }, ticks: { color: '#64748b', font: { size: 9 }, callback: v => v + '%' } }
+                x: { grid: { display: false }, ticks: { color: '#8b8b93', font: { size: 9 }, maxTicksLimit: 8 } },
+                y: { min: 0, max: 100, grid: { color: 'rgba(255,255,255,0.06)' }, ticks: { color: '#8b8b93', font: { size: 9 }, callback: v => v + '%' } }
             }
         }
     });
