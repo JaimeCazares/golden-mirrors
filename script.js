@@ -24,12 +24,13 @@ async function cambiarPestana(nombre) {
 
     const mapa = {
         nutricion: 0,
-        inicio: 1,
-        escalera: 2,
-        espejo: 3,
-        registro: 4,
-        ruleta: 5,
-        clientes: 6
+        habitos: 1,
+        inicio: 2,
+        escalera: 3,
+        espejo: 4,
+        registro: 5,
+        ruleta: 6,
+        clientes: 7
     };
 
     document.querySelectorAll('.nav-btn')[mapa[nombre]]
@@ -209,6 +210,35 @@ async function cambiarPestana(nombre) {
                 modulosCargados['nutricion'] = true;
             } else {
                 if (typeof initNutricion === 'function') initNutricion();
+            }
+        }
+
+        // === HABITOS ===
+        if (nombre === 'habitos') {
+            if (!modulosCargados['habitos']) {
+                const scripts = [];
+                if (typeof window.Chart === 'undefined') {
+                    scripts.push('https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js');
+                }
+                scripts.push('habitos/habitos.js');
+
+                let cargados = 0;
+
+                scripts.forEach(src => {
+                    const s = document.createElement('script');
+                    s.src = `${src}?v=${Date.now()}`;
+                    s.onload = () => {
+                        cargados++;
+                        if (cargados === scripts.length) {
+                            if (typeof initHabitos === 'function') initHabitos();
+                        }
+                    };
+                    document.body.appendChild(s);
+                });
+
+                modulosCargados['habitos'] = true;
+            } else {
+                if (typeof initHabitos === 'function') initHabitos();
             }
         }
 

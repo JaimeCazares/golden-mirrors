@@ -1,0 +1,56 @@
+<div class="hb-wrap" id="hb-wrap">
+
+  <div class="hb-header">
+    <div class="hb-title-group">
+      <h2 class="hb-title">✅ Hábitos</h2>
+      <p class="hb-sub" id="hb-fecha-label"></p>
+    </div>
+  </div>
+
+  <div class="hb-stats" id="hb-stats"></div>
+
+  <!-- SELECTOR DE FECHAS -->
+  <div class="hb-dias-wrap">
+    <div class="hb-dias-mes-row">
+      <button type="button" class="hb-mes-nav-btn" onclick="hbCambiarMes(-1)" title="Mes anterior">‹</button>
+      <span class="hb-dias-mes" id="hb-dias-mes"></span>
+      <button type="button" class="hb-mes-nav-btn" onclick="hbCambiarMes(1)" title="Mes siguiente">›</button>
+    </div>
+    <div class="hb-dias-strip" id="hb-dias-strip"></div>
+  </div>
+
+  <!-- CHECKLIST RÁPIDO DEL DÍA SELECCIONADO -->
+  <div class="hb-hoy-card">
+    <div class="hb-hoy-head">
+      <span class="hb-hoy-titulo">Marcar del día</span>
+      <span class="hb-hoy-pct" id="hb-hoy-pct">0%</span>
+    </div>
+    <div class="hb-hoy-bar"><div class="hb-hoy-bar-fill" id="hb-hoy-bar-fill"></div></div>
+    <div class="hb-hoy-list" id="hb-hoy-list"></div>
+  </div>
+
+  <!-- PROGRESO DEL MES -->
+  <div class="hb-progreso">
+    <div class="hb-progreso-head">
+      <span class="hb-progreso-titulo">📈 Progreso del mes</span>
+    </div>
+    <div class="hb-progreso-chart-wrap">
+      <canvas id="hb-prog-canvas"></canvas>
+    </div>
+  </div>
+
+  <!-- GRADO DE HÁBITOS (GRID MENSUAL) -->
+  <div class="hb-grid-section">
+    <div class="hb-grid-head">
+      <span>🗓️ Grado de hábitos</span>
+      <div class="hb-grid-legend">
+        <span><i class="hb-legend-dot hb-legend-on"></i>Cumplido</span>
+        <span><i class="hb-legend-dot hb-legend-off"></i>Pendiente</span>
+      </div>
+    </div>
+    <div class="hb-grid-scroll">
+      <table class="hb-grid-table" id="hb-grid-table"></table>
+    </div>
+  </div>
+
+</div>
