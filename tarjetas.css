@@ -1306,15 +1306,16 @@
   .sc-mini-col .format-visual {
     flex: 1;
     min-height: 0;
-    margin: 2px 0;
+    margin: 1px 0;
     display: flex; flex-direction: column;
     border-radius: 8px; overflow: hidden;
   }
-  .sc-mini-col .format-header { padding: 3px 8px; }
-  .sc-mini-col .format-body { padding: 5px 8px; gap: 4px; }
-  .sc-mini-col .format-title-bar { font-size: 9.5px; }
-  .sc-mini-col .format-label { font-size: 9.5px; }
-  .sc-mini-col .format-step { font-size: 8px; padding: 2px 5px; }
+  .sc-mini-col .format-header { padding: 2px 8px; }
+  .sc-mini-col .format-body { padding: 3px 8px; gap: 2px; }
+  .sc-mini-col .format-title-bar { font-size: 9px; }
+  .sc-mini-col .format-label { font-size: 9px; }
+  .sc-mini-col .format-bar-wrap { height: 5px; }
+  .sc-mini-col .format-step { font-size: 7.5px; padding: 1px 5px; }
   /* Office (2°) — logos tamaño justo */
   .sc-mini-col .office-logos {
     flex: 1;
