@@ -23,6 +23,7 @@ if (empty($_SESSION['rol']) || $_SESSION['rol'] !== 'admin') {
   <link rel="stylesheet" href="<?php echo assetV('style.css'); ?>">
   <link rel="stylesheet" href="<?php echo assetV('kg/kg.css'); ?>">
   <link rel="stylesheet" href="<?php echo assetV('deuda/deuda.css'); ?>">
+  <link rel="stylesheet" href="<?php echo assetV('att/att.css'); ?>">
   <link rel="stylesheet" href="<?php echo assetV('escalera/escalera.css'); ?>">
   <link rel="stylesheet" href="espejo/css/espejo-layout.css">
   <link rel="stylesheet" href="espejo/css/espejo-ui.css">
@@ -38,6 +39,7 @@ if (empty($_SESSION['rol']) || $_SESSION['rol'] !== 'admin') {
 
   <section id="vista-inicio" class="vista-principal activa">
     <div id="deuda-wrapper"></div>
+    <div id="att-wrapper"></div>
     <div id="kg-wrapper"></div>
     <div id="gastos-container"></div>
 </section>
@@ -117,6 +119,14 @@ if (empty($_SESSION['rol']) || $_SESSION['rol'] !== 'admin') {
         let s = document.createElement('script');
         s.src = 'deuda/deuda.js?v=' + Date.now();
         s.onload = () => { if (typeof initDeuda === 'function') initDeuda() };
+        document.body.appendChild(s);
+    });
+
+    fetch('att/att.html').then(r => r.text()).then(h => {
+        document.getElementById('att-wrapper').innerHTML = h;
+        let s = document.createElement('script');
+        s.src = 'att/att.js?v=' + Date.now();
+        s.onload = () => { if (typeof initAtt === 'function') initAtt() };
         document.body.appendChild(s);
     });
 
