@@ -1,10 +1,52 @@
 <div class="att-wrap" id="att-wrap">
 
-  <div class="att-header">
-    <h2 class="att-title">📶 AT&amp;T</h2>
-    <div class="att-contador" id="attContador">0 días</div>
+  <!-- FONDO DE VIDEO ANIMADO (mismo banco de paisajes que Nutrición) -->
+  <div class="att-scene" id="att-scene">
+    <div class="att-layer att-layer-lluvia" data-theme-layer="lluvia">
+      <video class="att-video-bg" loop muted playsinline preload="none" data-src="nutricion/videos/lluvia2.mp4"></video>
+      <div class="att-photo-overlay att-overlay-lluvia"></div>
+    </div>
+    <div class="att-layer att-layer-otono" data-theme-layer="otono">
+      <video class="att-video-bg" loop muted playsinline preload="none" data-src="nutricion/videos/otono.mp4"></video>
+      <div class="att-photo-overlay att-overlay-otono"></div>
+    </div>
+    <div class="att-layer att-layer-playa" data-theme-layer="playa">
+      <video class="att-video-bg" loop muted playsinline preload="none" data-src="nutricion/videos/playa.mp4"></video>
+      <div class="att-photo-overlay att-overlay-playa"></div>
+    </div>
+    <div class="att-layer att-layer-aurora" data-theme-layer="aurora">
+      <video class="att-video-bg" loop muted playsinline preload="none" data-src="nutricion/videos/aurora.mp4"></video>
+      <div class="att-photo-overlay att-overlay-aurora"></div>
+    </div>
+    <div class="att-layer att-layer-nieve" data-theme-layer="nieve">
+      <video class="att-video-bg" loop muted playsinline preload="none" data-src="nutricion/videos/nieve.mp4"></video>
+      <div class="att-photo-overlay att-overlay-nieve"></div>
+    </div>
+    <div class="att-layer att-layer-atardecer" data-theme-layer="atardecer">
+      <video class="att-video-bg" loop muted playsinline preload="none" data-src="nutricion/videos/atardecer.mp4"></video>
+      <div class="att-photo-overlay att-overlay-atardecer"></div>
+    </div>
+    <div class="att-vignette"></div>
   </div>
 
-  <div class="att-semanas" id="attSemanas"></div>
+  <div class="att-content">
 
+    <div class="att-header">
+      <div class="att-header-left">
+        <h2 class="att-title">📶 AT&amp;T</h2>
+        <div class="att-contador" id="attContador">0 días</div>
+      </div>
+
+      <div class="att-theme-wrap">
+        <button type="button" class="att-theme-btn" id="att-theme-btn" onclick="attToggleThemeMenu()" title="Cambiar paisaje">
+          <span class="attb-glow"></span>
+          <span class="attb-emoji" id="att-theme-btn-emoji">🌌</span>
+        </button>
+        <div class="att-theme-menu" id="att-theme-menu"></div>
+      </div>
+    </div>
+
+    <div class="att-semanas" id="attSemanas"></div>
+
+  </div>
 </div>
