@@ -1,42 +1,44 @@
-/* ── att/att.css — Calendario semanal de AT&T ──
-   Mismo lenguaje visual que deudas.css: tarjeta oscura, acento cyan,
-   y verde para lo ya marcado. */
+/* ── att/att.css — Pestaña AT&T: calendario semanal ──
+   Misma estructura de página completa que clientes.css / habitos.css:
+   fondo oscuro, scroll propio y espacio arriba para el dock-nav flotante. */
 
-.att-container {
-  background: #0b111e;
-  border: 2px solid #1e293b;
-  border-radius: 12px;
-  padding: 12px 14px;
-  color: white;
-  width: 100%;
-  box-sizing: border-box;
-  box-shadow: 0 0 15px rgba(0, 217, 255, 0.05);
+.att-wrap {
+  height: 100%;
   display: flex;
   flex-direction: column;
-  gap: 12px;
+  background: #0b111e;
+  color: #e2e8f0;
+  font-family: "Poppins", sans-serif;
+  overflow-y: auto;
+  /* padding-top despeja el dock-nav flotante (fixed, arriba a la derecha) */
+  padding: 68px 16px 100px;
+  box-sizing: border-box;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(0, 217, 255, 0.25) transparent;
 }
 
-.att-header-inline {
+.att-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  gap: 8px;
+  gap: 10px;
+  flex-wrap: wrap;
+  margin-bottom: 16px;
 }
 
-.att-titulo {
+.att-title {
   margin: 0;
-  font-size: 15px;
-  letter-spacing: 1px;
-  color: #00d9ff;
+  font-size: 1.25rem;
   font-weight: 800;
-  text-transform: uppercase;
+  color: #00d9ff;
+  letter-spacing: 0.5px;
 }
 
 .att-contador {
   font-weight: bold;
-  font-size: 11px;
-  padding: 6px 10px;
-  border-radius: 6px;
+  font-size: 12px;
+  padding: 6px 12px;
+  border-radius: 8px;
   background: linear-gradient(145deg, #ffcc00, #b38f00);
   color: #222;
   white-space: nowrap;
@@ -45,22 +47,22 @@
 .att-semanas {
   display: flex;
   flex-direction: column;
-  gap: 10px;
+  gap: 14px;
 }
 
 .att-semana-label {
-  font-size: 11px;
+  font-size: 12px;
   font-weight: 700;
   color: #94a3b8;
   text-transform: uppercase;
   letter-spacing: 0.05em;
-  margin-bottom: 4px;
+  margin-bottom: 6px;
 }
 
 .att-dias-grid {
   display: grid;
   grid-template-columns: repeat(7, 1fr);
-  gap: 6px;
+  gap: 8px;
   width: 100%;
 }
 
@@ -71,8 +73,8 @@
   justify-content: center;
   background: #111827;
   border: 1px solid #1e293b;
-  border-radius: 8px;
-  padding: 8px 2px;
+  border-radius: 10px;
+  padding: 12px 2px;
   cursor: pointer;
   user-select: none;
   transition: all 0.2s ease;
@@ -80,36 +82,38 @@
 
 .att-dia:hover {
   background: #1a2436;
+  transform: translateY(-1px);
 }
 
 .att-dia .att-dia-dow {
-  font-size: 0.55rem;
+  font-size: 0.62rem;
   color: #64748b;
   text-transform: uppercase;
   font-weight: 600;
 }
 
 .att-dia .att-dia-num {
-  font-size: 0.9rem;
+  font-size: 1.05rem;
   font-weight: 800;
   color: #e5e5e8;
-  margin: 2px 0;
+  margin: 3px 0;
 }
 
 .att-dia .att-dia-mes {
-  font-size: 0.5rem;
+  font-size: 0.55rem;
   color: #475569;
   text-transform: uppercase;
 }
 
 .att-dia.hoy {
   border-color: #00d9ff;
+  box-shadow: 0 0 8px rgba(0, 217, 255, 0.35);
 }
 
 .att-dia.on {
   background: linear-gradient(145deg, #00ff66, #008f44);
   border-color: transparent;
-  box-shadow: 0 0 6px rgba(0, 255, 100, 0.5);
+  box-shadow: 0 0 8px rgba(0, 255, 100, 0.5);
 }
 
 .att-dia.on .att-dia-dow,
@@ -122,30 +126,29 @@
    DISEÑO MÓVIL
    ========================================= */
 @media (max-width: 600px) {
-  .att-container {
-    padding: 10px 12px;
-    gap: 10px;
+  .att-wrap {
+    padding: 60px 10px 100px;
   }
 
-  .att-titulo {
-    font-size: 13px;
+  .att-title {
+    font-size: 1.05rem;
   }
 
   .att-contador {
     font-size: 10px;
-    padding: 5px 8px;
+    padding: 5px 9px;
   }
 
   .att-dias-grid {
-    gap: 4px;
+    gap: 5px;
   }
 
   .att-dia {
-    padding: 6px 1px;
-    border-radius: 6px;
+    padding: 8px 1px;
+    border-radius: 8px;
   }
 
   .att-dia .att-dia-num {
-    font-size: 0.78rem;
+    font-size: 0.88rem;
   }
 }

@@ -61,7 +61,7 @@ body {
 }
 
 /* Y para asegurar que cada "wrapper" o contenedor no colapse: */
-#kg-wrapper, #deuda-wrapper, #att-wrapper, #gastos-container {
+#kg-wrapper, #deuda-wrapper, #gastos-container {
     width: 100%;
     display: flex;
     justify-content: center; /* Centra el contenido interior */
@@ -230,7 +230,7 @@ body {
 }
 
 /* Los contenedores invisibles de cada módulo */
-#kg-wrapper, #deuda-wrapper, #att-wrapper, #gastos-container {
+#kg-wrapper, #deuda-wrapper, #gastos-container {
     position: relative !important;
     width: 100% !important;
     display: flex !important;
@@ -240,7 +240,7 @@ body {
 }
 
 /* LA BALA DE PLATA: Obliga a todas las tarjetas internas a respetar el espacio */
-#kg-wrapper > *, #deuda-wrapper > *, #att-wrapper > *, #gastos-container > * {
+#kg-wrapper > *, #deuda-wrapper > *, #gastos-container > * {
     position: relative !important; 
     top: auto !important;
     bottom: auto !important;
