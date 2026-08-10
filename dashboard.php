@@ -95,8 +95,8 @@ if (empty($_SESSION['rol']) || $_SESSION['rol'] !== 'admin') {
           </button>
 
           <button class="nav-btn" onclick="cambiarPestana('att')">
-              <span class="icono">📶</span>
-              <span class="label">AT&amp;T</span>
+              <span class="icono">🗓️</span>
+              <span class="label">Proyecto</span>
           </button>
       </div>
   </nav>

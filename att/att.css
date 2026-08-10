@@ -128,11 +128,11 @@
   font-size: 11px;
   padding: 5px 11px;
   border-radius: 999px;
-  background: rgba(255, 204, 0, 0.16);
-  border: 1px solid rgba(255, 204, 0, 0.45);
+  background: rgba(255, 204, 0, 0.08);
+  border: 1px solid rgba(255, 204, 0, 0.3);
   color: #ffe28a;
-  backdrop-filter: blur(8px);
-  -webkit-backdrop-filter: blur(8px);
+  backdrop-filter: blur(5px);
+  -webkit-backdrop-filter: blur(5px);
   white-space: nowrap;
 }
 
@@ -142,10 +142,10 @@
   position: relative;
   width: 42px; height: 42px;
   border-radius: 50%;
-  border: 1.5px solid rgba(255,255,255,0.28);
-  background: rgba(255,255,255,0.10);
-  backdrop-filter: blur(8px);
-  -webkit-backdrop-filter: blur(8px);
+  border: 1.5px solid rgba(255,255,255,0.2);
+  background: rgba(255,255,255,0.05);
+  backdrop-filter: blur(5px);
+  -webkit-backdrop-filter: blur(5px);
   display: flex; align-items: center; justify-content: center;
   font-size: 1.1rem;
   cursor: pointer;
@@ -256,19 +256,19 @@
   min-height: 0;
 }
 
-/* ─ Cuadro de día (vidrio, bien transparente) ─ */
+/* ─ Cuadro de día (vidrio, muy transparente) ─ */
 .att-dia {
   position: relative;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  background: rgba(255,255,255,0.045);
-  border: 1px solid rgba(255,255,255,0.14);
+  background: rgba(255,255,255,0.025);
+  border: 1px solid rgba(255,255,255,0.10);
   border-radius: 12px;
-  backdrop-filter: blur(5px) saturate(1.4);
-  -webkit-backdrop-filter: blur(5px) saturate(1.4);
-  box-shadow: inset 0 1px 0 rgba(255,255,255,0.10), 0 2px 8px rgba(0,0,0,0.12);
+  backdrop-filter: blur(3px) saturate(1.3);
+  -webkit-backdrop-filter: blur(3px) saturate(1.3);
+  box-shadow: inset 0 1px 0 rgba(255,255,255,0.08), 0 2px 8px rgba(0,0,0,0.10);
   cursor: pointer;
   user-select: none;
   transition: transform 0.15s ease, background 0.2s ease, border-color 0.2s ease, box-shadow 0.25s ease;
@@ -277,7 +277,7 @@
   min-width: 0;
 }
 .att-dia:hover {
-  background: rgba(255,255,255,0.09);
+  background: rgba(255,255,255,0.06);
   transform: translateY(-2px);
 }
 .att-dia:active { transform: scale(0.94); }
@@ -319,36 +319,38 @@
   transform: none;
 }
 
-/* ─ Día marcado (verde neón, moviéndose) ─ */
+/* ─ Día marcado (verde éxito, ondas moviéndose por dentro) ─ */
 .att-dia.on {
-  background: linear-gradient(120deg, #00ffa6, #00e5ff, #39ff6b, #00ffa6);
-  background-size: 300% 300%;
-  border-color: rgba(190,255,230,0.85);
-  animation: attNeonMove 3.2s ease-in-out infinite, attNeonPulso 1.7s ease-in-out infinite;
+  background-color: rgba(22, 163, 74, 0.55);
+  background-image:
+    radial-gradient(circle at 25% 25%, rgba(255,255,255,0.30), transparent 45%),
+    radial-gradient(circle at 75% 70%, rgba(255,255,255,0.20), transparent 50%),
+    radial-gradient(circle at 50% 50%, rgba(74,222,128,0.55), transparent 62%);
+  background-size: 220% 220%, 260% 260%, 190% 190%;
+  background-position: 20% 20%, 80% 80%, 50% 50%;
+  border-color: rgba(220,255,235,0.55);
+  box-shadow: inset 0 1px 0 rgba(255,255,255,0.22);
+  animation: attOndas 7s ease-in-out infinite;
 }
 .att-dia.on .att-dia-dow,
 .att-dia.on .att-dia-num,
 .att-dia.on .att-dia-mes {
-  color: #04220f;
-  text-shadow: none;
+  color: #eafff0;
+  text-shadow: 0 1px 3px rgba(0,40,15,0.4);
 }
-@keyframes attNeonMove {
-  0%   { background-position: 0% 50%; }
-  50%  { background-position: 100% 50%; }
-  100% { background-position: 0% 50%; }
-}
-@keyframes attNeonPulso {
-  0%, 100% { box-shadow: 0 0 10px rgba(0,255,166,0.55), 0 0 22px rgba(0,255,166,0.3), inset 0 1px 0 rgba(255,255,255,0.45); }
-  50%      { box-shadow: 0 0 20px rgba(57,255,107,0.9),  0 0 40px rgba(0,229,255,0.5), inset 0 1px 0 rgba(255,255,255,0.55); }
+@keyframes attOndas {
+  0%   { background-position: 15% 15%, 85% 85%, 40% 60%; }
+  50%  { background-position: 40% 55%, 60% 35%, 65% 40%; }
+  100% { background-position: 15% 15%, 85% 85%, 40% 60%; }
 }
 
-/* Animación al marcar: rebote corto + partículas "desbloqueado" (ver att.js) */
+/* Animación al marcar: rebote corto (las ondas ya animan solas via .on) */
 .att-dia.att-pop {
-  animation: attPop 0.4s cubic-bezier(.34, 1.56, .64, 1), attNeonMove 3.2s ease-in-out infinite, attNeonPulso 1.7s ease-in-out infinite;
+  animation: attPop 0.4s cubic-bezier(.34, 1.56, .64, 1);
 }
 @keyframes attPop {
   0%   { transform: scale(1); }
-  45%  { transform: scale(1.2); }
+  45%  { transform: scale(1.15); }
   100% { transform: scale(1); }
 }
 
@@ -357,11 +359,11 @@
   position: absolute;
   top: 50%;
   left: 50%;
-  width: 6px;
-  height: 6px;
+  width: 5px;
+  height: 5px;
   border-radius: 50%;
-  background: radial-gradient(circle, #e8fff5 0%, #39ff9d 55%, transparent 100%);
-  box-shadow: 0 0 6px 1px rgba(57,255,157,0.9);
+  background: radial-gradient(circle, #eafff0 0%, #4ade80 55%, transparent 100%);
+  box-shadow: 0 0 5px 1px rgba(74,222,128,0.8);
   pointer-events: none;
   z-index: 6;
   transform: translate(-50%, -50%) scale(1);
