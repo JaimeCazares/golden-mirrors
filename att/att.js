@@ -116,7 +116,7 @@ function attActualizarContador() {
 }
 
 // Alterna un día sin volver a dibujar toda la cuadrícula, así la
-// animación de "pop" solo se ve en el cuadro que se acaba de tocar.
+// animación solo se ve en el cuadro que se acaba de tocar.
 function attToggleDia(fStr, el) {
     if (!el) return;
     const activo = attSeleccionados.has(fStr);
@@ -124,12 +124,14 @@ function attToggleDia(fStr, el) {
     if (activo) {
         attSeleccionados.delete(fStr);
         el.classList.remove('on', 'att-pop');
+        el.querySelectorAll('.att-particula').forEach(p => p.remove());
     } else {
         attSeleccionados.add(fStr);
         el.classList.add('on');
         el.classList.remove('att-pop');
         void el.offsetWidth; // reinicia la animación aunque se repita la clase
         el.classList.add('att-pop');
+        attLanzarParticulas(el);
     }
 
     attActualizarContador();
@@ -139,6 +141,26 @@ function attToggleDia(fStr, el) {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ fecha: fStr, seleccionado: activo ? 0 : 1 })
     }).catch(e => console.error('Error guardando AT&T', e));
+}
+
+// Efecto "desbloqueado": bolitas que salen disparadas del centro del
+// cuadro hacia afuera, en círculo, y se desvanecen.
+function attLanzarParticulas(el) {
+    const n = 10;
+    for (let i = 0; i < n; i++) {
+        const ang = (Math.PI * 2 * i) / n + (Math.random() * 0.5 - 0.25);
+        const dist = 20 + Math.random() * 22;
+        const dx = Math.cos(ang) * dist;
+        const dy = Math.sin(ang) * dist;
+
+        const p = document.createElement('span');
+        p.className = 'att-particula';
+        p.style.setProperty('--dx', dx.toFixed(1) + 'px');
+        p.style.setProperty('--dy', dy.toFixed(1) + 'px');
+        p.style.animationDelay = (Math.random() * 0.06).toFixed(2) + 's';
+        p.addEventListener('animationend', () => p.remove());
+        el.appendChild(p);
+    }
 }
 
 // ══════════════════════════════════════════════════════

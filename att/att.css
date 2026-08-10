@@ -256,28 +256,28 @@
   min-height: 0;
 }
 
-/* ─ Cuadro de día (vidrio) ─ */
+/* ─ Cuadro de día (vidrio, bien transparente) ─ */
 .att-dia {
   position: relative;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  background: rgba(255,255,255,0.08);
-  border: 1px solid rgba(255,255,255,0.16);
+  background: rgba(255,255,255,0.045);
+  border: 1px solid rgba(255,255,255,0.14);
   border-radius: 12px;
-  backdrop-filter: blur(10px) saturate(1.3);
-  -webkit-backdrop-filter: blur(10px) saturate(1.3);
-  box-shadow: inset 0 1px 0 rgba(255,255,255,0.12), 0 2px 8px rgba(0,0,0,0.18);
+  backdrop-filter: blur(5px) saturate(1.4);
+  -webkit-backdrop-filter: blur(5px) saturate(1.4);
+  box-shadow: inset 0 1px 0 rgba(255,255,255,0.10), 0 2px 8px rgba(0,0,0,0.12);
   cursor: pointer;
   user-select: none;
   transition: transform 0.15s ease, background 0.2s ease, border-color 0.2s ease, box-shadow 0.25s ease;
-  overflow: hidden;
+  overflow: visible;
   min-height: 0;
   min-width: 0;
 }
 .att-dia:hover {
-  background: rgba(255,255,255,0.15);
+  background: rgba(255,255,255,0.09);
   transform: translateY(-2px);
 }
 .att-dia:active { transform: scale(0.94); }
@@ -319,42 +319,58 @@
   transform: none;
 }
 
-/* ─ Día marcado (verde hermoso) ─ */
+/* ─ Día marcado (verde neón, moviéndose) ─ */
 .att-dia.on {
-  background: linear-gradient(150deg, #34ffa0, #00c46e 60%, #00a35c);
-  border-color: rgba(180,255,215,0.7);
-  box-shadow: 0 0 20px rgba(52,255,160,0.55), inset 0 1px 0 rgba(255,255,255,0.4);
+  background: linear-gradient(120deg, #00ffa6, #00e5ff, #39ff6b, #00ffa6);
+  background-size: 300% 300%;
+  border-color: rgba(190,255,230,0.85);
+  animation: attNeonMove 3.2s ease-in-out infinite, attNeonPulso 1.7s ease-in-out infinite;
 }
 .att-dia.on .att-dia-dow,
 .att-dia.on .att-dia-num,
 .att-dia.on .att-dia-mes {
-  color: #052e17;
+  color: #04220f;
   text-shadow: none;
 }
+@keyframes attNeonMove {
+  0%   { background-position: 0% 50%; }
+  50%  { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+@keyframes attNeonPulso {
+  0%, 100% { box-shadow: 0 0 10px rgba(0,255,166,0.55), 0 0 22px rgba(0,255,166,0.3), inset 0 1px 0 rgba(255,255,255,0.45); }
+  50%      { box-shadow: 0 0 20px rgba(57,255,107,0.9),  0 0 40px rgba(0,229,255,0.5), inset 0 1px 0 rgba(255,255,255,0.55); }
+}
 
-/* Animación al marcar (solo se dispara en el clic, ver att.js) */
+/* Animación al marcar: rebote corto + partículas "desbloqueado" (ver att.js) */
 .att-dia.att-pop {
-  animation: attPop 0.5s cubic-bezier(.34, 1.56, .64, 1);
+  animation: attPop 0.4s cubic-bezier(.34, 1.56, .64, 1), attNeonMove 3.2s ease-in-out infinite, attNeonPulso 1.7s ease-in-out infinite;
 }
 @keyframes attPop {
   0%   { transform: scale(1); }
-  40%  { transform: scale(1.22) rotate(-3deg); }
-  70%  { transform: scale(0.94) rotate(2deg); }
-  100% { transform: scale(1) rotate(0deg); }
+  45%  { transform: scale(1.2); }
+  100% { transform: scale(1); }
 }
-.att-dia.att-pop::after {
-  content: '';
+
+/* Partículas que salen disparadas hacia afuera al desbloquear un día */
+.att-particula {
   position: absolute;
-  inset: -8px;
-  border-radius: inherit;
-  border: 2px solid rgba(74, 222, 128, 0.9);
-  opacity: 0.9;
-  animation: attRing 0.55s ease-out forwards;
+  top: 50%;
+  left: 50%;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: radial-gradient(circle, #e8fff5 0%, #39ff9d 55%, transparent 100%);
+  box-shadow: 0 0 6px 1px rgba(57,255,157,0.9);
   pointer-events: none;
+  z-index: 6;
+  transform: translate(-50%, -50%) scale(1);
+  opacity: 1;
+  animation: attParticula 0.65s ease-out forwards;
 }
-@keyframes attRing {
-  0%   { opacity: 0.9; transform: scale(0.85); }
-  100% { opacity: 0;   transform: scale(1.35); }
+@keyframes attParticula {
+  0%   { opacity: 1; transform: translate(-50%, -50%) scale(1); }
+  100% { opacity: 0; transform: translate(calc(-50% + var(--dx)), calc(-50% + var(--dy))) scale(0.2); }
 }
 
 /* =========================================
