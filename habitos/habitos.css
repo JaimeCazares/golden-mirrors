@@ -19,8 +19,8 @@
     color: #f2f2f4;
     font-family: "Poppins", "Segoe UI", sans-serif;
     overflow-y: auto;
-    /* padding-top despeja el dock-nav flotante (fixed, arriba a la derecha) */
-    padding: 68px 16px 100px;
+    /* padding-bottom despeja el dock-nav flotante (fixed, abajo a la derecha) */
+    padding: 16px 16px 100px;
     box-sizing: border-box;
     scrollbar-width: thin;
     scrollbar-color: rgba(239,68,68,0.3) transparent;
@@ -231,7 +231,7 @@
 
 /* ─ Responsive ─ */
 @media (max-width: 480px) {
-    .hb-wrap { padding: 60px 10px 90px; }
+    .hb-wrap { padding: 10px 10px 90px; }
     .hb-stats { gap: 6px; }
     .hb-stat { padding: 8px 10px; }
     .hb-stat-n { font-size: 1.05rem; }

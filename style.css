@@ -89,7 +89,7 @@ body {
 /* --- DOCK DE NAVEGACIÓN --- */
 .dock-nav {
     position: fixed;
-    top: 12px;
+    bottom: 12px;
     right: 12px;
 
     background: rgba(15, 15, 30, 0.9) !important;
@@ -204,7 +204,7 @@ body {
 /* RESPONSIVE */
 @media (max-width: 450px) {
     .dock-nav {
-        top: 8px;
+        bottom: 8px;
         right: 8px;
         width: auto;
         justify-content: space-around;

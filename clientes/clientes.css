@@ -8,8 +8,8 @@
     color: #e2e8f0;
     font-family: "Poppins", sans-serif;
     overflow-y: auto;
-    /* padding-top despeja el dock-nav flotante (fixed, arriba a la derecha) */
-    padding: 68px 16px 100px;
+    /* padding-bottom despeja el dock-nav flotante (fixed, abajo a la derecha) */
+    padding: 16px 16px 100px;
     box-sizing: border-box;
     scrollbar-width: thin;
     scrollbar-color: rgba(0,217,255,0.25) transparent;
@@ -304,8 +304,8 @@ select.cl-input { cursor: pointer; }
 
 /* ─ Mobile ─ */
 @media (max-width: 480px) {
-    /* mantiene el padding-top que despeja el dock-nav flotante (ver .cl-wrap arriba) */
-    .cl-wrap { padding: 68px 10px 100px; }
+    /* mantiene el padding-bottom que despeja el dock-nav flotante (ver .cl-wrap arriba) */
+    .cl-wrap { padding: 10px 10px 100px; }
     .cl-row2, .cl-money-row { grid-template-columns: 1fr; }
     .cl-header-actions { width: 100%; }
     .cl-header-actions .cl-btn { flex: 1; }

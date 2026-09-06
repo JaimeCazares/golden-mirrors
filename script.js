@@ -30,8 +30,7 @@ async function cambiarPestana(nombre) {
         espejo: 4,
         registro: 5,
         ruleta: 6,
-        clientes: 7,
-        att: 8
+        clientes: 7
     };
 
     document.querySelectorAll('.nav-btn')[mapa[nombre]]
@@ -179,21 +178,6 @@ async function cambiarPestana(nombre) {
                 modulosCargados['clientes'] = true;
             } else {
                 if (typeof initClientes === 'function') initClientes();
-            }
-        }
-
-        // === AT&T ===
-        if (nombre === 'att') {
-            if (!modulosCargados['att']) {
-                const script = document.createElement('script');
-                script.src = `att/att.js?v=${Date.now()}`;
-                script.onload = () => {
-                    if (typeof initAtt === 'function') initAtt();
-                };
-                document.body.appendChild(script);
-                modulosCargados['att'] = true;
-            } else {
-                if (typeof initAtt === 'function') initAtt();
             }
         }
 

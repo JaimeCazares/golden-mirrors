@@ -23,7 +23,6 @@ if (empty($_SESSION['rol']) || $_SESSION['rol'] !== 'admin') {
   <link rel="stylesheet" href="<?php echo assetV('style.css'); ?>">
   <link rel="stylesheet" href="<?php echo assetV('kg/kg.css'); ?>">
   <link rel="stylesheet" href="<?php echo assetV('deuda/deuda.css'); ?>">
-  <link rel="stylesheet" href="<?php echo assetV('att/att.css'); ?>">
   <link rel="stylesheet" href="<?php echo assetV('escalera/escalera.css'); ?>">
   <link rel="stylesheet" href="espejo/css/espejo-layout.css">
   <link rel="stylesheet" href="espejo/css/espejo-ui.css">
@@ -92,11 +91,6 @@ if (empty($_SESSION['rol']) || $_SESSION['rol'] !== 'admin') {
           <button class="nav-btn" onclick="cambiarPestana('clientes')">
               <span class="icono">💼</span>
               <span class="label">Clientes</span>
-          </button>
-
-          <button class="nav-btn" onclick="cambiarPestana('att')">
-              <span class="icono">🗓️</span>
-              <span class="label">Proyecto</span>
           </button>
       </div>
   </nav>
