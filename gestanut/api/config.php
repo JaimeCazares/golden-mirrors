@@ -7,10 +7,14 @@ if ($is_local) {
     define('DB_USER',   'root');
     define('DB_PASS',   '');
 } else {
-    define('DB_HOST',   'localhost');
-    define('DB_NAME',   'u717657264_gestanut');
-    define('DB_USER',   'u717657264_gestanut');
-    define('DB_PASS',   'Valeriabb7.');
+    // Credenciales reales de producción: viven SOLO en el servidor, en un archivo
+    // que no se sube a git (ver .gitignore) para no exponerlas públicamente.
+    $localConfig = __DIR__ . '/config.local.php';
+    if (!file_exists($localConfig)) {
+        http_response_code(500);
+        die('Falta config.local.php en el servidor. Ver config.local.example.php');
+    }
+    require $localConfig;
 }
 
 function get_pdo(): PDO {

@@ -2,3 +2,6 @@
 # No se trackea porque el auto-deploy de Hostinger hace un pull que puede borrar del
 # servidor cualquier archivo subido en vivo que no esté commiteado en el repo.
 /uploads/
+
+# Credenciales reales de producción (DB). Nunca deben subirse a git.
+gestanut/api/config.local.php
