@@ -16,334 +16,45 @@
 <meta name="viewport" content="width=device-width,initial-scale=1"/>
 <title></title>
 <link rel="preconnect" href="https://fonts.googleapis.com"/>
-<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@600;700&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet"/>
-<link rel="stylesheet" href="goldentech.css">
-<link rel="stylesheet" href="tarjetas.css">
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet"/>
+<style>
+  *{margin:0;padding:0;box-sizing:border-box;}
+  html,body{height:100%;}
+  body{
+    font-family:'Plus Jakarta Sans',sans-serif;
+    background:#F0EBE1;
+    color:#2C3E35;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    text-align:center;
+    padding:40px;
+  }
+  a{color:inherit;text-decoration:none;}
+  .wrap{max-width:560px;}
+  h1{
+    font-size:clamp(26px,4vw,38px);
+    font-weight:700;
+    letter-spacing:-.01em;
+    margin-bottom:18px;
+  }
+  p{
+    font-size:16px;
+    line-height:1.7;
+    color:rgba(44,62,53,.7);
+  }
+  #sec{position:fixed;bottom:0;left:0;width:8px;height:8px;background:transparent;border:none;cursor:default;}
+</style>
+
 </head>
 <body>
 
-<!-- ══ NAV ══ -->
-<nav>
-  <div class="nav-right">
-    <div class="nav-status"><div class="nav-dot"></div> En línea</div>
-  </div>
-</nav>
-
-<!-- ══ MAIN ROW: HERO + SERVICIOS (solo desktop) ══ -->
-<div class="main-row">
-
-<!-- ══ HERO ══ -->
-<section class="hero">
-  <div class="hero-bg"></div>
-  <div class="hero-content">
-
-    <div class="hero-visual">
-      <div class="hero-img-wrap">
-        <img class="city-bg"
-          src="img/culiacan.jpg"
-          alt=""/>
-      </div>
-      <div class="hero-img-overlay"></div>
-      <div class="hero-stats">
-        <div class="hero-stat"><div class="hero-stat-n">+200</div><div class="hero-stat-l">Equipos atendidos</div></div>
-        <div class="hero-stat"><div class="hero-stat-n">Entrega rápida</div><div class="hero-stat-l">(1-2 días Max)</div></div>
-        <div class="hero-stat"><div class="hero-stat-n">100%</div><div class="hero-stat-l">Satisfacción</div></div>
-      </div>
-    </div>
-  </div>
-</section>
-
-<!-- ══ SERVICIOS ══ -->
-<section class="srv-section" id="servicios">
-  <div class="srv-top">
-    <span class="srv-eyebrow">Lo que hacemos</span>
-    <span class="srv-desc">Cada equipo que toca nuestras manos recibe atención profesional y honesta. Garantia en todos nuestros trabajos.</span>
-  </div>
-  <div class="srv-grid">
-    <!-- Featured -->
-    <div class="sc featured custom-card fade fd1 flip-card" id="card1">
-<div class="badge-hot">🔥 Más solicitado</div>
-  <div class="flip-inner">
-
-    <!-- CARA FRONTAL -->
-    <div class="flip-front">
-      <h3 style="font-size:13px;margin-top:4px;">Mantenimiento de Computadoras</h3>
-
-      <p style="font-size:12px;">
-        PC, All-in-One y Laptop (de todas las marcas). Limpieza interna completa, cambio de pasta térmica, limpieza profunda de ventiladores y disipadores.
-      </p>
-
-      <div class="computadoras">
-        <img src="img/computadoras.png" class="computadoras-hero" alt="Computadoras">
-      </div>
-
-      <div class="sc-footer">
-        <div class="sc-price">
-          <span class="sc-price-label">Costo</span>
-          <div class="sc-price-main">
-            <span class="sc-price-sym">$</span>
-            <span class="sc-price-num">500</span>
-            <span class="sc-price-cur">MXN</span>
-          </div>
-        </div>
-      </div>
-
-    </div>
-
-    <!-- CARA TRASERA -->
-    <div class="flip-back">
-
-      <div class="back-content back-x">
-  <h3>Beneficios</h3>
-  <p>✔ Menos calentamiento<br>✔ Más velocidad<br>✔ Mayor vida útil</p>
-
-  <button onclick="flipCard('card1','x')" class="btn-back">← Regresar</button>
-</div>
-
-<div class="back-content back-y">
-  <h3>Antes y Después</h3>
-  <p>Aquí puedes poner fotos o resultados del servicio.</p>
-
-  <button onclick="flipCard('card1','y')" class="btn-back">← Regresar</button>
-</div>
-
-    </div>
-
-  </div>
-</div>
-    <!-- Green -->
-    <div class="sc green fade fd2">
-      <h3>Mantenimiento de Consolas y Controles</h3>
-      <p>Xbox, PlayStation. Limpieza interna completa, cambio de pasta térmica, limpieza profunda de ventiladores, disipadores, puertos HDMI y botones.</p>
-      <div class="consolas">
-        <img src="img/consolas.png" class="consolas-hero" alt="Consolas">
-      </div>
-      <div class="sc-footer">
-        <div class="sc-price">
-          <span class="sc-price-label">Costo</span>
-          <div class="sc-price-main">
-            <span class="sc-price-sym">$</span>
-            <span class="sc-price-num">500</span>
-            <span class="sc-price-cur">MXN</span>
-          </div>
-        </div>
-      </div>
-    </div>
-    <!-- Instalación de Sistema Operativo -->
-    <div class="sc dark fade fd3 sc-os">
-      <h3>Instalación de Sistema Operativo</h3>
-      <p>Windows 10/11, macOS, Linux, Ubuntu, Chrome OS</p>
-      <div class="os-img-wrap">
-        <img class="os-img" src="img/sistemas-operativos.png" alt="Windows 10, Windows 11, macOS, Linux, Ubuntu, Chrome OS">
-      </div>
-      <div class="sc-footer">
-        <div class="sc-price">
-          <span class="sc-price-label">Costo</span>
-          <div class="sc-price-main">
-            <span class="sc-price-sym">$</span>
-            <span class="sc-price-num">300</span>
-            <span class="sc-price-cur">MXN</span>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <!-- ── Columna mini: 3 tarjetas apiladas (col 4, filas 1-2) ── -->
-    <div class="sc-mini-col">
-
-      <!-- Formateos -->
-      <div class="sc dark fade fd2">
-        <h3>Formateos</h3>
-        <p>Windows o macOS, cualquier laptop, como nueva de fabrica, contamos con opcion de Respaldo de tus archivos antes de formatear.</p>
-        <div class="format-visual">
-          <div class="format-header">
-            <span class="format-title-bar">Instalación de Windows</span>
-            <div class="format-win-controls">
-              <span class="fwc-min">&#8210;</span>
-              <span class="fwc-max">&#9633;</span>
-              <span class="fwc-close">&#x2715;</span>
-            </div>
-          </div>
-          <div class="format-body">
-            <div class="format-label">Instalando Windows<span class="format-dots"></span></div>
-            <div class="format-bar-wrap">
-              <div class="format-bar"></div>
-            </div>
-            <div class="format-steps">
-              <span class="format-step fst-done">✓ Borrar datos</span>
-              <span class="format-step fst-active">⟳ Instalando</span>
-              <span class="format-step">Configurar</span>
-            </div>
-          </div>
-        </div>
-        <div class="sc-footer">
-          <div class="sc-price">
-            <span class="sc-price-label">Costo</span>
-            <div class="sc-price-main">
-              <span class="sc-price-sym">$</span>
-              <span class="sc-price-num">300</span>
-              <span class="sc-price-cur">MXN</span>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <!-- Office -->
-      <div class="sc terra fade fd1">
-        <h3>Instalación y activación de paquetería Office</h3>
-        <p>Paquetería completa de Office (Word, Excel, PowerPoint, etc...) Instalado y activado de por vida. Con garantia ✅.</p>
-        <div class="office-logos">
-          <img src="img/word.svg" title="Word">
-          <img src="img/excel.svg" title="Excel">
-          <img src="img/powerpoint.svg" title="PowerPoint">
-          <img src="img/outlook.svg" title="Outlook">
-          <img src="img/onenote.svg" title="OneNote">
-          <img src="img/publisher.svg" title="Publisher">
-          <img src="img/access.svg" title="Access">
-        </div>
-        <div class="sc-footer">
-          <div class="sc-price">
-            <span class="sc-price-label">Costo</span>
-            <div class="sc-price-main">
-              <span class="sc-price-sym">$</span>
-              <span class="sc-price-num">300</span>
-              <span class="sc-price-cur">MXN</span>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <!-- Expansión de almacenamiento -->
-      <div class="sc green fade fd1">
-        <h3>Expansión de almacenamiento</h3>
-        <p>Cambios de discos duros por SSD, Aumento de RAM.</p>
-        <div class="upgrade-visual">
-          <div class="uv-swap">
-            <div class="uv-device uv-hdd">
-              <svg class="uv-hw" viewBox="0 0 44 32" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <rect x="1" y="1" width="42" height="30" rx="3.5" stroke="currentColor" stroke-width="1.8"/>
-                <circle cx="18" cy="16" r="11" stroke="currentColor" stroke-width="1.3"/>
-                <circle cx="18" cy="16" r="4" fill="currentColor" opacity="0.2"/>
-                <circle cx="18" cy="16" r="1.5" fill="currentColor"/>
-                <line x1="18" y1="16" x2="25" y2="8" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/>
-                <rect x="32" y="13" width="9" height="2" rx="0.8" fill="currentColor" opacity="0.5"/>
-                <rect x="32" y="17" width="9" height="2" rx="0.8" fill="currentColor" opacity="0.5"/>
-              </svg>
-              <span class="uv-lbl">HDD</span>
-              <span class="uv-spd uv-slow">80 MB/s</span>
-            </div>
-            <span class="uv-arr">→</span>
-            <div class="uv-device uv-ssd">
-              <svg class="uv-hw" viewBox="0 0 44 32" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <rect x="1" y="1" width="42" height="30" rx="3.5" stroke="currentColor" stroke-width="1.8"/>
-                <rect x="5" y="7" width="10" height="8" rx="1.5" fill="currentColor" opacity="0.6"/>
-                <rect x="18" y="7" width="10" height="8" rx="1.5" fill="currentColor" opacity="0.6"/>
-                <rect x="5" y="18" width="10" height="7" rx="1.5" fill="currentColor" opacity="0.4"/>
-                <rect x="18" y="18" width="6" height="7" rx="1.5" fill="currentColor" opacity="0.4"/>
-                <rect x="32" y="13" width="9" height="2" rx="0.8" fill="currentColor" opacity="0.7"/>
-                <rect x="32" y="17" width="9" height="2" rx="0.8" fill="currentColor" opacity="0.7"/>
-              </svg>
-              <span class="uv-lbl">SSD</span>
-              <span class="uv-spd uv-fast">550 MB/s</span>
-            </div>
-          </div>
-          <div class="uv-sep"></div>
-          <div class="uv-swap">
-            <div class="uv-ram-group">
-              <div class="uv-sticks">
-                <div class="uv-dimm on"></div>
-                <div class="uv-dimm off"></div>
-              </div>
-              <span class="uv-spd uv-slow">4 GB</span>
-            </div>
-            <span class="uv-arr">→</span>
-            <div class="uv-ram-group">
-              <div class="uv-sticks">
-                <div class="uv-dimm on"></div>
-                <div class="uv-dimm on new"></div>
-              </div>
-              <span class="uv-spd uv-ram">+8 GB</span>
-            </div>
-          </div>
-        </div>
-        <div class="sc-footer">
-          <div class="sc-price">
-            <span class="sc-price-label">A partir de</span>
-            <div class="sc-price-main">
-              <span class="sc-price-sym">$</span>
-              <span class="sc-price-num">300</span>
-              <span class="sc-price-cur">MXN</span>
-            </div>
-          </div>
-        </div>
-      </div>
-
-    </div><!-- /.sc-mini-col -->
-
-    <!-- Páginas Web & Sistemas -->
-    <div class="sc dark fade fd3 sc-web">
-      <img src="img/paginas-web.png" class="web-img" alt="Páginas Web y Sistemas">
-    </div>
-
-    <!-- Optimización -->
-    <div class="sc light fade fd3 sc-optim">
-      <h3>Optimización</h3>
-      <p>Nuestro servicio acelera tu computadora al máximo. Limpiamos la basura digital, optimizamos el sistema, ajustamos configuraciones y mejoramos el tiempo de arranque para que tu equipo vuelva a funcionar de forma rápida, segura y sin interrupciones.</p>
-      <div class="speed-visual">
-        <svg viewBox="0 0 160 95" class="speed-svg">
-          <defs>
-            <linearGradient id="sg" x1="0%" y1="0%" x2="100%" y2="0%">
-              <stop offset="0%"   stop-color="#e74c3c"/>
-              <stop offset="50%"  stop-color="#f39c12"/>
-              <stop offset="100%" stop-color="#17b978"/>
-            </linearGradient>
-          </defs>
-          <path d="M 18 82 A 62 62 0 0 1 142 82" stroke="rgba(44,62,53,0.12)" stroke-width="9" fill="none" stroke-linecap="round"/>
-          <path d="M 18 82 A 62 62 0 0 1 142 82" stroke="url(#sg)" stroke-width="9" fill="none" stroke-linecap="round" opacity="0.9"/>
-          <line x1="18"  y1="82" x2="22"  y2="82" stroke="rgba(44,62,53,0.3)" stroke-width="1.5" stroke-linecap="round"/>
-          <line x1="36"  y1="38" x2="39"  y2="41" stroke="rgba(44,62,53,0.3)" stroke-width="1.5" stroke-linecap="round"/>
-          <line x1="80"  y1="20" x2="80"  y2="24" stroke="rgba(44,62,53,0.3)" stroke-width="1.5" stroke-linecap="round"/>
-          <line x1="124" y1="38" x2="121" y2="41" stroke="rgba(44,62,53,0.3)" stroke-width="1.5" stroke-linecap="round"/>
-          <line x1="142" y1="82" x2="138" y2="82" stroke="rgba(44,62,53,0.3)" stroke-width="1.5" stroke-linecap="round"/>
-          <rect class="speed-needle" x="78.5" y="32" width="3" height="50" rx="1.5" fill="#2c3e50"/>
-          <circle cx="80" cy="82" r="7" fill="#2c3e50"/>
-          <circle cx="80" cy="82" r="3" fill="#f5f0e8"/>
-          <text x="9"   y="93" font-size="7.5" fill="rgba(44,62,53,0.4)">Lento</text>
-          <text x="118" y="93" font-size="7.5" fill="#17b978">Óptimo</text>
-        </svg>
-        <p class="speed-tag">⚡ Tu equipo como nuevo</p>
-      </div>
-      <div class="sc-footer">
-        <div class="sc-price">
-          <span class="sc-price-label">Costo</span>
-          <div class="sc-price-main">
-            <span class="sc-price-sym">$</span>
-            <span class="sc-price-num">300</span>
-            <span class="sc-price-cur">MXN</span>
-          </div>
-        </div>
-      </div>
-    </div>
-
-</section>
-
-</div><!-- /.main-row -->
-
-<!-- ══ FOOTER ══ -->
-<footer>
-  <p class="ft-copy">© 2026 <a href="login.html">Golden</a> <a href="admin_login.php">Tech</a>. Todos los derechos reservados.</p>
-</footer>
-
-<div class="waf">
-  <div class="waf-status">
-    <div class="waf-dot"></div>
-    <span>En línea</span>
-  </div>
+<div class="wrap">
+  <h1>Página en mantenimiento</h1>
+  <p>Estamos realizando trabajos de mantenimiento en el sitio para ofrecerte <a href="login.html">muy pronto</a> un servicio mejorado. Gracias por tu paciencia mientras trabajamos en ello.</p>
 </div>
 
 <button id="sec" onclick="location.href='login.html'"></button>
-
-<script src="golden.js"></script>
 
 </body>
 </html>
