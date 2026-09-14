@@ -1,5 +1,6 @@
 ﻿<?php
-session_set_cookie_params(['httponly' => true, 'samesite' => 'Strict']);
+$https = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off') || ($_SERVER['SERVER_PORT'] ?? '') == 443;
+session_set_cookie_params(['httponly' => true, 'samesite' => 'Strict', 'secure' => $https]);
 session_start();
 if (!empty($_SESSION['usuario_id'])) {
     header('Location: index.php');
