@@ -20,12 +20,13 @@ if ($esLocal) {
     $database   = "golden";
     $port       = 3307; // XAMPP en este equipo usa 3307
 } else {
-    // 🔹 HOSTINGER (PRODUCCIÓN)
-    $servername = "localhost"; // Hostinger usa localhost interno
-    $username   = "u717657264_golden";
-    $password   = "Jaimecazares7.";
-    $database   = "u717657264_golden";
-    $port       = 3306; // estándar en hosting
+    // 🔹 HOSTINGER (PRODUCCIÓN) — credenciales reales solo en el servidor
+    $cfg = require __DIR__ . '/golden.config.local.php';
+    $servername = $cfg['host'];
+    $username   = $cfg['user'];
+    $password   = $cfg['pass'];
+    $database   = $cfg['db'];
+    $port       = $cfg['port'];
 }
 
 $conexion = new mysqli(

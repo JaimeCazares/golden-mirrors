@@ -1,5 +1,7 @@
 <?php
 // 🔐 SESIÓN UNIFICADA
+$https = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off') || ($_SERVER['SERVER_PORT'] ?? '') == 443;
+session_set_cookie_params(['httponly' => true, 'samesite' => 'Strict', 'secure' => $https]);
 session_start();
 
 
@@ -16,14 +18,9 @@ if ($_SERVER['SERVER_NAME'] === 'localhost') {
         3307
     );
 } else {
-    // 🔹 HOSTINGER
-    $conexion = new mysqli(
-        "localhost",
-        "u717657264_golden",
-        "Jaimecazares7.",
-        "u717657264_golden",
-        3306
-    );
+    // 🔹 HOSTINGER — credenciales reales solo en el servidor
+    $cfg = require __DIR__ . '/golden.config.local.php';
+    $conexion = new mysqli($cfg['host'], $cfg['user'], $cfg['pass'], $cfg['db'], $cfg['port']);
 }
 
 if ($conexion->connect_error) {
@@ -34,13 +31,19 @@ if ($conexion->connect_error) {
    LOGIN
    ========================= */
 
-$usuario  = $_POST["usuario"] ?? "";
-$password = $_POST["password"] ?? "";
+$usuario  = strtolower(trim($_POST["usuario"] ?? ""));
+$password = trim($_POST["password"] ?? "");
 
 if ($usuario === "" || $password === "") {
     echo "Datos incompletos";
     exit;
 }
+
+// Rol de cada cuenta (son solo dos, no hace falta columna aparte en la BD)
+$roles = [
+    'vale'  => ['rol' => 'novia', 'destino' => 'AHORRO'],
+    'admin' => ['rol' => 'admin', 'destino' => 'INDEX'],
+];
 
 $sql = "SELECT * FROM usuarios WHERE usuario = ? LIMIT 1";
 $stmt = $conexion->prepare($sql);
@@ -49,28 +52,12 @@ $stmt->execute();
 $resultado = $stmt->get_result();
 
 if ($resultado->num_rows === 1) {
-
     $user = $resultado->fetch_assoc();
 
-    // NORMALIZAR
-    $usuario = strtolower(trim($usuario));
-    $password = trim($password);
-
-    // 🔐 VALE
-    if ($usuario === 'vale' && $password === 'vale') {
-
-        $_SESSION["usuario"] = 'vale';
-        $_SESSION["rol"] = 'novia';
-        echo "AHORRO";
-        exit;
-    }
-
-    // 🔐 ADMIN
-    if ($usuario === 'admin' && $password === 'abc') {
-
-        $_SESSION["usuario"] = 'admin';
-        $_SESSION["rol"] = 'admin';
-        echo "INDEX";
+    if (isset($roles[$usuario]) && password_verify($password, $user['password_hash'])) {
+        $_SESSION["usuario"] = $usuario;
+        $_SESSION["rol"]     = $roles[$usuario]['rol'];
+        echo $roles[$usuario]['destino'];
         exit;
     }
 

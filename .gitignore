@@ -5,3 +5,4 @@
 
 # Credenciales reales de producción (DB). Nunca deben subirse a git.
 gestanut/api/config.local.php
+golden.config.local.php
