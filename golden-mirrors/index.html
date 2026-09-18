@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Registro de Partidos</title>
+<link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+  <div class="deudas-container">
+  <ul id="listaDeudas">
+    <li data-monto="1000">Stori = $1000</li>
+    <li data-monto="2000">Undostres = $2000</li>
+    <li data-monto="2000">Plata = $2000</li>
+    <li data-monto="3000">Mercado Pago = $3000</li>
+    <li data-monto="3000">Mercado Libre = $3000</li>
+    <li data-monto="7000">Nu = $7000</li>
+    <li data-monto="7000">Rappi = $7000</li>  
+    <li data-monto="20000">BBVA = $20000</li>
+  </ul>
+
+  <div id="totalDeuda">TOTAL = $45000</div>
+  <button id="editarBtn">✏️</button>
+</div>
+
+<h1>📊 Registro de Partidoss</h1>
+<h1>📊 Registro de Partidos XXCD</h1>
+<button id="abrirModalBtn">➕ Nuevo registro</button>
+<button id="abrirHistorialBtn">📜 Historial</button>
+
+<div id="ligaFiltros" style="margin-top:10px;">
+  <button class="filtro-btn" data-liga="Champions League">🏆 Champions League</button>
+  <button class="filtro-btn" data-liga="Premier League">🏴 Premier League</button>
+  <button class="filtro-btn" data-liga="La Liga">🇪🇸 La Liga</button>
+  <button class="filtro-btn" data-liga="todas">🌍 Ver todas</button>
+</div>
+
+<div id="partidosContainer"></div>
+
+<!-- ===== MODAL ===== -->
+<div class="modal" id="modal">
+  <div class="modal-content">
+    <span class="close" id="cerrarModalBtn">&times;</span>
+    <h2 id="modalTitle">Nuevo Registro</h2>
+
+    <div class="info-general">
+      <input type="text" id="partido" placeholder="Introduce el nombre del partido" />
+    </div>
+    <label>Liga</label>
+    <select id="ligaSelect">
+      <option value="Champions League">Champions League</option>
+      <option value="Premier League">Premier League</option>
+      <option value="La Liga">La Liga</option>
+    </select>
+<label>Jornada</label>
+<input type="number" id="jornadaInput" placeholder="Número de jornada (ej: 4)" min="1" />
+
+    <!-- 1XBET -->
+    <div class="form-container">
+      <div class="form-box form-1xbet">
+        <h3>1XBET</h3>
+        <label>Gana Local</label>
+        <input type="text" id="local1xbet" placeholder="Introduce el momio" />
+        <label>Empate</label>
+        <input type="text" id="empate1xbet" placeholder="Introduce el momio" />
+        <label>Gana Visitante</label>
+        <input type="text" id="visita1xbet" placeholder="Introduce el momio" />
+        <label>1X</label>
+        <input type="text" id="x11xbet" placeholder="Introduce el momio" />
+        <label>2X</label>
+        <input type="text" id="x21xbet" placeholder="Introduce el momio" />
+        <label>Ambos Anotan (Sí)</label>
+        <input type="text" id="ambosSi1xbet" placeholder="Introduce el momio" />
+        <label>Ambos No Anotan</label>
+        <input type="text" id="ambosNo1xbet" placeholder="Introduce el momio" />
+        <label>Más de goles</label>
+        <select id="masGoles1xbet">
+          <option value="">-- Selecciona --</option>
+          <option value="0.5">Más de 0.5</option>
+          <option value="1.5">Más de 1.5</option>
+          <option value="2.5">Más de 2.5</option>
+          <option value="3.5">Más de 3.5</option>
+          <option value="4.5">Más de 4.5</option>
+        </select>
+        <label>Cuota Más</label>
+        <input type="text" id="cuotaMas1xbet" placeholder="Introduce la cuota" />
+        <label>Menos de goles</label>
+        <select id="menosGoles1xbet">
+          <option value="">-- Selecciona --</option>
+          <option value="0.5">Menos de 0.5</option>
+          <option value="1.5">Menos de 1.5</option>
+          <option value="2.5">Menos de 2.5</option>
+          <option value="3.5">Menos de 3.5</option>
+          <option value="4.5">Menos de 4.5</option>
+        </select>
+        <label>Cuota Menos</label>
+        <input type="text" id="cuotaMenos1xbet" placeholder="Introduce la cuota" />
+      </div>
+    </div>
+
+    <button id="guardarRegistro">Guardar Registro</button>
+    <p class="mensaje-error" id="mensajeError"></p>
+  </div>
+</div>
+<button id="borrarTodoBtn" class="btn-rojo-flotante" title="Autodestrucción">💀 
+</button>
+
+<!-- 🔹 Panel de indicadores a la izquierda -->
+<div id="ap_indicadores">
+  <div class="ap_item invertido">💰 Invertido: <span id="ap_invertido">$0</span></div>
+  <div class="ap_item bank">🏦 Bank: <span id="ap_bank">$1000</span></div>
+  <div class="ap_item ganancias">📈 Ganancias: <span id="ap_ganancias">$0</span></div>
+  <div class="ap_item enjuego">🎯 En juego: <span id="ap_enjuego">$0</span></div>
+</div>
+
+<!-- 🔹 Panel principal (permanece como lo tienes) -->
+<div id="ap_panel_datos">
+  <button id="ap_btn_nueva">+ Nueva Apuesta</button>
+
+  <h3 style="margin-top: 10px;">Apuestas activas:</h3>
+  <ul id="ap_lista"></ul>
+</div>
+
+</div>
+
+
+  <!-- Ventana de registro -->
+  <div id="ap_ventana">
+    <h2>Registrar Apuesta</h2>
+
+    <label>Liga:</label>
+    <select id="ap_liga">
+      <option>Champions League</option>
+      <option>Premier League</option>
+      <option>La Liga</option>
+    </select>
+
+    <label>Partido:</label>
+    <input type="text" id="ap_partido" placeholder="Ej: Real Madrid vs City">
+
+    <label>Apuesta:</label>
+    <input type="text" id="ap_apuesta" placeholder="Ej: +2.5 goles">
+
+    <label>Invertido ($):</label>
+    <input type="number" id="ap_monto" placeholder="Monto invertido">
+
+    <label>Ganancia posible ($):</label>
+    <input type="number" id="ap_ganancia" placeholder="Ganancia posible">
+
+    <div class="ap_botones">
+      <button id="ap_btn_guardar">Guardar</button>
+      <button id="ap_btn_cancelar">Cancelar</button>
+    </div>
+  </div>
+  <!-- 🔹 MODAL HISTORIAL -->
+<div id="modalHistorial" class="modal" style="display:none;">
+  <div class="modal-content">
+    <span class="close" id="cerrarHistorial">&times;</span>
+    <h2>📜 Historial de Registros</h2>
+    
+    <label>Selecciona Liga:</label>
+    <select id="histLigaSelect">
+      <option value="todas">🌍 Todas</option>
+      <option value="Champions League">🏆 Champions League</option>
+      <option value="Premier League">🏴 Premier League</option>
+      <option value="La Liga">🇪🇸 La Liga</option>
+    </select>
+
+    <label>Selecciona Jornada:</label>
+    <input type="number" id="histJornadaInput" placeholder="Número de jornada (ej: 4)" min="1" />
+
+    <button id="filtrarHistorialBtn">Filtrar</button>
+    <div id="historialResultados" style="margin-top:15px;"></div>
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script src="script.js"></script>
+<script src="deudas.js"></script>
+<script src="apuestas.js"></script>
+<script src="historialRegistros.js"></script>
+<!-- Contenedor del modal -->
+<div id="detalleModal" class="modal-overlay" style="display:none;">
+  <div class="modal">
+    <button class="close-btn" id="cerrarModal">&times;</button>
+    <h2 id="tituloPartido"></h2>
+    <canvas id="graficaMomios"></canvas>
+  </div>
+</div>
+
+
+</body>
+</html>

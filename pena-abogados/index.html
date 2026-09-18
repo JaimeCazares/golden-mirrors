@@ -1,0 +1,429 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="Peña Abogados — Despacho jurídico en Culiacán, Sinaloa. Especialistas en pensiones ISSSTE, derecho familiar, sucesorio e Infonavit.">
+<title>Peña Abogados | Despacho Jurídico · Culiacán, Sinaloa</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --dark:#1e1e1e;
+  --dark-2:#141414;
+  --gold:#cca462;
+  --gold-d:#b5883f;
+  --white:#ffffff;
+  --offwhite:#f6f4f0;
+  --text:#232323;
+  --text-m:#5c5c5c;
+  --line:#e4e1da;
+  --r:3px;
+}
+html{scroll-behavior:smooth}
+body{font-family:'Poppins',sans-serif;color:var(--text);line-height:1.7;font-size:15px;background:var(--white)}
+.serif{font-family:'DM Serif Display',serif}
+a{color:inherit}
+.wrap{max-width:1180px;margin:0 auto;padding:0 5%}
+
+/* ─── TOP BAR ─────────────────────────────────────── */
+.topbar{background:rgba(10,10,10,0.96);color:rgba(255,255,255,0.75);font-size:12.5px}
+.topbar-h{max-width:1180px;margin:0 auto;padding:8px 5%;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:6px 20px}
+.topbar-left{display:flex;gap:22px;flex-wrap:wrap}
+.topbar a{text-decoration:none;color:inherit;display:inline-flex;align-items:center;gap:7px;transition:color .2s}
+.topbar a:hover{color:var(--gold)}
+.topbar i{font-size:12px;color:var(--gold)}
+.topbar-social{display:flex;gap:14px}
+.topbar-social a{font-size:13px}
+
+/* ─── HEADER / NAV ────────────────────────────────── */
+header.main{position:sticky;top:0;z-index:100;background:rgba(255,255,255,0.97);border-bottom:1px solid var(--line);backdrop-filter:blur(6px)}
+.nav-h{max-width:1180px;margin:0 auto;padding:16px 5%;display:flex;align-items:center;justify-content:space-between}
+.logo{font-family:'DM Serif Display',serif;font-size:22px;color:var(--dark);text-decoration:none;letter-spacing:.2px}
+.logo span{color:var(--gold-d)}
+.nav-links{display:flex;align-items:center;gap:26px}
+.nav-links a{font-size:13.5px;color:var(--text-m);text-decoration:none;font-weight:500}
+.nav-links a:hover{color:var(--dark)}
+.nav-cta{background:var(--dark);color:var(--white)!important;padding:10px 20px;border-radius:var(--r);font-weight:600!important}
+.nav-cta:hover{background:var(--gold-d)!important;color:var(--dark)!important}
+.hamburger{display:none;flex-direction:column;gap:5px;cursor:pointer}
+.hamburger span{width:22px;height:2px;background:var(--dark);display:block}
+.nav-links.open{display:flex!important;flex-direction:column;align-items:flex-start;gap:14px;position:absolute;top:100%;left:0;right:0;background:var(--white);padding:18px 6% 22px;border-bottom:1px solid var(--line)}
+
+/* ─── HERO ────────────────────────────────────────── */
+.hero{background:linear-gradient(160deg,var(--dark) 0%,var(--dark-2) 100%);color:var(--white);text-align:center;padding:88px 5% 76px}
+.hero-eyebrow{font-size:12.5px;letter-spacing:2.5px;text-transform:uppercase;color:var(--gold);font-weight:600;margin-bottom:18px}
+.hero h1{font-family:'DM Serif Display',serif;font-size:clamp(30px,4.4vw,50px);font-weight:400;line-height:1.25;max-width:820px;margin:0 auto 18px}
+.hero h1 em{font-style:italic;color:var(--gold)}
+.hero-desc{font-size:15px;color:rgba(255,255,255,0.72);max-width:560px;margin:0 auto 30px;line-height:1.8}
+.hero-actions{display:flex;justify-content:center;gap:14px;flex-wrap:wrap;margin-bottom:26px}
+.btn{display:inline-flex;align-items:center;gap:9px;padding:14px 26px;border-radius:var(--r);font-size:14px;font-weight:600;text-decoration:none;transition:all .2s}
+.btn-gold{background:var(--gold);color:#1a1a1a}
+.btn-gold:hover{background:var(--gold-d)}
+.btn-outline{border:1px solid rgba(255,255,255,0.35);color:var(--white)}
+.btn-outline:hover{border-color:var(--gold);color:var(--gold)}
+.hero-trust{font-size:13px;color:rgba(255,255,255,0.55)}
+.hero-trust .stars{color:var(--gold);letter-spacing:1px}
+
+/* ─── SECTION BASE ────────────────────────────────── */
+section{padding:64px 5%}
+.section-inner{max-width:1180px;margin:0 auto}
+.eyebrow{font-size:11.5px;letter-spacing:2.2px;text-transform:uppercase;color:var(--gold-d);font-weight:700;margin-bottom:10px}
+h2.title{font-family:'DM Serif Display',serif;font-weight:400;font-size:clamp(24px,3vw,34px);color:var(--dark);margin-bottom:16px}
+
+/* ─── NOSOTROS ────────────────────────────────────── */
+.nosotros{background:var(--offwhite)}
+.nosotros-inner{max-width:800px;margin:0 auto;text-align:left}
+.nosotros p{color:var(--text-m);margin-bottom:14px;font-size:14.5px}
+.nosotros blockquote{font-family:'DM Serif Display',serif;font-style:italic;font-size:19px;color:var(--dark);border-left:3px solid var(--gold);padding-left:20px;margin:20px 0;line-height:1.5}
+.nosotros-dir{margin-top:22px;font-size:13.5px;color:var(--text-m);display:flex;gap:8px;align-items:flex-start}
+.nosotros-dir i{color:var(--gold-d);margin-top:3px}
+
+/* ─── AREAS DE PRACTICA (tabs) ────────────────────── */
+.areas-grid{display:grid;grid-template-columns:280px 1fr;gap:0;border:1px solid var(--line);border-radius:var(--r);overflow:hidden;margin-top:26px}
+.areas-tabs{background:var(--offwhite);border-right:1px solid var(--line)}
+.areas-tab{display:block;width:100%;text-align:left;background:none;border:none;border-bottom:1px solid var(--line);padding:16px 20px;font-family:'Poppins';font-size:13.5px;font-weight:500;color:var(--text-m);cursor:pointer}
+.areas-tab:last-child{border-bottom:none}
+.areas-tab:hover{color:var(--dark)}
+.areas-tab.active{background:var(--white);color:var(--dark);font-weight:600;border-left:3px solid var(--gold)}
+.areas-content{padding:28px 30px}
+.areas-panel{display:none}
+.areas-panel.active{display:block}
+.areas-panel h3{font-family:'DM Serif Display',serif;font-weight:400;font-size:20px;color:var(--dark);margin-bottom:12px}
+.areas-panel ul{padding-left:18px;color:var(--text-m);font-size:13.5px;line-height:1.9}
+
+/* ─── VENTAJAS ────────────────────────────────────── */
+.ventajas{background:var(--dark);color:var(--white)}
+.ventajas .eyebrow{color:var(--gold)}
+.ventajas .title{color:var(--white)}
+.ventajas-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:22px;margin-top:30px}
+.ventaja{text-align:center}
+.ventaja i{font-size:26px;color:var(--gold);margin-bottom:14px;display:block}
+.ventaja h4{font-size:14.5px;font-weight:600;margin-bottom:8px}
+.ventaja p{font-size:12.5px;color:rgba(255,255,255,0.55);line-height:1.7}
+
+/* ─── TESTIMONIOS ─────────────────────────────────── */
+.testimonios-grid{display:grid;grid-template-columns:1fr 1fr;gap:18px;margin-top:26px}
+.testimonio{background:var(--offwhite);border-radius:var(--r);padding:24px;border:1px solid var(--line)}
+.testimonio .stars{color:var(--gold-d);font-size:12.5px;letter-spacing:2px;margin-bottom:12px}
+.testimonio p{font-family:'DM Serif Display',serif;font-style:italic;font-size:16px;color:var(--dark);margin-bottom:12px}
+.testimonio span{font-size:12px;color:var(--text-m)}
+.testimonios-nota{margin-top:16px;font-size:12px;color:var(--text-m)}
+
+/* ─── FAQ ─────────────────────────────────────────── */
+.faq{background:var(--offwhite)}
+.faq-list{margin-top:26px;max-width:820px}
+.faq-item{border-bottom:1px solid var(--line)}
+.faq-q{padding:16px 4px;display:flex;justify-content:space-between;align-items:center;cursor:pointer;font-size:14.5px;font-weight:500;color:var(--dark)}
+.faq-q i{color:var(--gold-d);transition:transform .2s}
+.faq-item.open .faq-q i{transform:rotate(45deg)}
+.faq-a{display:none;padding:0 4px 16px;font-size:13.5px;color:var(--text-m);max-width:640px}
+.faq-item.open .faq-a{display:block}
+
+/* ─── CONTACTO ────────────────────────────────────── */
+.contacto{background:linear-gradient(160deg,var(--dark) 0%,var(--dark-2) 100%);color:var(--white)}
+.contacto .eyebrow{color:var(--gold)}
+.contacto .title{color:var(--white)}
+.contacto-grid{display:grid;grid-template-columns:1fr 1fr;gap:40px;margin-top:26px;align-items:start}
+.contacto-info h4{font-size:12px;text-transform:uppercase;letter-spacing:1.5px;color:rgba(255,255,255,0.45);margin-bottom:8px}
+.contacto-info .val{font-size:15px;margin-bottom:22px;display:flex;gap:10px}
+.contacto-info .val i{color:var(--gold);margin-top:3px}
+.contacto-actions{display:flex;gap:12px;flex-wrap:wrap;margin-top:6px}
+.map-frame{border-radius:var(--r);overflow:hidden;border:1px solid rgba(255,255,255,0.15);height:100%;min-height:260px}
+.map-frame iframe{width:100%;height:100%;min-height:260px;border:0;filter:grayscale(.2) contrast(1.05)}
+
+/* ─── FOOTER ──────────────────────────────────────── */
+footer{background:var(--dark-2);color:rgba(255,255,255,0.55);padding:36px 5% 20px}
+.footer-grid{max-width:1180px;margin:0 auto;display:grid;grid-template-columns:1.2fr 1fr 1fr;gap:30px;padding-bottom:24px;border-bottom:1px solid rgba(255,255,255,0.1)}
+.footer-grid h5{color:var(--white);font-size:13px;margin-bottom:12px;font-weight:600}
+.footer-grid p,.footer-grid a{font-size:12.5px;color:rgba(255,255,255,0.5);text-decoration:none;display:block;margin-bottom:8px}
+.footer-bottom{max-width:1180px;margin:14px auto 0;display:flex;justify-content:space-between;flex-wrap:wrap;gap:8px;font-size:11.5px;color:rgba(255,255,255,0.35)}
+
+.float-wa{position:fixed;bottom:24px;right:24px;z-index:99;width:54px;height:54px;border-radius:50%;background:#25D366;color:#fff;display:flex;align-items:center;justify-content:center;box-shadow:0 6px 22px rgba(0,0,0,0.3);text-decoration:none;font-size:24px}
+
+@media(max-width:900px){
+  .nav-links{display:none}
+  .hamburger{display:flex}
+  .topbar-h{font-size:11.5px}
+  .areas-grid{grid-template-columns:1fr}
+  .areas-tabs{display:flex;overflow-x:auto;border-right:none;border-bottom:1px solid var(--line)}
+  .areas-tab{white-space:nowrap;border-bottom:none;border-right:1px solid var(--line)}
+  .areas-tab.active{border-left:none;border-bottom:3px solid var(--gold)}
+  .ventajas-grid{grid-template-columns:1fr 1fr}
+  .testimonios-grid{grid-template-columns:1fr}
+  .contacto-grid{grid-template-columns:1fr}
+  .footer-grid{grid-template-columns:1fr;gap:20px}
+}
+@media(max-width:520px){
+  .ventajas-grid{grid-template-columns:1fr}
+  .hero-actions{flex-direction:column;align-items:stretch}
+  .btn{justify-content:center}
+}
+</style>
+</head>
+<body>
+
+<!-- TOP BAR -->
+<div class="topbar">
+  <div class="topbar-h">
+    <div class="topbar-left">
+      <a href="tel:6677750902"><i class="fas fa-phone"></i>667 775 0902</a>
+      <a href="https://wa.me/526677750902" target="_blank"><i class="fab fa-whatsapp"></i>WhatsApp</a>
+      <a href="https://www.google.com/maps?q=Blvd.+Alfonso+Zaragoza+1980+Desarrollo+Urbano+Tres+Rios+Culiacan" target="_blank"><i class="fas fa-map-marker-alt"></i>Tres Ríos, Culiacán</a>
+    </div>
+    <div class="topbar-social">
+      <a href="https://www.facebook.com/Despachopenaabogados" target="_blank"><i class="fab fa-facebook"></i></a>
+    </div>
+  </div>
+</div>
+
+<!-- HEADER -->
+<header class="main">
+  <div class="nav-h">
+    <a href="#inicio" class="logo">Peña <span>Abogados</span></a>
+    <div class="nav-links" id="navLinks">
+      <a href="#nosotros">Nosotros</a>
+      <a href="#areas">Áreas de práctica</a>
+      <a href="#testimonios">Testimonios</a>
+      <a href="#faq">FAQ</a>
+      <a href="#contacto" class="nav-cta">Contáctanos</a>
+    </div>
+    <div class="hamburger" id="hamburger"><span></span><span></span><span></span></div>
+  </div>
+</header>
+
+<!-- HERO -->
+<section class="hero" id="inicio" style="padding-top:100px">
+  <div class="hero-eyebrow">Despacho Jurídico · Culiacán, Sinaloa</div>
+  <h1>Nos encargamos de asesorarle en su proceso <em>legal</em>, paso a paso</h1>
+  <p class="hero-desc">Atención personalizada a personas físicas y morales. Especialistas en pensiones ISSSTE, derecho familiar, sucesorio e Infonavit.</p>
+  <div class="hero-actions">
+    <a href="https://wa.me/526677750902?text=Hola%2C%20me%20gustar%C3%ADa%20agendar%20una%20consulta%20legal%20con%20Pe%C3%B1a%20Abogados" class="btn btn-gold" target="_blank"><i class="fab fa-whatsapp"></i>Contáctanos por WhatsApp</a>
+    <a href="tel:6677750902" class="btn btn-outline"><i class="fas fa-phone"></i>Llamar ahora</a>
+  </div>
+  <div class="hero-trust"><span class="stars">★★★★★</span> 4.8 en Google · 43 reseñas</div>
+</section>
+
+<!-- NOSOTROS -->
+<section class="nosotros" id="nosotros">
+  <div class="nosotros-inner">
+    <div class="eyebrow">Nosotros</div>
+    <h2 class="title">Su despacho de confianza en Culiacán</h2>
+    <blockquote>"Despacho jurídico especializado en materia administrativa: corrección de cuota diaria del ISSSTE, negativas de pensión, cuantificación y régimen de pensión, y negligencias médicas de instituciones públicas."</blockquote>
+    <p>Peña Abogados atiende a personas físicas y morales que requieren representación legal en Culiacán, con atención personalizada y seguimiento cercano de cada caso — así lo describen sus propios clientes en Google.</p>
+    <div class="nosotros-dir">
+      <i class="fas fa-map-marker-alt"></i>
+      <div>Corporativo 120, Blvd. Alfonso Zaragoza #1980, Piso 4, Torre B<br>Desarrollo Urbano Tres Ríos, Culiacán Rosales, Sinaloa</div>
+    </div>
+  </div>
+</section>
+
+<!-- AREAS DE PRACTICA -->
+<section id="areas">
+  <div class="section-inner">
+    <div class="eyebrow">Áreas de práctica</div>
+    <h2 class="title">¿En qué le podemos ayudar?</h2>
+    <div class="areas-grid">
+      <div class="areas-tabs" id="areasTabs">
+        <button class="areas-tab active" data-tab="a1">Pensiones ISSSTE</button>
+        <button class="areas-tab" data-tab="a2">Derecho Familiar</button>
+        <button class="areas-tab" data-tab="a3">Derecho Sucesorio</button>
+        <button class="areas-tab" data-tab="a4">Infonavit y Bienes Raíces</button>
+        <button class="areas-tab" data-tab="a5">Negligencias Médicas</button>
+        <button class="areas-tab" data-tab="a6">Representación Foránea</button>
+      </div>
+      <div class="areas-content">
+        <div class="areas-panel active" id="a1">
+          <h3>Pensiones y Trámites ISSSTE</h3>
+          <ul>
+            <li>Corrección de cuota diaria determinada por el ISSSTE</li>
+            <li>Negativas de pensión</li>
+            <li>Correcta cuantificación de la pensión</li>
+            <li>Corrección de régimen de pensión</li>
+            <li>Derecho a pertenecer al décimo transitorio</li>
+          </ul>
+        </div>
+        <div class="areas-panel" id="a2">
+          <h3>Derecho Familiar</h3>
+          <ul>
+            <li>Divorcios</li>
+            <li>Conflictos familiares</li>
+          </ul>
+        </div>
+        <div class="areas-panel" id="a3">
+          <h3>Derecho Sucesorio</h3>
+          <ul>
+            <li>Juicios sucesorios</li>
+            <li>Trámites relacionados con herencia y patrimonio familiar</li>
+          </ul>
+        </div>
+        <div class="areas-panel" id="a4">
+          <h3>Infonavit y Bienes Raíces</h3>
+          <ul>
+            <li>Regularización de créditos Infonavit</li>
+            <li>Regularización de créditos bancarios</li>
+          </ul>
+        </div>
+        <div class="areas-panel" id="a5">
+          <h3>Negligencias Médicas</h3>
+          <ul>
+            <li>Representación en casos de negligencia médica por parte de instituciones públicas</li>
+          </ul>
+        </div>
+        <div class="areas-panel" id="a6">
+          <h3>Representación Foránea</h3>
+          <ul>
+            <li>Apoyo local a despachos de otras ciudades que requieren representación en litigios en Culiacán</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- VENTAJAS -->
+<section class="ventajas">
+  <div class="section-inner">
+    <div class="eyebrow">Por qué elegirnos</div>
+    <h2 class="title">Lo que ya destacan nuestros clientes</h2>
+    <div class="ventajas-grid">
+      <div class="ventaja"><i class="fas fa-user-check"></i><h4>Atención personalizada</h4><p>Así lo describen nuestros propios clientes en sus reseñas de Google.</p></div>
+      <div class="ventaja"><i class="fas fa-clipboard-check"></i><h4>Seguimiento cercano</h4><p>Le damos seguimiento a su caso en cada etapa, no solo al inicio.</p></div>
+      <div class="ventaja"><i class="fab fa-whatsapp"></i><h4>Respuesta directa</h4><p>Contacto inmediato por WhatsApp para dar seguimiento a su asunto.</p></div>
+      <div class="ventaja"><i class="fas fa-balance-scale"></i><h4>Especialistas en ISSSTE</h4><p>Nuestra especialidad más fuerte: pensiones y trámites administrativos.</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- TESTIMONIOS -->
+<section id="testimonios">
+  <div class="section-inner">
+    <div class="eyebrow">Testimonios</div>
+    <h2 class="title">Lo que dicen nuestros clientes</h2>
+    <div class="testimonios-grid">
+      <div class="testimonio">
+        <div class="stars">★★★★★</div>
+        <p>"Atención personalizada, y buen seguimiento de los casos."</p>
+        <span>Cliente en Google</span>
+      </div>
+      <div class="testimonio">
+        <div class="stars">★★★★★</div>
+        <p>"Muy buen despacho, en lo personal me han resuelto muy bien mis asuntos."</p>
+        <span>Cliente en Google</span>
+      </div>
+    </div>
+    <p class="testimonios-nota">Reseñas reales del Perfil de Negocio de Google de Peña Abogados (4.8★ · 43 reseñas).</p>
+  </div>
+</section>
+
+<!-- FAQ -->
+<section class="faq" id="faq">
+  <div class="section-inner">
+    <div class="eyebrow">Preguntas frecuentes</div>
+    <h2 class="title">Antes de contactarnos</h2>
+    <div class="faq-list" id="faqList">
+      <div class="faq-item open">
+        <div class="faq-q">¿Cómo puedo dar seguimiento a mi caso?<i class="fas fa-plus"></i></div>
+        <div class="faq-a">Puede escribirnos directamente por WhatsApp; respondemos en un plazo máximo de 24 horas hábiles.</div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-q">¿Atienden asuntos de pensión del ISSSTE?<i class="fas fa-plus"></i></div>
+        <div class="faq-a">Sí, es nuestra especialidad principal: corrección de cuota diaria, negativas de pensión, cuantificación y régimen de pensión, y décimo transitorio.</div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-q">¿Cuánto cuesta la primera consulta?<i class="fas fa-plus"></i></div>
+        <div class="faq-a">Pendiente de confirmar con el despacho — se muestra aquí una vez definida la política de precios.</div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-q">¿Atienden a despachos de otras ciudades?<i class="fas fa-plus"></i></div>
+        <div class="faq-a">Sí, ofrecemos representación local en Culiacán para despachos foráneos que requieren apoyo en litigios en la zona.</div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-q">¿Dónde están ubicados?<i class="fas fa-plus"></i></div>
+        <div class="faq-a">Corporativo 120, Blvd. Alfonso Zaragoza #1980, Piso 4, Torre B, Desarrollo Urbano Tres Ríos, Culiacán Rosales, Sinaloa.</div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-q">¿Cuál es su horario de atención?<i class="fas fa-plus"></i></div>
+        <div class="faq-a">Pendiente de confirmar el horario completo con el despacho.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CONTACTO -->
+<section class="contacto" id="contacto">
+  <div class="section-inner">
+    <div class="eyebrow">Contacto</div>
+    <h2 class="title">Trabajemos juntos</h2>
+    <div class="contacto-grid">
+      <div class="contacto-info">
+        <h4>Teléfono</h4>
+        <div class="val"><i class="fas fa-phone"></i>667 775 0902</div>
+        <h4>WhatsApp</h4>
+        <div class="val"><i class="fab fa-whatsapp"></i>667 775 0902</div>
+        <h4>Ubicación</h4>
+        <div class="val"><i class="fas fa-map-marker-alt"></i>Blvd. Alfonso Zaragoza #1980, Piso 4, Torre B, Desarrollo Urbano Tres Ríos, Culiacán</div>
+        <div class="contacto-actions">
+          <a href="https://wa.me/526677750902?text=Hola%2C%20me%20gustar%C3%ADa%20agendar%20una%20consulta%20legal%20con%20Pe%C3%B1a%20Abogados" class="btn btn-gold" target="_blank"><i class="fab fa-whatsapp"></i>Escribir por WhatsApp</a>
+        </div>
+      </div>
+      <div class="map-frame">
+        <iframe src="https://www.google.com/maps?q=Blvd.+Alfonso+Zaragoza+1980+Desarrollo+Urbano+Tres+Rios+Culiacan+Rosales+Sinaloa&output=embed" loading="lazy" allowfullscreen></iframe>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="footer-grid">
+    <div>
+      <h5>Peña Abogados</h5>
+      <p>Despacho jurídico en Culiacán, Sinaloa. Atención personalizada a personas físicas y morales.</p>
+    </div>
+    <div>
+      <h5>Ubicación</h5>
+      <p>Blvd. Alfonso Zaragoza #1980, Piso 4, Torre B<br>Desarrollo Urbano Tres Ríos, Culiacán Rosales, Sin.</p>
+    </div>
+    <div>
+      <h5>Comunícate</h5>
+      <a href="tel:6677750902"><i class="fas fa-phone"></i> 667 775 0902</a>
+      <a href="https://wa.me/526677750902" target="_blank"><i class="fab fa-whatsapp"></i> WhatsApp</a>
+      <a href="https://www.facebook.com/Despachopenaabogados" target="_blank"><i class="fab fa-facebook"></i> Facebook</a>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <span>© 2026 Peña Abogados · Todos los derechos reservados</span>
+    <span>Sitio realizado por Golden Tech</span>
+  </div>
+</footer>
+
+<a href="https://wa.me/526677750902?text=Hola%2C%20me%20gustar%C3%ADa%20agendar%20una%20consulta%20legal%20con%20Pe%C3%B1a%20Abogados" class="float-wa" target="_blank"><i class="fab fa-whatsapp"></i></a>
+
+<script>
+const hamburger = document.getElementById('hamburger');
+const navLinks = document.getElementById('navLinks');
+hamburger.addEventListener('click', () => {
+  navLinks.classList.toggle('open');
+});
+navLinks.querySelectorAll('a').forEach(a => a.addEventListener('click', () => navLinks.classList.remove('open')));
+
+document.getElementById('areasTabs').addEventListener('click', e => {
+  const btn = e.target.closest('.areas-tab');
+  if (!btn) return;
+  document.querySelectorAll('.areas-tab').forEach(t => t.classList.remove('active'));
+  document.querySelectorAll('.areas-panel').forEach(p => p.classList.remove('active'));
+  btn.classList.add('active');
+  document.getElementById(btn.dataset.tab).classList.add('active');
+});
+
+document.getElementById('faqList').addEventListener('click', e => {
+  const item = e.target.closest('.faq-item');
+  if (!item) return;
+  item.classList.toggle('open');
+});
+</script>
+
+</body>
+</html>
