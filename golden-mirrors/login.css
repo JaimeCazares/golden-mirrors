@@ -1,0 +1,99 @@
+/* Fuente moderna (Inter) */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&display=swap');
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Inter', sans-serif;
+}
+
+body {
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: linear-gradient(135deg, #111827, #1e3a8a, #0f172a);
+    background-size: 400% 400%;
+    animation: gradientMove 10s ease infinite;
+    padding: 20px;
+}
+
+/* Animación del fondo */
+@keyframes gradientMove {
+    0% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
+}
+
+/* Tarjeta */
+.login {
+    width: 350px;
+    padding: 30px;
+    border-radius: 20px;
+    backdrop-filter: blur(15px);
+    background: rgba(255, 255, 255, 0.15);
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.25);
+    color: rgb(0, 0, 0);
+    animation: fadeIn 0.8s ease-out;
+}
+
+/* Animación suave al aparecer */
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(20px); }
+    to   { opacity: 1; transform: translateY(0); }
+}
+
+h2 {
+    text-align: center;
+    margin-bottom: 20px;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+}
+
+/* Inputs */
+input {
+    width: 100%;
+    padding: 14px;
+    margin: 12px 0;
+    border: none;
+    border-radius: 12px;
+    outline: none;
+    background: rgba(255, 255, 255, 0.85);
+    font-size: 15px;
+    transition: 0.2s ease;
+}
+
+input:focus {
+    background: white;
+    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.4);
+}
+
+/* Botón */
+button {
+    width: 100%;
+    padding: 14px;
+    margin-top: 10px;
+    background: #111827;
+    border: none;
+    border-radius: 12px;
+    color: white;
+    font-size: 16px;
+    cursor: pointer;
+    font-weight: 500;
+    transition: 0.25s ease;
+}
+
+button:hover {
+    background: #1f2937;
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.35);
+}
+
+/* Mensajes */
+#respuesta {
+    margin-top: 15px;
+    text-align: center;
+    color: #ffbfbf;
+    font-size: 14px;
+}
