@@ -1,0 +1,81 @@
+<div class="mm-wrap" id="mm-wrap">
+
+  <div class="mm-header">
+    <div class="mm-title-group">
+      <h2 class="mm-title">⚽ Momios</h2>
+      <p class="mm-sub">Champions League — registro 6:00 AM / 7:00 PM</p>
+    </div>
+  </div>
+
+  <div class="mm-stats" id="mm-stats"></div>
+
+  <!-- FORMULARIO DE CAPTURA -->
+  <div class="mm-form-card">
+
+    <div class="mm-form-row">
+      <div class="mm-field">
+        <label>Fecha</label>
+        <input type="date" id="mm-input-fecha">
+      </div>
+      <div class="mm-field">
+        <label>Turno</label>
+        <select id="mm-input-turno">
+          <option value="manana">🌅 Mañana (6:00 AM)</option>
+          <option value="tarde">🌆 Tarde (7:00 PM)</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="mm-form-row">
+      <div class="mm-field">
+        <label>Equipo local</label>
+        <input type="text" id="mm-input-local" placeholder="Ej. Real Madrid" autocomplete="off">
+      </div>
+      <div class="mm-field">
+        <label>Equipo visitante</label>
+        <input type="text" id="mm-input-visitante" placeholder="Ej. Bayern Múnich" autocomplete="off">
+      </div>
+    </div>
+
+    <div class="mm-form-row mm-form-row-3">
+      <div class="mm-field">
+        <label>Momio 1 (Local)</label>
+        <input type="number" step="0.01" min="0" id="mm-input-m1" placeholder="1.85">
+      </div>
+      <div class="mm-field">
+        <label>Momio X (Empate)</label>
+        <input type="number" step="0.01" min="0" id="mm-input-mx" placeholder="3.40">
+      </div>
+      <div class="mm-field">
+        <label>Momio 2 (Visitante)</label>
+        <input type="number" step="0.01" min="0" id="mm-input-m2" placeholder="4.20">
+      </div>
+    </div>
+
+    <div class="mm-field">
+      <label>Notas (opcional)</label>
+      <input type="text" id="mm-input-notas" placeholder="Casa de apuestas, observaciones..." autocomplete="off">
+    </div>
+
+    <button type="button" class="mm-btn-guardar" id="mm-btn-guardar" onclick="mmGuardarRegistro()">
+      💾 Guardar momio
+    </button>
+    <p class="mm-form-msg" id="mm-form-msg"></p>
+  </div>
+
+  <!-- LISTA DE REGISTROS -->
+  <div class="mm-lista-section">
+    <div class="mm-lista-head">
+      <span>📋 Registros</span>
+      <div class="mm-lista-filtros">
+        <button type="button" class="mm-filtro-btn activo" data-dias="7" onclick="mmFiltrarDias(7, this)">7 días</button>
+        <button type="button" class="mm-filtro-btn" data-dias="30" onclick="mmFiltrarDias(30, this)">30 días</button>
+        <button type="button" class="mm-filtro-btn" data-dias="0" onclick="mmFiltrarDias(0, this)">Todo</button>
+      </div>
+    </div>
+    <div class="mm-lista" id="mm-lista">
+      <p class="mm-lista-vacio">Cargando registros...</p>
+    </div>
+  </div>
+
+</div>

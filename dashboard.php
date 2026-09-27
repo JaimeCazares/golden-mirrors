@@ -29,6 +29,7 @@ if (empty($_SESSION['rol']) || $_SESSION['rol'] !== 'admin') {
   <link rel="stylesheet" href="espejo/css/espejo-selector.css">
   <link rel="stylesheet" href="<?php echo assetV('gastos/gastos.css'); ?>">
   <link rel="stylesheet" href="<?php echo assetV('nutricion/nutricion.css'); ?>">
+  <link rel="stylesheet" href="<?php echo assetV('momios/momios.css'); ?>">
   <link rel="stylesheet" href="<?php echo assetV('habitos/habitos.css'); ?>">
   <link rel="stylesheet" href="<?php echo assetV('ruleta/ruleta.css'); ?>">
   <link rel="stylesheet" href="<?php echo assetV('clientes/clientes.css'); ?>">
@@ -51,6 +52,11 @@ if (empty($_SESSION['rol']) || $_SESSION['rol'] !== 'admin') {
       <button class="nav-btn" onclick="cambiarPestana('nutricion')">
           <span class="icono">🥗</span>
           <span class="label">Nutrición</span>
+      </button>
+
+      <button class="nav-btn" onclick="cambiarPestana('momios')">
+          <span class="icono">⚽</span>
+          <span class="label">Momios</span>
       </button>
 
       <button class="nav-btn" onclick="cambiarPestana('habitos')">

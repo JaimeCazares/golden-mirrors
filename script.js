@@ -24,13 +24,14 @@ async function cambiarPestana(nombre) {
 
     const mapa = {
         nutricion: 0,
-        habitos: 1,
-        inicio: 2,
-        escalera: 3,
-        espejo: 4,
-        registro: 5,
-        ruleta: 6,
-        clientes: 7
+        momios: 1,
+        habitos: 2,
+        inicio: 3,
+        escalera: 4,
+        espejo: 5,
+        registro: 6,
+        ruleta: 7,
+        clientes: 8
     };
 
     document.querySelectorAll('.nav-btn')[mapa[nombre]]
@@ -210,6 +211,21 @@ async function cambiarPestana(nombre) {
                 modulosCargados['nutricion'] = true;
             } else {
                 if (typeof initNutricion === 'function') initNutricion();
+            }
+        }
+
+        // === MOMIOS ===
+        if (nombre === 'momios') {
+            if (!modulosCargados['momios']) {
+                const script = document.createElement('script');
+                script.src = `momios/momios.js?v=${Date.now()}`;
+                script.onload = () => {
+                    if (typeof initMomios === 'function') initMomios();
+                };
+                document.body.appendChild(script);
+                modulosCargados['momios'] = true;
+            } else {
+                if (typeof initMomios === 'function') initMomios();
             }
         }
 
