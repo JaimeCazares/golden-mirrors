@@ -1,0 +1,1 @@
+mysqldump.exe: Got error: 130: "Incorrect file format 'proxies_priv'" when using LOCK TABLES
