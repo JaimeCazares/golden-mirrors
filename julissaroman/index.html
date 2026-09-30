@@ -1,0 +1,1078 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="Julissa Roman — Nutrióloga en Culiacán, Sinaloa. Planes de alimentación 100% personalizados enfocados en recomposición corporal, control de peso y bienestar integral: cuerpo y mente.">
+<meta name="keywords" content="nutrióloga Culiacán, nutrición personalizada Culiacán, recomposición corporal Culiacán, Julissa Roman nutrióloga">
+<title>Julissa Roman | Nutrióloga · Culiacán, Sinaloa</title>
+<link rel="icon" type="image/png" href="assets/img/logo.png">
+<meta property="og:title" content="Julissa Roman | Nutrióloga · Culiacán, Sinaloa">
+<meta property="og:description" content="Nutrióloga especializada en planes de alimentación 100% personalizados. Recomposición corporal, control de peso y bienestar integral.">
+<meta property="og:image" content="assets/img/logo.png">
+<meta property="og:type" content="website">
+<meta property="og:locale" content="es_MX">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --plum:#3d2748;
+  --plum-m:#573564;
+  --teal:#4fa899;
+  --teal-l:#cfe9e3;
+  --teal-ll:#eef7f5;
+  --cream:#faf7f5;
+  --cream-d:#f1e9ef;
+  --pink:#d6266f;
+  --pink-l:#fbe3ee;
+  --lav:#ece3f2;
+  --text:#241826;
+  --text-m:#5b4a63;
+  --text-l:#9c8aa5;
+  --white:#ffffff;
+  --r:16px;
+}
+
+html{scroll-behavior:smooth}
+body{font-family:'DM Sans',sans-serif;background:var(--cream);color:var(--text);overflow-x:hidden;line-height:1.6}
+
+/* ─── NAV ─────────────────────────────────────────── */
+nav{
+  position:fixed;top:0;left:0;right:0;z-index:100;
+  display:flex;align-items:center;justify-content:space-between;
+  padding:18px 5%;
+  background:rgba(250,247,245,0.92);
+  backdrop-filter:blur(12px);
+  border-bottom:1px solid rgba(79,168,153,0.15);
+  transition:all .3s;
+}
+.nav-logo{display:flex;align-items:center;text-decoration:none}
+.nav-logo-img{height:34px;width:auto;object-fit:contain}
+.nav-links{display:flex;align-items:center;gap:28px}
+.nav-links a{font-size:13px;color:var(--text-m);text-decoration:none;letter-spacing:.3px;transition:color .2s}
+.nav-links a:hover{color:var(--plum)}
+.nav-cta{background:var(--plum);color:var(--cream)!important;padding:9px 20px;border-radius:50px;font-size:13px;font-weight:500;text-decoration:none;transition:background .2s!important}
+.nav-cta:hover{background:var(--plum-m)!important}
+
+.hamburger{display:none;flex-direction:column;gap:5px;cursor:pointer;padding:4px}
+.hamburger span{width:22px;height:1.5px;background:var(--plum);display:block;transition:all .3s}
+
+/* ─── HERO ────────────────────────────────────────── */
+.hero{
+  min-height:100vh;
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  position:relative;
+  overflow:hidden;
+  padding-top:80px;
+}
+
+.hero-left{
+  display:flex;flex-direction:column;justify-content:center;
+  padding:56px 5% 56px 8%;
+  position:relative;z-index:2;
+}
+
+.hero-eyebrow{
+  display:inline-flex;align-items:center;gap:8px;
+  font-size:12px;letter-spacing:2px;text-transform:uppercase;
+  color:var(--teal);margin-bottom:16px;
+  font-weight:500;
+}
+.eyebrow-line{width:32px;height:1px;background:var(--teal)}
+
+.hero-title{
+  font-family:'Cormorant Garamond',serif;
+  font-size:clamp(48px,5.5vw,80px);
+  font-weight:300;
+  line-height:1.05;
+  color:var(--plum);
+  margin-bottom:12px;
+}
+.hero-title em{
+  font-style:italic;
+  background:linear-gradient(90deg,#d6266f 0%,#ea6fa8 28%,#d6266f 52%,#ea6fa8 76%,#d6266f 100%);
+  background-size:200% auto;
+  -webkit-background-clip:text;
+  -webkit-text-fill-color:transparent;
+  background-clip:text;
+  animation:shimmerText 4.5s linear infinite;
+}
+.hero-title strong{font-weight:600}
+
+.hero-name{
+  font-family:'Cormorant Garamond',serif;
+  font-size:clamp(18px,2vw,26px);
+  color:var(--text-m);
+  font-style:italic;
+  font-weight:300;
+  margin-bottom:16px;
+  letter-spacing:.5px;
+}
+
+.hero-desc{
+  font-size:15px;color:var(--text-m);
+  max-width:440px;line-height:1.7;
+  margin-bottom:28px;
+}
+
+.hero-actions{display:flex;align-items:center;gap:16px;flex-wrap:wrap}
+
+.btn-whatsapp{
+  display:inline-flex;align-items:center;gap:10px;
+  background:var(--plum);color:var(--cream);
+  padding:14px 28px;border-radius:50px;
+  font-size:15px;font-weight:500;text-decoration:none;
+  transition:all .25s;
+  box-shadow:0 8px 32px rgba(61,39,72,0.25);
+}
+.btn-whatsapp:hover{background:var(--plum-m);transform:translateY(-2px);box-shadow:0 12px 40px rgba(61,39,72,0.3)}
+.btn-whatsapp svg{width:18px;height:18px;fill:currentColor}
+
+.btn-ghost{
+  display:inline-flex;align-items:center;gap:8px;
+  color:var(--plum);font-size:14px;text-decoration:none;
+  border-bottom:1px solid var(--teal-l);padding-bottom:2px;
+  transition:border-color .2s;
+}
+.btn-ghost:hover{border-color:var(--plum)}
+
+.hero-badges{
+  display:flex;gap:8px;margin-top:24px;flex-wrap:wrap;
+}
+.hero-badge{
+  display:flex;align-items:center;gap:7px;
+  background:var(--white);border:1px solid var(--teal-l);
+  border-radius:50px;padding:8px 16px;
+  font-size:12px;color:var(--text-m);
+  box-shadow:0 2px 12px rgba(79,168,153,0.08);
+}
+
+/* HERO RIGHT */
+.hero-right{
+  position:relative;
+  background:var(--plum);
+  overflow:hidden;
+  display:flex;align-items:center;justify-content:center;
+}
+
+.hero-photo-placeholder{
+  position:relative;z-index:2;
+  width:100%;height:100%;
+  display:flex;align-items:center;justify-content:center;
+  flex-direction:column;gap:16px;
+}
+
+.blob{position:absolute;border-radius:60% 40% 70% 30% / 50% 60% 40% 70%;opacity:.14}
+.blob-1{width:400px;height:400px;background:var(--teal);top:-80px;right:-80px;animation:float1 8s ease-in-out infinite}
+.blob-2{width:300px;height:300px;background:var(--pink);bottom:-60px;left:-60px;animation:float2 10s ease-in-out infinite}
+.blob-3{width:200px;height:200px;background:var(--teal-l);top:40%;right:10%;animation:float1 12s ease-in-out infinite reverse;opacity:.16}
+
+@keyframes float1{0%,100%{transform:translate(0,0) rotate(0deg)}50%{transform:translate(15px,-20px) rotate(5deg)}}
+@keyframes float2{0%,100%{transform:translate(0,0) rotate(0deg)}50%{transform:translate(-10px,15px) rotate(-4deg)}}
+
+.hero-img-frame{
+  position:relative;z-index:3;
+  width:280px;height:380px;
+  border-radius:140px 140px 100px 100px;
+  background:rgba(255,255,255,0.08);
+  border:1px solid rgba(255,255,255,0.15);
+  overflow:hidden;
+  display:flex;align-items:center;justify-content:center;
+  flex-direction:column;gap:12px;
+  color:rgba(255,255,255,0.5);
+  font-size:13px;text-align:center;
+  padding:0;
+}
+
+.hero-stat-cards{
+  position:absolute;z-index:4;
+  display:flex;flex-direction:column;gap:10px;
+  right:-20px;top:50%;transform:translateY(-50%);
+}
+.hero-stat{
+  background:var(--white);border-radius:14px;
+  padding:12px 18px;
+  box-shadow:0 8px 32px rgba(0,0,0,0.15);
+  min-width:140px;
+}
+.hero-stat-num{font-family:'Cormorant Garamond',serif;font-size:26px;color:var(--plum);font-weight:600;line-height:1}
+.hero-stat-lbl{font-size:11px;color:var(--text-l);margin-top:2px}
+
+.scroll-hint{
+  position:absolute;bottom:32px;left:8%;
+  display:flex;align-items:center;gap:10px;
+  font-size:12px;color:var(--text-l);letter-spacing:1px;text-transform:uppercase;
+  animation:bounce 2s ease-in-out infinite;
+}
+@keyframes bounce{0%,100%{transform:translateY(0)}50%{transform:translateY(6px)}}
+.scroll-arrow{width:1px;height:32px;background:var(--teal-l);margin-left:4px}
+
+/* ─── DIVIDER STRIP ───────────────────────────────── */
+.strip{
+  background:var(--plum);color:var(--cream);
+  padding:13px 0;overflow:hidden;
+  display:flex;
+}
+.strip-track{
+  display:flex;gap:0;white-space:nowrap;
+  animation:marquee 20s linear infinite;
+  flex-shrink:0;
+}
+@keyframes marquee{from{transform:translateX(0)}to{transform:translateX(-50%)}}
+.strip-item{
+  display:inline-flex;align-items:center;gap:12px;
+  font-family:'Cormorant Garamond',serif;font-size:16px;font-style:italic;
+  padding:0 32px;color:rgba(250,247,245,0.7);
+}
+.strip-dot{width:5px;height:5px;border-radius:50%;background:var(--teal);flex-shrink:0}
+
+/* ─── SECTION BASE ────────────────────────────────── */
+section{padding:68px 8%}
+.section-label{
+  display:inline-flex;align-items:center;gap:8px;
+  font-size:11px;letter-spacing:2.5px;text-transform:uppercase;
+  color:var(--teal);margin-bottom:12px;font-weight:500;
+}
+.section-label::before{content:'';width:24px;height:1px;background:var(--teal)}
+.section-title{
+  font-family:'Cormorant Garamond',serif;
+  font-size:clamp(32px,4vw,52px);
+  font-weight:300;line-height:1.1;color:var(--plum);
+  margin-bottom:14px;
+}
+.section-title em{font-style:italic;color:var(--pink)}
+.section-sub{font-size:15px;color:var(--text-m);max-width:560px;line-height:1.7}
+
+/* ─── SOBRE MI ─────────────────────────────────── */
+.about{background:var(--white)}
+.about-grid{display:grid;grid-template-columns:1fr 1fr;gap:52px;align-items:center}
+.about-img-wrap{position:relative}
+.about-img{
+  width:100%;aspect-ratio:3/4;
+  background:var(--teal-ll);border-radius:120px 120px 40px 40px;
+  display:flex;align-items:center;justify-content:center;
+  flex-direction:column;gap:10px;color:var(--text-l);font-size:13px;
+  position:relative;overflow:hidden;
+}
+.about-img-icon{font-size:48px;opacity:.4}
+.about-img-note{font-size:12px;color:var(--text-l);margin-top:4px}
+
+.about-card{
+  position:absolute;bottom:-20px;right:-24px;
+  background:var(--plum);color:var(--cream);
+  border-radius:16px;padding:20px 24px;
+  box-shadow:0 16px 48px rgba(61,39,72,0.25);
+}
+.about-card-num{font-family:'Cormorant Garamond',serif;font-size:30px;font-weight:600;line-height:1}
+.about-card-lbl{font-size:12px;opacity:.7;margin-top:2px}
+
+.about-content{padding:8px 0}
+.about-quote{
+  font-family:'Cormorant Garamond',serif;
+  font-size:20px;font-style:italic;font-weight:300;
+  color:var(--plum);line-height:1.5;
+  border-left:3px solid var(--teal);
+  padding-left:20px;margin:18px 0;
+}
+.about-text{font-size:14px;color:var(--text-m);line-height:1.75;margin-bottom:10px}
+.about-cred{
+  display:flex;align-items:center;gap:10px;
+  background:var(--teal-ll);border-radius:12px;
+  padding:12px 16px;margin-top:18px;
+  font-size:13px;color:var(--text-m);
+}
+.about-cred-icon{font-size:20px}
+
+/* ─── SERVICIOS ───────────────────────────────────── */
+.servicios{background:var(--cream)}
+.servicios-head{display:flex;justify-content:space-between;align-items:flex-end;margin-bottom:36px;flex-wrap:wrap;gap:16px}
+.servicios-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:18px}
+
+.serv-card{
+  border-radius:20px;padding:26px 22px;
+  position:relative;overflow:hidden;
+  transition:transform .3s,box-shadow .3s;
+  cursor:default;
+}
+.serv-card:hover{transform:translateY(-6px)}
+
+.serv-card-1{background:var(--plum);color:var(--cream)}
+.serv-card-2{background:var(--white);border:1px solid var(--teal-l);color:var(--text)}
+.serv-card-3{background:var(--pink-l);color:var(--text)}
+.serv-card-4{background:var(--lav);color:var(--text)}
+
+.serv-icon{font-size:30px;margin-bottom:14px;display:block}
+.serv-title{
+  font-family:'Cormorant Garamond',serif;
+  font-size:22px;font-weight:600;margin-bottom:8px;line-height:1.2;
+}
+.serv-card-1 .serv-title{color:var(--cream)}
+.serv-desc{font-size:13px;line-height:1.65;opacity:.8;margin-bottom:16px}
+.serv-tags{display:flex;flex-wrap:wrap;gap:6px}
+.serv-tag{
+  font-size:11px;padding:5px 12px;border-radius:50px;
+  font-weight:500;letter-spacing:.3px;
+}
+.serv-card-1 .serv-tag{background:rgba(255,255,255,0.12);color:rgba(250,247,245,0.85)}
+.serv-card-2 .serv-tag,.serv-card-4 .serv-tag{background:var(--teal-ll);color:var(--teal)}
+.serv-card-3 .serv-tag{background:rgba(214,38,111,0.15);color:var(--pink)}
+
+/* ─── COMO FUNCIONA ───────────────────────────────── */
+.proceso{background:linear-gradient(145deg,#3d2748 0%,#452c50 55%,#3a2543 100%);color:var(--cream);position:relative;overflow:hidden;padding:44px 8%}
+.proceso::before{content:'';position:absolute;top:-80px;right:-80px;width:360px;height:360px;border-radius:50%;background:radial-gradient(circle,rgba(79,168,153,0.12) 0%,transparent 65%);pointer-events:none}
+.proceso::after{content:'';position:absolute;bottom:-60px;left:-60px;width:280px;height:280px;border-radius:50%;background:radial-gradient(circle,rgba(214,38,111,0.08) 0%,transparent 65%);pointer-events:none}
+.proceso .section-label{color:var(--teal-l)}
+.proceso .section-label::before{background:var(--teal-l)}
+.proceso .section-title{color:var(--cream)}
+.proceso-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:8px;margin-top:26px;position:relative}
+.proceso-grid::before{
+  content:'';position:absolute;
+  top:22px;left:10%;right:10%;height:1px;
+  background:linear-gradient(90deg,transparent,rgba(255,255,255,0.12),transparent);
+}
+.paso{text-align:center;padding:18px 8px;position:relative;border-radius:16px;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);transition:background .2s}
+.paso:hover{background:rgba(255,255,255,0.09)}
+.paso-num{
+  width:38px;height:38px;border-radius:50%;
+  background:rgba(255,255,255,0.08);
+  border:1px solid rgba(255,255,255,0.18);
+  display:flex;align-items:center;justify-content:center;
+  margin:0 auto 10px;
+  font-family:'Cormorant Garamond',serif;
+  font-size:15px;color:var(--cream);font-weight:600;
+  position:relative;z-index:2;
+}
+.paso.active .paso-num{background:var(--teal);border-color:var(--teal);box-shadow:0 0 18px rgba(79,168,153,0.45)}
+.paso-icon{font-size:18px;margin-bottom:6px;display:block}
+.paso-title{font-size:12px;font-weight:500;color:var(--cream);margin-bottom:4px;line-height:1.25}
+.paso-desc{font-size:10.5px;color:rgba(250,247,245,0.5);line-height:1.5}
+
+/* ─── CONSULTA INCLUYE ────────────────────────────── */
+.incluye{background:var(--cream-d)}
+.incluye-grid{display:grid;grid-template-columns:1fr 1fr;gap:44px;align-items:start}
+.incluye-items{display:flex;flex-direction:column;gap:10px;margin-top:22px}
+.incluye-item{
+  display:flex;align-items:flex-start;gap:14px;
+  background:var(--white);border-radius:14px;padding:14px 16px;
+  border:1px solid rgba(79,168,153,0.15);
+  transition:border-color .2s,box-shadow .2s;
+}
+.incluye-item:hover{border-color:var(--teal-l);box-shadow:0 4px 20px rgba(79,168,153,0.1)}
+.incluye-check{
+  width:30px;height:30px;border-radius:50%;
+  background:var(--teal-ll);
+  display:flex;align-items:center;justify-content:center;
+  flex-shrink:0;font-size:14px;
+}
+.incluye-item-title{font-size:14px;font-weight:500;color:var(--plum);margin-bottom:2px}
+.incluye-item-desc{font-size:12px;color:var(--text-m);line-height:1.55}
+
+.incluye-cta-box{
+  position:sticky;top:100px;
+  background:var(--plum);color:var(--cream);
+  border-radius:22px;padding:30px 26px;
+}
+.incluye-cta-label{font-size:11px;letter-spacing:2px;text-transform:uppercase;color:var(--teal-l);margin-bottom:10px;font-weight:500}
+.incluye-cta-title{
+  font-family:'Cormorant Garamond',serif;
+  font-size:28px;font-weight:300;line-height:1.2;margin-bottom:14px;
+}
+.incluye-cta-title em{font-style:italic;color:var(--teal-l)}
+.incluye-cta-price{
+  margin:16px 0;padding:14px 0;
+  border-top:1px solid rgba(255,255,255,0.1);
+  border-bottom:1px solid rgba(255,255,255,0.1);
+}
+.price-note{font-size:12px;color:rgba(250,247,245,0.5);margin-bottom:4px}
+.price-val{
+  font-family:'Cormorant Garamond',serif;
+  font-size:28px;font-weight:600;line-height:1.2;color:var(--cream);
+}
+.price-sub{font-size:12px;color:rgba(250,247,245,0.6);margin-top:3px}
+.incluye-cta-desc{font-size:13px;color:rgba(250,247,245,0.65);line-height:1.65;margin-bottom:18px}
+.btn-wa-big{
+  display:flex;align-items:center;justify-content:center;gap:10px;
+  background:var(--cream);color:var(--plum);
+  padding:16px 28px;border-radius:50px;
+  font-size:15px;font-weight:500;text-decoration:none;
+  transition:all .25s;width:100%;
+}
+.btn-wa-big:hover{background:var(--teal-ll)}
+.btn-wa-big svg{width:18px;height:18px;fill:#25D366}
+.incluye-loc{display:flex;align-items:center;gap:8px;margin-top:16px;font-size:13px;color:rgba(250,247,245,0.5)}
+
+/* ─── FAQ ─────────────────────────────────────────── */
+.faq{background:var(--cream-d)}
+.faq-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:28px}
+.faq-item{
+  background:var(--white);border-radius:14px;
+  padding:16px 18px;cursor:pointer;
+  border:1px solid transparent;transition:border-color .2s;
+}
+.faq-item:hover{border-color:var(--teal-l)}
+.faq-q{
+  font-size:15px;font-weight:500;color:var(--plum);
+  display:flex;justify-content:space-between;align-items:center;gap:12px;
+}
+.faq-arrow{
+  width:28px;height:28px;border-radius:50%;
+  background:var(--teal-ll);display:flex;align-items:center;
+  justify-content:center;font-size:14px;color:var(--teal);flex-shrink:0;
+  transition:transform .3s;
+}
+.faq-a{font-size:13px;color:var(--text-m);line-height:1.75;margin-top:12px;display:none}
+.faq-item.open .faq-a{display:block}
+.faq-item.open .faq-arrow{transform:rotate(45deg)}
+
+/* ─── CONTACTO ────────────────────────────────────── */
+.contacto{
+  background:var(--plum);color:var(--cream);
+  text-align:center;padding:68px 8%;
+  position:relative;overflow:hidden;
+}
+.contacto::before{
+  content:'';position:absolute;
+  top:-100px;left:50%;transform:translateX(-50%);
+  width:600px;height:600px;
+  border-radius:50%;
+  background:rgba(79,168,153,0.08);
+  pointer-events:none;
+}
+.contacto .section-label{color:var(--teal-l);margin:0 auto 18px}
+.contacto .section-label::before{background:var(--teal-l)}
+.contacto .section-title{color:var(--cream);margin:0 auto 16px;text-align:center}
+.contacto-desc{font-size:15px;color:rgba(250,247,245,0.65);max-width:500px;margin:0 auto 32px;line-height:1.7}
+.contacto-actions{display:flex;align-items:center;justify-content:center;gap:14px;flex-wrap:wrap;margin-bottom:36px}
+.btn-wa-hero{
+  display:inline-flex;align-items:center;gap:10px;
+  background:var(--cream);color:var(--plum);
+  padding:16px 32px;border-radius:50px;
+  font-size:16px;font-weight:500;text-decoration:none;
+  transition:all .25s;box-shadow:0 8px 32px rgba(0,0,0,0.2);
+}
+.btn-wa-hero:hover{transform:translateY(-3px);box-shadow:0 12px 48px rgba(0,0,0,0.25)}
+.btn-wa-hero svg{width:20px;height:20px;fill:#25D366}
+.btn-ig{
+  display:inline-flex;align-items:center;gap:10px;
+  background:rgba(255,255,255,0.08);color:var(--cream);
+  padding:16px 32px;border-radius:50px;
+  font-size:16px;font-weight:400;text-decoration:none;
+  border:1px solid rgba(255,255,255,0.2);
+  transition:all .25s;
+}
+.btn-ig:hover{background:rgba(255,255,255,0.14)}
+
+.contacto-info{
+  display:flex;justify-content:center;gap:28px;flex-wrap:wrap;
+  padding-top:32px;border-top:1px solid rgba(255,255,255,0.1);
+}
+.cinfo-item{text-align:center;max-width:220px}
+.cinfo-icon{font-size:20px;margin-bottom:8px;display:block}
+.cinfo-label{font-size:11px;color:rgba(250,247,245,0.4);text-transform:uppercase;letter-spacing:1.5px;margin-bottom:4px}
+.cinfo-val{font-size:14px;color:rgba(250,247,245,0.8)}
+.cinfo-link{font-size:12px;color:var(--teal-l);text-decoration:underline;display:inline-block;margin-top:6px}
+
+/* ─── FOOTER ──────────────────────────────────────── */
+footer{
+  background:var(--text);color:rgba(255,255,255,0.4);
+  padding:24px 8%;display:flex;
+  justify-content:space-between;align-items:center;
+  flex-wrap:wrap;gap:12px;font-size:12px;
+}
+footer a{color:rgba(255,255,255,0.5);text-decoration:none}
+
+/* ─── FLOATING WA ─────────────────────────────────── */
+.float-wa{
+  position:fixed;bottom:28px;right:28px;z-index:99;
+  width:58px;height:58px;border-radius:50%;
+  background:#25D366;color:#fff;
+  display:flex;align-items:center;justify-content:center;
+  box-shadow:0 6px 28px rgba(37,211,102,0.4);
+  text-decoration:none;
+  animation:waPulse 3s ease-in-out infinite;
+  transition:transform .2s;
+}
+.float-wa:hover{transform:scale(1.1)}
+.float-wa svg{width:26px;height:26px;fill:#fff}
+@keyframes waPulse{0%,100%{box-shadow:0 6px 28px rgba(37,211,102,0.4)}50%{box-shadow:0 6px 40px rgba(37,211,102,0.65)}}
+
+/* ─── ANIMATIONS ──────────────────────────────────── */
+@keyframes shimmerText{from{background-position:-200% center}to{background-position:200% center}}
+@keyframes heroFadeUp{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
+@keyframes growLine{from{width:0;opacity:0}to{width:32px;opacity:1}}
+@keyframes spinSlow{from{transform:translate(-50%,-50%) rotate(0deg)}to{transform:translate(-50%,-50%) rotate(360deg)}}
+@keyframes spinSlowRev{from{transform:translate(-50%,-50%) rotate(0deg)}to{transform:translate(-50%,-50%) rotate(-360deg)}}
+@keyframes btnGlow{0%,100%{box-shadow:0 8px 32px rgba(61,39,72,0.25)}50%{box-shadow:0 12px 48px rgba(61,39,72,0.42)}}
+@keyframes dotPulse{0%,100%{opacity:.35;transform:scale(1)}50%{opacity:.9;transform:scale(1.4)}}
+
+.reveal{opacity:0;transform:translateY(26px) scale(0.97);transition:opacity .75s cubic-bezier(.22,1,.36,1),transform .75s cubic-bezier(.22,1,.36,1)}
+.reveal.visible{opacity:1;transform:translateY(0) scale(1)}
+.reveal-delay-1{transition-delay:.12s}
+.reveal-delay-2{transition-delay:.24s}
+.reveal-delay-3{transition-delay:.36s}
+.reveal-delay-4{transition-delay:.48s}
+
+/* Hero entrance — staggered */
+.hero-eyebrow{animation:heroFadeUp .8s .08s cubic-bezier(.22,1,.36,1) both}
+.eyebrow-line{animation:growLine .7s .3s cubic-bezier(.22,1,.36,1) both}
+.hero-title{animation:heroFadeUp 1s .22s cubic-bezier(.22,1,.36,1) both}
+.hero-name{animation:heroFadeUp .8s .42s cubic-bezier(.22,1,.36,1) both}
+.hero-desc{animation:heroFadeUp .8s .56s cubic-bezier(.22,1,.36,1) both}
+.hero-actions{animation:heroFadeUp .8s .7s cubic-bezier(.22,1,.36,1) both}
+.hero-badges{animation:heroFadeUp .8s .88s cubic-bezier(.22,1,.36,1) both}
+
+.btn-whatsapp{animation:btnGlow 2.8s ease-in-out infinite}
+.btn-whatsapp:hover{animation:none}
+
+/* Orbitas decorativas — solo mobile */
+.hero-orbit,.hero-orbit-2{
+  position:absolute;top:50%;left:50%;
+  border-radius:50%;pointer-events:none;z-index:0;display:none;
+}
+.hero-orbit{
+  width:300px;height:300px;
+  border:1px solid rgba(79,168,153,0.2);
+  animation:spinSlow 28s linear infinite;
+}
+.hero-orbit::before{
+  content:'';position:absolute;top:-5px;left:50%;transform:translateX(-50%);
+  width:10px;height:10px;border-radius:50%;
+  background:var(--teal);opacity:.5;
+  animation:dotPulse 2.5s ease-in-out infinite;
+}
+.hero-orbit-2{
+  width:200px;height:200px;
+  border:1px dashed rgba(214,38,111,0.18);
+  animation:spinSlowRev 18s linear infinite;
+}
+.hero-orbit-2::before{
+  content:'';position:absolute;bottom:-4px;left:50%;transform:translateX(-50%);
+  width:8px;height:8px;border-radius:50%;
+  background:var(--pink);opacity:.45;
+  animation:dotPulse 2s .8s ease-in-out infinite;
+}
+
+/* ─── NAV MOBILE MENU ─────────────────────────────────── */
+.nav-links.open{
+  display:flex!important;flex-direction:column;gap:16px;
+  position:absolute;top:100%;left:0;right:0;
+  background:rgba(250,247,245,0.98);-webkit-backdrop-filter:blur(12px);backdrop-filter:blur(12px);
+  padding:20px 6% 24px;
+  border-bottom:1px solid rgba(79,168,153,0.15);
+  box-shadow:0 8px 24px rgba(61,39,72,0.08);
+}
+.hamburger.active span:nth-child(1){transform:translateY(6.5px) rotate(45deg)}
+.hamburger.active span:nth-child(2){opacity:0;transform:scaleX(0)}
+.hamburger.active span:nth-child(3){transform:translateY(-6.5px) rotate(-45deg)}
+
+/* ─── RESPONSIVE ──────────────────────────────────── */
+@media(max-width:900px){
+  .nav-links{display:none}
+  .hamburger{display:flex}
+  .hero{
+    grid-template-columns:1fr;min-height:0;
+    background:linear-gradient(150deg,#2f1e38 0%,#402a4b 50%,#3d2748 100%);
+    position:relative;overflow:hidden;
+  }
+  .hero-orbit,.hero-orbit-2{display:block}
+  .hero::before{
+    content:'';position:absolute;top:-40px;right:-40px;
+    width:300px;height:300px;border-radius:50%;
+    background:radial-gradient(circle,rgba(79,168,153,0.28) 0%,transparent 65%);
+    pointer-events:none;z-index:0;
+  }
+  .hero::after{
+    content:'';position:absolute;bottom:-30px;left:-50px;
+    width:260px;height:260px;border-radius:50%;
+    background:radial-gradient(circle,rgba(214,38,111,0.22) 0%,transparent 65%);
+    pointer-events:none;z-index:0;
+  }
+  .hero-right{display:none}
+  .hero-left{padding:106px 6% 52px;text-align:center;position:relative;z-index:1}
+  .hero-eyebrow{color:var(--teal-l)}
+  .eyebrow-line{background:var(--teal-l)}
+  .hero-title{color:var(--cream)}
+  .hero-name{color:rgba(250,247,245,0.55)}
+  .hero-desc{color:rgba(250,247,245,0.72)}
+  .hero-badge{background:rgba(255,255,255,0.09);border-color:rgba(255,255,255,0.14);color:rgba(250,247,245,0.8);box-shadow:none}
+  .hero-left .btn-whatsapp{background:var(--cream);color:var(--plum);animation:none;box-shadow:0 8px 36px rgba(0,0,0,0.4)}
+  .hero-left .btn-whatsapp svg{fill:#25D366}
+  .hero-left .btn-whatsapp:hover{background:var(--teal-ll);transform:translateY(-2px);box-shadow:0 12px 44px rgba(0,0,0,0.45)}
+  .hero-left .btn-ghost{color:rgba(250,247,245,0.55);border-color:rgba(250,247,245,0.2)}
+  .hero-left .btn-ghost:hover{border-color:rgba(250,247,245,0.5);color:var(--cream)}
+  .scroll-hint{color:rgba(250,247,245,0.3)}
+  .scroll-arrow{background:rgba(250,247,245,0.15)}
+  .hero-eyebrow{justify-content:center}
+  .hero-desc{margin-left:auto;margin-right:auto}
+  .hero-actions{justify-content:center}
+  .hero-badges{justify-content:center}
+  .about-grid{grid-template-columns:1fr;gap:40px}
+  .about-img-wrap{max-width:340px;margin:0 auto}
+  .servicios-grid{grid-template-columns:1fr}
+  .proceso{padding:28px 5%}
+  .proceso-grid{grid-template-columns:1fr;gap:5px;margin-top:16px}
+  .proceso-grid::before{display:none}
+  .paso{
+    display:grid;
+    grid-template-areas:"num icon title" "num icon desc";
+    grid-template-columns:34px 26px 1fr;
+    grid-template-rows:auto auto;
+    text-align:left;gap:0 10px;
+    background:rgba(255,255,255,0.06);
+    border:1px solid rgba(255,255,255,0.1);
+    border-radius:12px;padding:11px 14px;
+    transition:background .2s;
+  }
+  .paso:hover{background:rgba(255,255,255,0.1)}
+  .paso:nth-child(5){grid-column:auto;max-width:none;margin:0}
+  .paso-num{grid-area:num;margin:0;align-self:center;width:30px;height:30px;font-size:12px}
+  .paso-icon{grid-area:icon;margin:0;font-size:16px;display:flex;align-items:center;justify-content:center;align-self:center}
+  .paso-title{grid-area:title;margin:0 0 1px;font-size:12.5px;line-height:1.2}
+  .paso-desc{grid-area:desc;margin:0;font-size:9.5px;line-height:1.35;color:rgba(250,247,245,0.48)}
+  .proceso .section-title{margin-bottom:4px}
+  .incluye-grid{grid-template-columns:1fr}
+  .incluye-cta-box{position:static}
+  .faq-grid{grid-template-columns:1fr}
+  .contacto-info{gap:20px}
+  footer{flex-direction:column;text-align:center;gap:8px}
+  section{padding:48px 6%}
+}
+@media(max-width:600px){
+  .proceso{padding:20px 4% 22px}
+  .proceso-grid{gap:4px;margin-top:14px}
+  .paso{border-radius:11px;padding:10px 12px;grid-template-columns:30px 22px 1fr;gap:0 8px}
+  .paso-num{width:26px;height:26px;font-size:11px}
+  .paso-icon{font-size:15px}
+  .paso-title{font-size:12px;margin-bottom:1px}
+  .paso-desc{font-size:9px;line-height:1.3}
+  .serv-card-wide{flex-direction:column!important;gap:16px!important;padding:22px 18px!important}
+  .serv-card-wide .btn-whatsapp{width:100%;justify-content:center}
+  .contacto-actions{flex-direction:column;align-items:stretch}
+  .btn-wa-hero,.btn-ig{justify-content:center;width:100%;box-sizing:border-box}
+}
+@media(max-width:480px){
+  nav{padding:14px 5%}
+  section{padding:32px 5%}
+  .hero-left{padding:92px 5% 28px}
+  .hero-title{font-size:30px}
+  .hero-actions{flex-direction:column;align-items:stretch}
+  .btn-whatsapp{justify-content:center;width:100%}
+  .btn-ghost{justify-content:center;text-align:center}
+  .section-title{font-size:26px}
+  .serv-card{padding:18px 16px}
+  .incluye-cta-box{padding:22px 18px}
+  .incluye-cta-title{font-size:22px}
+  footer{padding:16px 5%}
+  .float-wa{bottom:20px;right:20px;width:50px;height:50px}
+  .proceso-grid{gap:4px}
+  .paso{padding:9px 10px}
+  .paso-title{font-size:11.5px}
+  .paso-desc{font-size:8.5px}
+}
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <a href="#" class="nav-logo"><img src="assets/img/logo.png" alt="Julissa Roman Nutrición" class="nav-logo-img"></a>
+  <div class="nav-links">
+    <a href="#sobre-mi">Sobre mí</a>
+    <a href="#servicios">Servicios</a>
+    <a href="#consulta">Tu consulta</a>
+    <a href="#faq">Preguntas frecuentes</a>
+    <a href="#contacto" class="nav-cta">Agendar cita</a>
+  </div>
+  <div class="hamburger">
+    <span></span><span></span><span></span>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section class="hero" style="padding:0">
+  <div class="hero-left">
+    <div class="hero-eyebrow">
+      <span class="eyebrow-line"></span>
+      Nutrióloga · Culiacán, Sinaloa
+    </div>
+    <h1 class="hero-title">
+      Nutrición real<br>
+      para tu <em>cuerpo</em><br>
+      <strong>y tu mente</strong>
+    </h1>
+    <p class="hero-name">Julissa Roman — @nutri_julissar</p>
+    <p class="hero-desc">
+      Lic. en Nutrición con planes de alimentación 100% personalizados. Te acompaño en recomposición corporal, control de peso y hábitos sostenibles — alimentando cuerpo, mente y espíritu.
+    </p>
+    <div class="hero-actions">
+      <a href="https://wa.me/526674750182?text=Hola%20Julissa%2C%20me%20gustar%C3%ADa%20agendar%20una%20consulta%20contigo" class="btn-whatsapp" target="_blank">
+        <svg viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+        Agendar por WhatsApp
+      </a>
+      <a href="#servicios" class="btn-ghost">Ver servicios →</a>
+    </div>
+    <div class="hero-badges">
+      <div class="hero-badge">🥗 Nutrición personalizada</div>
+      <div class="hero-badge">⚖️ Recomposición corporal</div>
+      <div class="hero-badge">🧠 Cuerpo y mente</div>
+    </div>
+  </div>
+  <div class="hero-right">
+    <div class="blob blob-1"></div>
+    <div class="blob blob-2"></div>
+    <div class="blob blob-3"></div>
+    <div class="hero-photo-placeholder">
+      <div class="hero-img-frame">
+        <img src="julissa-hero.png" alt="Julissa Roman · Nutrióloga" style="width:100%;height:100%;object-fit:cover;object-position:top center">
+      </div>
+      <div class="hero-stat-cards">
+        <div class="hero-stat">
+          <div class="hero-stat-num">100%</div>
+          <div class="hero-stat-lbl">Planes personalizados</div>
+        </div>
+        <div class="hero-stat">
+          <div class="hero-stat-num">Lic.</div>
+          <div class="hero-stat-lbl">en Nutrición</div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="hero-orbit" aria-hidden="true"></div>
+  <div class="hero-orbit-2" aria-hidden="true"></div>
+  <div class="scroll-hint">
+    Scroll<div class="scroll-arrow"></div>
+  </div>
+</section>
+
+<!-- STRIP -->
+<div class="strip">
+  <div class="strip-track">
+    <span class="strip-item"><span class="strip-dot"></span>Nutrición personalizada</span>
+    <span class="strip-item"><span class="strip-dot"></span>Recomposición corporal</span>
+    <span class="strip-item"><span class="strip-dot"></span>Control de peso</span>
+    <span class="strip-item"><span class="strip-dot"></span>Bienestar integral</span>
+    <span class="strip-item"><span class="strip-dot"></span>Nutrición en Culiacán</span>
+    <span class="strip-item"><span class="strip-dot"></span>Planes 100% personalizados</span>
+    <span class="strip-item"><span class="strip-dot"></span>Sin dietas imposibles</span>
+    <span class="strip-item"><span class="strip-dot"></span>Nutrición personalizada</span>
+    <span class="strip-item"><span class="strip-dot"></span>Recomposición corporal</span>
+    <span class="strip-item"><span class="strip-dot"></span>Control de peso</span>
+    <span class="strip-item"><span class="strip-dot"></span>Bienestar integral</span>
+    <span class="strip-item"><span class="strip-dot"></span>Nutrición en Culiacán</span>
+    <span class="strip-item"><span class="strip-dot"></span>Planes 100% personalizados</span>
+    <span class="strip-item"><span class="strip-dot"></span>Sin dietas imposibles</span>
+  </div>
+</div>
+
+<!-- SOBRE MI -->
+<section class="about" id="sobre-mi">
+  <div class="about-grid">
+    <div class="about-img-wrap reveal">
+      <div class="about-img">
+        <span class="about-img-icon">📷</span>
+        <span class="about-img-note">Foto de consultorio<br>pendiente</span>
+      </div>
+      <div class="about-card">
+        <div class="about-card-num">100%</div>
+        <div class="about-card-lbl">planes a tu medida</div>
+      </div>
+    </div>
+    <div class="about-content reveal reveal-delay-1">
+      <div class="section-label">Sobre mí</div>
+      <h2 class="section-title">Soy Julissa,<br><em>tu nutrióloga</em></h2>
+      <div class="about-quote">
+        "Alimento cuerpo, mente y espíritu."
+      </div>
+      <p class="about-text">
+        Soy Licenciada en Nutrición y creo que comer bien no tiene que ser una lucha constante. Mi enfoque va más allá del plato: cuido tu relación con la comida, tu cuerpo y tu bienestar general.
+      </p>
+      <p class="about-text">
+        Diseño planes de alimentación 100% personalizados, adaptados a tu rutina, tus gustos y tus objetivos — ya sea que busques recomponer tu cuerpo, bajar de peso o simplemente sentirte mejor con hábitos reales y sostenibles.
+      </p>
+      <div class="about-cred">
+        <span class="about-cred-icon">📍</span>
+        <div>
+          <div style="font-weight:500;font-size:14px">Consulta en Culiacán, Sinaloa</div>
+          <div style="font-size:12px;color:var(--text-l)">Zona Barrancos · consultorio en proceso de cambio</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- SERVICIOS -->
+<section class="servicios" id="servicios">
+  <div class="servicios-head">
+    <div>
+      <div class="section-label">Servicios</div>
+      <h2 class="section-title">¿En qué te<br><em>puedo ayudar?</em></h2>
+    </div>
+    <p class="section-sub">Cada persona es diferente. Por eso cada plan es completamente a tu medida.</p>
+  </div>
+  <div class="servicios-grid">
+    <div class="serv-card serv-card-1 reveal">
+      <span class="serv-icon">🥗</span>
+      <div class="serv-title">Nutrición Personalizada</div>
+      <p class="serv-desc">Planes de alimentación diseñados para ti, tus gustos y tu rutina real. Sin dietas genéricas ni restricciones imposibles de mantener.</p>
+      <div class="serv-tags">
+        <span class="serv-tag">Plan a tu medida</span>
+        <span class="serv-tag">Hábitos sostenibles</span>
+      </div>
+    </div>
+    <div class="serv-card serv-card-2 reveal reveal-delay-1">
+      <span class="serv-icon">⚖️</span>
+      <div class="serv-title">Recomposición Corporal</div>
+      <p class="serv-desc">Pierde grasa y gana músculo al mismo tiempo con una estrategia nutricional respaldada por ciencia. Sin restricciones extremas, con resultados reales.</p>
+      <div class="serv-tags">
+        <span class="serv-tag">Pérdida de grasa</span>
+        <span class="serv-tag">Ganancia muscular</span>
+      </div>
+    </div>
+    <div class="serv-card serv-card-3 reveal reveal-delay-2">
+      <span class="serv-icon">🧠</span>
+      <div class="serv-title">Bienestar Integral</div>
+      <p class="serv-desc">Nutrición que también cuida tu mente: mejora tu relación con la comida y aprende hábitos que puedas mantener de por vida, sin culpa y sin efecto rebote.</p>
+      <div class="serv-tags">
+        <span class="serv-tag">Cuerpo y mente</span>
+        <span class="serv-tag">Sin efecto rebote</span>
+      </div>
+    </div>
+  </div>
+  <div style="margin-top:20px">
+    <div class="serv-card serv-card-4 serv-card-wide reveal" style="display:flex;align-items:center;gap:28px;padding:28px 36px">
+      <span class="serv-icon" style="margin-bottom:0;font-size:32px">📍</span>
+      <div style="flex:1">
+        <div class="serv-title" style="font-size:22px;margin-bottom:8px">Modalidad de Consulta</div>
+        <p class="serv-desc" style="margin-bottom:0">Consulta presencial en Culiacán, Sinaloa (zona Barrancos). ¿Buscas consulta en línea? Pregúntame por WhatsApp y vemos disponibilidad.</p>
+      </div>
+      <a href="https://wa.me/526674750182?text=Hola%20Julissa%2C%20quiero%20saber%20m%C3%A1s%20sobre%20la%20modalidad%20de%20consulta" target="_blank" class="btn-whatsapp" style="white-space:nowrap;flex-shrink:0">
+        <svg viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+        Preguntar por WhatsApp
+      </a>
+    </div>
+  </div>
+</section>
+
+<!-- PROCESO -->
+<section class="proceso">
+  <div class="section-label">Cómo funciona</div>
+  <h2 class="section-title">Tu camino hacia<br><em>una mejor salud</em></h2>
+  <div class="proceso-grid">
+    <div class="paso reveal">
+      <div class="paso-num">01</div>
+      <span class="paso-icon">📱</span>
+      <div class="paso-title">Agendas tu cita</div>
+      <p class="paso-desc">Escríbeme por WhatsApp y buscamos el horario que mejor te acomode.</p>
+    </div>
+    <div class="paso reveal reveal-delay-1">
+      <div class="paso-num active">02</div>
+      <span class="paso-icon">🩺</span>
+      <div class="paso-title">Historia clínica</div>
+      <p class="paso-desc">Platicamos sobre tus hábitos, objetivos, historial médico y estilo de vida.</p>
+    </div>
+    <div class="paso reveal reveal-delay-2">
+      <div class="paso-num">03</div>
+      <span class="paso-icon">📊</span>
+      <div class="paso-title">Evaluación corporal</div>
+      <p class="paso-desc">Medimos composición corporal para tener una base real de tu estado actual.</p>
+    </div>
+    <div class="paso reveal reveal-delay-3">
+      <div class="paso-num">04</div>
+      <span class="paso-icon">🥗</span>
+      <div class="paso-title">Tu plan personalizado</div>
+      <p class="paso-desc">Diseño un plan de alimentación 100% adaptado a ti, tus gustos y tu vida real.</p>
+    </div>
+    <div class="paso reveal reveal-delay-4">
+      <div class="paso-num">05</div>
+      <span class="paso-icon">💬</span>
+      <div class="paso-title">Seguimiento</div>
+      <p class="paso-desc">Hacemos ajustes continuos según tu progreso. No estás sola en el proceso.</p>
+    </div>
+  </div>
+</section>
+
+<!-- CONSULTA INCLUYE -->
+<section class="incluye" id="consulta">
+  <div class="incluye-grid">
+    <div>
+      <div class="section-label">Tu consulta incluye</div>
+      <h2 class="section-title">Todo lo que<br><em>necesitas</em></h2>
+      <p class="section-sub">Sin letra chica. Esto es lo que recibes en cada consulta conmigo.</p>
+      <div class="incluye-items">
+        <div class="incluye-item reveal">
+          <div class="incluye-check">📋</div>
+          <div>
+            <div class="incluye-item-title">Historia clínica y evaluación corporal</div>
+            <div class="incluye-item-desc">Análisis completo de tu composición corporal, hábitos y antecedentes relevantes.</div>
+          </div>
+        </div>
+        <div class="incluye-item reveal reveal-delay-1">
+          <div class="incluye-check">🥗</div>
+          <div>
+            <div class="incluye-item-title">Plan de alimentación 100% personalizado</div>
+            <div class="incluye-item-desc">Diseñado específicamente para ti, tus gustos, tu rutina y tus objetivos.</div>
+          </div>
+        </div>
+        <div class="incluye-item reveal reveal-delay-1">
+          <div class="incluye-check">📚</div>
+          <div>
+            <div class="incluye-item-title">Guía práctica y educación nutricional</div>
+            <div class="incluye-item-desc">Aprenderás a tomar decisiones alimenticias inteligentes en tu vida diaria.</div>
+          </div>
+        </div>
+        <div class="incluye-item reveal reveal-delay-2">
+          <div class="incluye-check">📈</div>
+          <div>
+            <div class="incluye-item-title">Seguimiento y ajustes continuos</div>
+            <div class="incluye-item-desc">Monitoreo de tu progreso con ajustes en el plan cuando sea necesario.</div>
+          </div>
+        </div>
+        <div class="incluye-item reveal reveal-delay-2">
+          <div class="incluye-check">💚</div>
+          <div>
+            <div class="incluye-item-title">Atención cercana y sin juicios</div>
+            <div class="incluye-item-desc">Un espacio seguro donde puedes ser honesta. Sin críticas, con mucho apoyo.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div>
+      <div class="incluye-cta-box reveal">
+        <div class="incluye-cta-label">¿Lista/o para empezar?</div>
+        <div class="incluye-cta-title">Tu primera consulta<br>te <em>cambia la perspectiva</em></div>
+        <div class="incluye-cta-price">
+          <div class="price-note">Costo de la primera consulta</div>
+          <div class="price-val">Cotización por WhatsApp</div>
+          <div class="price-sub">Presencial en Culiacán, Sinaloa</div>
+        </div>
+        <p class="incluye-cta-desc">Escríbeme por WhatsApp y platicamos. Sin compromiso, con toda la información que necesitas para decidir.</p>
+        <a href="https://wa.me/526674750182?text=Hola%20Julissa%2C%20me%20gustar%C3%ADa%20agendar%20mi%20primera%20consulta%20contigo" target="_blank" class="btn-wa-big">
+          <svg viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+          Agendar mi consulta ahora
+        </a>
+        <div class="incluye-loc">
+          <span>📍</span> Culiacán, Sinaloa · Zona Barrancos
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FAQ -->
+<section class="faq" id="faq">
+  <div class="section-label">Preguntas frecuentes</div>
+  <h2 class="section-title">¿Tienes<br><em>dudas?</em></h2>
+  <div class="faq-grid">
+    <div class="faq-item" onclick="toggleFaq(this)">
+      <div class="faq-q">¿Cómo agendo mi primera cita? <div class="faq-arrow">+</div></div>
+      <div class="faq-a">Es muy sencillo. Escríbeme directo por WhatsApp al 667 475 0182 y buscamos el horario que mejor te acomode.</div>
+    </div>
+    <div class="faq-item" onclick="toggleFaq(this)">
+      <div class="faq-q">¿Dónde son las consultas? <div class="faq-arrow">+</div></div>
+      <div class="faq-a">Actualmente estoy en proceso de cambio de consultorio, en la zona de Barrancos, Culiacán. Escríbeme por WhatsApp y te confirmo la ubicación exacta antes de tu cita.</div>
+    </div>
+    <div class="faq-item" onclick="toggleFaq(this)">
+      <div class="faq-q">¿Me vas a dar una dieta muy estricta? <div class="faq-arrow">+</div></div>
+      <div class="faq-a">Para nada. Mi enfoque es realista y sostenible. El plan se adapta a tus gustos, tu rutina y tu vida. No creo en prohibiciones extremas que no puedas mantener.</div>
+    </div>
+    <div class="faq-item" onclick="toggleFaq(this)">
+      <div class="faq-q">¿Cada cuánto son las consultas de seguimiento? <div class="faq-arrow">+</div></div>
+      <div class="faq-a">Depende de tu objetivo y tu progreso. Lo definimos juntas en tu primera consulta según lo que más te convenga.</div>
+    </div>
+    <div class="faq-item" onclick="toggleFaq(this)">
+      <div class="faq-q">¿Cuánto cuesta la consulta? <div class="faq-arrow">+</div></div>
+      <div class="faq-a">Escríbeme por WhatsApp y te comparto el costo actualizado de la primera consulta y de los seguimientos.</div>
+    </div>
+    <div class="faq-item" onclick="toggleFaq(this)">
+      <div class="faq-q">¿Trabajas también la parte de bienestar emocional? <div class="faq-arrow">+</div></div>
+      <div class="faq-a">Sí. Mi enfoque no es solo el plato: cuido tu relación con la comida y tu bienestar general, no solo el número en la báscula.</div>
+    </div>
+  </div>
+</section>
+
+<!-- CONTACTO -->
+<section class="contacto" id="contacto">
+  <div class="section-label" style="justify-content:center">Contáctame</div>
+  <h2 class="section-title" style="max-width:600px;margin:0 auto 16px">¿Lista/o para<br><em>empezar?</em></h2>
+  <p class="contacto-desc">Da el primer paso. Escríbeme hoy y platicamos sin compromiso sobre cómo puedo ayudarte.</p>
+  <div class="contacto-actions">
+    <a href="https://wa.me/526674750182?text=Hola%20Julissa%2C%20me%20gustar%C3%ADa%20agendar%20una%20consulta" target="_blank" class="btn-wa-hero">
+      <svg viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+      Escribir por WhatsApp
+    </a>
+    <a href="https://www.instagram.com/nutri_julissar" target="_blank" rel="noopener noreferrer" class="btn-ig">
+      <span>📸</span> @nutri_julissar en Instagram
+    </a>
+  </div>
+  <div class="contacto-info">
+    <div class="cinfo-item">
+      <span class="cinfo-icon">📍</span>
+      <div class="cinfo-label">Ubicación</div>
+      <div class="cinfo-val">Culiacán, Sinaloa · Zona Barrancos</div>
+      <a href="https://wa.me/526674750182?text=Hola%20Julissa%2C%20%C2%BFme%20confirmas%20la%20ubicaci%C3%B3n%20exacta%20del%20consultorio%3F" target="_blank" class="cinfo-link">Confirmar ubicación por WhatsApp →</a>
+    </div>
+    <div class="cinfo-item">
+      <span class="cinfo-icon">📱</span>
+      <div class="cinfo-label">WhatsApp</div>
+      <div class="cinfo-val">667 475 0182</div>
+    </div>
+    <div class="cinfo-item">
+      <span class="cinfo-icon">💻</span>
+      <div class="cinfo-label">Modalidad</div>
+      <div class="cinfo-val">Presencial en Culiacán</div>
+    </div>
+    <div class="cinfo-item">
+      <span class="cinfo-icon">📸</span>
+      <div class="cinfo-label">Instagram</div>
+      <div class="cinfo-val">@nutri_julissar</div>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <span>© <span id="footer-year"></span> Julissa Roman · Lic. en Nutrición</span>
+  <span>Culiacán, Sinaloa · <a href="https://instagram.com/nutri_julissar" target="_blank">@nutri_julissar</a></span>
+</footer>
+
+<!-- FLOATING WA -->
+<a href="https://wa.me/526674750182?text=Hola%20Julissa%2C%20me%20gustar%C3%ADa%20agendar%20una%20consulta" target="_blank" class="float-wa" title="Agendar por WhatsApp">
+  <svg viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+</a>
+
+<script>
+document.getElementById('footer-year').textContent = new Date().getFullYear();
+
+function toggleFaq(el){
+  const isOpen=el.classList.contains('open');
+  document.querySelectorAll('.faq-item').forEach(i=>i.classList.remove('open'));
+  if(!isOpen) el.classList.add('open');
+}
+
+const observer=new IntersectionObserver(entries=>{
+  entries.forEach(e=>{if(e.isIntersecting) e.target.classList.add('visible')});
+},{threshold:.15});
+document.querySelectorAll('.reveal').forEach(el=>observer.observe(el));
+
+window.addEventListener('scroll',()=>{
+  document.querySelector('nav').style.boxShadow=
+    window.scrollY>50?'0 4px 24px rgba(61,39,72,0.08)':'none';
+});
+
+const hamburger=document.querySelector('.hamburger');
+const navLinks=document.querySelector('.nav-links');
+hamburger.addEventListener('click',function(){
+  navLinks.classList.toggle('open');
+  this.classList.toggle('active');
+});
+navLinks.querySelectorAll('a').forEach(a=>{
+  a.addEventListener('click',()=>{
+    navLinks.classList.remove('open');
+    hamburger.classList.remove('active');
+  });
+});
+</script>
+</body>
+</html>
