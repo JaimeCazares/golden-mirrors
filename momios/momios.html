@@ -1,9 +1,55 @@
+<div class="mm-root" id="mm-root">
+
+  <!-- ESCENA ANIMADA DE FONDO — mismos paisajes en video de Nutrición -->
+  <div class="mm-scene" id="mm-scene">
+
+    <div class="mm-layer mm-layer-otono" data-theme-layer="otono">
+      <video class="mm-video-bg" loop muted playsinline preload="none" data-src="nutricion/videos/otono.mp4"></video>
+      <div class="mm-photo-overlay mm-overlay-otono"></div>
+    </div>
+
+    <div class="mm-layer mm-layer-playa" data-theme-layer="playa">
+      <video class="mm-video-bg" loop muted playsinline preload="none" data-src="nutricion/videos/playa.mp4"></video>
+      <div class="mm-photo-overlay mm-overlay-playa"></div>
+    </div>
+
+    <div class="mm-layer mm-layer-aurora" data-theme-layer="aurora">
+      <video class="mm-video-bg" loop muted playsinline preload="none" data-src="nutricion/videos/aurora.mp4"></video>
+      <div class="mm-photo-overlay mm-overlay-aurora"></div>
+    </div>
+
+    <div class="mm-layer mm-layer-nieve" data-theme-layer="nieve">
+      <video class="mm-video-bg" loop muted playsinline preload="none" data-src="nutricion/videos/nieve.mp4"></video>
+      <div class="mm-photo-overlay mm-overlay-nieve"></div>
+    </div>
+
+    <div class="mm-layer mm-layer-lluvia" data-theme-layer="lluvia">
+      <video class="mm-video-bg" loop muted playsinline preload="none" data-src="nutricion/videos/lluvia2.mp4"></video>
+      <div class="mm-photo-overlay mm-overlay-lluvia"></div>
+    </div>
+
+    <div class="mm-layer mm-layer-atardecer" data-theme-layer="atardecer">
+      <video class="mm-video-bg" loop muted playsinline preload="none" data-src="nutricion/videos/atardecer.mp4"></video>
+      <div class="mm-photo-overlay mm-overlay-atardecer"></div>
+    </div>
+
+    <div class="mm-vignette"></div>
+  </div>
+
 <div class="mm-wrap" id="mm-wrap">
 
   <div class="mm-header">
     <div class="mm-title-group">
       <h2 class="mm-title">⚽ Momios</h2>
       <p class="mm-sub">Champions League — registro 6:00 AM / 7:00 PM</p>
+    </div>
+
+    <div class="mm-theme-wrap">
+      <button type="button" class="mm-theme-btn" id="mm-theme-btn" onclick="mmToggleThemeMenu()" title="Cambiar diseño">
+        <span class="mtb-glow"></span>
+        <span class="mtb-emoji" id="mm-theme-btn-emoji">🌧️</span>
+      </button>
+      <div class="mm-theme-menu" id="mm-theme-menu"></div>
     </div>
   </div>
 
@@ -78,4 +124,5 @@
     </div>
   </div>
 
+</div>
 </div>

@@ -2,8 +2,19 @@
 
 const MM_MESES = ['Enero','Febrero','Marzo','Abril','Mayo','Junio','Julio','Agosto','Septiembre','Octubre','Noviembre','Diciembre'];
 
+const MM_THEMES = [
+    { key: 'lluvia',    label: 'Lluvia',    emoji: '🌧️' },
+    { key: 'otono',     label: 'Otoño',     emoji: '🍁' },
+    { key: 'playa',     label: 'Playa',     emoji: '🏖️' },
+    { key: 'aurora',    label: 'Aurora',    emoji: '🌌' },
+    { key: 'nieve',     label: 'Nieve',     emoji: '❄️' },
+    { key: 'atardecer', label: 'Atardecer', emoji: '🌅' }
+];
+
 let mmRegistros   = [];
 let mmDiasFiltro  = 7; // 7, 30 u 0 (todo)
+let mmTema         = 'lluvia';
+let mmTemaMenuOpen = false;
 
 function mmFmt(d) {
     return d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2, '0');
@@ -14,9 +25,70 @@ async function initMomios() {
     const inputFecha = document.getElementById('mm-input-fecha');
     if (inputFecha) inputFecha.value = mmHoyStr();
 
+    mmInitTema();
     mmAutoSeleccionarTurno();
     await mmCargarRegistros();
     mmRenderAll();
+}
+
+// ══════════════════════════════════════════════════════
+// SELECTOR DE DISEÑO — fondos de video intercambiables
+// (reusa los videos de nutricion/videos)
+// ══════════════════════════════════════════════════════
+function mmInitTema() {
+    mmTema = localStorage.getItem('mmTema') || 'lluvia';
+    mmAplicarTema(mmTema);
+    mmRenderThemeMenu();
+}
+
+function mmRenderThemeMenu() {
+    const cont = document.getElementById('mm-theme-menu');
+    if (!cont) return;
+    cont.innerHTML = MM_THEMES.map(t => `
+        <button type="button" class="mm-theme-opt ${t.key === mmTema ? 'activo' : ''}" onclick="mmElegirTema('${t.key}')">
+            <span class="mto-swatch mto-${t.key}"></span>
+            <span class="mto-emoji">${t.emoji}</span>
+            <span class="mto-label">${t.label}</span>
+        </button>`).join('');
+}
+
+function mmToggleThemeMenu() {
+    mmTemaMenuOpen = !mmTemaMenuOpen;
+    const menu = document.getElementById('mm-theme-menu');
+    const btn  = document.getElementById('mm-theme-btn');
+    if (menu) menu.classList.toggle('abierto', mmTemaMenuOpen);
+    if (btn)  btn.classList.toggle('activo', mmTemaMenuOpen);
+}
+
+function mmElegirTema(key) {
+    mmTema = key;
+    localStorage.setItem('mmTema', key);
+    mmAplicarTema(key);
+    mmRenderThemeMenu();
+    if (mmTemaMenuOpen) mmToggleThemeMenu();
+}
+
+function mmAplicarTema(key) {
+    document.querySelectorAll('.mm-layer').forEach(l => {
+        const activo = l.dataset.themeLayer === key;
+        l.classList.toggle('activo', activo);
+        const vid = l.querySelector('.mm-video-bg');
+        if (vid) {
+            if (activo) {
+                if (vid.dataset.src && !vid.src) {
+                    vid.src = vid.dataset.src;
+                    vid.load();
+                }
+                vid.muted = true;
+                vid.play().catch(() => {});
+            } else {
+                vid.pause();
+            }
+        }
+    });
+    const btnEmoji = document.getElementById('mm-theme-btn-emoji');
+    const theme    = MM_THEMES.find(t => t.key === key);
+    if (btnEmoji && theme) btnEmoji.textContent = theme.emoji;
 }
 
 // Sugiere el turno según la hora actual: antes de las 13:00 -> mañana, si no -> tarde

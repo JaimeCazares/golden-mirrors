@@ -1,20 +1,88 @@
 /* ── momios/momios.css — Panel de Momios (Champions League) ──
    Tema oscuro consistente con el resto del dashboard, acento verde/dorado
-   (cancha + casa de apuestas). */
+   (cancha + casa de apuestas). Fondo con paisajes de video intercambiables,
+   mismo sistema que nutricion/nutricion.css (reusa los videos de esa carpeta). */
+
+.mm-root {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+}
+
+/* ── ESCENA ANIMADA DE FONDO ── */
+.mm-scene {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    z-index: 0;
+    overflow: hidden;
+    background: #05080f;
+}
+
+.mm-layer {
+    position: absolute;
+    inset: 0;
+    opacity: 0;
+    transition: opacity 1.8s cubic-bezier(0.4, 0, 0.2, 1);
+    overflow: hidden;
+    pointer-events: none;
+}
+.mm-layer.activo { opacity: 1; }
+
+.mm-layer-lluvia    { background: #07111e; }
+.mm-layer-otono     { background: #1a0a04; }
+.mm-layer-playa     { background: #051a1c; }
+.mm-layer-aurora    { background: #010510; }
+.mm-layer-nieve     { background: #080f1e; }
+.mm-layer-atardecer { background: #1a0810; }
+
+.mm-video-bg {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center center;
+    z-index: 0;
+    filter: brightness(0.6) saturate(1.1) contrast(1.04);
+    display: block;
+    pointer-events: none;
+}
+
+.mm-photo-overlay { position: absolute; inset: 0; z-index: 1; pointer-events: none; }
+.mm-overlay-lluvia    { background: linear-gradient(180deg, rgba(4,10,22,0.6)  0%, rgba(4,10,22,0.3)  45%, rgba(4,10,22,0.8)  100%); }
+.mm-overlay-otono     { background: linear-gradient(180deg, rgba(12,4,0,0.55)  0%, rgba(12,4,0,0.25)  45%, rgba(12,4,0,0.78)  100%); }
+.mm-overlay-playa     { background: linear-gradient(180deg, rgba(2,18,20,0.55) 0%, rgba(2,18,20,0.22) 45%, rgba(2,18,20,0.75) 100%); }
+.mm-overlay-aurora    { background: linear-gradient(180deg, rgba(0,3,12,0.5)   0%, rgba(0,3,12,0.2)   45%, rgba(0,3,12,0.7)   100%); }
+.mm-overlay-nieve     { background: linear-gradient(180deg, rgba(4,8,20,0.55)  0%, rgba(4,8,20,0.22)  45%, rgba(4,8,20,0.75)  100%); }
+.mm-overlay-atardecer { background: linear-gradient(180deg, rgba(15,4,0,0.5)   0%, rgba(15,4,0,0.16)  45%, rgba(15,4,0,0.7)   100%); }
+
+.mm-vignette {
+    position: absolute;
+    inset: 0;
+    z-index: 10;
+    pointer-events: none;
+    background: radial-gradient(ellipse at 50% 30%, rgba(0,0,0,0) 22%, rgba(0,0,0,0.65) 100%);
+}
 
 .mm-wrap {
     --mm-bg:      #000000;
-    --mm-card:    #0d0d10;
-    --mm-border:  rgba(255,255,255,0.08);
+    --mm-card:    rgba(255,255,255,0.06);
+    --mm-border:  rgba(255,255,255,0.1);
     --mm-accent:  #22c55e;
     --mm-accent2: #f59e0b;
-    --mm-text-dim: #8b8b93;
-    --mm-text-mid: #c8c8ce;
+    --mm-text-dim: #c0c0c6;
+    --mm-text-mid: #e2e2e6;
 
+    position: relative;
+    z-index: 2;
     height: 100%;
     display: flex;
     flex-direction: column;
-    background: var(--mm-bg);
+    background: transparent;
     color: #f2f2f4;
     font-family: "Poppins", "Segoe UI", sans-serif;
     overflow-y: auto;
@@ -25,10 +93,91 @@
     scrollbar-color: rgba(34,197,94,0.3) transparent;
 }
 
+.mm-form-card,
+.mm-stat,
+.mm-lista-section {
+    -webkit-backdrop-filter: blur(8px);
+    backdrop-filter: blur(8px);
+}
+
 /* ─ Header ─ */
-.mm-header { margin-bottom: 14px; }
+.mm-header { display: flex; justify-content: space-between; align-items: flex-start; gap: 8px; margin-bottom: 14px; }
 .mm-title { margin: 0; font-size: 1.25rem; font-weight: 800; color: #fff; }
 .mm-sub { margin: 2px 0 0; font-size: 0.78rem; color: var(--mm-text-dim); }
+
+/* ─ Selector de diseño/paisaje ─ */
+.mm-theme-wrap { position: relative; flex-shrink: 0; }
+.mm-theme-btn {
+    position: relative;
+    width: 40px; height: 40px;
+    border-radius: 50%;
+    border: 1.5px solid rgba(255,255,255,0.25);
+    background: rgba(255,255,255,0.08);
+    -webkit-backdrop-filter: blur(6px);
+    backdrop-filter: blur(6px);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 1.1rem;
+    cursor: pointer;
+    overflow: visible;
+    transition: transform 0.2s, border-color 0.2s;
+}
+.mm-theme-btn:active { transform: scale(0.92); }
+.mm-theme-btn.activo { border-color: var(--mm-accent); }
+.mtb-glow {
+    position: absolute;
+    inset: -4px;
+    border-radius: 50%;
+    background: conic-gradient(from 0deg, #22c55e, #60a5fa, #f59e0b, #c084fc, #22c55e);
+    opacity: 0.5;
+    filter: blur(6px);
+    z-index: -1;
+    animation: mmGiro 5s linear infinite;
+}
+@keyframes mmGiro { to { transform: rotate(360deg); } }
+.mtb-emoji { position: relative; z-index: 1; }
+
+.mm-theme-menu {
+    position: absolute;
+    top: 48px; right: 0;
+    background: rgba(15,18,32,0.92);
+    border: 1px solid rgba(255,255,255,0.12);
+    border-radius: 16px;
+    padding: 10px;
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 7px;
+    width: 220px;
+    box-shadow: 0 12px 32px rgba(0,0,0,0.5);
+    -webkit-backdrop-filter: blur(10px);
+    backdrop-filter: blur(10px);
+    z-index: 20;
+    opacity: 0;
+    transform: translateY(-8px) scale(0.95);
+    pointer-events: none;
+    transition: opacity 0.2s, transform 0.2s;
+}
+.mm-theme-menu.abierto { opacity: 1; transform: translateY(0) scale(1); pointer-events: auto; }
+.mm-theme-opt {
+    display: flex; flex-direction: column; align-items: center; gap: 4px;
+    background: rgba(255,255,255,0.05);
+    border: 1.5px solid transparent;
+    border-radius: 12px;
+    padding: 7px 3px;
+    cursor: pointer;
+    color: #ddd;
+    transition: 0.15s;
+}
+.mm-theme-opt:active { transform: scale(0.94); }
+.mm-theme-opt.activo { border-color: var(--mm-accent); background: rgba(34,197,94,0.14); }
+.mto-swatch { width: 100%; height: 22px; border-radius: 8px; }
+.mto-lluvia    { background: linear-gradient(180deg, #070c18, #162535); }
+.mto-otono     { background: linear-gradient(180deg, #2c0d3e, #e8844e); }
+.mto-playa     { background: linear-gradient(180deg, #042a2e, #38c9d4); }
+.mto-aurora    { background: linear-gradient(180deg, #000108, #040e22); }
+.mto-nieve     { background: linear-gradient(180deg, #060c1c, #284468); }
+.mto-atardecer { background: linear-gradient(180deg, #18083e, #ffd560); }
+.mto-emoji { font-size: 0.95rem; margin-top: 2px; }
+.mto-label { font-size: 0.6rem; text-transform: uppercase; letter-spacing: 0.4px; }
 
 /* ─ Stats ─ */
 .mm-stats {
