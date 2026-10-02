@@ -55,14 +55,14 @@
 
   <div class="mm-stats" id="mm-stats"></div>
 
-  <!-- EXTRACCIÓN DESDE IMAGEN -->
+  <!-- EXTRACCIÓN DESDE IMÁGENES (varias casas de apuestas de un jalón) -->
   <div class="mm-form-card mm-extraer-card">
-    <input type="file" id="mm-input-imagen" accept="image/png,image/jpeg,image/webp,image/gif" style="display:none" onchange="mmImagenSeleccionada(this)">
-    <button type="button" class="mm-btn-extraer" id="mm-btn-extraer" onclick="document.getElementById('mm-input-imagen').click()">
-      📷 Cargar imagen de momios
+    <input type="file" id="mm-input-imagenes" accept="image/png,image/jpeg,image/webp,image/gif" multiple style="display:none" onchange="mmImagenesSeleccionadas(this)">
+    <button type="button" class="mm-btn-extraer" id="mm-btn-extraer" onclick="document.getElementById('mm-input-imagenes').click()">
+      📷 Cargar imágenes de momios (Codere, Playdoit, Draftea...)
     </button>
     <p class="mm-extraer-msg" id="mm-extraer-msg"></p>
-    <div class="mm-extraidos" id="mm-extraidos"></div>
+    <div class="mm-extraidos-tabla" id="mm-extraidos-tabla"></div>
   </div>
 
   <!-- FORMULARIO DE CAPTURA -->
@@ -70,11 +70,11 @@
 
     <div class="mm-form-row">
       <div class="mm-field">
-        <label>Fecha</label>
+        <label>Fecha del partido</label>
         <input type="date" id="mm-input-fecha">
       </div>
       <div class="mm-field">
-        <label>Turno</label>
+        <label>Turno de captura</label>
         <select id="mm-input-turno">
           <option value="manana">🌅 Mañana (6:00 AM)</option>
           <option value="tarde">🌆 Tarde (7:00 PM)</option>
@@ -91,6 +91,16 @@
         <label>Equipo visitante</label>
         <input type="text" id="mm-input-visitante" placeholder="Ej. Bayern Múnich" autocomplete="off">
       </div>
+    </div>
+
+    <div class="mm-field">
+      <label>Casa de apuestas</label>
+      <input type="text" id="mm-input-casa" list="mm-casas-datalist" placeholder="Codere, Playdoit, Draftea..." autocomplete="off">
+      <datalist id="mm-casas-datalist">
+        <option value="Codere">
+        <option value="Playdoit">
+        <option value="Draftea">
+      </datalist>
     </div>
 
     <div class="mm-form-row mm-form-row-3">
@@ -110,7 +120,7 @@
 
     <div class="mm-field">
       <label>Notas (opcional)</label>
-      <input type="text" id="mm-input-notas" placeholder="Casa de apuestas, observaciones..." autocomplete="off">
+      <input type="text" id="mm-input-notas" placeholder="Observaciones..." autocomplete="off">
     </div>
 
     <button type="button" class="mm-btn-guardar" id="mm-btn-guardar" onclick="mmGuardarRegistro()">

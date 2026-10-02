@@ -125,22 +125,94 @@
 .mm-extraer-msg.ok { color: var(--mm-accent); }
 .mm-extraer-msg.error { color: #ef4444; }
 
-.mm-extraidos { display: flex; flex-direction: column; gap: 6px; margin-top: 10px; }
-.mm-extraido-item {
+/* ─ Tabla editable de partidos extraídos (confirmación masiva) ─ */
+.mm-extraidos-tabla { margin-top: 10px; }
+
+.mm-ex-barra {
     display: flex;
     align-items: center;
     justify-content: space-between;
     gap: 8px;
-    background: rgba(255,255,255,0.04);
+    flex-wrap: wrap;
+    padding: 8px 2px;
+    font-size: 0.75rem;
+    font-weight: 700;
+    color: var(--mm-text-mid);
+}
+.mm-btn-guardar-lote {
+    padding: 8px 14px;
+    border: none;
+    border-radius: 10px;
+    background: linear-gradient(135deg, var(--mm-accent), #16a34a);
+    color: #06210f;
+    font-weight: 800;
+    font-size: 0.78rem;
+    cursor: pointer;
+    white-space: nowrap;
+}
+.mm-btn-guardar-lote:disabled { opacity: 0.6; cursor: default; }
+.mm-btn-quitar-todos {
+    padding: 8px 12px;
     border: 1px solid var(--mm-border);
     border-radius: 10px;
-    padding: 8px 10px;
+    background: rgba(255,255,255,0.04);
+    color: var(--mm-text-dim);
+    font-weight: 700;
+    font-size: 0.72rem;
     cursor: pointer;
-    transition: border-color 0.15s, background 0.15s;
 }
-.mm-extraido-item:hover { border-color: var(--mm-accent); background: rgba(34,197,94,0.08); }
-.mm-extraido-partido { font-size: 0.8rem; font-weight: 700; color: #fff; }
-.mm-extraido-momios { font-size: 0.7rem; color: var(--mm-text-dim); white-space: nowrap; }
+
+.mm-ex-grupo-label {
+    font-size: 0.68rem;
+    font-weight: 800;
+    color: #fff;
+    text-transform: uppercase;
+    letter-spacing: 0.03em;
+    margin: 10px 0 4px;
+    padding: 4px 8px;
+    background: rgba(34,197,94,0.12);
+    border-radius: 6px;
+    display: inline-block;
+}
+
+.mm-ex-row {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    flex-wrap: wrap;
+    background: rgba(255,255,255,0.03);
+    border: 1px solid var(--mm-border);
+    border-radius: 10px;
+    padding: 6px 8px;
+    margin-bottom: 5px;
+}
+.mm-ex-row input {
+    background: rgba(255,255,255,0.05);
+    border: 1px solid var(--mm-border);
+    border-radius: 7px;
+    color: #fff;
+    font-family: inherit;
+    font-size: 0.74rem;
+    padding: 5px 6px;
+    outline: none;
+}
+.mm-ex-row input:focus { border-color: var(--mm-accent); }
+.mm-ex-fecha { width: 108px; flex-shrink: 0; }
+.mm-ex-hora { width: 66px; flex-shrink: 0; }
+.mm-ex-equipo { width: 112px; flex: 1 1 100px; min-width: 80px; }
+.mm-ex-vs { font-size: 0.65rem; color: var(--mm-text-dim); flex-shrink: 0; }
+.mm-ex-momio { width: 54px; flex-shrink: 0; text-align: center; }
+.mm-ex-del {
+    background: none;
+    border: none;
+    color: #55555c;
+    font-size: 0.85rem;
+    cursor: pointer;
+    padding: 2px 4px;
+    margin-left: auto;
+    flex-shrink: 0;
+}
+.mm-ex-del:hover { color: #ef4444; }
 
 /* ─ Header ─ */
 .mm-header { display: flex; justify-content: space-between; align-items: flex-start; gap: 8px; margin-bottom: 14px; }
@@ -366,8 +438,7 @@
 .mm-card-head {
     display: flex;
     align-items: center;
-    justify-content: space-between;
-    gap: 8px;
+    gap: 6px;
     margin-bottom: 8px;
 }
 .mm-turno-badge {
@@ -385,6 +456,15 @@
     background: rgba(99,102,241,0.18);
     color: #a5b4fc;
 }
+.mm-casa-badge {
+    font-size: 0.62rem;
+    font-weight: 700;
+    padding: 3px 8px;
+    border-radius: 999px;
+    background: rgba(255,255,255,0.08);
+    color: var(--mm-text-mid);
+    white-space: nowrap;
+}
 .mm-card-del {
     background: none;
     border: none;
@@ -393,8 +473,15 @@
     cursor: pointer;
     line-height: 1;
     padding: 2px 4px;
+    margin-left: auto;
 }
 .mm-card-del:hover { color: #ef4444; }
+
+.mm-card-partido-fecha {
+    margin: -4px 0 8px;
+    font-size: 0.68rem;
+    color: var(--mm-text-dim);
+}
 
 .mm-equipos {
     display: flex;

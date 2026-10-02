@@ -145,17 +145,18 @@ function mmMostrarMsg(texto, tipo) {
 async function mmGuardarRegistro() {
     const btn = document.getElementById('mm-btn-guardar');
 
-    const fecha           = document.getElementById('mm-input-fecha')?.value || '';
+    const fechaPartido    = document.getElementById('mm-input-fecha')?.value || '';
     const turno           = document.getElementById('mm-input-turno')?.value || '';
     const equipoLocal     = document.getElementById('mm-input-local')?.value.trim() || '';
     const equipoVisitante = document.getElementById('mm-input-visitante')?.value.trim() || '';
+    const casaApuestas    = document.getElementById('mm-input-casa')?.value.trim() || '';
     const momioLocal      = document.getElementById('mm-input-m1')?.value || '';
     const momioEmpate     = document.getElementById('mm-input-mx')?.value || '';
     const momioVisitante  = document.getElementById('mm-input-m2')?.value || '';
     const notas           = document.getElementById('mm-input-notas')?.value.trim() || '';
 
-    if (!fecha || !equipoLocal || !equipoVisitante) {
-        mmMostrarMsg('Completa fecha, equipo local y visitante.', 'error');
+    if (!fechaPartido || !equipoLocal || !equipoVisitante) {
+        mmMostrarMsg('Completa fecha del partido, equipo local y visitante.', 'error');
         return;
     }
 
@@ -166,9 +167,11 @@ async function mmGuardarRegistro() {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
-                fecha, turno,
+                turno,
+                fecha_partido: fechaPartido,
                 equipo_local: equipoLocal,
                 equipo_visitante: equipoVisitante,
+                casa_apuestas: casaApuestas,
                 momio_local: momioLocal,
                 momio_empate: momioEmpate,
                 momio_visitante: momioVisitante,
@@ -194,10 +197,11 @@ async function mmGuardarRegistro() {
 }
 
 // ══════════════════════════════════════════════════════
-// EXTRACCIÓN DE MOMIOS DESDE IMAGEN (API de Claude, vision)
+// EXTRACCIÓN DE MOMIOS DESDE IMÁGENES (API de Claude, vision)
+// Carga varias imágenes (de varias casas) de un jalón, se extraen en paralelo
+// en el servidor y se arma una tabla editable para confirmar y guardar todo junto.
 // ══════════════════════════════════════════════════════
 let mmPartidosExtraidos = [];
-let mmCasaExtraida = null;
 
 function mmExtraerMostrarMsg(texto, tipo) {
     const msg = document.getElementById('mm-extraer-msg');
@@ -206,89 +210,153 @@ function mmExtraerMostrarMsg(texto, tipo) {
     msg.className = 'mm-extraer-msg ' + (tipo || '');
 }
 
-async function mmImagenSeleccionada(input) {
-    const file = input.files && input.files[0];
-    if (!file) return;
+async function mmImagenesSeleccionadas(input) {
+    const files = Array.from(input.files || []);
+    if (!files.length) return;
 
-    if (file.size > 5 * 1024 * 1024) {
-        mmExtraerMostrarMsg('La imagen pesa más de 5 MB.', 'error');
+    const sobrepeso = files.find(f => f.size > 5 * 1024 * 1024);
+    if (sobrepeso) {
+        mmExtraerMostrarMsg(`"${sobrepeso.name}" pesa más de 5 MB.`, 'error');
         input.value = '';
         return;
     }
 
     const btn = document.getElementById('mm-btn-extraer');
-    const cont = document.getElementById('mm-extraidos');
     if (btn) btn.disabled = true;
-    if (cont) cont.innerHTML = '';
-    mmExtraerMostrarMsg('Analizando imagen...', '');
+    document.getElementById('mm-extraidos-tabla').innerHTML = '';
+    mmExtraerMostrarMsg(`Analizando ${files.length} imagen(es)...`, '');
 
     try {
         const formData = new FormData();
-        formData.append('imagen', file);
+        files.forEach(f => formData.append('imagenes[]', f));
 
         const res = await fetch('momios/extraer_momios.php', { method: 'POST', body: formData });
         const json = await res.json();
 
-        if (json.error) {
+        if (json.error && (!json.partidos || !json.partidos.length)) {
             mmExtraerMostrarMsg(json.error, 'error');
         } else if (!Array.isArray(json.partidos) || !json.partidos.length) {
-            mmExtraerMostrarMsg('No se detectaron partidos en la imagen.', 'error');
+            mmExtraerMostrarMsg('No se detectaron partidos en las imágenes.', 'error');
         } else {
             mmPartidosExtraidos = json.partidos;
-            mmCasaExtraida = json.casa_apuestas || null;
-            const casaTxt = mmCasaExtraida ? ` (${mmCasaExtraida})` : '';
-            mmExtraerMostrarMsg(`${json.partidos.length} partido(s) detectado(s)${casaTxt}. Toca uno para cargarlo al formulario.`, 'ok');
-            mmRenderExtraidos();
+            const casas = [...new Set(json.partidos.map(p => p.casa_apuestas).filter(Boolean))];
+            let msg = `${json.partidos.length} partido(s) detectado(s)${casas.length ? ' — ' + casas.join(', ') : ''}. Revisa y guarda.`;
+            if (json.errores && json.errores.length) msg += ` (${json.errores.length} imagen(es) con error)`;
+            mmExtraerMostrarMsg(msg, 'ok');
+            mmRenderExtraidosTabla();
         }
     } catch (e) {
-        console.error('Error extrayendo momios de imagen', e);
-        mmExtraerMostrarMsg('Error de conexión al analizar la imagen.', 'error');
+        console.error('Error extrayendo momios de imágenes', e);
+        mmExtraerMostrarMsg('Error de conexión al analizar las imágenes.', 'error');
     } finally {
         if (btn) btn.disabled = false;
         input.value = '';
     }
 }
 
-function mmRenderExtraidos() {
-    const cont = document.getElementById('mm-extraidos');
+function mmRenderExtraidosTabla() {
+    const cont = document.getElementById('mm-extraidos-tabla');
     if (!cont) return;
 
-    cont.innerHTML = mmPartidosExtraidos.map((p, i) => {
-        const m1 = mmFormatMomio(p.momio_local);
-        const mx = mmFormatMomio(p.momio_empate);
-        const m2 = mmFormatMomio(p.momio_visitante);
-        return `
-            <div class="mm-extraido-item" onclick="mmUsarExtraido(${i})">
-                <span class="mm-extraido-partido">${mmEscapar(p.equipo_local)} vs ${mmEscapar(p.equipo_visitante)}</span>
-                <span class="mm-extraido-momios">1: ${m1} · X: ${mx} · 2: ${m2}</span>
-            </div>`;
-    }).join('');
+    if (!mmPartidosExtraidos.length) {
+        cont.innerHTML = '';
+        return;
+    }
+
+    const barra = `
+        <div class="mm-ex-barra">
+            <span>${mmPartidosExtraidos.length} partido(s) por confirmar</span>
+            <div style="display:flex; gap:6px;">
+                <button type="button" class="mm-btn-quitar-todos" onclick="mmQuitarTodosExtraidos()">Vaciar</button>
+                <button type="button" class="mm-btn-guardar-lote" id="mm-btn-guardar-lote" onclick="mmGuardarTodosExtraidos()">💾 Guardar todos (${mmPartidosExtraidos.length})</button>
+            </div>
+        </div>`;
+
+    // Agrupa por casa de apuestas para que sea más fácil de revisar
+    const grupos = {};
+    mmPartidosExtraidos.forEach((p, i) => {
+        const casa = p.casa_apuestas || 'Sin identificar';
+        if (!grupos[casa]) grupos[casa] = [];
+        grupos[casa].push(i);
+    });
+
+    let filas = '';
+    Object.keys(grupos).forEach(casa => {
+        filas += `<div class="mm-ex-grupo-label">🏠 ${mmEscapar(casa)} — ${grupos[casa].length} partido(s)</div>`;
+        grupos[casa].forEach(i => { filas += mmRenderFilaExtraido(i); });
+    });
+
+    cont.innerHTML = barra + filas + barra;
 }
 
-function mmUsarExtraido(i) {
+function mmRenderFilaExtraido(i) {
     const p = mmPartidosExtraidos[i];
-    if (!p) return;
+    const val = v => (v === null || v === undefined) ? '' : v;
+    return `
+        <div class="mm-ex-row" data-idx="${i}">
+            <input type="date" class="mm-ex-fecha" value="${val(p.fecha_partido)}" oninput="mmActualizarExtraido(${i}, 'fecha_partido', this.value)" title="Fecha del partido">
+            <input type="time" class="mm-ex-hora" value="${val(p.hora_partido)}" oninput="mmActualizarExtraido(${i}, 'hora_partido', this.value)" title="Hora del partido">
+            <input type="text" class="mm-ex-equipo" value="${mmEscapar(p.equipo_local)}" oninput="mmActualizarExtraido(${i}, 'equipo_local', this.value)" placeholder="Local">
+            <span class="mm-ex-vs">vs</span>
+            <input type="text" class="mm-ex-equipo" value="${mmEscapar(p.equipo_visitante)}" oninput="mmActualizarExtraido(${i}, 'equipo_visitante', this.value)" placeholder="Visitante">
+            <input type="number" step="1" class="mm-ex-momio" value="${val(p.momio_local)}" oninput="mmActualizarExtraido(${i}, 'momio_local', this.value)" title="Momio 1 (Local)">
+            <input type="number" step="1" class="mm-ex-momio" value="${val(p.momio_empate)}" oninput="mmActualizarExtraido(${i}, 'momio_empate', this.value)" title="Momio X (Empate)">
+            <input type="number" step="1" class="mm-ex-momio" value="${val(p.momio_visitante)}" oninput="mmActualizarExtraido(${i}, 'momio_visitante', this.value)" title="Momio 2 (Visitante)">
+            <button type="button" class="mm-ex-del" onclick="mmQuitarExtraido(${i})" title="Quitar">✕</button>
+        </div>`;
+}
 
-    const setVal = (id, val) => {
-        const el = document.getElementById(id);
-        if (el) el.value = (val !== null && val !== undefined) ? val : '';
-    };
+function mmActualizarExtraido(i, campo, valor) {
+    if (mmPartidosExtraidos[i]) mmPartidosExtraidos[i][campo] = valor;
+}
 
-    setVal('mm-input-local', p.equipo_local || '');
-    setVal('mm-input-visitante', p.equipo_visitante || '');
-    setVal('mm-input-m1', p.momio_local);
-    setVal('mm-input-mx', p.momio_empate);
-    setVal('mm-input-m2', p.momio_visitante);
+function mmQuitarExtraido(i) {
+    mmPartidosExtraidos.splice(i, 1);
+    mmRenderExtraidosTabla();
+}
 
-    const notasEl = document.getElementById('mm-input-notas');
-    if (notasEl && !notasEl.value.trim() && mmCasaExtraida) notasEl.value = mmCasaExtraida;
+function mmQuitarTodosExtraidos() {
+    mmPartidosExtraidos = [];
+    mmRenderExtraidosTabla();
+    mmExtraerMostrarMsg('', '');
+}
 
-    document.getElementById('mm-form-card')?.scrollIntoView?.({ behavior: 'smooth', block: 'start' });
-    mmMostrarMsg('Revisa los datos y guarda cuando estén correctos.', 'ok');
+async function mmGuardarTodosExtraidos() {
+    if (!mmPartidosExtraidos.length) return;
+    const turno = document.getElementById('mm-input-turno')?.value || 'manana';
+
+    document.querySelectorAll('.mm-btn-guardar-lote').forEach(b => b.disabled = true);
+    mmExtraerMostrarMsg('Guardando...', '');
+
+    try {
+        const res = await fetch('momios/api_momios.php?accion=guardar_lote', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ turno, registros: mmPartidosExtraidos })
+        });
+        const json = await res.json();
+
+        if (json.error) {
+            mmExtraerMostrarMsg(json.error, 'error');
+        } else {
+            let msg = `${json.guardados} partido(s) guardado(s) ✓`;
+            if (json.omitidos) msg += ` (${json.omitidos} con datos incompletos, omitidos)`;
+            mmExtraerMostrarMsg(msg, 'ok');
+            mmPartidosExtraidos = [];
+            mmRenderExtraidosTabla();
+            await mmCargarRegistros();
+            mmRenderAll();
+        }
+    } catch (e) {
+        console.error('Error guardando lote de momios', e);
+        mmExtraerMostrarMsg('Error de conexión al guardar.', 'error');
+    } finally {
+        document.querySelectorAll('.mm-btn-guardar-lote').forEach(b => b.disabled = false);
+    }
 }
 
 function mmLimpiarFormulario() {
-    ['mm-input-local', 'mm-input-visitante', 'mm-input-m1', 'mm-input-mx', 'mm-input-m2', 'mm-input-notas'].forEach(id => {
+    ['mm-input-local', 'mm-input-visitante', 'mm-input-casa', 'mm-input-m1', 'mm-input-mx', 'mm-input-m2', 'mm-input-notas'].forEach(id => {
         const el = document.getElementById(id);
         if (el) el.value = '';
     });
@@ -365,10 +433,15 @@ function mmRenderLista() {
         const mx = mmFormatMomio(r.momio_empate);
         const m2 = mmFormatMomio(r.momio_visitante);
 
+        const partidoInfo = r.fecha_partido
+            ? `${mmFormatearFechaLabel(r.fecha_partido)}${r.hora_partido ? ' · ' + r.hora_partido.slice(0, 5) : ''}`
+            : '';
+
         html += `
             <div class="mm-card-partido">
                 <div class="mm-card-head">
                     <span class="mm-turno-badge ${turnoClase}">${turnoLabel}</span>
+                    ${r.casa_apuestas ? `<span class="mm-casa-badge">${mmEscapar(r.casa_apuestas)}</span>` : ''}
                     <button type="button" class="mm-card-del" onclick="mmEliminarRegistro(${r.id})" title="Eliminar">🗑️</button>
                 </div>
                 <div class="mm-equipos">
@@ -376,6 +449,7 @@ function mmRenderLista() {
                     <span class="mm-vs">vs</span>
                     <span class="mm-equipo visitante">${mmEscapar(r.equipo_visitante)}</span>
                 </div>
+                ${partidoInfo ? `<p class="mm-card-partido-fecha">⚽ Juegan: ${partidoInfo}</p>` : ''}
                 <div class="mm-momios-row">
                     <div class="mm-momio-chip"><div class="mm-momio-l">1</div><div class="mm-momio-v">${m1}</div></div>
                     <div class="mm-momio-chip"><div class="mm-momio-l">X</div><div class="mm-momio-v">${mx}</div></div>
