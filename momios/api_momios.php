@@ -45,6 +45,154 @@ mmAsegurarColumna($conexion, 'fecha_partido', 'DATE NULL AFTER turno');
 mmAsegurarColumna($conexion, 'hora_partido', 'TIME NULL AFTER fecha_partido');
 mmAsegurarColumna($conexion, 'casa_apuestas', 'VARCHAR(50) NULL AFTER hora_partido');
 
+// Catálogo de equipos: unifica el mismo equipo aunque cada casa de apuestas lo
+// escriba distinto (ej. "Bodø/Glimt" en Codere vs "FK Bodo Glimt" en Playdoit),
+// para que las futuras gráficas/estadísticas no los traten como equipos distintos.
+$conexion->query("
+    CREATE TABLE IF NOT EXISTS equipos_catalogo (
+        id              INT AUTO_INCREMENT PRIMARY KEY,
+        nombre_canonico VARCHAR(150) NOT NULL,
+        created_at      TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4
+");
+$conexion->query("
+    CREATE TABLE IF NOT EXISTS equipos_alias (
+        id                INT AUTO_INCREMENT PRIMARY KEY,
+        equipo_id         INT NOT NULL,
+        alias             VARCHAR(150) NOT NULL,
+        clave_normalizada VARCHAR(150) NOT NULL,
+        created_at        TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+        UNIQUE KEY uq_clave (clave_normalizada),
+        INDEX idx_equipo (equipo_id)
+    ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4
+");
+mmAsegurarColumna($conexion, 'equipo_local_id', 'INT NULL AFTER equipo_local');
+mmAsegurarColumna($conexion, 'equipo_visitante_id', 'INT NULL AFTER equipo_visitante');
+
+// Quita acentos/diacríticos comunes en nombres de equipos europeos. Tabla fija
+// en vez de iconv//TRANSLIT: ese se comporta distinto entre Windows (local) y
+// Linux (Hostinger), nada determinista entre ambos entornos.
+function mmQuitarAcentos($s) {
+    static $mapa = [
+        'à'=>'a','á'=>'a','â'=>'a','ã'=>'a','ä'=>'a','å'=>'a','ā'=>'a',
+        'æ'=>'ae',
+        'ç'=>'c','ć'=>'c','č'=>'c',
+        'è'=>'e','é'=>'e','ê'=>'e','ë'=>'e','ē'=>'e',
+        'ì'=>'i','í'=>'i','î'=>'i','ï'=>'i','ī'=>'i',
+        'ñ'=>'n','ń'=>'n',
+        'ò'=>'o','ó'=>'o','ô'=>'o','õ'=>'o','ö'=>'o','ø'=>'o','ō'=>'o',
+        'ù'=>'u','ú'=>'u','û'=>'u','ü'=>'u','ū'=>'u',
+        'ý'=>'y','ÿ'=>'y',
+        'ß'=>'ss','š'=>'s','ş'=>'s',
+        'ž'=>'z','ğ'=>'g','ı'=>'i','đ'=>'d',
+    ];
+    return strtr($s, $mapa);
+}
+
+function mmPrefijosGenericosClub() {
+    // Abreviaturas de "tipo de club" sin valor identificador propio. Nunca incluir
+    // aquí palabras que distinguen equipos de la misma ciudad (Real/United/City/...).
+    return ['fk','sk','fc','cf','cd','ac','sc','ss','ssc','us','as','rc','sd','ud','cp',
+            'afc','sv','vfb','vfl','tsg','sg','bk','if','ik','bsc','ca','cr'];
+}
+
+// Separa un nombre en palabras: minúsculas, sin acentos ni puntuación.
+function mmTokensCrudos($nombre) {
+    $n = mb_strtolower(trim((string)$nombre), 'UTF-8');
+    $n = mmQuitarAcentos($n);
+    $n = preg_replace('/[^a-z0-9]+/', ' ', $n);
+    $n = trim(preg_replace('/\s+/', ' ', $n));
+    return $n === '' ? [] : explode(' ', $n);
+}
+
+// Igual, pero sin abreviaturas genéricas de club (FK/SK/FC/...).
+function mmTokensSinGenericos($nombre) {
+    $genericos = mmPrefijosGenericosClub();
+    $t = mmTokensCrudos($nombre);
+    $f = array_values(array_filter($t, function ($x) use ($genericos) { return !in_array($x, $genericos, true); }));
+    return count($f) ? $f : $t; // si se quedó vacío, no quitar nada
+}
+
+// Normaliza un nombre de equipo a una clave comparable: sin abreviaturas
+// genéricas y con las palabras en orden alfabético (para que el orden en que
+// aparecen no importe). Dos nombres con la MISMA clave se consideran el mismo
+// equipo automáticamente. Determinista: no se le pide a la IA que "adivine" el
+// nombre oficial (ya vimos que es inconsistente para ese tipo de tarea, igual
+// que con la conversión de momios).
+function mmNormalizarEquipo($nombre) {
+    $tokens = mmTokensSinGenericos($nombre);
+    if (!count($tokens)) return '';
+    sort($tokens);
+    return implode('', $tokens);
+}
+
+// ¿Es razonable sugerir que A y B son el mismo equipo? (para revisión humana,
+// NUNCA para fusionar solo — eso exige clave normalizada idéntica). Dos pasadas:
+//  1) Subconjunto de palabras CRUDAS (sin quitar genéricos) — cubre "PSV" dentro
+//     de "PSV Eindhoven" sin el riesgo de que "AC Milan" (que se reduce a solo
+//     "milan" al quitarle el genérico "AC") parezca subconjunto de "Inter Milan".
+//  2) Mismo número de palabras (ya sin genéricos) donde cada una tiene una
+//     pareja parecida en el otro nombre (praha~prague) — nunca se compara el
+//     nombre completo pegado, así "Manchester United" no sale parecido a
+//     "Manchester City" solo por compartir la palabra "Manchester".
+function mmPalabrasParecidas($a, $b) {
+    if ($a === $b) return true;
+    $corta = strlen($a) <= strlen($b) ? $a : $b;
+    $larga = strlen($a) <= strlen($b) ? $b : $a;
+    if (strlen($corta) >= 2 && strpos($larga, $corta) === 0) return true; // prefijo: "sp" -> "sporting"
+    similar_text($a, $b, $pct);
+    return $pct >= 50;
+}
+
+function mmSonPosibleDuplicado($nombreA, $nombreB) {
+    $crudoA = array_values(array_unique(mmTokensCrudos($nombreA)));
+    $crudoB = array_values(array_unique(mmTokensCrudos($nombreB)));
+    sort($crudoA); sort($crudoB);
+    if (!count($crudoA) || !count($crudoB) || $crudoA === $crudoB) return false; // idénticos: ya se auto-fusionan
+
+    if (!array_diff($crudoA, $crudoB) || !array_diff($crudoB, $crudoA)) return true;
+
+    $tA = mmTokensSinGenericos($nombreA);
+    $tB = mmTokensSinGenericos($nombreB);
+    if (count($tA) !== count($tB) || !count($tA)) return false;
+
+    $usados = [];
+    foreach ($tA as $palabra) {
+        $idx = null;
+        foreach ($tB as $k => $cand) {
+            if (isset($usados[$k])) continue;
+            if (mmPalabrasParecidas($palabra, $cand)) { $idx = $k; break; }
+        }
+        if ($idx === null) return false;
+        $usados[$idx] = true;
+    }
+    return true;
+}
+
+// Encuentra o crea el equipo en el catálogo para un nombre crudo. Nunca bloquea
+// el guardado: si es una variante nueva, crea un equipo nuevo de inmediato (se
+// puede fusionar después vía accion=fusionar_equipos si resulta ser duplicado).
+function mmResolverEquipoId($conexion, $nombreCrudo) {
+    $nombreCrudo = trim((string)$nombreCrudo);
+    if ($nombreCrudo === '') return null;
+
+    $clave = $conexion->real_escape_string(mmNormalizarEquipo($nombreCrudo));
+    if ($clave === '') return null;
+
+    $res = $conexion->query("SELECT equipo_id FROM equipos_alias WHERE clave_normalizada = '$clave' LIMIT 1");
+    if ($res && $res->num_rows) {
+        return (int)$res->fetch_assoc()['equipo_id'];
+    }
+
+    $nombreEsc = $conexion->real_escape_string($nombreCrudo);
+    if (!$conexion->query("INSERT INTO equipos_catalogo (nombre_canonico) VALUES ('$nombreEsc')")) {
+        return null;
+    }
+    $equipoId = $conexion->insert_id;
+    $conexion->query("INSERT IGNORE INTO equipos_alias (equipo_id, alias, clave_normalizada) VALUES ($equipoId, '$nombreEsc', '$clave')");
+    return $equipoId;
+}
+
 $input  = json_decode(file_get_contents('php://input'), true) ?? [];
 $accion = $_GET['accion'] ?? $input['accion'] ?? '';
 
@@ -89,11 +237,16 @@ function mmInsertarRegistro($conexion, $turno, $r) {
     $momioEmpateSql    = $momioEmpate    === null ? 'NULL' : $momioEmpate;
     $momioVisitanteSql = $momioVisitante === null ? 'NULL' : $momioVisitante;
 
+    $equipoLocalId     = mmResolverEquipoId($conexion, $r['equipo_local'] ?? '');
+    $equipoVisitanteId = mmResolverEquipoId($conexion, $r['equipo_visitante'] ?? '');
+    $equipoLocalIdSql     = $equipoLocalId     === null ? 'NULL' : $equipoLocalId;
+    $equipoVisitanteIdSql = $equipoVisitanteId === null ? 'NULL' : $equipoVisitanteId;
+
     return $conexion->query("
         INSERT INTO momios_registros
-            (fecha, turno, fecha_partido, hora_partido, casa_apuestas, equipo_local, equipo_visitante, momio_local, momio_empate, momio_visitante, notas)
+            (fecha, turno, fecha_partido, hora_partido, casa_apuestas, equipo_local, equipo_local_id, equipo_visitante, equipo_visitante_id, momio_local, momio_empate, momio_visitante, notas)
         VALUES
-            (CURDATE(), '$turnoEsc', '$fechaPartido', $horaPartido, $casaApuestasSql, '$equipoLocal', '$equipoVisitante', $momioLocalSql, $momioEmpateSql, $momioVisitanteSql, '$notas')
+            (CURDATE(), '$turnoEsc', '$fechaPartido', $horaPartido, $casaApuestasSql, '$equipoLocal', $equipoLocalIdSql, '$equipoVisitante', $equipoVisitanteIdSql, $momioLocalSql, $momioEmpateSql, $momioVisitanteSql, '$notas')
     ");
 }
 
@@ -111,7 +264,8 @@ if ($accion === 'listar') {
     }
 
     $res = $conexion->query("
-        SELECT id, fecha, turno, fecha_partido, hora_partido, casa_apuestas, equipo_local, equipo_visitante,
+        SELECT id, fecha, turno, fecha_partido, hora_partido, casa_apuestas,
+               equipo_local, equipo_local_id, equipo_visitante, equipo_visitante_id,
                momio_local, momio_empate, momio_visitante, notas
         FROM momios_registros
         $where
@@ -168,6 +322,48 @@ if ($accion === 'guardar_lote') {
     }
 
     echo json_encode(['status' => 'ok', 'guardados' => $guardados, 'omitidos' => $omitidos]);
+    exit;
+}
+
+// GET: sugiere pares de equipos del catálogo que podrían ser el mismo (nombre
+// parecido pero con clave normalizada distinta, ej. abreviaturas no contempladas
+// o nombres muy diferentes del mismo club). No fusiona nada automático: solo
+// sugiere, el usuario confirma con accion=fusionar_equipos.
+if ($accion === 'sugerir_duplicados') {
+    $res = $conexion->query("SELECT id, nombre_canonico FROM equipos_catalogo ORDER BY id");
+    $equipos = [];
+    while ($res && ($row = $res->fetch_assoc())) $equipos[] = $row;
+
+    $sugerencias = [];
+    $n = count($equipos);
+    for ($i = 0; $i < $n; $i++) {
+        for ($j = $i + 1; $j < $n; $j++) {
+            if (mmSonPosibleDuplicado($equipos[$i]['nombre_canonico'], $equipos[$j]['nombre_canonico'])) {
+                $sugerencias[] = ['equipo_a' => $equipos[$i], 'equipo_b' => $equipos[$j]];
+            }
+        }
+    }
+    echo json_encode(['status' => 'ok', 'sugerencias' => array_slice($sugerencias, 0, 30)]);
+    exit;
+}
+
+// POST: fusiona dos equipos del catálogo en uno solo (confirmado por el usuario).
+// Reasigna alias y todos los registros históricos; no se puede deshacer.
+if ($accion === 'fusionar_equipos') {
+    $mantener = (int)($input['mantener'] ?? 0);
+    $eliminar = (int)($input['eliminar'] ?? 0);
+
+    if ($mantener <= 0 || $eliminar <= 0 || $mantener === $eliminar) {
+        echo json_encode(['error' => 'IDs inválidos']);
+        exit;
+    }
+
+    $conexion->query("UPDATE equipos_alias SET equipo_id = $mantener WHERE equipo_id = $eliminar");
+    $conexion->query("UPDATE momios_registros SET equipo_local_id = $mantener WHERE equipo_local_id = $eliminar");
+    $conexion->query("UPDATE momios_registros SET equipo_visitante_id = $mantener WHERE equipo_visitante_id = $eliminar");
+    $conexion->query("DELETE FROM equipos_catalogo WHERE id = $eliminar");
+
+    echo json_encode(['status' => 'ok']);
     exit;
 }
 

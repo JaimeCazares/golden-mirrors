@@ -49,6 +49,54 @@ async function initMomios() {
     mmAutoSeleccionarTurno();
     await mmCargarRegistros();
     mmRenderAll();
+    mmRevisarDuplicados();
+}
+
+// ══════════════════════════════════════════════════════
+// CATÁLOGO DE EQUIPOS — detecta el mismo equipo escrito distinto entre casas
+// (ej. "Bodø/Glimt" vs "FK Bodo Glimt") y deja fusionar los que de verdad lo son.
+// ══════════════════════════════════════════════════════
+async function mmRevisarDuplicados() {
+    const sec  = document.getElementById('mm-equipos-dup-section');
+    const cont = document.getElementById('mm-equipos-dup-lista');
+    if (!sec || !cont) return;
+
+    try {
+        const res = await fetch('momios/api_momios.php?accion=sugerir_duplicados');
+        const json = await res.json();
+
+        if (!json.sugerencias || !json.sugerencias.length) {
+            sec.style.display = 'none';
+            return;
+        }
+
+        sec.style.display = '';
+        cont.innerHTML = json.sugerencias.map(s => `
+            <div class="mm-dup-item">
+                <span class="mm-dup-nombres">${mmEscapar(s.equipo_a.nombre_canonico)} ↔ ${mmEscapar(s.equipo_b.nombre_canonico)}</span>
+                <span class="mm-dup-pct">¿mismo equipo?</span>
+                <button type="button" class="mm-dup-btn" onclick="mmFusionarEquipos(${s.equipo_a.id}, ${s.equipo_b.id}, this)">Son el mismo</button>
+            </div>`).join('');
+    } catch (e) {
+        console.error('Error revisando equipos duplicados', e);
+    }
+}
+
+async function mmFusionarEquipos(mantener, eliminar, btn) {
+    if (!confirm('¿Fusionar estos dos equipos en uno solo? No se puede deshacer.')) return;
+    if (btn) btn.disabled = true;
+
+    try {
+        await fetch('momios/api_momios.php?accion=fusionar_equipos', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ mantener, eliminar })
+        });
+        await mmRevisarDuplicados();
+    } catch (e) {
+        console.error('Error fusionando equipos', e);
+        if (btn) btn.disabled = false;
+    }
 }
 
 // ══════════════════════════════════════════════════════
@@ -200,6 +248,7 @@ async function mmGuardarRegistro() {
             mmLimpiarFormulario();
             await mmCargarRegistros();
             mmRenderAll();
+            mmRevisarDuplicados();
         }
     } catch (e) {
         console.error('Error guardando momio', e);
@@ -370,6 +419,7 @@ async function mmGuardarTodosExtraidos() {
             mmRenderExtraidosTabla();
             await mmCargarRegistros();
             mmRenderAll();
+            mmRevisarDuplicados();
         }
     } catch (e) {
         console.error('Error guardando lote de momios', e);
