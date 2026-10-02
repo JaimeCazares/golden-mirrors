@@ -55,8 +55,18 @@
 
   <div class="mm-stats" id="mm-stats"></div>
 
+  <!-- EXTRACCIÓN DESDE IMAGEN -->
+  <div class="mm-form-card mm-extraer-card">
+    <input type="file" id="mm-input-imagen" accept="image/png,image/jpeg,image/webp,image/gif" style="display:none" onchange="mmImagenSeleccionada(this)">
+    <button type="button" class="mm-btn-extraer" id="mm-btn-extraer" onclick="document.getElementById('mm-input-imagen').click()">
+      📷 Cargar imagen de momios
+    </button>
+    <p class="mm-extraer-msg" id="mm-extraer-msg"></p>
+    <div class="mm-extraidos" id="mm-extraidos"></div>
+  </div>
+
   <!-- FORMULARIO DE CAPTURA -->
-  <div class="mm-form-card">
+  <div class="mm-form-card" id="mm-form-card">
 
     <div class="mm-form-row">
       <div class="mm-field">
@@ -86,15 +96,15 @@
     <div class="mm-form-row mm-form-row-3">
       <div class="mm-field">
         <label>Momio 1 (Local)</label>
-        <input type="number" step="0.01" min="0" id="mm-input-m1" placeholder="1.85">
+        <input type="number" step="1" id="mm-input-m1" placeholder="-400">
       </div>
       <div class="mm-field">
         <label>Momio X (Empate)</label>
-        <input type="number" step="0.01" min="0" id="mm-input-mx" placeholder="3.40">
+        <input type="number" step="1" id="mm-input-mx" placeholder="+275">
       </div>
       <div class="mm-field">
         <label>Momio 2 (Visitante)</label>
-        <input type="number" step="0.01" min="0" id="mm-input-m2" placeholder="4.20">
+        <input type="number" step="1" id="mm-input-m2" placeholder="+165">
       </div>
     </div>
 

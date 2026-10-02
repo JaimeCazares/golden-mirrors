@@ -21,6 +21,13 @@ function mmFmt(d) {
 }
 function mmHoyStr() { return mmFmt(new Date()); }
 
+// Formato americano: entero con signo explícito (+135, -400). Null -> '—'.
+function mmFormatMomio(v) {
+    if (v === null || v === undefined || v === '') return '—';
+    const n = Math.round(Number(v));
+    return (n > 0 ? '+' : '') + n;
+}
+
 async function initMomios() {
     const inputFecha = document.getElementById('mm-input-fecha');
     if (inputFecha) inputFecha.value = mmHoyStr();
@@ -186,6 +193,100 @@ async function mmGuardarRegistro() {
     }
 }
 
+// ══════════════════════════════════════════════════════
+// EXTRACCIÓN DE MOMIOS DESDE IMAGEN (API de Claude, vision)
+// ══════════════════════════════════════════════════════
+let mmPartidosExtraidos = [];
+let mmCasaExtraida = null;
+
+function mmExtraerMostrarMsg(texto, tipo) {
+    const msg = document.getElementById('mm-extraer-msg');
+    if (!msg) return;
+    msg.textContent = texto;
+    msg.className = 'mm-extraer-msg ' + (tipo || '');
+}
+
+async function mmImagenSeleccionada(input) {
+    const file = input.files && input.files[0];
+    if (!file) return;
+
+    if (file.size > 5 * 1024 * 1024) {
+        mmExtraerMostrarMsg('La imagen pesa más de 5 MB.', 'error');
+        input.value = '';
+        return;
+    }
+
+    const btn = document.getElementById('mm-btn-extraer');
+    const cont = document.getElementById('mm-extraidos');
+    if (btn) btn.disabled = true;
+    if (cont) cont.innerHTML = '';
+    mmExtraerMostrarMsg('Analizando imagen...', '');
+
+    try {
+        const formData = new FormData();
+        formData.append('imagen', file);
+
+        const res = await fetch('momios/extraer_momios.php', { method: 'POST', body: formData });
+        const json = await res.json();
+
+        if (json.error) {
+            mmExtraerMostrarMsg(json.error, 'error');
+        } else if (!Array.isArray(json.partidos) || !json.partidos.length) {
+            mmExtraerMostrarMsg('No se detectaron partidos en la imagen.', 'error');
+        } else {
+            mmPartidosExtraidos = json.partidos;
+            mmCasaExtraida = json.casa_apuestas || null;
+            const casaTxt = mmCasaExtraida ? ` (${mmCasaExtraida})` : '';
+            mmExtraerMostrarMsg(`${json.partidos.length} partido(s) detectado(s)${casaTxt}. Toca uno para cargarlo al formulario.`, 'ok');
+            mmRenderExtraidos();
+        }
+    } catch (e) {
+        console.error('Error extrayendo momios de imagen', e);
+        mmExtraerMostrarMsg('Error de conexión al analizar la imagen.', 'error');
+    } finally {
+        if (btn) btn.disabled = false;
+        input.value = '';
+    }
+}
+
+function mmRenderExtraidos() {
+    const cont = document.getElementById('mm-extraidos');
+    if (!cont) return;
+
+    cont.innerHTML = mmPartidosExtraidos.map((p, i) => {
+        const m1 = mmFormatMomio(p.momio_local);
+        const mx = mmFormatMomio(p.momio_empate);
+        const m2 = mmFormatMomio(p.momio_visitante);
+        return `
+            <div class="mm-extraido-item" onclick="mmUsarExtraido(${i})">
+                <span class="mm-extraido-partido">${mmEscapar(p.equipo_local)} vs ${mmEscapar(p.equipo_visitante)}</span>
+                <span class="mm-extraido-momios">1: ${m1} · X: ${mx} · 2: ${m2}</span>
+            </div>`;
+    }).join('');
+}
+
+function mmUsarExtraido(i) {
+    const p = mmPartidosExtraidos[i];
+    if (!p) return;
+
+    const setVal = (id, val) => {
+        const el = document.getElementById(id);
+        if (el) el.value = (val !== null && val !== undefined) ? val : '';
+    };
+
+    setVal('mm-input-local', p.equipo_local || '');
+    setVal('mm-input-visitante', p.equipo_visitante || '');
+    setVal('mm-input-m1', p.momio_local);
+    setVal('mm-input-mx', p.momio_empate);
+    setVal('mm-input-m2', p.momio_visitante);
+
+    const notasEl = document.getElementById('mm-input-notas');
+    if (notasEl && !notasEl.value.trim() && mmCasaExtraida) notasEl.value = mmCasaExtraida;
+
+    document.getElementById('mm-form-card')?.scrollIntoView?.({ behavior: 'smooth', block: 'start' });
+    mmMostrarMsg('Revisa los datos y guarda cuando estén correctos.', 'ok');
+}
+
 function mmLimpiarFormulario() {
     ['mm-input-local', 'mm-input-visitante', 'mm-input-m1', 'mm-input-mx', 'mm-input-m2', 'mm-input-notas'].forEach(id => {
         const el = document.getElementById(id);
@@ -223,7 +324,7 @@ function mmRenderStats() {
     const hoyCount  = mmRegistros.filter(r => r.fecha === hoyStr).length;
     const conMomios = mmRegistros.filter(r => r.momio_local !== null || r.momio_empate !== null || r.momio_visitante !== null);
     const promedioLocal = conMomios.length
-        ? (conMomios.reduce((s, r) => s + (r.momio_local || 0), 0) / conMomios.length).toFixed(2)
+        ? mmFormatMomio(conMomios.reduce((s, r) => s + (r.momio_local || 0), 0) / conMomios.length)
         : '—';
 
     cont.innerHTML = `
@@ -260,9 +361,9 @@ function mmRenderLista() {
         const turnoLabel = r.turno === 'manana' ? '🌅 6:00 AM' : '🌆 7:00 PM';
         const turnoClase = r.turno === 'manana' ? '' : 'tarde';
 
-        const m1 = r.momio_local     !== null ? r.momio_local.toFixed(2)     : '—';
-        const mx = r.momio_empate    !== null ? r.momio_empate.toFixed(2)    : '—';
-        const m2 = r.momio_visitante !== null ? r.momio_visitante.toFixed(2) : '—';
+        const m1 = mmFormatMomio(r.momio_local);
+        const mx = mmFormatMomio(r.momio_empate);
+        const m2 = mmFormatMomio(r.momio_visitante);
 
         html += `
             <div class="mm-card-partido">
