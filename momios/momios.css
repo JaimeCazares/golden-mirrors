@@ -201,7 +201,21 @@
 .mm-ex-hora { width: 66px; flex-shrink: 0; }
 .mm-ex-equipo { width: 112px; flex: 1 1 100px; min-width: 80px; }
 .mm-ex-vs { font-size: 0.65rem; color: var(--mm-text-dim); flex-shrink: 0; }
-.mm-ex-momio { width: 54px; flex-shrink: 0; text-align: center; }
+
+.mm-ex-momio-wrap { position: relative; width: 54px; flex-shrink: 0; }
+.mm-ex-momio-wrap input.mm-ex-momio { width: 100%; box-sizing: border-box; text-align: center; }
+.mm-ex-momio-wrap[data-sign="+"]::before {
+    content: "+";
+    position: absolute;
+    left: 7px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #fff;
+    font-size: 0.7rem;
+    font-weight: 700;
+    pointer-events: none;
+}
+.mm-ex-momio-wrap[data-sign="+"] input.mm-ex-momio { padding-left: 12px; }
 .mm-ex-del {
     background: none;
     border: none;
@@ -353,6 +367,24 @@
 .mm-field input:focus,
 .mm-field select:focus { border-color: var(--mm-accent); }
 .mm-field select option { background: #16161a; color: #fff; }
+
+/* Los <input type="number"> nunca muestran "+" para positivos (lo recorta el
+   navegador); se superpone visualmente con este wrapper + atributo data-sign. */
+.mm-momio-signo-wrap { position: relative; display: block; }
+.mm-momio-signo-wrap input { width: 100%; box-sizing: border-box; }
+.mm-momio-signo-wrap[data-sign="+"]::before {
+    content: "+";
+    position: absolute;
+    left: 11px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #fff;
+    font-size: 0.85rem;
+    font-weight: 700;
+    pointer-events: none;
+    z-index: 1;
+}
+.mm-momio-signo-wrap[data-sign="+"] input { padding-left: 19px; }
 
 .mm-btn-guardar {
     width: 100%;

@@ -28,6 +28,19 @@ function mmFormatMomio(v) {
     return (n > 0 ? '+' : '') + n;
 }
 
+// 'data-sign' para el wrapper visual: <input type="number"> nunca muestra el "+"
+// de los positivos (el navegador lo recorta), así que se superpone aparte.
+function mmSignoAttr(v) {
+    return (v !== null && v !== undefined && v !== '' && Number(v) > 0) ? '+' : '';
+}
+
+// Refresca el atributo data-sign del wrapper (sirve tanto para el formulario
+// manual como para las filas de la tabla de extraídos).
+function mmActualizarSigno(inputEl) {
+    const wrap = inputEl.closest('[data-sign]');
+    if (wrap) wrap.dataset.sign = mmSignoAttr(inputEl.value);
+}
+
 async function initMomios() {
     const inputFecha = document.getElementById('mm-input-fecha');
     if (inputFecha) inputFecha.value = mmHoyStr();
@@ -299,11 +312,22 @@ function mmRenderFilaExtraido(i) {
             <input type="text" class="mm-ex-equipo" value="${mmEscapar(p.equipo_local)}" oninput="mmActualizarExtraido(${i}, 'equipo_local', this.value)" placeholder="Local">
             <span class="mm-ex-vs">vs</span>
             <input type="text" class="mm-ex-equipo" value="${mmEscapar(p.equipo_visitante)}" oninput="mmActualizarExtraido(${i}, 'equipo_visitante', this.value)" placeholder="Visitante">
-            <input type="number" step="1" class="mm-ex-momio" value="${val(p.momio_local)}" oninput="mmActualizarExtraido(${i}, 'momio_local', this.value)" title="Momio 1 (Local)">
-            <input type="number" step="1" class="mm-ex-momio" value="${val(p.momio_empate)}" oninput="mmActualizarExtraido(${i}, 'momio_empate', this.value)" title="Momio X (Empate)">
-            <input type="number" step="1" class="mm-ex-momio" value="${val(p.momio_visitante)}" oninput="mmActualizarExtraido(${i}, 'momio_visitante', this.value)" title="Momio 2 (Visitante)">
+            <span class="mm-ex-momio-wrap" data-sign="${mmSignoAttr(p.momio_local)}">
+                <input type="number" step="1" class="mm-ex-momio" value="${val(p.momio_local)}" oninput="mmActualizarMomioExtraido(this, ${i}, 'momio_local')" title="Momio 1 (Local)">
+            </span>
+            <span class="mm-ex-momio-wrap" data-sign="${mmSignoAttr(p.momio_empate)}">
+                <input type="number" step="1" class="mm-ex-momio" value="${val(p.momio_empate)}" oninput="mmActualizarMomioExtraido(this, ${i}, 'momio_empate')" title="Momio X (Empate)">
+            </span>
+            <span class="mm-ex-momio-wrap" data-sign="${mmSignoAttr(p.momio_visitante)}">
+                <input type="number" step="1" class="mm-ex-momio" value="${val(p.momio_visitante)}" oninput="mmActualizarMomioExtraido(this, ${i}, 'momio_visitante')" title="Momio 2 (Visitante)">
+            </span>
             <button type="button" class="mm-ex-del" onclick="mmQuitarExtraido(${i})" title="Quitar">✕</button>
         </div>`;
+}
+
+function mmActualizarMomioExtraido(inputEl, i, campo) {
+    mmActualizarExtraido(i, campo, inputEl.value);
+    mmActualizarSigno(inputEl);
 }
 
 function mmActualizarExtraido(i, campo, valor) {

@@ -106,15 +106,21 @@
     <div class="mm-form-row mm-form-row-3">
       <div class="mm-field">
         <label>Momio 1 (Local)</label>
-        <input type="number" step="1" id="mm-input-m1" placeholder="-400">
+        <span class="mm-momio-signo-wrap" data-sign="">
+          <input type="number" step="1" id="mm-input-m1" placeholder="-400" oninput="mmActualizarSigno(this)">
+        </span>
       </div>
       <div class="mm-field">
         <label>Momio X (Empate)</label>
-        <input type="number" step="1" id="mm-input-mx" placeholder="+275">
+        <span class="mm-momio-signo-wrap" data-sign="">
+          <input type="number" step="1" id="mm-input-mx" placeholder="+275" oninput="mmActualizarSigno(this)">
+        </span>
       </div>
       <div class="mm-field">
         <label>Momio 2 (Visitante)</label>
-        <input type="number" step="1" id="mm-input-m2" placeholder="+165">
+        <span class="mm-momio-signo-wrap" data-sign="">
+          <input type="number" step="1" id="mm-input-m2" placeholder="+165" oninput="mmActualizarSigno(this)">
+        </span>
       </div>
     </div>
 
