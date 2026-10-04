@@ -32,6 +32,14 @@ function mmFmt(d) {
 }
 function mmHoyStr() { return mmFmt(new Date()); }
 
+// Signo explícito en el % de espejo: aunque sea negativo se muestra (para ver qué
+// tan cerca está de volverse positivo = espejo real), con "+" marcado en positivos.
+function mmFormatPct(pct) {
+    if (pct > 0) return `+${pct}%`;
+    if (pct < 0) return `${pct}%`;
+    return '0%';
+}
+
 // 'capturado_en' llega como "YYYY-MM-DD HH:MM:SS" ya en hora local (Culiacán, fijada
 // en el servidor); se extrae el texto directo en vez de pasar por Date para que el
 // navegador no lo reinterprete con su propia zona horaria.
@@ -116,7 +124,7 @@ function mmRenderTopEspejos() {
         const hora  = p.hora_partido ? p.hora_partido.slice(0, 5) : '';
         return `
             <div class="mm-top-item mm-color-${p.color}">
-                <span class="mm-top-badge">${info.emoji} ${p.ganancia_garantizada_pct}%</span>
+                <span class="mm-top-badge">${info.emoji} ${mmFormatPct(p.ganancia_garantizada_pct)}</span>
                 <div class="mm-top-info">
                     <div class="mm-top-equipos">${mmEscapar(p.equipo_local)} vs ${mmEscapar(p.equipo_visitante)}</div>
                     <div class="mm-top-fecha">⚽ ${fecha}${hora ? ' · ' + hora : ''}</div>
@@ -560,7 +568,7 @@ function mmRenderLista() {
         return `
             <div class="mm-partido-grupo">
                 <div class="mm-partido-head" onclick="mmToggleSeccion('${bodyId}', this)">
-                    ${espejo ? `<span class="mm-espejo-badge mm-color-${espejo.color}" title="${info.label}">${info.emoji} ${espejo.ganancia_garantizada_pct}%</span>` : '<span class="mm-espejo-badge mm-color-gris">—</span>'}
+                    ${espejo ? `<span class="mm-espejo-badge mm-color-${espejo.color}" title="${info.label}">${info.emoji} ${mmFormatPct(espejo.ganancia_garantizada_pct)}</span>` : '<span class="mm-espejo-badge mm-color-gris">—</span>'}
                     <div class="mm-partido-info">
                         <div class="mm-partido-equipos">${mmEscapar(p.equipo_local)} <span class="mm-vs">vs</span> ${mmEscapar(p.equipo_visitante)}</div>
                         <div class="mm-partido-fecha">⚽ ${fecha}${hora ? ' · ' + hora : ''} · ${p.capturas.length} captura(s)</div>
