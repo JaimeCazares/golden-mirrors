@@ -393,6 +393,24 @@ if ($accion === 'fusionar_equipos') {
     exit;
 }
 
+// POST: corrección de una sola vez — la migración anterior se re-ejecutó por
+// accidente y restó 2 horas en vez de 1; esto devuelve esa hora de más.
+// Exige POST + confirmación explícita para que un GET/prefetch no la dispare.
+if ($accion === 'revertir_doble_resta_tz_2026_10_04') {
+    if ($_SERVER['REQUEST_METHOD'] !== 'POST' || ($input['confirmar'] ?? '') !== 'si-una-sola-vez') {
+        echo json_encode(['error' => 'Confirmación requerida']);
+        exit;
+    }
+    $ok = $conexion->query("
+        UPDATE momios_registros
+        SET fecha = DATE(DATE_ADD(capturado_en, INTERVAL 1 HOUR)),
+            capturado_en = DATE_ADD(capturado_en, INTERVAL 1 HOUR)
+        WHERE capturado_en IS NOT NULL
+    ");
+    echo json_encode(['status' => $ok ? 'ok' : 'error', 'afectados' => $conexion->affected_rows]);
+    exit;
+}
+
 // POST: eliminar un registro por id
 if ($accion === 'eliminar') {
     $id = (int)($input['id'] ?? 0);
