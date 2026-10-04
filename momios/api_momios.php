@@ -18,6 +18,7 @@ $conexion->query("
     CREATE TABLE IF NOT EXISTS momios_registros (
         id               INT AUTO_INCREMENT PRIMARY KEY,
         fecha            DATE NOT NULL,
+        capturado_en     DATETIME NULL,
         turno            ENUM('manana','tarde') NOT NULL,
         fecha_partido    DATE NULL,
         hora_partido     TIME NULL,
@@ -45,6 +46,7 @@ function mmAsegurarColumna($conexion, $nombre, $definicion) {
 mmAsegurarColumna($conexion, 'fecha_partido', 'DATE NULL AFTER turno');
 mmAsegurarColumna($conexion, 'hora_partido', 'TIME NULL AFTER fecha_partido');
 mmAsegurarColumna($conexion, 'casa_apuestas', 'VARCHAR(50) NULL AFTER hora_partido');
+mmAsegurarColumna($conexion, 'capturado_en', 'DATETIME NULL AFTER fecha');
 
 // Catálogo de equipos: unifica el mismo equipo aunque cada casa de apuestas lo
 // escriba distinto (ej. "Bodø/Glimt" en Codere vs "FK Bodo Glimt" en Playdoit),
@@ -250,6 +252,7 @@ function mmInsertarRegistro($conexion, $turno, $r) {
     $horaPartido    = mmHoraValida($r['hora_partido'] ?? '') ? "'" . $conexion->real_escape_string($r['hora_partido']) . "'" : 'NULL';
     $casaApuestasSql = $casaApuestas === '' ? 'NULL' : "'$casaApuestas'";
     $hoy = date('Y-m-d'); // fecha de captura en hora local (no CURDATE(), que usa la zona horaria del servidor MySQL)
+    $capturadoEn = date('Y-m-d H:i:s'); // momento exacto de captura, para comparar en qué horario suelen estar mejores los momios
 
     $momioLocal     = mmDecimalONull($r['momio_local']     ?? null);
     $momioEmpate    = mmDecimalONull($r['momio_empate']    ?? null);
@@ -266,9 +269,9 @@ function mmInsertarRegistro($conexion, $turno, $r) {
 
     return $conexion->query("
         INSERT INTO momios_registros
-            (fecha, turno, fecha_partido, hora_partido, casa_apuestas, equipo_local, equipo_local_id, equipo_visitante, equipo_visitante_id, momio_local, momio_empate, momio_visitante, notas)
+            (fecha, capturado_en, turno, fecha_partido, hora_partido, casa_apuestas, equipo_local, equipo_local_id, equipo_visitante, equipo_visitante_id, momio_local, momio_empate, momio_visitante, notas)
         VALUES
-            ('$hoy', '$turnoEsc', '$fechaPartido', $horaPartido, $casaApuestasSql, '$equipoLocal', $equipoLocalIdSql, '$equipoVisitante', $equipoVisitanteIdSql, $momioLocalSql, $momioEmpateSql, $momioVisitanteSql, '$notas')
+            ('$hoy', '$capturadoEn', '$turnoEsc', '$fechaPartido', $horaPartido, $casaApuestasSql, '$equipoLocal', $equipoLocalIdSql, '$equipoVisitante', $equipoVisitanteIdSql, $momioLocalSql, $momioEmpateSql, $momioVisitanteSql, '$notas')
     ");
 }
 
@@ -286,12 +289,12 @@ if ($accion === 'listar') {
     }
 
     $res = $conexion->query("
-        SELECT id, fecha, turno, fecha_partido, hora_partido, casa_apuestas,
+        SELECT id, fecha, capturado_en, turno, fecha_partido, hora_partido, casa_apuestas,
                equipo_local, equipo_local_id, equipo_visitante, equipo_visitante_id,
                momio_local, momio_empate, momio_visitante, notas
         FROM momios_registros
         $where
-        ORDER BY fecha DESC, turno ASC, fecha_partido ASC, hora_partido ASC, id DESC
+        ORDER BY fecha DESC, capturado_en DESC, turno ASC, fecha_partido ASC, hora_partido ASC, id DESC
     ");
 
     $out = [];

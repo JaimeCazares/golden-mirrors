@@ -21,6 +21,15 @@ function mmFmt(d) {
 }
 function mmHoyStr() { return mmFmt(new Date()); }
 
+// 'capturado_en' llega como "YYYY-MM-DD HH:MM:SS" ya en hora local (México, fijada
+// en el servidor); se extrae el texto directo en vez de pasar por Date para que el
+// navegador no lo reinterprete con su propia zona horaria.
+function mmFormatearHoraCaptura(capturadoEn) {
+    if (!capturadoEn) return '';
+    const partes = capturadoEn.split(' ');
+    return partes.length >= 2 ? partes[1].slice(0, 5) : '';
+}
+
 // Formato americano: entero con signo explícito (+135, -400). Null -> '—'.
 function mmFormatMomio(v) {
     if (v === null || v === undefined || v === '') return '—';
@@ -500,7 +509,9 @@ function mmRenderLista() {
             fechaAnterior = r.fecha;
         }
 
-        const turnoLabel = r.turno === 'manana' ? '🌅 6:00 AM' : '🌆 7:00 PM';
+        const turnoEmoji = r.turno === 'manana' ? '🌅' : '🌆';
+        const horaCaptura = mmFormatearHoraCaptura(r.capturado_en);
+        const turnoLabel = horaCaptura ? `${turnoEmoji} ${horaCaptura}` : `${turnoEmoji} ${r.turno === 'manana' ? '06:00' : '19:00'}`;
         const turnoClase = r.turno === 'manana' ? '' : 'tarde';
 
         const m1 = mmFormatMomio(r.momio_local);
