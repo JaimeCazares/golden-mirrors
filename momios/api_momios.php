@@ -3,6 +3,7 @@ date_default_timezone_set('America/Mexico_City'); // fija "hoy" a hora local, si
 error_reporting(0);
 mysqli_report(MYSQLI_REPORT_OFF); // PHP 8.1+ lanza excepciones por defecto; este archivo asume que query() solo devuelve false en error
 header('Content-Type: application/json');
+header('Cache-Control: no-store, no-cache, must-revalidate'); // evita que el navegador sirva un 'listar' viejo después de guardar
 include '../conexion.php';
 
 if (!isset($conexion) || $conexion->connect_error) {

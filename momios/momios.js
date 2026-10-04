@@ -173,7 +173,7 @@ function mmTurnoActual() {
 async function mmCargarRegistros() {
     const lista = document.getElementById('mm-lista');
     try {
-        let url = 'momios/api_momios.php?accion=listar';
+        let url = `momios/api_momios.php?accion=listar&_=${Date.now()}`; // cache-busting: que nunca sirva un listado viejo cacheado
         if (mmDiasFiltro > 0) {
             const hoy = new Date();
             const desde = new Date(hoy);
