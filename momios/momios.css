@@ -202,7 +202,7 @@
 .mm-ex-equipo { width: 112px; flex: 1 1 100px; min-width: 80px; }
 .mm-ex-vs { font-size: 0.65rem; color: var(--mm-text-dim); flex-shrink: 0; }
 
-.mm-ex-momio-wrap { position: relative; width: 54px; flex-shrink: 0; }
+.mm-ex-momio-wrap { position: relative; width: 64px; flex-shrink: 0; }
 .mm-ex-momio-wrap input.mm-ex-momio { width: 100%; box-sizing: border-box; text-align: center; }
 .mm-ex-momio-wrap[data-sign="+"]::before {
     content: "+";
