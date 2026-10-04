@@ -319,11 +319,11 @@ function mmDecimalDeAmericano($momio) {
 
 // Color según % de ganancia garantizada al cubrir (ver 'analisis_espejo' abajo).
 function mmColorEspejo($pct) {
-    if ($pct <= 0)  return 'rojo';
-    if ($pct <= 3)  return 'naranja';
-    if ($pct <= 7)  return 'amarillo';
-    if ($pct <= 15) return 'verde';
-    if ($pct <= 25) return 'azul';
+    if ($pct <= 0) return 'rojo';
+    if ($pct <= 1) return 'naranja';
+    if ($pct <= 2) return 'amarillo';
+    if ($pct <= 3) return 'verde';
+    if ($pct <= 4) return 'azul';
     return 'dorado';
 }
 
@@ -342,7 +342,7 @@ if ($accion === 'analisis_espejo') {
         FROM momios_registros
         WHERE equipo_local_id IS NOT NULL AND equipo_visitante_id IS NOT NULL
           AND fecha_partido IS NOT NULL AND capturado_en IS NOT NULL
-        ORDER BY capturado_en ASC
+        ORDER BY capturado_en ASC, id ASC
     ");
 
     $partidos = [];
@@ -385,6 +385,9 @@ if ($accion === 'analisis_espejo') {
         $mejorPct = null;
         $mejorDetalle = null;
         for ($i = 1; $i < count($capturas); $i++) {
+            // La cobertura debe ser de un momento REALMENTE posterior, no de otra casa
+            // capturada en el mismo instante (eso sería arbitraje entre casas, no espejo).
+            if ($capturas[$i]['capturado_en'] <= $primera['capturado_en']) continue;
             foreach (['local', 'empate', 'visitante'] as $resultado) {
                 if ($resultado === $favorito) continue;
                 $momioCobertura = $capturas[$i][$resultado];
