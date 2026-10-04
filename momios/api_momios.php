@@ -368,51 +368,84 @@ if ($accion === 'analisis_espejo') {
         ];
     }
 
+    // Mejor momio de cada resultado dentro de un mismo instante (varias casas
+    // pudieron capturar al mismo tiempo) — "mejor" para quien apuesta ahí = el
+    // momio más alto (mejor pago).
+    $mejorPorResultado = function ($capturasInstante) {
+        $m = ['local' => null, 'empate' => null, 'visitante' => null];
+        foreach ($capturasInstante as $c) {
+            foreach (['local', 'empate', 'visitante'] as $res) {
+                if ($c[$res] === null) continue;
+                if ($m[$res] === null || $c[$res] > $m[$res]) $m[$res] = $c[$res];
+            }
+        }
+        return $m;
+    };
+    // Ganancia garantizada (%) de cubrir $favorito (decimal) con $momioCobertura.
+    $pctCobertura = function ($decimalFavorito, $momioCobertura, $stake) {
+        $decimalCobertura = mmDecimalDeAmericano($momioCobertura);
+        if (!$decimalCobertura) return null;
+        $hedgeStake = ($stake * $decimalFavorito) / $decimalCobertura;
+        return (($stake * $decimalFavorito - ($stake + $hedgeStake)) / $stake) * 100;
+    };
+
     $stake = 100; // monto hipotético fijo, solo para normalizar el % de ganancia
     $out = [];
     foreach ($partidos as $p) {
-        $capturas = $p['capturas']; // ya vienen ordenadas por capturado_en ASC
-        if (count($capturas) < 2) continue; // necesita al menos 2 momentos para poder "cambiar"
+        // Agrupa las capturas en "instantes" (mismo capturado_en = misma tanda,
+        // cruzando casas), en orden cronológico — necesita al menos 2 instantes
+        // distintos para poder detectar que algo "cambió con el tiempo".
+        $instantes = [];
+        foreach ($p['capturas'] as $c) $instantes[$c['capturado_en']][] = $c;
+        ksort($instantes);
+        $momentos = array_keys($instantes);
+        if (count($momentos) < 2) continue;
 
-        $primera = $capturas[0];
-        $candidatos = array_filter(
-            ['local' => $primera['local'], 'empate' => $primera['empate'], 'visitante' => $primera['visitante']],
-            fn($v) => $v !== null
-        );
-        if (count($candidatos) < 2) continue;
-        asort($candidatos); // momio más bajo (más negativo = más favorito) primero
-        $favorito = array_key_first($candidatos);
-        $decimalFavorito = mmDecimalDeAmericano($candidatos[$favorito]);
+        $mejorT0 = $mejorPorResultado($instantes[$momentos[0]]);
+        $candidatosFavorito = array_filter($mejorT0, fn($v) => $v !== null);
+        if (count($candidatosFavorito) < 2) continue;
+        asort($candidatosFavorito); // momio más bajo = favorito del mercado en T0
+        $favorito = array_key_first($candidatosFavorito);
+        $decimalFavorito = mmDecimalDeAmericano($candidatosFavorito[$favorito]);
 
-        $mejorPct = null;
+        // Línea base: la mejor cobertura que YA estaba disponible en T0 (cruzando
+        // casas) — eso es arbitraje instantáneo entre casas, no "se volvió espejo
+        // con el tiempo", así que se resta: solo cuenta la MEJORA por encima de esto.
+        $pctBase = null;
+        foreach (['local', 'empate', 'visitante'] as $resultado) {
+            if ($resultado === $favorito || $mejorT0[$resultado] === null) continue;
+            $pct = $pctCobertura($decimalFavorito, $mejorT0[$resultado], $stake);
+            if ($pct !== null && ($pctBase === null || $pct > $pctBase)) $pctBase = $pct;
+        }
+
+        $mejorPctPosterior = null;
         $mejorDetalle = null;
-        for ($i = 1; $i < count($capturas); $i++) {
-            // La cobertura debe ser de un momento REALMENTE posterior, no de otra casa
-            // capturada en el mismo instante (eso sería arbitraje entre casas, no espejo).
-            if ($capturas[$i]['capturado_en'] <= $primera['capturado_en']) continue;
+        for ($i = 1; $i < count($momentos); $i++) {
+            $mejorInstante = $mejorPorResultado($instantes[$momentos[$i]]);
             foreach (['local', 'empate', 'visitante'] as $resultado) {
-                if ($resultado === $favorito) continue;
-                $momioCobertura = $capturas[$i][$resultado];
-                if ($momioCobertura === null) continue;
-                $decimalCobertura = mmDecimalDeAmericano($momioCobertura);
-                if (!$decimalCobertura) continue;
-
-                $hedgeStake = ($stake * $decimalFavorito) / $decimalCobertura;
-                $retornoGarantizado = $stake * $decimalFavorito; // igual gane el favorito o la cobertura
-                $pct = (($retornoGarantizado - ($stake + $hedgeStake)) / $stake) * 100;
-
-                if ($mejorPct === null || $pct > $mejorPct) {
-                    $mejorPct = $pct;
+                if ($resultado === $favorito || $mejorInstante[$resultado] === null) continue;
+                $pct = $pctCobertura($decimalFavorito, $mejorInstante[$resultado], $stake);
+                if ($pct === null) continue;
+                if ($mejorPctPosterior === null || $pct > $mejorPctPosterior) {
+                    $mejorPctPosterior = $pct;
+                    $casaDetalle = null;
+                    foreach ($instantes[$momentos[$i]] as $c) {
+                        if ($c[$resultado] == $mejorInstante[$resultado]) { $casaDetalle = $c['casa_apuestas']; break; }
+                    }
                     $mejorDetalle = [
                         'resultado_cobertura'    => $resultado,
-                        'momio_cobertura'        => $momioCobertura,
-                        'casa_cobertura'         => $capturas[$i]['casa_apuestas'],
-                        'capturado_en_cobertura' => $capturas[$i]['capturado_en'],
+                        'momio_cobertura'        => $mejorInstante[$resultado],
+                        'casa_cobertura'         => $casaDetalle,
+                        'capturado_en_cobertura' => $momentos[$i],
                     ];
                 }
             }
         }
-        if ($mejorPct === null) continue;
+        if ($mejorPctPosterior === null) continue;
+
+        // Lo que cuenta es la mejora respecto a lo que ya era cubrible desde el
+        // inicio; si en T0 no había ninguna cobertura posible, se toma completo.
+        $gananciaFinal = $pctBase === null ? $mejorPctPosterior : ($mejorPctPosterior - $pctBase);
 
         $out[] = [
             'equipo_local_id'          => $p['equipo_local_id'],
@@ -422,13 +455,12 @@ if ($accion === 'analisis_espejo') {
             'fecha_partido'            => $p['fecha_partido'],
             'hora_partido'             => $p['hora_partido'],
             'resultado_favorito'       => $favorito,
-            'momio_favorito'           => $candidatos[$favorito],
-            'casa_favorito'            => $primera['casa_apuestas'],
-            'capturado_en_favorito'    => $primera['capturado_en'],
-            'ganancia_garantizada_pct' => round($mejorPct, 1),
-            'color'                    => mmColorEspejo($mejorPct),
+            'momio_favorito'           => $candidatosFavorito[$favorito],
+            'capturado_en_favorito'    => $momentos[0],
+            'ganancia_garantizada_pct' => round($gananciaFinal, 1),
+            'color'                    => mmColorEspejo($gananciaFinal),
             'mejor_cobertura'          => $mejorDetalle,
-            'total_capturas'           => count($capturas),
+            'total_capturas'           => count($p['capturas']),
         ];
     }
 
