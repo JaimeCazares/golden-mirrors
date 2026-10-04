@@ -21,7 +21,7 @@ function mmFmt(d) {
 }
 function mmHoyStr() { return mmFmt(new Date()); }
 
-// 'capturado_en' llega como "YYYY-MM-DD HH:MM:SS" ya en hora local (México, fijada
+// 'capturado_en' llega como "YYYY-MM-DD HH:MM:SS" ya en hora local (Culiacán, fijada
 // en el servidor); se extrae el texto directo en vez de pasar por Date para que el
 // navegador no lo reinterprete con su propia zona horaria.
 function mmFormatearHoraCaptura(capturadoEn) {

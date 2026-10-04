@@ -1,5 +1,5 @@
 <?php
-date_default_timezone_set('America/Mexico_City'); // fija "hoy" a hora local, sin importar la zona horaria del servidor
+date_default_timezone_set('America/Mazatlan'); // Culiacán, Sinaloa (zona Pacífico, UTC-7, una hora menos que CDMX) — fija "hoy" sin importar la zona horaria del servidor
 error_reporting(0);
 mysqli_report(MYSQLI_REPORT_OFF); // PHP 8.1+ lanza excepciones por defecto; este archivo asume que query() solo devuelve false en error
 header('Content-Type: application/json');
