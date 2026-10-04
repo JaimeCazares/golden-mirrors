@@ -1,4 +1,5 @@
 <?php
+date_default_timezone_set('America/Mexico_City'); // fija "hoy" a hora local, sin importar la zona horaria del servidor
 error_reporting(0);
 mysqli_report(MYSQLI_REPORT_OFF); // PHP 8.1+ lanza excepciones por defecto; este archivo asume que query() solo devuelve false en error
 header('Content-Type: application/json');
@@ -135,13 +136,33 @@ function mmNormalizarEquipo($nombre) {
 //     pareja parecida en el otro nombre (praha~prague) — nunca se compara el
 //     nombre completo pegado, así "Manchester United" no sale parecido a
 //     "Manchester City" solo por compartir la palabra "Manchester".
+// Variantes de nombres de ciudades europeas que cambian de ortografía según el
+// idioma de la casa de apuestas (ej. "Praha" vs "Prague"). Lista fija y
+// determinista en vez de una comparación difusa genérica: con similar_text()
+// a secas, palabras de 5-10 letras sin relación (ej. "Arsenal"/"Barcelona",
+// "Lens"/"Nápoles") coinciden por azar en más del 50% de sus letras y
+// generaban falsos positivos que fusionarían equipos distintos de verdad.
+function mmEquivalenciasConocidas() {
+    return [
+        'munchen' => 'munich', 'praha' => 'prague', 'moskva' => 'moscow',
+        'athina' => 'athens', 'atenas' => 'athens', 'beograd' => 'belgrade',
+        'warszawa' => 'warsaw', 'torino' => 'turin', 'roma' => 'rome',
+        'firenze' => 'florence', 'napoli' => 'naples', 'napoles' => 'naples',
+        'kobenhavn' => 'copenhagen', 'goteborg' => 'gothenburg',
+        'brugge' => 'bruges', 'brujas' => 'bruges', 'gent' => 'ghent', 'gand' => 'ghent',
+        'sevilla' => 'seville', 'oporto' => 'porto', 'milano' => 'milan',
+        'genova' => 'genoa', 'marsella' => 'marseille', 'amberes' => 'antwerp',
+    ];
+}
+
 function mmPalabrasParecidas($a, $b) {
     if ($a === $b) return true;
+    $equivalencias = mmEquivalenciasConocidas();
+    if (($equivalencias[$a] ?? $a) === ($equivalencias[$b] ?? $b)) return true;
     $corta = strlen($a) <= strlen($b) ? $a : $b;
     $larga = strlen($a) <= strlen($b) ? $b : $a;
     if (strlen($corta) >= 2 && strpos($larga, $corta) === 0) return true; // prefijo: "sp" -> "sporting"
-    similar_text($a, $b, $pct);
-    return $pct >= 50;
+    return false;
 }
 
 function mmSonPosibleDuplicado($nombreA, $nombreB) {
@@ -228,6 +249,7 @@ function mmInsertarRegistro($conexion, $turno, $r) {
 
     $horaPartido    = mmHoraValida($r['hora_partido'] ?? '') ? "'" . $conexion->real_escape_string($r['hora_partido']) . "'" : 'NULL';
     $casaApuestasSql = $casaApuestas === '' ? 'NULL' : "'$casaApuestas'";
+    $hoy = date('Y-m-d'); // fecha de captura en hora local (no CURDATE(), que usa la zona horaria del servidor MySQL)
 
     $momioLocal     = mmDecimalONull($r['momio_local']     ?? null);
     $momioEmpate    = mmDecimalONull($r['momio_empate']    ?? null);
@@ -246,7 +268,7 @@ function mmInsertarRegistro($conexion, $turno, $r) {
         INSERT INTO momios_registros
             (fecha, turno, fecha_partido, hora_partido, casa_apuestas, equipo_local, equipo_local_id, equipo_visitante, equipo_visitante_id, momio_local, momio_empate, momio_visitante, notas)
         VALUES
-            (CURDATE(), '$turnoEsc', '$fechaPartido', $horaPartido, $casaApuestasSql, '$equipoLocal', $equipoLocalIdSql, '$equipoVisitante', $equipoVisitanteIdSql, $momioLocalSql, $momioEmpateSql, $momioVisitanteSql, '$notas')
+            ('$hoy', '$turnoEsc', '$fechaPartido', $horaPartido, $casaApuestasSql, '$equipoLocal', $equipoLocalIdSql, '$equipoVisitante', $equipoVisitanteIdSql, $momioLocalSql, $momioEmpateSql, $momioVisitanteSql, '$notas')
     ");
 }
 
