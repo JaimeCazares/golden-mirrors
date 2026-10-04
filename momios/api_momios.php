@@ -393,6 +393,20 @@ if ($accion === 'fusionar_equipos') {
     exit;
 }
 
+// POST: migración de una sola vez — los registros guardados antes de fijar la
+// zona horaria a Culiacán (America/Mazatlan) quedaron con capturado_en/fecha en
+// hora de CDMX, una hora adelantada. Se retira del código después de ejecutarla.
+if ($accion === 'corregir_tz_cdmx_a_culiacan_2026_10_04') {
+    $ok = $conexion->query("
+        UPDATE momios_registros
+        SET fecha = DATE(DATE_SUB(capturado_en, INTERVAL 1 HOUR)),
+            capturado_en = DATE_SUB(capturado_en, INTERVAL 1 HOUR)
+        WHERE capturado_en IS NOT NULL
+    ");
+    echo json_encode(['status' => $ok ? 'ok' : 'error', 'afectados' => $conexion->affected_rows]);
+    exit;
+}
+
 // POST: eliminar un registro por id
 if ($accion === 'eliminar') {
     $id = (int)($input['id'] ?? 0);
