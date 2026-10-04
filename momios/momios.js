@@ -15,6 +15,17 @@ let mmRegistros   = [];
 let mmDiasFiltro  = 7; // 7, 30 u 0 (todo)
 let mmTema         = 'lluvia';
 let mmTemaMenuOpen = false;
+let mmEspejos      = {}; // clave "localId-visitanteId-fechaPartido" -> analisis de espejo
+let mmEspejosLista  = []; // mismos datos, en array ordenado (para el Top)
+
+const MM_COLOR_INFO = {
+    rojo:     { emoji: '🔴', label: 'Nunca espejo' },
+    naranja:  { emoji: '🟠', label: 'Espejo leve' },
+    amarillo: { emoji: '🟡', label: 'Espejo' },
+    verde:    { emoji: '🟢', label: 'Buen espejo' },
+    azul:     { emoji: '🔵', label: 'Espejo fuerte' },
+    dorado:   { emoji: '✨', label: 'Espejo dorado' },
+};
 
 function mmFmt(d) {
     return d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2, '0');
@@ -52,9 +63,66 @@ function mmActualizarSigno(inputEl) {
 
 async function initMomios() {
     mmInitTema();
-    await mmCargarRegistros();
+    await Promise.all([mmCargarRegistros(), mmCargarAnalisisEspejo()]);
     mmRenderAll();
     mmRevisarDuplicados();
+}
+
+// Colapsa/expande una sección genérica (equipos duplicados, detalle de un partido...).
+function mmToggleSeccion(bodyId, headEl) {
+    const body = document.getElementById(bodyId);
+    if (!body) return;
+    const colapsado = body.classList.toggle('mm-colapsado');
+    headEl?.classList.toggle('mm-colapsado', colapsado);
+}
+
+// ══════════════════════════════════════════════════════
+// ANÁLISIS DE "APUESTA ESPEJO" — para cada partido, qué tan buena fue la mejor
+// oportunidad de cubrir el favorito inicial con el momio contrario que apareció
+// después (misma casa u otra). Alimenta el Top y los indicadores de color.
+// ══════════════════════════════════════════════════════
+async function mmCargarAnalisisEspejo() {
+    mmEspejos = {};
+    mmEspejosLista = [];
+    try {
+        const res = await fetch(`momios/api_momios.php?accion=analisis_espejo&_=${Date.now()}`);
+        const json = await res.json();
+        if (!json.partidos) return;
+        mmEspejosLista = json.partidos;
+        json.partidos.forEach(p => {
+            const clave = `${p.equipo_local_id}-${p.equipo_visitante_id}-${p.fecha_partido}`;
+            mmEspejos[clave] = p;
+        });
+    } catch (e) {
+        console.error('Error cargando análisis de espejo', e);
+    }
+}
+
+function mmRenderTopEspejos() {
+    const sec  = document.getElementById('mm-top-espejo-section');
+    const cont = document.getElementById('mm-top-espejo-lista');
+    if (!sec || !cont) return;
+
+    const top = mmEspejosLista.filter(p => p.ganancia_garantizada_pct > 0).slice(0, 5);
+    if (!top.length) {
+        sec.style.display = 'none';
+        return;
+    }
+    sec.style.display = '';
+
+    cont.innerHTML = top.map(p => {
+        const info = MM_COLOR_INFO[p.color] || MM_COLOR_INFO.rojo;
+        const fecha = p.fecha_partido ? mmFormatearFechaLabel(p.fecha_partido) : '';
+        const hora  = p.hora_partido ? p.hora_partido.slice(0, 5) : '';
+        return `
+            <div class="mm-top-item mm-color-${p.color}">
+                <span class="mm-top-badge">${info.emoji} ${p.ganancia_garantizada_pct}%</span>
+                <div class="mm-top-info">
+                    <div class="mm-top-equipos">${mmEscapar(p.equipo_local)} vs ${mmEscapar(p.equipo_visitante)}</div>
+                    <div class="mm-top-fecha">⚽ ${fecha}${hora ? ' · ' + hora : ''}</div>
+                </div>
+            </div>`;
+    }).join('');
 }
 
 // ══════════════════════════════════════════════════════
@@ -98,6 +166,8 @@ async function mmFusionarEquipos(mantener, eliminar, btn) {
             body: JSON.stringify({ mantener, eliminar })
         });
         await mmRevisarDuplicados();
+        await Promise.all([mmCargarRegistros(), mmCargarAnalisisEspejo()]);
+        mmRenderAll();
     } catch (e) {
         console.error('Error fusionando equipos', e);
         if (btn) btn.disabled = false;
@@ -357,7 +427,7 @@ async function mmGuardarTodosExtraidos() {
             mmExtraerMostrarMsg(msg, 'ok');
             mmPartidosExtraidos = [];
             mmRenderExtraidosTabla();
-            await mmCargarRegistros();
+            await Promise.all([mmCargarRegistros(), mmCargarAnalisisEspejo()]);
             mmRenderAll();
             mmRevisarDuplicados();
         }
@@ -377,7 +447,7 @@ async function mmEliminarRegistro(id) {
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ id })
         });
-        await mmCargarRegistros();
+        await Promise.all([mmCargarRegistros(), mmCargarAnalisisEspejo()]);
         mmRenderAll();
     } catch (e) {
         console.error('Error eliminando momio', e);
@@ -386,6 +456,7 @@ async function mmEliminarRegistro(id) {
 
 function mmRenderAll() {
     mmRenderStats();
+    mmRenderTopEspejos();
     mmRenderLista();
 }
 
@@ -414,6 +485,40 @@ function mmFormatearFechaLabel(fechaStr) {
     return `${d} de ${MM_MESES[m - 1].toLowerCase()} ${y}`;
 }
 
+// Agrupa los registros (una fila por casa/captura) en partidos (misma pareja de
+// equipos + fecha de partido), para que la lista sea compacta: un bloque por
+// partido, con todas sus capturas colapsadas adentro en vez de una tarjeta larga
+// por cada fila cruda.
+function mmAgruparPorPartido(registros) {
+    const grupos = {};
+    const orden = [];
+    registros.forEach(r => {
+        const clave = (r.equipo_local_id && r.equipo_visitante_id)
+            ? `id-${r.equipo_local_id}-${r.equipo_visitante_id}-${r.fecha_partido}`
+            : `tx-${r.equipo_local}-${r.equipo_visitante}-${r.fecha_partido}`;
+        if (!grupos[clave]) {
+            grupos[clave] = {
+                clave,
+                equipo_local_id: r.equipo_local_id,
+                equipo_visitante_id: r.equipo_visitante_id,
+                equipo_local: r.equipo_local,
+                equipo_visitante: r.equipo_visitante,
+                fecha_partido: r.fecha_partido,
+                hora_partido: r.hora_partido,
+                capturas: [],
+            };
+            orden.push(clave);
+        }
+        grupos[clave].capturas.push(r);
+    });
+    // Próximos partidos primero; sin fecha de partido van al final.
+    return orden.map(k => grupos[k]).sort((a, b) => {
+        if (!a.fecha_partido) return 1;
+        if (!b.fecha_partido) return -1;
+        return (a.fecha_partido + (a.hora_partido || '')) < (b.fecha_partido + (b.hora_partido || '')) ? -1 : 1;
+    });
+}
+
 function mmRenderLista() {
     const cont = document.getElementById('mm-lista');
     if (!cont) return;
@@ -423,52 +528,48 @@ function mmRenderLista() {
         return;
     }
 
-    let html = '';
-    let fechaAnterior = null;
+    const partidos = mmAgruparPorPartido(mmRegistros);
 
-    mmRegistros.forEach(r => {
-        if (r.fecha !== fechaAnterior) {
-            html += `<div class="mm-fecha-grupo-label">${mmFormatearFechaLabel(r.fecha)}</div>`;
-            fechaAnterior = r.fecha;
-        }
+    cont.innerHTML = partidos.map((p, i) => {
+        const bodyId = `mm-partido-body-${i}`;
+        const claveEspejo = `${p.equipo_local_id}-${p.equipo_visitante_id}-${p.fecha_partido}`;
+        const espejo = mmEspejos[claveEspejo];
+        const info = espejo ? (MM_COLOR_INFO[espejo.color] || MM_COLOR_INFO.rojo) : null;
 
-        const turnoEmoji = r.turno === 'manana' ? '🌅' : '🌆';
-        const horaCaptura = mmFormatearHoraCaptura(r.capturado_en);
-        const turnoLabel = horaCaptura ? `${turnoEmoji} ${horaCaptura}` : `${turnoEmoji} ${r.turno === 'manana' ? '06:00' : '19:00'}`;
-        const turnoClase = r.turno === 'manana' ? '' : 'tarde';
+        const fecha = p.fecha_partido ? mmFormatearFechaLabel(p.fecha_partido) : '';
+        const hora  = p.hora_partido ? p.hora_partido.slice(0, 5) : '';
 
-        const m1 = mmFormatMomio(r.momio_local);
-        const mx = mmFormatMomio(r.momio_empate);
-        const m2 = mmFormatMomio(r.momio_visitante);
+        // capturas más recientes primero dentro del detalle
+        const capturasOrdenadas = [...p.capturas].sort((a, b) => (b.capturado_en || '').localeCompare(a.capturado_en || ''));
 
-        const partidoInfo = r.fecha_partido
-            ? `${mmFormatearFechaLabel(r.fecha_partido)}${r.hora_partido ? ' · ' + r.hora_partido.slice(0, 5) : ''}`
-            : '';
-
-        html += `
-            <div class="mm-card-partido">
-                <div class="mm-card-head">
-                    <span class="mm-turno-badge ${turnoClase}">${turnoLabel}</span>
-                    ${r.casa_apuestas ? `<span class="mm-casa-badge">${mmEscapar(r.casa_apuestas)}</span>` : ''}
+        const filasDetalle = capturasOrdenadas.map(r => {
+            const horaCaptura = mmFormatearHoraCaptura(r.capturado_en);
+            const m1 = mmFormatMomio(r.momio_local);
+            const mx = mmFormatMomio(r.momio_empate);
+            const m2 = mmFormatMomio(r.momio_visitante);
+            return `
+                <div class="mm-det-fila">
+                    <span class="mm-det-casa">${r.casa_apuestas ? mmEscapar(r.casa_apuestas) : '—'}</span>
+                    <span class="mm-det-hora">${horaCaptura || '—'}</span>
+                    <span class="mm-det-equipos">${mmEscapar(r.equipo_local)} vs ${mmEscapar(r.equipo_visitante)}</span>
+                    <span class="mm-det-momios">${m1} / ${mx} / ${m2}</span>
                     <button type="button" class="mm-card-del" onclick="mmEliminarRegistro(${r.id})" title="Eliminar">🗑️</button>
-                </div>
-                <div class="mm-equipos">
-                    <span class="mm-equipo local">${mmEscapar(r.equipo_local)}</span>
-                    <span class="mm-vs">vs</span>
-                    <span class="mm-equipo visitante">${mmEscapar(r.equipo_visitante)}</span>
-                </div>
-                ${partidoInfo ? `<p class="mm-card-partido-fecha">⚽ Juegan: ${partidoInfo}</p>` : ''}
-                <div class="mm-momios-row">
-                    <div class="mm-momio-chip"><div class="mm-momio-l">1</div><div class="mm-momio-v">${m1}</div></div>
-                    <div class="mm-momio-chip"><div class="mm-momio-l">X</div><div class="mm-momio-v">${mx}</div></div>
-                    <div class="mm-momio-chip"><div class="mm-momio-l">2</div><div class="mm-momio-v">${m2}</div></div>
-                </div>
-                ${r.notas ? `<p class="mm-card-notas">${mmEscapar(r.notas)}</p>` : ''}
-            </div>
-        `;
-    });
+                </div>`;
+        }).join('');
 
-    cont.innerHTML = html;
+        return `
+            <div class="mm-partido-grupo">
+                <div class="mm-partido-head" onclick="mmToggleSeccion('${bodyId}', this)">
+                    ${espejo ? `<span class="mm-espejo-badge mm-color-${espejo.color}" title="${info.label}">${info.emoji} ${espejo.ganancia_garantizada_pct}%</span>` : '<span class="mm-espejo-badge mm-color-gris">—</span>'}
+                    <div class="mm-partido-info">
+                        <div class="mm-partido-equipos">${mmEscapar(p.equipo_local)} <span class="mm-vs">vs</span> ${mmEscapar(p.equipo_visitante)}</div>
+                        <div class="mm-partido-fecha">⚽ ${fecha}${hora ? ' · ' + hora : ''} · ${p.capturas.length} captura(s)</div>
+                    </div>
+                    <span class="mm-toggle-flecha">▾</span>
+                </div>
+                <div id="${bodyId}" class="mm-partido-detalle mm-colapsado">${filasDetalle}</div>
+            </div>`;
+    }).join('');
 }
 
 function mmEscapar(str) {

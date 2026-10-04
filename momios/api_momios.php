@@ -350,6 +350,8 @@ if ($accion === 'analisis_espejo') {
         $clave = $row['equipo_local_id'] . '-' . $row['equipo_visitante_id'] . '-' . $row['fecha_partido'];
         if (!isset($partidos[$clave])) {
             $partidos[$clave] = [
+                'equipo_local_id' => (int)$row['equipo_local_id'],
+                'equipo_visitante_id' => (int)$row['equipo_visitante_id'],
                 'equipo_local' => $row['equipo_local'],
                 'equipo_visitante' => $row['equipo_visitante'],
                 'fecha_partido' => $row['fecha_partido'],
@@ -413,6 +415,8 @@ if ($accion === 'analisis_espejo') {
         if ($mejorPct === null) continue;
 
         $out[] = [
+            'equipo_local_id'          => $p['equipo_local_id'],
+            'equipo_visitante_id'      => $p['equipo_visitante_id'],
             'equipo_local'             => $p['equipo_local'],
             'equipo_visitante'         => $p['equipo_visitante'],
             'fecha_partido'            => $p['fecha_partido'],
