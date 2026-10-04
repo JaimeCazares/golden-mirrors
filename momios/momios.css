@@ -334,83 +334,6 @@
     padding: 14px;
     margin-bottom: 14px;
 }
-.mm-form-row {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 10px;
-    margin-bottom: 10px;
-}
-.mm-form-row-3 { grid-template-columns: repeat(3, 1fr); }
-
-.mm-field { display: flex; flex-direction: column; gap: 4px; margin-bottom: 10px; }
-.mm-form-row .mm-field { margin-bottom: 0; }
-.mm-field label {
-    font-size: 0.66rem;
-    color: var(--mm-text-dim);
-    text-transform: uppercase;
-    letter-spacing: 0.03em;
-    font-weight: 700;
-}
-.mm-field input,
-.mm-field select {
-    background: rgba(255,255,255,0.04);
-    border: 1px solid var(--mm-border);
-    border-radius: 10px;
-    padding: 9px 10px;
-    font-size: 0.85rem;
-    color: #fff;
-    font-family: inherit;
-    outline: none;
-    transition: border-color 0.15s;
-}
-.mm-field input::placeholder { color: #55555c; }
-.mm-field input:focus,
-.mm-field select:focus { border-color: var(--mm-accent); }
-.mm-field select option { background: #16161a; color: #fff; }
-
-/* Los <input type="number"> nunca muestran "+" para positivos (lo recorta el
-   navegador); se superpone visualmente con este wrapper + atributo data-sign. */
-.mm-momio-signo-wrap { position: relative; display: block; }
-.mm-momio-signo-wrap input { width: 100%; box-sizing: border-box; }
-.mm-momio-signo-wrap[data-sign="+"]::before {
-    content: "+";
-    position: absolute;
-    left: 11px;
-    top: 50%;
-    transform: translateY(-50%);
-    color: #fff;
-    font-size: 0.85rem;
-    font-weight: 700;
-    pointer-events: none;
-    z-index: 1;
-}
-.mm-momio-signo-wrap[data-sign="+"] input { padding-left: 19px; }
-
-.mm-btn-guardar {
-    width: 100%;
-    margin-top: 4px;
-    padding: 11px;
-    border: none;
-    border-radius: 12px;
-    background: linear-gradient(135deg, var(--mm-accent), #16a34a);
-    color: #06210f;
-    font-weight: 800;
-    font-size: 0.88rem;
-    cursor: pointer;
-    transition: transform 0.12s, opacity 0.12s;
-}
-.mm-btn-guardar:active { transform: scale(0.98); }
-.mm-btn-guardar:disabled { opacity: 0.6; cursor: default; }
-
-.mm-form-msg {
-    margin: 8px 0 0;
-    font-size: 0.72rem;
-    font-weight: 700;
-    text-align: center;
-    min-height: 1em;
-}
-.mm-form-msg.ok { color: var(--mm-accent); }
-.mm-form-msg.error { color: #ef4444; }
 
 /* ─ Posibles equipos duplicados ─ */
 .mm-dup-item {
@@ -594,6 +517,4 @@
     .mm-stats { gap: 6px; }
     .mm-stat { padding: 8px 10px; }
     .mm-stat-n { font-size: 1.05rem; }
-    .mm-form-row { grid-template-columns: 1fr; }
-    .mm-form-row-3 { grid-template-columns: 1fr 1fr 1fr; }
 }

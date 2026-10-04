@@ -51,11 +51,7 @@ function mmActualizarSigno(inputEl) {
 }
 
 async function initMomios() {
-    const inputFecha = document.getElementById('mm-input-fecha');
-    if (inputFecha) inputFecha.value = mmHoyStr();
-
     mmInitTema();
-    mmAutoSeleccionarTurno();
     await mmCargarRegistros();
     mmRenderAll();
     mmRevisarDuplicados();
@@ -168,12 +164,10 @@ function mmAplicarTema(key) {
     if (btnEmoji && theme) btnEmoji.textContent = theme.emoji;
 }
 
-// Sugiere el turno según la hora actual: antes de las 13:00 -> mañana, si no -> tarde
-function mmAutoSeleccionarTurno() {
-    const sel = document.getElementById('mm-input-turno');
-    if (!sel) return;
-    const hora = new Date().getHours();
-    sel.value = hora < 13 ? 'manana' : 'tarde';
+// Turno según la hora actual: antes de las 13:00 -> mañana, si no -> tarde
+// (ya no se elige a mano; capturado_en guarda la hora exacta real de todos modos).
+function mmTurnoActual() {
+    return new Date().getHours() < 13 ? 'manana' : 'tarde';
 }
 
 async function mmCargarRegistros() {
@@ -202,69 +196,6 @@ async function mmFiltrarDias(dias, btn) {
     btn?.classList.add('activo');
     await mmCargarRegistros();
     mmRenderAll();
-}
-
-function mmMostrarMsg(texto, tipo) {
-    const msg = document.getElementById('mm-form-msg');
-    if (!msg) return;
-    msg.textContent = texto;
-    msg.className = 'mm-form-msg ' + (tipo || '');
-    if (texto) setTimeout(() => { if (msg.textContent === texto) { msg.textContent = ''; msg.className = 'mm-form-msg'; } }, 3000);
-}
-
-async function mmGuardarRegistro() {
-    const btn = document.getElementById('mm-btn-guardar');
-
-    const fechaPartido    = document.getElementById('mm-input-fecha')?.value || '';
-    const turno           = document.getElementById('mm-input-turno')?.value || '';
-    const equipoLocal     = document.getElementById('mm-input-local')?.value.trim() || '';
-    const equipoVisitante = document.getElementById('mm-input-visitante')?.value.trim() || '';
-    const casaApuestas    = document.getElementById('mm-input-casa')?.value.trim() || '';
-    const momioLocal      = document.getElementById('mm-input-m1')?.value || '';
-    const momioEmpate     = document.getElementById('mm-input-mx')?.value || '';
-    const momioVisitante  = document.getElementById('mm-input-m2')?.value || '';
-    const notas           = document.getElementById('mm-input-notas')?.value.trim() || '';
-
-    if (!fechaPartido || !equipoLocal || !equipoVisitante) {
-        mmMostrarMsg('Completa fecha del partido, equipo local y visitante.', 'error');
-        return;
-    }
-
-    if (btn) btn.disabled = true;
-
-    try {
-        const res = await fetch('momios/api_momios.php?accion=guardar', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-                turno,
-                fecha_partido: fechaPartido,
-                equipo_local: equipoLocal,
-                equipo_visitante: equipoVisitante,
-                casa_apuestas: casaApuestas,
-                momio_local: momioLocal,
-                momio_empate: momioEmpate,
-                momio_visitante: momioVisitante,
-                notas
-            })
-        });
-        const json = await res.json();
-
-        if (json.error) {
-            mmMostrarMsg(json.error, 'error');
-        } else {
-            mmMostrarMsg('Momio guardado ✓', 'ok');
-            mmLimpiarFormulario();
-            await mmCargarRegistros();
-            mmRenderAll();
-            mmRevisarDuplicados();
-        }
-    } catch (e) {
-        console.error('Error guardando momio', e);
-        mmMostrarMsg('Error de conexión al guardar.', 'error');
-    } finally {
-        if (btn) btn.disabled = false;
-    }
 }
 
 // ══════════════════════════════════════════════════════
@@ -405,7 +336,7 @@ function mmQuitarTodosExtraidos() {
 
 async function mmGuardarTodosExtraidos() {
     if (!mmPartidosExtraidos.length) return;
-    const turno = document.getElementById('mm-input-turno')?.value || 'manana';
+    const turno = mmTurnoActual();
 
     document.querySelectorAll('.mm-btn-guardar-lote').forEach(b => b.disabled = true);
     mmExtraerMostrarMsg('Guardando...', '');
@@ -436,14 +367,6 @@ async function mmGuardarTodosExtraidos() {
     } finally {
         document.querySelectorAll('.mm-btn-guardar-lote').forEach(b => b.disabled = false);
     }
-}
-
-function mmLimpiarFormulario() {
-    ['mm-input-local', 'mm-input-visitante', 'mm-input-casa', 'mm-input-m1', 'mm-input-mx', 'mm-input-m2', 'mm-input-notas'].forEach(id => {
-        const el = document.getElementById(id);
-        if (el) el.value = '';
-    });
-    mmAutoSeleccionarTurno();
 }
 
 async function mmEliminarRegistro(id) {
