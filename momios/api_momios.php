@@ -309,6 +309,128 @@ if ($accion === 'listar') {
     exit;
 }
 
+// Momio americano -> decimal (retorno total por cada 1 unidad apostada).
+function mmDecimalDeAmericano($momio) {
+    $m = (float)$momio;
+    if ($m > 0) return $m / 100 + 1;
+    if ($m < 0) return 100 / abs($m) + 1;
+    return null;
+}
+
+// Color según % de ganancia garantizada al cubrir (ver 'analisis_espejo' abajo).
+function mmColorEspejo($pct) {
+    if ($pct <= 0)  return 'rojo';
+    if ($pct <= 3)  return 'naranja';
+    if ($pct <= 7)  return 'amarillo';
+    if ($pct <= 15) return 'verde';
+    if ($pct <= 25) return 'azul';
+    return 'dorado';
+}
+
+// GET: para cada partido (mismo equipo local+visitante+fecha, sin importar casa o
+// captura — gracias al catálogo de equipos que ya unifica nombres entre casas),
+// busca la mejor "apuesta espejo": cubrir el resultado favorito de la PRIMERA
+// captura con el momio contrario que, en alguna captura POSTERIOR (misma casa u
+// otra), da una ganancia garantizada sin importar cuál de los dos gane. No cubre
+// el tercer resultado (ese riesgo queda descubierto) — es la mecánica simple que
+// describe "aposté al favorito y se volvió espejo", no arbitraje de los 3 resultados.
+if ($accion === 'analisis_espejo') {
+    $res = $conexion->query("
+        SELECT equipo_local_id, equipo_visitante_id, equipo_local, equipo_visitante,
+               fecha_partido, hora_partido, casa_apuestas, capturado_en,
+               momio_local, momio_empate, momio_visitante
+        FROM momios_registros
+        WHERE equipo_local_id IS NOT NULL AND equipo_visitante_id IS NOT NULL
+          AND fecha_partido IS NOT NULL AND capturado_en IS NOT NULL
+        ORDER BY capturado_en ASC
+    ");
+
+    $partidos = [];
+    while ($res && ($row = $res->fetch_assoc())) {
+        $clave = $row['equipo_local_id'] . '-' . $row['equipo_visitante_id'] . '-' . $row['fecha_partido'];
+        if (!isset($partidos[$clave])) {
+            $partidos[$clave] = [
+                'equipo_local' => $row['equipo_local'],
+                'equipo_visitante' => $row['equipo_visitante'],
+                'fecha_partido' => $row['fecha_partido'],
+                'hora_partido' => $row['hora_partido'],
+                'capturas' => [],
+            ];
+        }
+        $partidos[$clave]['capturas'][] = [
+            'casa_apuestas' => $row['casa_apuestas'],
+            'capturado_en'  => $row['capturado_en'],
+            'local'     => $row['momio_local']     !== null ? (float)$row['momio_local']     : null,
+            'empate'    => $row['momio_empate']    !== null ? (float)$row['momio_empate']    : null,
+            'visitante' => $row['momio_visitante'] !== null ? (float)$row['momio_visitante']  : null,
+        ];
+    }
+
+    $stake = 100; // monto hipotético fijo, solo para normalizar el % de ganancia
+    $out = [];
+    foreach ($partidos as $p) {
+        $capturas = $p['capturas']; // ya vienen ordenadas por capturado_en ASC
+        if (count($capturas) < 2) continue; // necesita al menos 2 momentos para poder "cambiar"
+
+        $primera = $capturas[0];
+        $candidatos = array_filter(
+            ['local' => $primera['local'], 'empate' => $primera['empate'], 'visitante' => $primera['visitante']],
+            fn($v) => $v !== null
+        );
+        if (count($candidatos) < 2) continue;
+        asort($candidatos); // momio más bajo (más negativo = más favorito) primero
+        $favorito = array_key_first($candidatos);
+        $decimalFavorito = mmDecimalDeAmericano($candidatos[$favorito]);
+
+        $mejorPct = null;
+        $mejorDetalle = null;
+        for ($i = 1; $i < count($capturas); $i++) {
+            foreach (['local', 'empate', 'visitante'] as $resultado) {
+                if ($resultado === $favorito) continue;
+                $momioCobertura = $capturas[$i][$resultado];
+                if ($momioCobertura === null) continue;
+                $decimalCobertura = mmDecimalDeAmericano($momioCobertura);
+                if (!$decimalCobertura) continue;
+
+                $hedgeStake = ($stake * $decimalFavorito) / $decimalCobertura;
+                $retornoGarantizado = $stake * $decimalFavorito; // igual gane el favorito o la cobertura
+                $pct = (($retornoGarantizado - ($stake + $hedgeStake)) / $stake) * 100;
+
+                if ($mejorPct === null || $pct > $mejorPct) {
+                    $mejorPct = $pct;
+                    $mejorDetalle = [
+                        'resultado_cobertura'    => $resultado,
+                        'momio_cobertura'        => $momioCobertura,
+                        'casa_cobertura'         => $capturas[$i]['casa_apuestas'],
+                        'capturado_en_cobertura' => $capturas[$i]['capturado_en'],
+                    ];
+                }
+            }
+        }
+        if ($mejorPct === null) continue;
+
+        $out[] = [
+            'equipo_local'             => $p['equipo_local'],
+            'equipo_visitante'         => $p['equipo_visitante'],
+            'fecha_partido'            => $p['fecha_partido'],
+            'hora_partido'             => $p['hora_partido'],
+            'resultado_favorito'       => $favorito,
+            'momio_favorito'           => $candidatos[$favorito],
+            'casa_favorito'            => $primera['casa_apuestas'],
+            'capturado_en_favorito'    => $primera['capturado_en'],
+            'ganancia_garantizada_pct' => round($mejorPct, 1),
+            'color'                    => mmColorEspejo($mejorPct),
+            'mejor_cobertura'          => $mejorDetalle,
+            'total_capturas'           => count($capturas),
+        ];
+    }
+
+    usort($out, fn($a, $b) => $b['ganancia_garantizada_pct'] <=> $a['ganancia_garantizada_pct']);
+
+    echo json_encode(['status' => 'ok', 'partidos' => $out]);
+    exit;
+}
+
 // POST: guardar un nuevo registro de momios (entrada manual)
 if ($accion === 'guardar') {
     $turno = $input['turno'] ?? '';
