@@ -42,11 +42,15 @@ function mmFormatPct(pct) {
 
 // 'capturado_en' llega como "YYYY-MM-DD HH:MM:SS" ya en hora local (Culiacán, fijada
 // en el servidor); se extrae el texto directo en vez de pasar por Date para que el
-// navegador no lo reinterprete con su propia zona horaria.
+// navegador no lo reinterprete con su propia zona horaria. Incluye la fecha (no solo
+// la hora) para poder distinguir capturas de distintos días en el detalle de un partido.
 function mmFormatearHoraCaptura(capturadoEn) {
     if (!capturadoEn) return '';
-    const partes = capturadoEn.split(' ');
-    return partes.length >= 2 ? partes[1].slice(0, 5) : '';
+    const [fecha, hora] = capturadoEn.split(' ');
+    if (!fecha) return '';
+    const [, m, d] = fecha.split('-');
+    const horaCorta = hora ? hora.slice(0, 5) : '';
+    return horaCorta ? `${d}/${m} ${horaCorta}` : `${d}/${m}`;
 }
 
 // Formato americano: entero con signo explícito (+135, -400). Null -> '—'.

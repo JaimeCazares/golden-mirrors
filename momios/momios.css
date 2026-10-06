@@ -508,7 +508,7 @@
 }
 .mm-det-fila:last-child { border-bottom: none; }
 .mm-det-casa { flex-shrink: 0; min-width: 55px; color: var(--mm-text-mid); font-weight: 700; }
-.mm-det-hora { flex-shrink: 0; min-width: 38px; color: var(--mm-text-dim); }
+.mm-det-hora { flex-shrink: 0; min-width: 72px; color: var(--mm-text-dim); }
 .mm-det-equipos { flex: 1; min-width: 0; color: var(--mm-text-mid); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 .mm-det-momios { flex-shrink: 0; color: var(--mm-accent); font-weight: 700; white-space: nowrap; }
 .mm-card-del {
