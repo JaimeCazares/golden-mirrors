@@ -53,7 +53,7 @@ de fútbol en formato 1X2 (local / empate / visitante), mostrados en formato
 americano (con signo + o -, ej. +135, -400).
 
 Primero identifica:
-- casa_apuestas: nombre de la casa de apuestas (logo/marca visible en la pantalla, ej. "Codere", "Playdoit", "Draftea"). Si no es reconocible, usa null.
+- casa_apuestas: nombre de la casa de apuestas (logo/marca visible en la pantalla, ej. "Codere", "Playdoit", "BetVIP", "Draftea"). Si no es reconocible, usa null.
 
 Luego, para cada partido visible extrae:
 - equipo_local: nombre del equipo local
