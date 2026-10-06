@@ -228,6 +228,19 @@
 }
 .mm-ex-del:hover { color: #ef4444; }
 
+/* ─ Verificación automática (IA re-revisa cada partido contra su imagen) ─ */
+.mm-ex-row-pendiente { opacity: 0.6; }
+.mm-ex-row-ok { border-color: rgba(34,197,94,0.35); }
+.mm-ex-row-corregido { border-color: rgba(245,158,11,0.55); background: rgba(245,158,11,0.08); }
+.mm-ex-row-sinverif { border-color: rgba(239,68,68,0.4); }
+.mm-ex-verif-badge { font-size: 0.8rem; flex-shrink: 0; }
+.mm-ex-verif-nota {
+    flex-basis: 100%;
+    font-size: 0.68rem;
+    color: #fbbf24;
+    padding-top: 2px;
+}
+
 /* ─ Header ─ */
 .mm-header { display: flex; justify-content: space-between; align-items: flex-start; gap: 8px; margin-bottom: 14px; }
 .mm-title { margin: 0; font-size: 1.25rem; font-weight: 800; color: #fff; }

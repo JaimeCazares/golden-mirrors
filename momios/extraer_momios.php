@@ -232,6 +232,7 @@ foreach ($handles as $i => $h) {
         $p['fecha_partido'] = mmResolverFechaPartido($p['dia_partido'] ?? null, $p['mes_partido'] ?? null);
         $p['hora_partido']  = mmNormalizarHora($p['hora_partido'] ?? null);
         unset($p['dia_partido'], $p['mes_partido']);
+        $p['_img'] = $i; // índice de la imagen de origen (en el mismo orden en que se subieron), para poder re-verificar cada partido contra su imagen después
         $partidosCombinados[] = $p;
     }
 }

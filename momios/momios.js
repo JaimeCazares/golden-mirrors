@@ -282,6 +282,8 @@ async function mmFiltrarDias(dias, btn) {
 // en el servidor y se arma una tabla editable para confirmar y guardar todo junto.
 // ══════════════════════════════════════════════════════
 let mmPartidosExtraidos = [];
+let mmArchivosExtraidos = []; // Files de la última carga, en el mismo orden que '_img' de cada partido (para re-verificarlos contra su imagen de origen)
+let mmVerificando = false;
 
 function mmExtraerMostrarMsg(texto, tipo) {
     const msg = document.getElementById('mm-extraer-msg');
@@ -319,11 +321,12 @@ async function mmImagenesSeleccionadas(input) {
             mmExtraerMostrarMsg('No se detectaron partidos en las imágenes.', 'error');
         } else {
             mmPartidosExtraidos = json.partidos;
-            const casas = [...new Set(json.partidos.map(p => p.casa_apuestas).filter(Boolean))];
-            let msg = `${json.partidos.length} partido(s) detectado(s)${casas.length ? ' — ' + casas.join(', ') : ''}. Revisa y guarda.`;
-            if (json.errores && json.errores.length) msg += ` (${json.errores.length} imagen(es) con error)`;
-            mmExtraerMostrarMsg(msg, 'ok');
+            mmArchivosExtraidos = files;
+            if (json.errores && json.errores.length) {
+                mmExtraerMostrarMsg(`${json.errores.length} imagen(es) con error — verificando el resto...`, 'error');
+            }
             mmRenderExtraidosTabla();
+            await mmVerificarExtraidos();
         }
     } catch (e) {
         console.error('Error extrayendo momios de imágenes', e);
@@ -332,6 +335,75 @@ async function mmImagenesSeleccionadas(input) {
         if (btn) btn.disabled = false;
         input.value = '';
     }
+}
+
+// Segunda pasada automática: manda cada imagen de vuelta junto con lo que se
+// extrajo de ELLA para que la IA confirme campo por campo contra la imagen real,
+// en vez de que el usuario tenga que comparar a ojo la tabla contra la captura.
+async function mmVerificarExtraidos() {
+    const porImagen = {};
+    mmPartidosExtraidos.forEach((p, i) => {
+        if (p._img === undefined || p._img === null || !mmArchivosExtraidos[p._img]) return;
+        (porImagen[p._img] = porImagen[p._img] || []).push(i);
+    });
+
+    const idxs = Object.keys(porImagen);
+    if (!idxs.length) return;
+
+    mmVerificando = true;
+    mmExtraerMostrarMsg(`Verificando ${mmPartidosExtraidos.length} partido(s) contra sus imágenes originales...`, '');
+    mmRenderExtraidosTabla();
+
+    await Promise.all(idxs.map(async (imgIdx) => {
+        const indices = porImagen[imgIdx];
+        try {
+            const formData = new FormData();
+            formData.append('imagen', mmArchivosExtraidos[imgIdx]);
+            formData.append('partidos', JSON.stringify(indices.map(i => mmPartidosExtraidos[i])));
+
+            const res = await fetch('momios/validar_momios.php', { method: 'POST', body: formData });
+            const json = await res.json();
+
+            if (json.error || !Array.isArray(json.resultados)) {
+                indices.forEach(i => { if (mmPartidosExtraidos[i]) mmPartidosExtraidos[i]._verif = 'error'; });
+                return;
+            }
+
+            indices.forEach((i, k) => {
+                const p = mmPartidosExtraidos[i];
+                const r = json.resultados[k];
+                if (!p || !r) return;
+                if (r.coincide) {
+                    p._verif = 'ok';
+                    return;
+                }
+                const cambios = [];
+                const campos = ['equipo_local', 'equipo_visitante', 'hora_partido', 'momio_local', 'momio_empate', 'momio_visitante'];
+                campos.forEach(campo => {
+                    const corregido = r.correcciones ? r.correcciones[campo] : null;
+                    if (corregido === null || corregido === undefined) return;
+                    if (String(corregido) === String(p[campo] ?? '')) return;
+                    cambios.push(`${campo}: ${p[campo] ?? '—'} → ${corregido}`);
+                    p[campo] = corregido;
+                });
+                p._verif = cambios.length ? 'corregido' : 'ok';
+                p._verifNota = cambios.join(' · ');
+            });
+        } catch (e) {
+            console.error('Error verificando imagen', imgIdx, e);
+            indices.forEach(i => { if (mmPartidosExtraidos[i]) mmPartidosExtraidos[i]._verif = 'error'; });
+        }
+    }));
+
+    mmVerificando = false;
+    const total = mmPartidosExtraidos.length;
+    const corregidos = mmPartidosExtraidos.filter(p => p._verif === 'corregido').length;
+    const sinVerificar = mmPartidosExtraidos.filter(p => p._verif === 'error').length;
+    let msg = `${total} partido(s) verificado(s)`;
+    if (corregidos) msg += ` — ${corregidos} corregido(s) automáticamente`;
+    if (sinVerificar) msg += ` — ${sinVerificar} no se pudieron verificar, revísalos a mano`;
+    mmExtraerMostrarMsg(msg + '. Revisa y guarda.', corregidos || sinVerificar ? 'error' : 'ok');
+    mmRenderExtraidosTabla();
 }
 
 function mmRenderExtraidosTabla() {
@@ -345,10 +417,10 @@ function mmRenderExtraidosTabla() {
 
     const barra = `
         <div class="mm-ex-barra">
-            <span>${mmPartidosExtraidos.length} partido(s) por confirmar</span>
+            <span>${mmPartidosExtraidos.length} partido(s) por confirmar${mmVerificando ? ' — 🔍 verificando con IA...' : ''}</span>
             <div style="display:flex; gap:6px;">
-                <button type="button" class="mm-btn-quitar-todos" onclick="mmQuitarTodosExtraidos()">Vaciar</button>
-                <button type="button" class="mm-btn-guardar-lote" id="mm-btn-guardar-lote" onclick="mmGuardarTodosExtraidos()">💾 Guardar todos (${mmPartidosExtraidos.length})</button>
+                <button type="button" class="mm-btn-quitar-todos" onclick="mmQuitarTodosExtraidos()" ${mmVerificando ? 'disabled' : ''}>Vaciar</button>
+                <button type="button" class="mm-btn-guardar-lote" id="mm-btn-guardar-lote" onclick="mmGuardarTodosExtraidos()" ${mmVerificando ? 'disabled' : ''}>💾 Guardar todos (${mmPartidosExtraidos.length})</button>
             </div>
         </div>`;
 
@@ -369,11 +441,26 @@ function mmRenderExtraidosTabla() {
     cont.innerHTML = barra + filas + barra;
 }
 
+const MM_VERIF_INFO = {
+    ok:        { emoji: '✅', clase: 'mm-ex-row-ok',        title: 'Verificado contra la imagen original' },
+    corregido: { emoji: '⚠️', clase: 'mm-ex-row-corregido', title: 'La IA corrigió uno o más campos tras comparar con la imagen' },
+    error:     { emoji: '❔', clase: 'mm-ex-row-sinverif',   title: 'No se pudo verificar contra la imagen, revisa a mano' },
+};
+
 function mmRenderFilaExtraido(i) {
     const p = mmPartidosExtraidos[i];
     const val = v => (v === null || v === undefined) ? '' : v;
+    const verif = MM_VERIF_INFO[p._verif];
+    const claseFila = verif ? verif.clase : (mmVerificando ? 'mm-ex-row-pendiente' : '');
+    const badge = mmVerificando && !verif
+        ? '<span class="mm-ex-verif-badge" title="Verificando...">⏳</span>'
+        : (verif ? `<span class="mm-ex-verif-badge" title="${mmEscapar(verif.title)}">${verif.emoji}</span>` : '');
+    const nota = (p._verif === 'corregido' && p._verifNota)
+        ? `<div class="mm-ex-verif-nota">⚠️ Corregido por IA: ${mmEscapar(p._verifNota)}</div>`
+        : '';
     return `
-        <div class="mm-ex-row" data-idx="${i}">
+        <div class="mm-ex-row ${claseFila}" data-idx="${i}">
+            ${badge}
             <input type="date" class="mm-ex-fecha" value="${val(p.fecha_partido)}" oninput="mmActualizarExtraido(${i}, 'fecha_partido', this.value)" title="Fecha del partido">
             <input type="time" class="mm-ex-hora" value="${val(p.hora_partido)}" oninput="mmActualizarExtraido(${i}, 'hora_partido', this.value)" title="Hora del partido">
             <input type="text" class="mm-ex-equipo" value="${mmEscapar(p.equipo_local)}" oninput="mmActualizarExtraido(${i}, 'equipo_local', this.value)" placeholder="Local">
@@ -389,6 +476,7 @@ function mmRenderFilaExtraido(i) {
                 <input type="number" step="1" class="mm-ex-momio" value="${val(p.momio_visitante)}" oninput="mmActualizarMomioExtraido(this, ${i}, 'momio_visitante')" title="Momio 2 (Visitante)">
             </span>
             <button type="button" class="mm-ex-del" onclick="mmQuitarExtraido(${i})" title="Quitar">✕</button>
+            ${nota}
         </div>`;
 }
 
@@ -398,7 +486,12 @@ function mmActualizarMomioExtraido(inputEl, i, campo) {
 }
 
 function mmActualizarExtraido(i, campo, valor) {
-    if (mmPartidosExtraidos[i]) mmPartidosExtraidos[i][campo] = valor;
+    const p = mmPartidosExtraidos[i];
+    if (!p) return;
+    p[campo] = valor;
+    // Edición manual tras la verificación automática: ya no refleja lo que la IA confirmó.
+    delete p._verif;
+    delete p._verifNota;
 }
 
 function mmQuitarExtraido(i) {
