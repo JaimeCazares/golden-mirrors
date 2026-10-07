@@ -246,6 +246,48 @@
 .mm-title { margin: 0; font-size: 1.25rem; font-weight: 800; color: #fff; }
 .mm-sub { margin: 2px 0 0; font-size: 0.78rem; color: var(--mm-text-dim); }
 
+.mm-header-right { display: flex; align-items: center; gap: 8px; flex-shrink: 0; }
+.mm-btn-manual-toggle {
+    width: 40px; height: 40px;
+    border-radius: 50%;
+    border: 1.5px solid rgba(255,255,255,0.25);
+    background: rgba(255,255,255,0.08);
+    -webkit-backdrop-filter: blur(6px);
+    backdrop-filter: blur(6px);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 1.05rem;
+    cursor: pointer;
+    transition: transform 0.2s, border-color 0.2s;
+}
+.mm-btn-manual-toggle:active { transform: scale(0.92); }
+.mm-btn-manual-toggle.activo { border-color: var(--mm-accent); background: rgba(34,197,94,0.18); }
+
+/* ─ Registro manual (desplegable, oculto por defecto) ─ */
+.mm-form-manual {
+    background: rgba(255,255,255,0.03);
+    border: 1px solid var(--mm-border);
+    border-radius: 14px;
+    padding: 10px;
+    margin-bottom: 14px;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+.mm-form-manual-row { display: flex; align-items: center; gap: 6px; flex-wrap: wrap; }
+.mm-manual-select, .mm-manual-input {
+    background: rgba(255,255,255,0.05);
+    border: 1px solid var(--mm-border);
+    border-radius: 7px;
+    color: #fff;
+    font-family: inherit;
+    font-size: 0.74rem;
+    padding: 7px 8px;
+    outline: none;
+}
+.mm-manual-select:focus, .mm-manual-input:focus { border-color: var(--mm-accent); }
+.mm-manual-select { flex: 1 1 220px; min-width: 160px; }
+.mm-manual-input { flex: 1 1 140px; min-width: 110px; }
+
 /* ─ Selector de diseño/paisaje ─ */
 .mm-theme-wrap { position: relative; flex-shrink: 0; }
 .mm-theme-btn {

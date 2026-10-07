@@ -252,6 +252,104 @@ function mmTurnoActual() {
     return new Date().getHours() < 13 ? 'manana' : 'tarde';
 }
 
+// ══════════════════════════════════════════════════════
+// REGISTRO MANUAL — para cuando no hay captura de pantalla a mano: un momio
+// suelto, de un partido ya conocido (se elige de una lista, nunca se escribe el
+// nombre del equipo a mano, para no crear variantes nuevas en el catálogo).
+// ══════════════════════════════════════════════════════
+let mmPartidosConocidos = [];
+
+function mmToggleFormManual() {
+    const panel = document.getElementById('mm-form-manual');
+    const btn = document.getElementById('mm-btn-manual-toggle');
+    if (!panel) return;
+    const abierto = panel.style.display !== 'none';
+    if (abierto) {
+        panel.style.display = 'none';
+        btn?.classList.remove('activo');
+    } else {
+        mmPoblarFormManual();
+        panel.style.display = 'flex';
+        btn?.classList.add('activo');
+    }
+}
+
+function mmPoblarFormManual() {
+    mmPartidosConocidos = mmAgruparPorPartido(mmRegistros);
+
+    const selectPartido = document.getElementById('mm-manual-partido');
+    if (selectPartido) {
+        const previo = selectPartido.value;
+        selectPartido.innerHTML = mmPartidosConocidos.map((p, i) => {
+            const fecha = p.fecha_partido ? mmFormatearFechaLabel(p.fecha_partido) : 'sin fecha';
+            return `<option value="${i}">${mmEscapar(p.equipo_local)} vs ${mmEscapar(p.equipo_visitante)} — ${fecha}</option>`;
+        }).join('');
+        if (previo && Number(previo) < mmPartidosConocidos.length) selectPartido.value = previo;
+    }
+
+    const casas = [...new Set(mmRegistros.map(r => r.casa_apuestas).filter(Boolean))].sort();
+    const datalist = document.getElementById('mm-casas-datalist');
+    if (datalist) datalist.innerHTML = casas.map(c => `<option value="${mmEscapar(c)}"></option>`).join('');
+}
+
+async function mmGuardarManual() {
+    const idx = Number(document.getElementById('mm-manual-partido')?.value);
+    const p = mmPartidosConocidos[idx];
+    const msg = document.getElementById('mm-manual-msg');
+    const setMsg = (texto, tipo) => { if (msg) { msg.textContent = texto; msg.className = 'mm-extraer-msg ' + (tipo || ''); } };
+
+    if (!p) { setMsg('Elige un partido.', 'error'); return; }
+
+    const casa = document.getElementById('mm-manual-casa')?.value.trim();
+    const local     = document.getElementById('mm-manual-local')?.value;
+    const empate    = document.getElementById('mm-manual-empate')?.value;
+    const visitante = document.getElementById('mm-manual-visitante')?.value;
+    if (!casa) { setMsg('Falta la casa de apuestas.', 'error'); return; }
+    if (local === '' && empate === '' && visitante === '') { setMsg('Falta al menos un momio.', 'error'); return; }
+
+    const btn = document.getElementById('mm-btn-guardar-manual');
+    if (btn) btn.disabled = true;
+    setMsg('Guardando...', '');
+
+    try {
+        const res = await fetch('momios/api_momios.php?accion=guardar', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                turno: mmTurnoActual(),
+                fecha_partido: p.fecha_partido,
+                hora_partido: p.hora_partido,
+                equipo_local: p.equipo_local,
+                equipo_visitante: p.equipo_visitante,
+                casa_apuestas: casa,
+                momio_local: local === '' ? null : local,
+                momio_empate: empate === '' ? null : empate,
+                momio_visitante: visitante === '' ? null : visitante,
+            })
+        });
+        const json = await res.json();
+
+        if (json.error) {
+            setMsg(json.error, 'error');
+        } else {
+            setMsg('Guardado ✓', 'ok');
+            ['mm-manual-local', 'mm-manual-empate', 'mm-manual-visitante'].forEach(id => {
+                const el = document.getElementById(id);
+                if (el) { el.value = ''; mmActualizarSigno(el); }
+            });
+            await Promise.all([mmCargarRegistros(), mmCargarAnalisisEspejo()]);
+            mmRenderAll();
+            mmRevisarDuplicados();
+            mmPoblarFormManual();
+        }
+    } catch (e) {
+        console.error('Error guardando momio manual', e);
+        setMsg('Error de conexión al guardar.', 'error');
+    } finally {
+        if (btn) btn.disabled = false;
+    }
+}
+
 async function mmCargarRegistros() {
     const lista = document.getElementById('mm-lista');
     try {

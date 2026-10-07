@@ -44,13 +44,41 @@
       <p class="mm-sub">Champions League — registro 6:00 AM / 7:00 PM</p>
     </div>
 
-    <div class="mm-theme-wrap">
-      <button type="button" class="mm-theme-btn" id="mm-theme-btn" onclick="mmToggleThemeMenu()" title="Cambiar diseño">
-        <span class="mtb-glow"></span>
-        <span class="mtb-emoji" id="mm-theme-btn-emoji">🌧️</span>
+    <div class="mm-header-right">
+      <button type="button" class="mm-btn-manual-toggle" id="mm-btn-manual-toggle" onclick="mmToggleFormManual()" title="Registrar un momio a mano">
+        ✍️
       </button>
-      <div class="mm-theme-menu" id="mm-theme-menu"></div>
+
+      <div class="mm-theme-wrap">
+        <button type="button" class="mm-theme-btn" id="mm-theme-btn" onclick="mmToggleThemeMenu()" title="Cambiar diseño">
+          <span class="mtb-glow"></span>
+          <span class="mtb-emoji" id="mm-theme-btn-emoji">🌧️</span>
+        </button>
+        <div class="mm-theme-menu" id="mm-theme-menu"></div>
+      </div>
     </div>
+  </div>
+
+  <!-- REGISTRO MANUAL (oculto por defecto, se despliega con el botón ✍️ del header) -->
+  <div class="mm-form-manual" id="mm-form-manual" style="display:none;">
+    <div class="mm-form-manual-row">
+      <select class="mm-manual-select" id="mm-manual-partido" title="Partido"></select>
+      <input type="text" class="mm-manual-input" id="mm-manual-casa" list="mm-casas-datalist" placeholder="Casa de apuestas" title="Casa de apuestas">
+      <datalist id="mm-casas-datalist"></datalist>
+    </div>
+    <div class="mm-form-manual-row">
+      <span class="mm-ex-momio-wrap" data-sign="">
+        <input type="number" step="1" id="mm-manual-local" class="mm-ex-momio" placeholder="Local" title="Momio Local" oninput="mmActualizarSigno(this)">
+      </span>
+      <span class="mm-ex-momio-wrap" data-sign="">
+        <input type="number" step="1" id="mm-manual-empate" class="mm-ex-momio" placeholder="Empate" title="Momio Empate" oninput="mmActualizarSigno(this)">
+      </span>
+      <span class="mm-ex-momio-wrap" data-sign="">
+        <input type="number" step="1" id="mm-manual-visitante" class="mm-ex-momio" placeholder="Visitante" title="Momio Visitante" oninput="mmActualizarSigno(this)">
+      </span>
+      <button type="button" class="mm-btn-guardar-lote" id="mm-btn-guardar-manual" onclick="mmGuardarManual()">💾 Guardar</button>
+    </div>
+    <p class="mm-extraer-msg" id="mm-manual-msg"></p>
   </div>
 
   <div class="mm-stats" id="mm-stats"></div>
