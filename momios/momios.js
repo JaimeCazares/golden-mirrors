@@ -692,18 +692,13 @@ function mmRenderStats() {
     const cont = document.getElementById('mm-stats');
     if (!cont) return;
 
-    const total     = mmRegistros.length;
-    const hoyStr    = mmHoyStr();
-    const hoyCount  = mmRegistros.filter(r => r.fecha === hoyStr).length;
-    const conMomios = mmRegistros.filter(r => r.momio_local !== null || r.momio_empate !== null || r.momio_visitante !== null);
-    const promedioLocal = conMomios.length
-        ? mmFormatMomio(conMomios.reduce((s, r) => s + (r.momio_local || 0), 0) / conMomios.length)
-        : '—';
+    const total    = mmRegistros.length;
+    const hoyStr   = mmHoyStr();
+    const hoyCount = mmRegistros.filter(r => r.fecha === hoyStr).length;
 
     cont.innerHTML = `
-        <div class="mm-stat"><span class="mm-stat-icon">📋</span><div class="mm-stat-n">${total}</div><div class="mm-stat-l">Registros</div></div>
-        <div class="mm-stat"><span class="mm-stat-icon">📅</span><div class="mm-stat-n">${hoyCount}</div><div class="mm-stat-l">Hoy</div></div>
-        <div class="mm-stat"><span class="mm-stat-icon">📈</span><div class="mm-stat-n">${promedioLocal}</div><div class="mm-stat-l">Momio 1 prom.</div></div>
+        <div class="mm-stat"><span class="mm-stat-icon">📋</span><span class="mm-stat-n">${total}</span><span class="mm-stat-l">Registros</span></div>
+        <div class="mm-stat"><span class="mm-stat-icon">📅</span><span class="mm-stat-n">${hoyCount}</span><span class="mm-stat-l">Hoy</span></div>
     `;
 }
 
@@ -758,10 +753,22 @@ function mmRenderLista() {
 
     const partidos = mmAgruparPorPartido(mmRegistros);
 
+    // Del más positivo al más negativo (más cerca de ser espejo real primero); los
+    // partidos sin suficientes capturas para calcular el % (sin dato) van al final.
+    partidos.forEach(p => {
+        const claveEspejo = `${p.equipo_local_id}-${p.equipo_visitante_id}-${p.fecha_partido}`;
+        p._espejo = mmEspejos[claveEspejo] || null;
+    });
+    partidos.sort((a, b) => {
+        if (!a._espejo && !b._espejo) return 0;
+        if (!a._espejo) return 1;
+        if (!b._espejo) return -1;
+        return b._espejo.ganancia_garantizada_pct - a._espejo.ganancia_garantizada_pct;
+    });
+
     cont.innerHTML = partidos.map((p, i) => {
         const bodyId = `mm-partido-body-${i}`;
-        const claveEspejo = `${p.equipo_local_id}-${p.equipo_visitante_id}-${p.fecha_partido}`;
-        const espejo = mmEspejos[claveEspejo];
+        const espejo = p._espejo;
         const info = espejo ? (MM_COLOR_INFO[espejo.color] || MM_COLOR_INFO.rojo) : null;
 
         const fecha = p.fecha_partido ? mmFormatearFechaLabel(p.fecha_partido) : '';
