@@ -242,11 +242,12 @@
 }
 
 /* ─ Header ─ */
-.mm-header { display: flex; justify-content: space-between; align-items: flex-start; gap: 8px; margin-bottom: 14px; }
+.mm-header { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; margin-bottom: 10px; }
+.mm-title-group { flex-shrink: 0; }
 .mm-title { margin: 0; font-size: 1.25rem; font-weight: 800; color: #fff; }
 .mm-sub { margin: 2px 0 0; font-size: 0.78rem; color: var(--mm-text-dim); }
 
-.mm-header-right { display: flex; align-items: center; gap: 8px; flex-shrink: 0; }
+.mm-header-right { display: flex; align-items: center; gap: 8px; flex-shrink: 0; margin-left: auto; }
 .mm-btn-manual-toggle {
     width: 40px; height: 40px;
     border-radius: 50%;
@@ -364,20 +365,13 @@
 .mto-emoji { font-size: 0.95rem; margin-top: 2px; }
 .mto-label { font-size: 0.6rem; text-transform: uppercase; letter-spacing: 0.4px; }
 
-/* ─ Barra superior compacta: stats + botón de carga en una sola línea ─ */
-.mm-top-bar {
-    display: flex;
-    align-items: stretch;
-    gap: 8px;
-    flex-wrap: wrap;
-    margin-bottom: 10px;
-}
+/* ─ Stats y botón de carga: comparten línea con el título del header ─ */
 .mm-stats { display: flex; gap: 6px; flex-shrink: 0; }
 .mm-stat {
     background: var(--mm-card);
     border: 1px solid var(--mm-border);
     border-radius: 10px;
-    padding: 0 10px;
+    padding: 6px 10px;
     display: flex;
     align-items: center;
     gap: 5px;
@@ -386,11 +380,11 @@
 .mm-stat-icon { font-size: 0.82rem; opacity: 0.55; }
 .mm-stat-n { font-size: 0.88rem; font-weight: 800; color: #fff; line-height: 1; }
 .mm-stat-l { font-size: 0.56rem; color: var(--mm-text-dim); text-transform: uppercase; letter-spacing: 0.03em; }
-.mm-top-bar .mm-btn-extraer {
-    flex: 1 1 200px;
+.mm-header .mm-btn-extraer {
+    flex: 1 1 160px;
     width: auto;
     padding: 8px 12px;
-    font-size: 0.74rem;
+    font-size: 0.72rem;
     border-radius: 10px;
 }
 

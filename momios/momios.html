@@ -44,6 +44,13 @@
       <p class="mm-sub">Champions League — registro 6:00 AM / 7:00 PM</p>
     </div>
 
+    <div class="mm-stats" id="mm-stats"></div>
+
+    <input type="file" id="mm-input-imagenes" accept="image/png,image/jpeg,image/webp,image/gif" multiple style="display:none" onchange="mmImagenesSeleccionadas(this)">
+    <button type="button" class="mm-btn-extraer" id="mm-btn-extraer" onclick="document.getElementById('mm-input-imagenes').click()">
+      📷 Cargar imágenes
+    </button>
+
     <div class="mm-header-right">
       <button type="button" class="mm-btn-manual-toggle" id="mm-btn-manual-toggle" onclick="mmToggleFormManual()" title="Registrar un momio a mano">
         ✍️
@@ -58,6 +65,8 @@
       </div>
     </div>
   </div>
+  <p class="mm-extraer-msg" id="mm-extraer-msg"></p>
+  <div class="mm-extraidos-tabla" id="mm-extraidos-tabla"></div>
 
   <!-- REGISTRO MANUAL (oculto por defecto, se despliega con el botón ✍️ del header) -->
   <div class="mm-form-manual" id="mm-form-manual" style="display:none;">
@@ -80,17 +89,6 @@
     </div>
     <p class="mm-extraer-msg" id="mm-manual-msg"></p>
   </div>
-
-  <!-- BARRA SUPERIOR COMPACTA: stats + carga de imágenes en una sola línea -->
-  <div class="mm-top-bar">
-    <div class="mm-stats" id="mm-stats"></div>
-    <input type="file" id="mm-input-imagenes" accept="image/png,image/jpeg,image/webp,image/gif" multiple style="display:none" onchange="mmImagenesSeleccionadas(this)">
-    <button type="button" class="mm-btn-extraer" id="mm-btn-extraer" onclick="document.getElementById('mm-input-imagenes').click()">
-      📷 Cargar imágenes (Codere, Playdoit, BetVIP, Draftea...)
-    </button>
-  </div>
-  <p class="mm-extraer-msg" id="mm-extraer-msg"></p>
-  <div class="mm-extraidos-tabla" id="mm-extraidos-tabla"></div>
 
   <!-- POSIBLES EQUIPOS DUPLICADOS (mismo equipo, distinta ortografía entre casas) -->
   <div class="mm-lista-section" id="mm-equipos-dup-section" style="display:none;">
