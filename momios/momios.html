@@ -63,8 +63,8 @@
   <div class="mm-form-manual" id="mm-form-manual" style="display:none;">
     <div class="mm-form-manual-row">
       <select class="mm-manual-select" id="mm-manual-partido" title="Partido"></select>
-      <input type="text" class="mm-manual-input" id="mm-manual-casa" list="mm-casas-datalist" placeholder="Casa de apuestas" title="Casa de apuestas">
-      <datalist id="mm-casas-datalist"></datalist>
+      <select class="mm-manual-select" id="mm-manual-casa" title="Casa de apuestas" onchange="mmCasaManualCambio(this)"></select>
+      <input type="text" class="mm-manual-input" id="mm-manual-casa-otra" placeholder="Nombre de la casa" title="Nombre de la casa" style="display:none;">
     </div>
     <div class="mm-form-manual-row">
       <span class="mm-ex-momio-wrap" data-sign="">

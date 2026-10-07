@@ -292,8 +292,21 @@ function mmPoblarFormManual() {
     }
 
     const casas = [...new Set([...MM_CASAS_CONOCIDAS, ...mmRegistros.map(r => r.casa_apuestas).filter(Boolean)])].sort();
-    const datalist = document.getElementById('mm-casas-datalist');
-    if (datalist) datalist.innerHTML = casas.map(c => `<option value="${mmEscapar(c)}"></option>`).join('');
+    const selectCasa = document.getElementById('mm-manual-casa');
+    if (selectCasa) {
+        const previo = selectCasa.value;
+        selectCasa.innerHTML = casas.map(c => `<option value="${mmEscapar(c)}">${mmEscapar(c)}</option>`).join('')
+            + '<option value="__otra__">Otra...</option>';
+        if (previo && [...selectCasa.options].some(o => o.value === previo)) selectCasa.value = previo;
+        mmCasaManualCambio(selectCasa);
+    }
+}
+
+// Muestra el campo de texto libre solo cuando se elige "Otra..." (casa nueva que
+// todavía no está en la lista de sugeridas).
+function mmCasaManualCambio(selectEl) {
+    const otra = document.getElementById('mm-manual-casa-otra');
+    if (otra) otra.style.display = selectEl.value === '__otra__' ? '' : 'none';
 }
 
 async function mmGuardarManual() {
@@ -304,7 +317,10 @@ async function mmGuardarManual() {
 
     if (!p) { setMsg('Elige un partido.', 'error'); return; }
 
-    const casa = document.getElementById('mm-manual-casa')?.value.trim();
+    const selectCasa = document.getElementById('mm-manual-casa');
+    const casa = (selectCasa?.value === '__otra__'
+        ? document.getElementById('mm-manual-casa-otra')?.value
+        : selectCasa?.value || '').trim();
     const local     = document.getElementById('mm-manual-local')?.value;
     const empate    = document.getElementById('mm-manual-empate')?.value;
     const visitante = document.getElementById('mm-manual-visitante')?.value;
