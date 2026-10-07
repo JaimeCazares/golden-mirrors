@@ -281,14 +281,19 @@ function mmToggleFormManual() {
 function mmPoblarFormManual() {
     mmPartidosConocidos = mmAgruparPorPartido(mmRegistros);
 
+    // El value de cada <option> es la CLAVE del partido (equipos+fecha), no su índice
+    // en el arreglo: el arreglo se reconstruye después de cada guardado y el orden
+    // puede cambiar (empates de fecha/hora), así que un índice guardado podía terminar
+    // apuntando a OTRO partido sin que se notara — eso hacía que un registro se
+    // guardara en el partido equivocado silenciosamente.
     const selectPartido = document.getElementById('mm-manual-partido');
     if (selectPartido) {
         const previo = selectPartido.value;
-        selectPartido.innerHTML = mmPartidosConocidos.map((p, i) => {
+        selectPartido.innerHTML = mmPartidosConocidos.map(p => {
             const fecha = p.fecha_partido ? mmFormatearFechaLabel(p.fecha_partido) : 'sin fecha';
-            return `<option value="${i}">${mmEscapar(p.equipo_local)} vs ${mmEscapar(p.equipo_visitante)} — ${fecha}</option>`;
+            return `<option value="${mmEscapar(p.clave)}">${mmEscapar(p.equipo_local)} vs ${mmEscapar(p.equipo_visitante)} — ${fecha}</option>`;
         }).join('');
-        if (previo && Number(previo) < mmPartidosConocidos.length) selectPartido.value = previo;
+        if (previo && [...selectPartido.options].some(o => o.value === previo)) selectPartido.value = previo;
     }
 
     const casas = [...new Set([...MM_CASAS_CONOCIDAS, ...mmRegistros.map(r => r.casa_apuestas).filter(Boolean)])].sort();
@@ -310,8 +315,8 @@ function mmCasaManualCambio(selectEl) {
 }
 
 async function mmGuardarManual() {
-    const idx = Number(document.getElementById('mm-manual-partido')?.value);
-    const p = mmPartidosConocidos[idx];
+    const claveSel = document.getElementById('mm-manual-partido')?.value;
+    const p = mmPartidosConocidos.find(x => x.clave === claveSel);
     const msg = document.getElementById('mm-manual-msg');
     const setMsg = (texto, tipo) => { if (msg) { msg.textContent = texto; msg.className = 'mm-extraer-msg ' + (tipo || ''); } };
 
