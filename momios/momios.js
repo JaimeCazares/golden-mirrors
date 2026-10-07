@@ -778,21 +778,42 @@ function mmRenderLista() {
         const capturasOrdenadas = [...p.capturas].sort((a, b) => (b.capturado_en || '').localeCompare(a.capturado_en || ''));
 
         // Mejor momio histórico de este partido por resultado (local/empate/visitante),
-        // entre TODAS las capturas que haya, de cualquier casa — se recalcula solo
-        // cada vez que hay registros nuevos, así siempre refleja el mejor hasta ahora.
-        const mmMejorPorCampo = { momio_local: null, momio_empate: null, momio_visitante: null };
+        // entre TODAS las capturas que haya, de cualquier casa — con la casa y fecha en
+        // que pasó, para poder mostrarlo en el resumen sin tener que abrir el detalle.
+        const mmMejorInfo = { momio_local: null, momio_empate: null, momio_visitante: null };
         p.capturas.forEach(r => {
             ['momio_local', 'momio_empate', 'momio_visitante'].forEach(campo => {
                 if (r[campo] === null || r[campo] === undefined) return;
                 const n = Number(r[campo]);
-                if (mmMejorPorCampo[campo] === null || n > mmMejorPorCampo[campo]) mmMejorPorCampo[campo] = n;
+                if (!mmMejorInfo[campo] || n > mmMejorInfo[campo].valor) {
+                    mmMejorInfo[campo] = { valor: n, casa: r.casa_apuestas, capturado_en: r.capturado_en };
+                }
             });
         });
         const mmSpanMomio = (valorCrudo, campo) => {
             const texto = mmFormatMomio(valorCrudo);
-            const esMejor = valorCrudo !== null && valorCrudo !== undefined && Number(valorCrudo) === mmMejorPorCampo[campo];
+            const esMejor = valorCrudo !== null && valorCrudo !== undefined && mmMejorInfo[campo] && Number(valorCrudo) === mmMejorInfo[campo].valor;
             return `<span class="mm-det-momio${esMejor ? ' mm-det-momio-mejor' : ''}"${esMejor ? ' title="Mejor momio registrado para este resultado"' : ''}>${texto}</span>`;
         };
+
+        const MM_ETIQUETAS_1X2 = { momio_local: '1', momio_empate: 'X', momio_visitante: '2' };
+        const filasResumen = ['momio_local', 'momio_empate', 'momio_visitante'].map(campo => {
+            const info = mmMejorInfo[campo];
+            if (!info) {
+                return `
+                    <div class="mm-resumen-fila">
+                        <span class="mm-resumen-tag">${MM_ETIQUETAS_1X2[campo]}</span>
+                        <span class="mm-resumen-sin">sin dato</span>
+                    </div>`;
+            }
+            return `
+                <div class="mm-resumen-fila">
+                    <span class="mm-resumen-tag">${MM_ETIQUETAS_1X2[campo]}</span>
+                    <span class="mm-det-momio mm-det-momio-mejor">${mmFormatMomio(info.valor)}</span>
+                    <span class="mm-resumen-casa">${info.casa ? mmEscapar(info.casa) : '—'}</span>
+                    <span class="mm-resumen-fecha">${mmFormatearHoraCaptura(info.capturado_en) || '—'}</span>
+                </div>`;
+        }).join('');
 
         const filasDetalle = capturasOrdenadas.map(r => {
             const horaCaptura = mmFormatearHoraCaptura(r.capturado_en);
@@ -816,6 +837,7 @@ function mmRenderLista() {
                     </div>
                     <span class="mm-toggle-flecha">▾</span>
                 </div>
+                <div class="mm-partido-resumen">${filasResumen}</div>
                 <div id="${bodyId}" class="mm-partido-detalle mm-colapsado">${filasDetalle}</div>
             </div>`;
     }).join('');

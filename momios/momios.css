@@ -459,7 +459,7 @@
     color: #06210f;
 }
 
-.mm-lista { display: flex; flex-direction: column; gap: 10px; }
+.mm-lista { display: flex; flex-direction: column; gap: 6px; }
 .mm-lista-vacio { color: var(--mm-text-dim); font-size: 0.8rem; text-align: center; padding: 12px 0; margin: 0; }
 
 /* ─ Toggle genérico (colapsar/expandir secciones y detalle de partido) ─ */
@@ -522,7 +522,7 @@
     display: flex;
     align-items: center;
     gap: 10px;
-    padding: 9px 10px;
+    padding: 7px 10px 5px;
     cursor: pointer;
     user-select: none;
 }
@@ -540,6 +540,31 @@
 .mm-partido-equipos { font-size: 0.82rem; font-weight: 700; color: #fff; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 .mm-partido-equipos .mm-vs { color: var(--mm-text-dim); font-size: 0.68rem; font-weight: 600; margin: 0 2px; }
 .mm-partido-fecha { font-size: 0.66rem; color: var(--mm-text-dim); margin-top: 1px; }
+
+/* ─ Resumen compacto (1X2 con el mejor momio histórico) — siempre visible, sin
+   necesidad de abrir el detalle completo de capturas ─ */
+.mm-partido-resumen {
+    display: flex;
+    flex-direction: column;
+    gap: 1px;
+    padding: 0 10px 7px;
+}
+.mm-resumen-fila { display: flex; align-items: center; gap: 7px; font-size: 0.71rem; line-height: 1.5; }
+.mm-resumen-tag {
+    flex-shrink: 0;
+    width: 15px;
+    height: 15px;
+    line-height: 15px;
+    text-align: center;
+    font-size: 0.6rem;
+    font-weight: 800;
+    color: var(--mm-text-dim);
+    background: rgba(255,255,255,0.06);
+    border-radius: 4px;
+}
+.mm-resumen-casa { flex: 1; min-width: 0; color: var(--mm-text-mid); font-weight: 700; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.mm-resumen-fecha { flex-shrink: 0; color: var(--mm-text-dim); font-size: 0.65rem; }
+.mm-resumen-sin { color: var(--mm-text-dim); font-size: 0.68rem; font-style: italic; }
 
 .mm-partido-detalle {
     border-top: 1px solid var(--mm-border);
