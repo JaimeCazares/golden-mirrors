@@ -647,17 +647,31 @@ function mmRenderLista() {
         // capturas más recientes primero dentro del detalle
         const capturasOrdenadas = [...p.capturas].sort((a, b) => (b.capturado_en || '').localeCompare(a.capturado_en || ''));
 
+        // Mejor momio histórico de este partido por resultado (local/empate/visitante),
+        // entre TODAS las capturas que haya, de cualquier casa — se recalcula solo
+        // cada vez que hay registros nuevos, así siempre refleja el mejor hasta ahora.
+        const mmMejorPorCampo = { momio_local: null, momio_empate: null, momio_visitante: null };
+        p.capturas.forEach(r => {
+            ['momio_local', 'momio_empate', 'momio_visitante'].forEach(campo => {
+                if (r[campo] === null || r[campo] === undefined) return;
+                const n = Number(r[campo]);
+                if (mmMejorPorCampo[campo] === null || n > mmMejorPorCampo[campo]) mmMejorPorCampo[campo] = n;
+            });
+        });
+        const mmSpanMomio = (valorCrudo, campo) => {
+            const texto = mmFormatMomio(valorCrudo);
+            const esMejor = valorCrudo !== null && valorCrudo !== undefined && Number(valorCrudo) === mmMejorPorCampo[campo];
+            return `<span class="mm-det-momio${esMejor ? ' mm-det-momio-mejor' : ''}"${esMejor ? ' title="Mejor momio registrado para este resultado"' : ''}>${texto}</span>`;
+        };
+
         const filasDetalle = capturasOrdenadas.map(r => {
             const horaCaptura = mmFormatearHoraCaptura(r.capturado_en);
-            const m1 = mmFormatMomio(r.momio_local);
-            const mx = mmFormatMomio(r.momio_empate);
-            const m2 = mmFormatMomio(r.momio_visitante);
             return `
                 <div class="mm-det-fila">
                     <span class="mm-det-casa">${r.casa_apuestas ? mmEscapar(r.casa_apuestas) : '—'}</span>
                     <span class="mm-det-hora">${horaCaptura || '—'}</span>
                     <span class="mm-det-equipos">${mmEscapar(r.equipo_local)} vs ${mmEscapar(r.equipo_visitante)}</span>
-                    <span class="mm-det-momios">${m1} / ${mx} / ${m2}</span>
+                    <span class="mm-det-momios">${mmSpanMomio(r.momio_local, 'momio_local')} / ${mmSpanMomio(r.momio_empate, 'momio_empate')} / ${mmSpanMomio(r.momio_visitante, 'momio_visitante')}</span>
                     <button type="button" class="mm-card-del" onclick="mmEliminarRegistro(${r.id})" title="Eliminar">🗑️</button>
                 </div>`;
         }).join('');
