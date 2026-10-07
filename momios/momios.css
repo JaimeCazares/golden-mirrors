@@ -186,7 +186,7 @@
     padding: 6px 8px;
     margin-bottom: 5px;
 }
-.mm-ex-row input {
+.mm-ex-row input, .mm-form-manual-row input {
     background: rgba(255,255,255,0.05);
     border: 1px solid var(--mm-border);
     border-radius: 7px;
@@ -196,7 +196,7 @@
     padding: 5px 6px;
     outline: none;
 }
-.mm-ex-row input:focus { border-color: var(--mm-accent); }
+.mm-ex-row input:focus, .mm-form-manual-row input:focus { border-color: var(--mm-accent); }
 .mm-ex-fecha { width: 108px; flex-shrink: 0; }
 .mm-ex-hora { width: 66px; flex-shrink: 0; }
 .mm-ex-equipo { width: 112px; flex: 1 1 100px; min-width: 80px; }
