@@ -2,6 +2,10 @@
 
 const MM_MESES = ['Enero','Febrero','Marzo','Abril','Mayo','Junio','Julio','Agosto','Septiembre','Octubre','Noviembre','Diciembre'];
 
+// Casas de apuestas ya integradas, siempre sugeridas en el registro manual aunque
+// todavía no tengan ningún registro capturado (ej. recién agregada, como BetVIP).
+const MM_CASAS_CONOCIDAS = ['Codere', 'Playdoit', 'BetVIP', 'Draftea'];
+
 const MM_THEMES = [
     { key: 'lluvia',    label: 'Lluvia',    emoji: '🌧️' },
     { key: 'otono',     label: 'Otoño',     emoji: '🍁' },
@@ -287,7 +291,7 @@ function mmPoblarFormManual() {
         if (previo && Number(previo) < mmPartidosConocidos.length) selectPartido.value = previo;
     }
 
-    const casas = [...new Set(mmRegistros.map(r => r.casa_apuestas).filter(Boolean))].sort();
+    const casas = [...new Set([...MM_CASAS_CONOCIDAS, ...mmRegistros.map(r => r.casa_apuestas).filter(Boolean)])].sort();
     const datalist = document.getElementById('mm-casas-datalist');
     if (datalist) datalist.innerHTML = casas.map(c => `<option value="${mmEscapar(c)}"></option>`).join('');
 }

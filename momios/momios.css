@@ -283,10 +283,12 @@
     font-size: 0.74rem;
     padding: 7px 8px;
     outline: none;
+    color-scheme: dark; /* evita que el menú nativo del <select> (y la lista del datalist) se abra en blanco */
 }
 .mm-manual-select:focus, .mm-manual-input:focus { border-color: var(--mm-accent); }
 .mm-manual-select { flex: 1 1 220px; min-width: 160px; }
 .mm-manual-input { flex: 1 1 140px; min-width: 110px; }
+.mm-manual-select option { background: #1a2130; color: #fff; }
 
 /* ─ Selector de diseño/paisaje ─ */
 .mm-theme-wrap { position: relative; flex-shrink: 0; }
