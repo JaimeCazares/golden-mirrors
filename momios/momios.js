@@ -796,24 +796,32 @@ function mmRenderLista() {
             return `<span class="mm-det-momio${esMejor ? ' mm-det-momio-mejor' : ''}"${esMejor ? ' title="Mejor momio registrado para este resultado"' : ''}>${texto}</span>`;
         };
 
-        const MM_ETIQUETAS_1X2 = { momio_local: '1', momio_empate: 'X', momio_visitante: '2' };
-        const filasResumen = ['momio_local', 'momio_empate', 'momio_visitante'].map(campo => {
-            const info = mmMejorInfo[campo];
-            if (!info) {
-                return `
-                    <div class="mm-resumen-fila">
-                        <span class="mm-resumen-tag">${MM_ETIQUETAS_1X2[campo]}</span>
-                        <span class="mm-resumen-sin">sin dato</span>
-                    </div>`;
-            }
-            return `
-                <div class="mm-resumen-fila">
-                    <span class="mm-resumen-tag">${MM_ETIQUETAS_1X2[campo]}</span>
-                    <span class="mm-det-momio mm-det-momio-mejor">${mmFormatMomio(info.valor)}</span>
-                    <span class="mm-resumen-casa">${info.casa ? mmEscapar(info.casa) : '—'}</span>
-                    <span class="mm-resumen-fecha">${mmFormatearHoraCaptura(info.capturado_en) || '—'}</span>
-                </div>`;
-        }).join('');
+        // Resumen de una sola línea: la CAPTURA (misma casa, mismos 3 momios juntos,
+        // tal como salieron en esa tanda) que tuvo el momio más alto en cualquiera de
+        // los 3 resultados — no son 3 mejores sueltos de capturas distintas.
+        let mejorCaptura = null, mejorCampo = null, mejorValor = null;
+        p.capturas.forEach(r => {
+            ['momio_local', 'momio_empate', 'momio_visitante'].forEach(campo => {
+                if (r[campo] === null || r[campo] === undefined) return;
+                const n = Number(r[campo]);
+                if (mejorValor === null || n > mejorValor) {
+                    mejorValor = n;
+                    mejorCaptura = r;
+                    mejorCampo = campo;
+                }
+            });
+        });
+        const mmSpanMejorLinea = (campo) => {
+            const texto = mmFormatMomio(mejorCaptura[campo]);
+            const esMejor = campo === mejorCampo;
+            return `<span class="mm-det-momio${esMejor ? ' mm-det-momio-mejor' : ''}">${texto}</span>`;
+        };
+        const resumen = mejorCaptura ? `
+            <div class="mm-partido-resumen">
+                <span class="mm-resumen-casa">${mejorCaptura.casa_apuestas ? mmEscapar(mejorCaptura.casa_apuestas) : '—'}</span>
+                <span class="mm-resumen-momios">${mmSpanMejorLinea('momio_local')} / ${mmSpanMejorLinea('momio_empate')} / ${mmSpanMejorLinea('momio_visitante')}</span>
+                <span class="mm-resumen-fecha">${mmFormatearHoraCaptura(mejorCaptura.capturado_en) || '—'}</span>
+            </div>` : '<div class="mm-partido-resumen"><span class="mm-resumen-sin">Sin momios registrados</span></div>';
 
         const filasDetalle = capturasOrdenadas.map(r => {
             const horaCaptura = mmFormatearHoraCaptura(r.capturado_en);
@@ -837,7 +845,7 @@ function mmRenderLista() {
                     </div>
                     <span class="mm-toggle-flecha">▾</span>
                 </div>
-                <div class="mm-partido-resumen">${filasResumen}</div>
+                ${resumen}
                 <div id="${bodyId}" class="mm-partido-detalle mm-colapsado">${filasDetalle}</div>
             </div>`;
     }).join('');
