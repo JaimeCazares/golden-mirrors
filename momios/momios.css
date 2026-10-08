@@ -470,8 +470,8 @@
 /* ─ Toggle genérico (colapsar/expandir secciones y detalle de partido) ─ */
 .mm-lista-head-toggle { cursor: pointer; user-select: none; }
 .mm-toggle-flecha { font-size: 0.7rem; color: var(--mm-text-dim); transition: transform 0.2s; }
-.mm-lista-head-toggle.mm-colapsado .mm-toggle-flecha,
-.mm-partido-head.mm-colapsado .mm-toggle-flecha { transform: rotate(-90deg); }
+.mm-lista-head-toggle.mm-head-colapsado .mm-toggle-flecha,
+.mm-partido-head.mm-head-colapsado .mm-toggle-flecha { transform: rotate(-90deg); }
 /* !important: es una clase utilitaria de uso general (detalle de partido, equipos
    duplicados...) y debe ganar siempre, sin importar el "display" propio de cada
    elemento ni el orden en que aparezcan las reglas en este archivo. */

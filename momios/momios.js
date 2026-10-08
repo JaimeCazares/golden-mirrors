@@ -85,11 +85,14 @@ async function initMomios() {
 }
 
 // Colapsa/expande una sección genérica (equipos duplicados, detalle de un partido...).
+// OJO: en headEl se usa una clase DISTINTA a la del body ('mm-head-colapsado', no
+// 'mm-colapsado') — esta última es un utilitario genérico de "display:none" en todo
+// el CSS, y headEl (el encabezado clicable) nunca debe ocultarse, solo rotar su flecha.
 function mmToggleSeccion(bodyId, headEl) {
     const body = document.getElementById(bodyId);
     if (!body) return;
     const colapsado = body.classList.toggle('mm-colapsado');
-    headEl?.classList.toggle('mm-colapsado', colapsado);
+    headEl?.classList.toggle('mm-head-colapsado', colapsado);
 }
 
 // ══════════════════════════════════════════════════════
