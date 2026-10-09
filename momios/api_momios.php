@@ -100,13 +100,30 @@ function mmPrefijosGenericosClub() {
             'afc','sv','vfb','vfl','tsg','sg','bk','if','ik','bsc','ca','cr'];
 }
 
+// Siglas/apodos que algunas casas usan en lugar del nombre completo (ej. Draftea
+// escribe "Paris Saint-Germain" y BetVIP/Codere/Playdoit "PSG"). Se comparan
+// contra el nombre COMPLETO ya limpio, nunca contra palabras sueltas, para no
+// expandir por accidente una palabra que forma parte de otro nombre.
+function mmNombresAbreviados() {
+    return [
+        'psg'        => 'paris saint germain',
+        'paris sg'   => 'paris saint germain',
+        'man city'   => 'manchester city',
+        'man utd'    => 'manchester united',
+        'man united' => 'manchester united',
+    ];
+}
+
 // Separa un nombre en palabras: minúsculas, sin acentos ni puntuación.
 function mmTokensCrudos($nombre) {
     $n = mb_strtolower(trim((string)$nombre), 'UTF-8');
     $n = mmQuitarAcentos($n);
     $n = preg_replace('/[^a-z0-9]+/', ' ', $n);
     $n = trim(preg_replace('/\s+/', ' ', $n));
-    return $n === '' ? [] : explode(' ', $n);
+    if ($n === '') return [];
+    $n = mmNombresAbreviados()[$n] ?? $n;
+    // "St" es la misma palabra que "Saint" (Paris St-Germain, St. Gallen...)
+    return array_map(fn($t) => $t === 'st' ? 'saint' : $t, explode(' ', $n));
 }
 
 // Igual, pero sin abreviaturas genéricas de club (FK/SK/FC/...).
@@ -216,6 +233,51 @@ function mmResolverEquipoId($conexion, $nombreCrudo) {
     $conexion->query("INSERT IGNORE INTO equipos_alias (equipo_id, alias, clave_normalizada) VALUES ($equipoId, '$nombreEsc', '$clave')");
     return $equipoId;
 }
+
+// Reasigna alias y todos los registros históricos de $eliminar a $mantener.
+function mmFusionarEquipos($conexion, $mantener, $eliminar) {
+    $conexion->query("UPDATE equipos_alias SET equipo_id = $mantener WHERE equipo_id = $eliminar");
+    $conexion->query("UPDATE momios_registros SET equipo_local_id = $mantener WHERE equipo_local_id = $eliminar");
+    $conexion->query("UPDATE momios_registros SET equipo_visitante_id = $mantener WHERE equipo_visitante_id = $eliminar");
+    $conexion->query("DELETE FROM equipos_catalogo WHERE id = $eliminar");
+}
+
+// Cuando cambian las reglas de normalización (ej. se agrega una sigla nueva a
+// mmNombresAbreviados), los alias ya guardados conservan su clave vieja y el
+// mismo equipo queda partido en dos. Esto recalcula las claves y, si la nueva
+// ya pertenece a otro equipo, los fusiona. Idempotente: sin cambios de reglas
+// no toca nada.
+function mmReconciliarAlias($conexion) {
+    $res = $conexion->query("SELECT id, alias, clave_normalizada FROM equipos_alias ORDER BY id");
+    $pendientes = [];
+    while ($res && ($row = $res->fetch_assoc())) {
+        $nueva = mmNormalizarEquipo($row['alias']);
+        if ($nueva !== '' && $nueva !== $row['clave_normalizada']) {
+            $pendientes[] = ['id' => (int)$row['id'], 'clave' => $nueva];
+        }
+    }
+    foreach ($pendientes as $p) {
+        // Releído: una fusión anterior (o una petición simultánea — el dashboard
+        // pide listar/espejo/duplicados al mismo tiempo) pudo cambiarlo o borrarlo.
+        $aliasId = $p['id'];
+        $res = $conexion->query("SELECT equipo_id, clave_normalizada FROM equipos_alias WHERE id = $aliasId");
+        if (!$res || !$res->num_rows) continue;
+        $actual = $res->fetch_assoc();
+        if ($actual['clave_normalizada'] === $p['clave']) continue;
+        $equipoId = (int)$actual['equipo_id'];
+
+        $claveEsc = $conexion->real_escape_string($p['clave']);
+        $res = $conexion->query("SELECT equipo_id FROM equipos_alias WHERE clave_normalizada = '$claveEsc' AND id <> $aliasId LIMIT 1");
+        if ($res && $res->num_rows) {
+            $dueno = (int)$res->fetch_assoc()['equipo_id'];
+            if ($dueno !== $equipoId) mmFusionarEquipos($conexion, $dueno, $equipoId);
+            $conexion->query("DELETE FROM equipos_alias WHERE id = $aliasId"); // su clave vieja ya no se genera
+        } else {
+            $conexion->query("UPDATE equipos_alias SET clave_normalizada = '$claveEsc' WHERE id = $aliasId");
+        }
+    }
+}
+mmReconciliarAlias($conexion);
 
 $input  = json_decode(file_get_contents('php://input'), true) ?? [];
 $accion = $_GET['accion'] ?? $input['accion'] ?? '';
@@ -532,10 +594,7 @@ if ($accion === 'fusionar_equipos') {
         exit;
     }
 
-    $conexion->query("UPDATE equipos_alias SET equipo_id = $mantener WHERE equipo_id = $eliminar");
-    $conexion->query("UPDATE momios_registros SET equipo_local_id = $mantener WHERE equipo_local_id = $eliminar");
-    $conexion->query("UPDATE momios_registros SET equipo_visitante_id = $mantener WHERE equipo_visitante_id = $eliminar");
-    $conexion->query("DELETE FROM equipos_catalogo WHERE id = $eliminar");
+    mmFusionarEquipos($conexion, $mantener, $eliminar);
 
     echo json_encode(['status' => 'ok']);
     exit;
