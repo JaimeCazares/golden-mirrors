@@ -462,6 +462,7 @@
 .mm-lista {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+    grid-auto-flow: row dense; /* un bloque abierto ocupa su propio renglón: los siguientes rellenan el hueco que deja arriba */
     align-items: start;
     gap: 8px;
 }
@@ -575,25 +576,49 @@
 .mm-resumen-fecha { flex-shrink: 0; color: var(--mm-text-dim); font-size: 0.65rem; }
 .mm-resumen-sin { color: var(--mm-text-dim); font-size: 0.68rem; font-style: italic; }
 
+/* ─ Bloque abierto: ocupa todo el renglón de la lista y se acomoda "acostado" —
+   tarjeta (encabezado + resumen) a la izquierda y la tabla por día a la derecha,
+   para ver todas las capturas sin scroll. Si la tabla no cabe al lado (pantalla
+   angosta), baja completa debajo de la tarjeta (flex-wrap). ─ */
+.mm-partido-grupo.mm-partido-abierto {
+    grid-column: 1 / -1;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: flex-start;
+}
+.mm-partido-abierto .mm-partido-principal { flex: 0 0 330px; max-width: 100%; }
+.mm-partido-abierto .mm-partido-equipos { white-space: normal; } /* abierto sobra espacio: nombres completos */
+
 .mm-partido-detalle {
-    border-top: 1px solid var(--mm-border);
-    padding: 2px 10px 4px;
-    display: flex;
-    flex-direction: column;
+    flex: 1 1 auto; /* ancho natural de la tabla: si no cabe junto a la tarjeta, se va abajo */
+    min-width: 0;
+    margin: 7px 8px 8px;
+    padding: 2px 4px;
+    background: rgba(0,0,0,0.18);
+    border: 1px solid var(--mm-border);
+    border-radius: 10px;
+    overflow-x: auto; /* último recurso en celular: scroll lateral dentro de la tabla, no de la página */
 }
-.mm-det-fila {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    padding: 6px 0;
-    font-size: 0.72rem;
-    border-bottom: 1px solid rgba(255,255,255,0.04);
+.mm-dias-tabla { width: 100%; border-collapse: collapse; font-size: 0.72rem; }
+.mm-dias-tabla th,
+.mm-dias-tabla td { padding: 5px 8px; text-align: left; white-space: nowrap; }
+.mm-dias-tabla thead th {
+    font-size: 0.62rem;
+    font-weight: 800;
+    color: var(--mm-text-dim);
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    border-bottom: 1px solid var(--mm-border);
 }
-.mm-det-fila:last-child { border-bottom: none; }
-.mm-det-casa { flex-shrink: 0; min-width: 55px; color: var(--mm-text-mid); font-weight: 700; }
-.mm-det-hora { flex-shrink: 0; min-width: 72px; color: var(--mm-text-dim); }
-.mm-det-equipos { flex: 1; min-width: 0; color: var(--mm-text-mid); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-.mm-det-momios { flex-shrink: 0; color: var(--mm-accent); font-weight: 700; white-space: nowrap; }
+.mm-dias-tabla tbody tr + tr > * { border-top: 1px solid rgba(255,255,255,0.04); }
+.mm-dia-label { width: 1%; color: var(--mm-text-mid); font-weight: 700; } /* columna del día lo más angosta posible */
+.mm-dia-captura { display: inline-flex; align-items: center; gap: 6px; }
+.mm-dia-captura + .mm-dia-captura { margin-left: 8px; padding-left: 10px; border-left: 1px solid var(--mm-border); } /* 2 capturas de la misma casa el mismo día */
+.mm-dia-vacio { color: var(--mm-text-dim); opacity: 0.5; }
+.mm-det-hora { color: var(--mm-text-dim); font-size: 0.64rem; }
+.mm-det-momios { color: var(--mm-accent); font-weight: 700; }
+.mm-dia-captura .mm-card-del { opacity: 0.45; }
+.mm-dia-captura:hover .mm-card-del { opacity: 1; }
 .mm-det-momio-mejor {
     display: inline-block;
     background: rgba(59,130,246,0.25);

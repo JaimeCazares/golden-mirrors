@@ -21,6 +21,8 @@ let mmTema         = 'lluvia';
 let mmTemaMenuOpen = false;
 let mmEspejos      = {}; // clave "localId-visitanteId-fechaPartido" -> analisis de espejo
 let mmEspejosLista  = []; // mismos datos, en array ordenado (para el Top)
+let mmPartidosAbiertos = new Set(); // claves de partido con el detalle abierto: sobreviven a los re-render (ej. al borrar una captura desde el detalle)
+let mmPartidosRender   = [];        // partidos en el orden en que se pintaron (índice del onclick -> partido)
 
 const MM_COLOR_INFO = {
     rojo:     { emoji: '🔴', label: 'Nunca espejo' },
@@ -84,7 +86,7 @@ async function initMomios() {
     mmRevisarDuplicados();
 }
 
-// Colapsa/expande una sección genérica (equipos duplicados, detalle de un partido...).
+// Colapsa/expande una sección genérica (equipos duplicados...; los bloques de partido usan mmTogglePartido).
 // OJO: en headEl se usa una clase DISTINTA a la del body ('mm-head-colapsado', no
 // 'mm-colapsado') — esta última es un utilitario genérico de "display:none" en todo
 // el CSS, y headEl (el encabezado clicable) nunca debe ocultarse, solo rotar su flecha.
@@ -93,6 +95,27 @@ function mmToggleSeccion(bodyId, headEl) {
     if (!body) return;
     const colapsado = body.classList.toggle('mm-colapsado');
     headEl?.classList.toggle('mm-head-colapsado', colapsado);
+}
+
+// Abre/cierra el detalle de un partido. Abierto, el bloque ocupa todo el renglón
+// de la lista (.mm-partido-abierto en el CSS) para mostrar la tabla por día
+// "acostada", sin scroll.
+function mmTogglePartido(i) {
+    const p = mmPartidosRender[i];
+    const grupo = document.getElementById(`mm-partido-${i}`);
+    if (!p || !grupo) return;
+    const abierto = !mmPartidosAbiertos.has(p.clave);
+    if (abierto) mmPartidosAbiertos.add(p.clave); else mmPartidosAbiertos.delete(p.clave);
+    grupo.classList.toggle('mm-partido-abierto', abierto);
+    grupo.querySelector('.mm-partido-head')?.classList.toggle('mm-head-colapsado', !abierto);
+    grupo.querySelector('.mm-partido-detalle')?.classList.toggle('mm-colapsado', !abierto);
+    if (abierto) grupo.scrollIntoView({ block: 'nearest', behavior: 'smooth' });
+}
+
+// Orden de columnas en el detalle por día: casas conocidas primero, otras al final.
+function mmOrdenCasa(casa) {
+    const i = MM_CASAS_CONOCIDAS.indexOf(casa);
+    return i === -1 ? MM_CASAS_CONOCIDAS.length : i;
 }
 
 // ══════════════════════════════════════════════════════
@@ -769,8 +792,9 @@ function mmRenderLista() {
         return b._espejo.ganancia_garantizada_pct - a._espejo.ganancia_garantizada_pct;
     });
 
+    mmPartidosRender = partidos;
     cont.innerHTML = partidos.map((p, i) => {
-        const bodyId = `mm-partido-body-${i}`;
+        const abierto = mmPartidosAbiertos.has(p.clave);
         const espejo = p._espejo;
         const info = espejo ? (MM_COLOR_INFO[espejo.color] || MM_COLOR_INFO.rojo) : null;
 
@@ -825,30 +849,55 @@ function mmRenderLista() {
                 }).join('')}
             </div>`;
 
-        const filasDetalle = capturasOrdenadas.map(r => {
-            const horaCaptura = mmFormatearHoraCaptura(r.capturado_en);
-            return `
-                <div class="mm-det-fila">
-                    <span class="mm-det-casa">${r.casa_apuestas ? mmEscapar(r.casa_apuestas) : '—'}</span>
-                    <span class="mm-det-hora">${horaCaptura || '—'}</span>
-                    <span class="mm-det-equipos">${mmEscapar(r.equipo_local)} vs ${mmEscapar(r.equipo_visitante)}</span>
-                    <span class="mm-det-momios">${mmSpanMomio(r.momio_local, 'momio_local')} / ${mmSpanMomio(r.momio_empate, 'momio_empate')} / ${mmSpanMomio(r.momio_visitante, 'momio_visitante')}</span>
-                    <button type="button" class="mm-card-del" onclick="mmEliminarRegistro(${r.id})" title="Eliminar">🗑️</button>
-                </div>`;
-        }).join('');
+        // Detalle "acostado": una fila por día de captura y una columna por casa, así
+        // todas las capturas de un día quedan en una sola línea y cada casa queda
+        // alineada día con día para ver cómo se fue moviendo su momio.
+        const casas = [...new Set(p.capturas.map(r => r.casa_apuestas || '—'))]
+            .sort((a, b) => mmOrdenCasa(a) - mmOrdenCasa(b) || a.localeCompare(b));
+        const porDia = {}; // 'YYYY-MM-DD' -> { casa -> capturas, más reciente primero }
+        capturasOrdenadas.forEach(r => {
+            const dia  = (r.capturado_en || r.fecha || '').slice(0, 10);
+            const casa = r.casa_apuestas || '—';
+            porDia[dia] = porDia[dia] || {};
+            (porDia[dia][casa] = porDia[dia][casa] || []).push(r);
+        });
+        const dias = Object.keys(porDia).sort().reverse(); // más reciente primero
+
+        // Los nombres tal cual los escribió cada casa quedan en el tooltip (ya no
+        // caben como columna y casi siempre son el mismo partido escrito distinto).
+        const celdaCapturas = capturas => capturas.map(r => `
+            <span class="mm-dia-captura" title="${mmEscapar(`${r.equipo_local} vs ${r.equipo_visitante}`).replace(/"/g, '&quot;')}">
+                <span class="mm-det-hora">${r.capturado_en ? r.capturado_en.slice(11, 16) : '—'}</span>
+                <span class="mm-det-momios">${mmSpanMomio(r.momio_local, 'momio_local')} / ${mmSpanMomio(r.momio_empate, 'momio_empate')} / ${mmSpanMomio(r.momio_visitante, 'momio_visitante')}</span>
+                <button type="button" class="mm-card-del" onclick="mmEliminarRegistro(${r.id})" title="Eliminar">🗑️</button>
+            </span>`).join('');
+
+        const tablaDetalle = `
+            <table class="mm-dias-tabla">
+                <colgroup><col>${casas.map(() => `<col style="width:${(99 / casas.length).toFixed(2)}%">`).join('')}</colgroup>
+                <thead><tr><th>Día</th>${casas.map(c => `<th>${mmEscapar(c)}</th>`).join('')}</tr></thead>
+                <tbody>${dias.map(dia => `
+                    <tr>
+                        <th class="mm-dia-label">${dia ? mmFormatearHoraCaptura(dia) : '—'}</th>
+                        ${casas.map(c => `<td>${porDia[dia][c] ? celdaCapturas(porDia[dia][c]) : '<span class="mm-dia-vacio">—</span>'}</td>`).join('')}
+                    </tr>`).join('')}
+                </tbody>
+            </table>`;
 
         return `
-            <div class="mm-partido-grupo">
-                <div class="mm-partido-head" onclick="mmToggleSeccion('${bodyId}', this)">
-                    ${espejo ? `<span class="mm-espejo-badge mm-color-${espejo.color}" title="${info.label}">${info.emoji} ${mmFormatPct(espejo.ganancia_garantizada_pct)}</span>` : '<span class="mm-espejo-badge mm-color-gris">—</span>'}
-                    <div class="mm-partido-info">
-                        <div class="mm-partido-equipos">${mmEscapar(p.equipo_local)} <span class="mm-vs">vs</span> ${mmEscapar(p.equipo_visitante)}</div>
-                        <div class="mm-partido-fecha">⚽ ${fecha}${hora ? ' · ' + hora : ''} · ${p.capturas.length} captura(s)</div>
+            <div class="mm-partido-grupo${abierto ? ' mm-partido-abierto' : ''}" id="mm-partido-${i}">
+                <div class="mm-partido-principal">
+                    <div class="mm-partido-head${abierto ? '' : ' mm-head-colapsado'}" onclick="mmTogglePartido(${i})">
+                        ${espejo ? `<span class="mm-espejo-badge mm-color-${espejo.color}" title="${info.label}">${info.emoji} ${mmFormatPct(espejo.ganancia_garantizada_pct)}</span>` : '<span class="mm-espejo-badge mm-color-gris">—</span>'}
+                        <div class="mm-partido-info">
+                            <div class="mm-partido-equipos">${mmEscapar(p.equipo_local)} <span class="mm-vs">vs</span> ${mmEscapar(p.equipo_visitante)}</div>
+                            <div class="mm-partido-fecha">⚽ ${fecha}${hora ? ' · ' + hora : ''} · ${p.capturas.length} captura(s)</div>
+                        </div>
+                        <span class="mm-toggle-flecha">▾</span>
                     </div>
-                    <span class="mm-toggle-flecha">▾</span>
+                    ${resumen}
                 </div>
-                ${resumen}
-                <div id="${bodyId}" class="mm-partido-detalle mm-colapsado">${filasDetalle}</div>
+                <div class="mm-partido-detalle${abierto ? '' : ' mm-colapsado'}">${tablaDetalle}</div>
             </div>`;
     }).join('');
 }
