@@ -9,3 +9,7 @@ golden.config.local.php
 
 # Clave de API de Anthropic (extracción de momios desde imagen). Nunca a git.
 claude.config.local.php
+
+# Captura automática de momios (corre local en la PC de casa, nunca en Hostinger).
+automatizacion_momios/node_modules/
+automatizacion_momios/logs/

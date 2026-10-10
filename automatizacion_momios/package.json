@@ -1,0 +1,14 @@
+{
+  "name": "automatizacion-momios",
+  "private": true,
+  "version": "1.0.0",
+  "description": "Captura automática de momios (Codere, Playdoit, BetVIP) 2 veces al día, corriendo en la PC de casa vía Task Scheduler. Sube las capturas al mismo pipeline de extraer_momios.php / validar_momios.php / guardar_lote que usa el dashboard.",
+  "type": "commonjs",
+  "scripts": {
+    "capturar": "node capturar.js",
+    "instalar-navegador": "playwright install chromium"
+  },
+  "dependencies": {
+    "playwright": "^1.48.0"
+  }
+}
