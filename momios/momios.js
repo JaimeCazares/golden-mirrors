@@ -117,8 +117,14 @@ function mmMarcarPartidoAbierto(i, abierto) {
     if (!grupo) return;
     grupo.classList.toggle('mm-partido-abierto', abierto);
     grupo.querySelector('.mm-partido-head')?.classList.toggle('mm-head-colapsado', !abierto);
-    grupo.querySelector('.mm-partido-detalle')?.classList.toggle('mm-colapsado', !abierto);
+    const detalle = grupo.querySelector('.mm-partido-detalle');
+    if (detalle) {
+        // Se arma solo al abrir (gráficas + tabla): cerrado no ocupa DOM.
+        detalle.innerHTML = abierto ? mmDetalleCompleto(mmPartidosRender[i]) : '';
+        detalle.classList.toggle('mm-colapsado', !abierto);
+    }
     if (abierto) grupo.scrollTop = 0;
+    else mmOcultarVizTip();
 }
 
 // Esc cierra el partido abierto en pantalla completa.
@@ -824,26 +830,12 @@ function mmRenderLista() {
         const fecha = p.fecha_partido ? mmFormatearFechaLabel(p.fecha_partido) : '';
         const hora  = p.hora_partido ? p.hora_partido.slice(0, 5) : '';
 
-        // capturas más recientes primero dentro del detalle
-        const capturasOrdenadas = [...p.capturas].sort((a, b) => (b.capturado_en || '').localeCompare(a.capturado_en || ''));
-
         // Para cada resultado (local/empate/visitante), la CAPTURA que tuvo el mejor
         // momio histórico de ESE resultado — se muestran sus 3 momios juntos (tal como
         // salieron esa tanda, misma casa) aunque solo uno de los 3 sea "el mejor"; los
         // otros 2 de esa misma fila están ahí nomás de acompañantes, no son el mejor de
-        // su columna. Esta misma referencia también marca las filas del detalle completo.
-        const CAMPOS_1X2 = ['momio_local', 'momio_empate', 'momio_visitante'];
-        const MM_ETIQUETAS_1X2 = { momio_local: '1', momio_empate: 'X', momio_visitante: '2' };
-        const mejorPorCampo = { momio_local: null, momio_empate: null, momio_visitante: null };
-        p.capturas.forEach(r => {
-            CAMPOS_1X2.forEach(campo => {
-                if (r[campo] === null || r[campo] === undefined) return;
-                const n = Number(r[campo]);
-                if (!mejorPorCampo[campo] || n > mejorPorCampo[campo].valor) {
-                    mejorPorCampo[campo] = { valor: n, captura: r };
-                }
-            });
-        });
+        // su columna.
+        const mejorPorCampo = mmMejorPorCampo(p.capturas);
         const mmSpanMomio = (valorCrudo, campo) => {
             const texto = mmFormatMomio(valorCrudo);
             const esMejor = valorCrudo !== null && valorCrudo !== undefined && mejorPorCampo[campo] && Number(valorCrudo) === mejorPorCampo[campo].valor;
@@ -852,7 +844,7 @@ function mmRenderLista() {
 
         const resumen = `
             <div class="mm-partido-resumen">
-                ${CAMPOS_1X2.map(campo => {
+                ${MM_CAMPOS_1X2.map(campo => {
                     const info = mejorPorCampo[campo];
                     if (!info) {
                         return `
@@ -872,41 +864,6 @@ function mmRenderLista() {
                 }).join('')}
             </div>`;
 
-        // Detalle "acostado": una fila por día de captura y una columna por casa, así
-        // todas las capturas de un día quedan en una sola línea y cada casa queda
-        // alineada día con día para ver cómo se fue moviendo su momio.
-        const casas = [...new Set(p.capturas.map(r => r.casa_apuestas || '—'))]
-            .sort((a, b) => mmOrdenCasa(a) - mmOrdenCasa(b) || a.localeCompare(b));
-        const porDia = {}; // 'YYYY-MM-DD' -> { casa -> capturas, más reciente primero }
-        capturasOrdenadas.forEach(r => {
-            const dia  = (r.capturado_en || r.fecha || '').slice(0, 10);
-            const casa = r.casa_apuestas || '—';
-            porDia[dia] = porDia[dia] || {};
-            (porDia[dia][casa] = porDia[dia][casa] || []).push(r);
-        });
-        const dias = Object.keys(porDia).sort().reverse(); // más reciente primero
-
-        // Los nombres tal cual los escribió cada casa quedan en el tooltip (ya no
-        // caben como columna y casi siempre son el mismo partido escrito distinto).
-        const celdaCapturas = capturas => capturas.map(r => `
-            <span class="mm-dia-captura" title="${mmEscapar(`${r.equipo_local} vs ${r.equipo_visitante}`).replace(/"/g, '&quot;')}">
-                <span class="mm-det-hora">${r.capturado_en ? r.capturado_en.slice(11, 16) : '—'}</span>
-                <span class="mm-det-momios">${mmSpanMomio(r.momio_local, 'momio_local')} / ${mmSpanMomio(r.momio_empate, 'momio_empate')} / ${mmSpanMomio(r.momio_visitante, 'momio_visitante')}</span>
-                <button type="button" class="mm-card-del" onclick="mmEliminarRegistro(${r.id})" title="Eliminar">🗑️</button>
-            </span>`).join('');
-
-        const tablaDetalle = `
-            <table class="mm-dias-tabla">
-                <colgroup><col>${casas.map(() => `<col style="width:${(99 / casas.length).toFixed(2)}%">`).join('')}</colgroup>
-                <thead><tr><th>Día</th>${casas.map(c => `<th>${mmEscapar(c)}</th>`).join('')}</tr></thead>
-                <tbody>${dias.map(dia => `
-                    <tr>
-                        <th class="mm-dia-label">${dia ? mmFormatearHoraCaptura(dia) : '—'}</th>
-                        ${casas.map(c => `<td>${porDia[dia][c] ? celdaCapturas(porDia[dia][c]) : '<span class="mm-dia-vacio">—</span>'}</td>`).join('')}
-                    </tr>`).join('')}
-                </tbody>
-            </table>`;
-
         return `
             <div class="mm-partido-grupo${abierto ? ' mm-partido-abierto' : ''}" id="mm-partido-${i}">
                 <div class="mm-partido-principal">
@@ -921,10 +878,310 @@ function mmRenderLista() {
                     </div>
                     ${resumen}
                 </div>
-                <div class="mm-partido-detalle${abierto ? '' : ' mm-colapsado'}">${tablaDetalle}</div>
+                <div class="mm-partido-detalle${abierto ? '' : ' mm-colapsado'}">${abierto ? mmDetalleCompleto(p) : ''}</div>
             </div>`;
     }).join('');
 }
+
+// ══════════════════════════════════════════════════════
+// DETALLE DE PARTIDO EN PANTALLA COMPLETA — tarjetas con el mejor momio de cada
+// resultado, una gráfica por resultado (una línea por casa) y la tabla por día
+// con el logo de cada casa.
+// ══════════════════════════════════════════════════════
+const MM_CAMPOS_1X2 = ['momio_local', 'momio_empate', 'momio_visitante'];
+const MM_ETIQUETAS_1X2 = { momio_local: '1', momio_empate: 'X', momio_visitante: '2' };
+const MM_DIAS_SEMANA = ['dom', 'lun', 'mar', 'mié', 'jue', 'vie', 'sáb'];
+
+// Colores de línea por casa, validados contra el fondo oscuro del detalle en ese
+// orden (Codere → Draftea). Rojo y dorado quedan cerca para daltonismo, por eso
+// cada línea termina con el logo de su casa (segunda señal además del color).
+const MM_CASAS_INFO = {
+    codere:   { logo: 'momios/logos/codere.png',   color: '#199e70' },
+    playdoit: { logo: 'momios/logos/playdoit.png', color: '#e34948' },
+    betvip:   { logo: 'momios/logos/betvip.png',   color: '#c98500' },
+    draftea:  { logo: 'momios/logos/draftea.png',  color: '#9085e9' },
+};
+function mmCasaInfo(casa) {
+    return MM_CASAS_INFO[(casa || '').toLowerCase().replace(/\s+/g, '')] || { logo: null, color: '#8a8f98' };
+}
+function mmLogoCasa(casa) {
+    const info = mmCasaInfo(casa);
+    if (info.logo) return `<img class="mm-casa-logo" src="${info.logo}" alt="">`;
+    return `<span class="mm-casa-logo mm-casa-logo-ini" style="background:${info.color}">${mmEscapar((casa || '?').charAt(0).toUpperCase())}</span>`;
+}
+function mmCasaTag(casa) {
+    return `<span class="mm-casa-tag">${mmLogoCasa(casa)}${mmEscapar(casa || '—')}</span>`;
+}
+
+// Por resultado: { valor, captura } de la captura con el momio más alto (el que más paga).
+function mmMejorPorCampo(capturas) {
+    const mejor = { momio_local: null, momio_empate: null, momio_visitante: null };
+    capturas.forEach(r => {
+        MM_CAMPOS_1X2.forEach(campo => {
+            if (r[campo] === null || r[campo] === undefined) return;
+            const n = Number(r[campo]);
+            if (!mejor[campo] || n > mejor[campo].valor) mejor[campo] = { valor: n, captura: r };
+        });
+    });
+    return mejor;
+}
+
+// "YYYY-MM-DD HH:MM:SS" (hora local del servidor) -> ms. Se trata como UTC solo
+// para escalar/ordenar sin que el navegador le aplique su zona horaria.
+function mmTs(capturadoEn) {
+    const [f, h = '00:00'] = capturadoEn.split(' ');
+    const [y, m, d] = f.split('-').map(Number);
+    const [hh, mi] = h.split(':').map(Number);
+    return Date.UTC(y, m - 1, d, hh || 0, mi || 0);
+}
+// Americano <-> decimal. Las gráficas van en decimal porque el americano salta de
+// -100 a +100 (son el mismo pago); los rótulos se muestran en americano.
+const mmDecimal   = a => a > 0 ? 1 + a / 100 : 1 + 100 / Math.abs(a);
+const mmAmericano = d => d >= 2 ? Math.round((d - 1) * 100) : -Math.round(100 / (d - 1));
+// Momios "redondos" candidatos a rótulo del eje Y (de -5000 a +5000).
+const MM_MARCAS_AMERICANO = (() => {
+    const pos = [];
+    for (let a = 100; a < 400; a += 10) pos.push(a);
+    for (let a = 400; a < 1000; a += 50) pos.push(a);
+    for (let a = 1000; a <= 5000; a += 250) pos.push(a);
+    return [...pos.slice(1).map(a => -a).reverse(), ...pos];
+})();
+
+function mmDetalleCompleto(p) {
+    if (!p) return '';
+    const mejor = mmMejorPorCampo(p.capturas);
+    const casas = [...new Set(p.capturas.map(r => r.casa_apuestas || '—'))]
+        .sort((a, b) => mmOrdenCasa(a) - mmOrdenCasa(b) || a.localeCompare(b));
+    const nombres = { momio_local: p.equipo_local, momio_empate: 'Empate', momio_visitante: p.equipo_visitante };
+
+    // "Actual": entre la última captura de cada casa, la que más paga.
+    const ultimaPorCasa = {};
+    p.capturas.forEach(r => {
+        const c = r.casa_apuestas || '—';
+        if (!ultimaPorCasa[c] || (r.capturado_en || '') > (ultimaPorCasa[c].capturado_en || '')) ultimaPorCasa[c] = r;
+    });
+
+    const tarjetas = MM_CAMPOS_1X2.map(campo => {
+        const m = mejor[campo];
+        const actual = mmMejorPorCampo(Object.values(ultimaPorCasa))[campo];
+        return `
+            <div class="mm-mejor-card">
+                <div class="mm-mejor-card-head"><span class="mm-mejor-tag">${MM_ETIQUETAS_1X2[campo]}</span><span>${mmEscapar(nombres[campo])}</span></div>
+                ${m ? `
+                    <div class="mm-mejor-valor" title="Mejor momio registrado">${mmFormatMomio(m.valor)}</div>
+                    <div class="mm-mejor-meta">${mmCasaTag(m.captura.casa_apuestas)}<span class="mm-mejor-cuando">${mmFormatearHoraCaptura(m.captura.capturado_en)}</span></div>
+                    ${actual ? `<div class="mm-mejor-ahora" title="El mejor entre la última captura de cada casa">Actual: <b>${mmFormatMomio(actual.valor)}</b> ${mmCasaTag(actual.captura.casa_apuestas)}</div>` : ''}
+                ` : '<div class="mm-grafica-vacia">sin dato</div>'}
+            </div>`;
+    }).join('');
+
+    const leyenda = casas.map(c => `
+        <span class="mm-leyenda-item"><span class="mm-leyenda-linea" style="background:${mmCasaInfo(c).color}"></span>${mmLogoCasa(c)}${mmEscapar(c)}</span>`).join('');
+    const graficas = MM_CAMPOS_1X2.map(campo => `
+        <div class="mm-grafica">
+            <div class="mm-grafica-titulo"><span class="mm-mejor-tag">${MM_ETIQUETAS_1X2[campo]}</span>${mmEscapar(nombres[campo])}<small>más arriba = paga más</small></div>
+            ${mmGraficaResultado(p.capturas, campo, casas, mejor[campo], nombres[campo])}
+        </div>`).join('');
+
+    return `
+        <div class="mm-full-mejores">${tarjetas}</div>
+        <div class="mm-full-panel">
+            <p class="mm-full-titulo">Cómo se movió cada casa</p>
+            <div class="mm-full-leyenda">${leyenda}</div>
+            <div class="mm-full-graficas">${graficas}</div>
+        </div>
+        <div class="mm-full-panel">
+            <p class="mm-full-titulo">Capturas por día</p>
+            ${mmTablaDias(p, casas, mejor)}
+        </div>`;
+}
+
+function mmGraficaResultado(capturas, campo, casas, mejor, nombre) {
+    const W = 420, H = 200, M = { t: 12, r: 30, b: 24, l: 46 };
+    const series = casas.map(casa => ({
+        casa,
+        info: mmCasaInfo(casa),
+        pts: capturas
+            .filter(r => (r.casa_apuestas || '—') === casa && r[campo] !== null && r[campo] !== undefined && r.capturado_en)
+            .map(r => ({ t: mmTs(r.capturado_en), v: Number(r[campo]), r }))
+            .sort((a, b) => a.t - b.t),
+    })).filter(s => s.pts.length);
+    if (!series.length) return '<div class="mm-grafica-vacia">Sin capturas de este resultado</div>';
+
+    const todos = series.flatMap(s => s.pts);
+    let t0 = Math.min(...todos.map(q => q.t)), t1 = Math.max(...todos.map(q => q.t));
+    if (t1 === t0) { t0 -= 43200000; t1 += 43200000; }
+    let d0 = Math.min(...todos.map(q => mmDecimal(q.v))), d1 = Math.max(...todos.map(q => mmDecimal(q.v)));
+    const pad = (d1 - d0) * 0.1 || 0.08;
+    d0 = Math.max(1.01, d0 - pad);
+    d1 += pad;
+    const x = t => M.l + (t - t0) / (t1 - t0) * (W - M.l - M.r);
+    const y = d => M.t + (1 - (d - d0) / (d1 - d0)) * (H - M.t - M.b);
+
+    // Eje Y: momios "redondos" que caigan en el rango (máx. 5); si no hay, 3 parejos.
+    const enRango = MM_MARCAS_AMERICANO.filter(a => { const d = mmDecimal(a); return d >= d0 && d <= d1; });
+    let marcas = enRango;
+    for (const paso of [10, 20, 25, 50, 100, 250, 500, 1000]) {
+        marcas = enRango.filter(a => Math.abs(a) % paso === 0);
+        if (marcas.length <= 5) break;
+    }
+    if (marcas.length < 2) marcas = [0.2, 0.5, 0.8].map(f => mmAmericano(d0 + (d1 - d0) * f));
+    const ejeY = marcas.map(a => {
+        const yy = y(mmDecimal(a)).toFixed(1);
+        return `<line x1="${M.l}" x2="${W - M.r}" y1="${yy}" y2="${yy}" stroke="rgba(255,255,255,0.07)"/>
+                <text x="${M.l - 6}" y="${yy}" dy="3.5" text-anchor="end" font-size="10" fill="#9ca0ad">${mmFormatMomio(a)}</text>`;
+    }).join('');
+
+    // Eje X: un rótulo por día (máx. ~6).
+    const DIA = 86400000;
+    let dias = [];
+    for (let t = Math.ceil(t0 / DIA) * DIA; t <= t1; t += DIA) dias.push(t);
+    const pasoDia = Math.ceil(dias.length / 6) || 1;
+    dias = dias.filter((_, k) => k % pasoDia === 0);
+    const ejeX = dias.map(t => {
+        const f = new Date(t);
+        const xx = x(t).toFixed(1);
+        return `<line x1="${xx}" x2="${xx}" y1="${M.t}" y2="${H - M.b}" stroke="rgba(255,255,255,0.04)"/>
+                <text x="${xx}" y="${H - 6}" text-anchor="middle" font-size="10" fill="#9ca0ad">${String(f.getUTCDate()).padStart(2, '0')}/${String(f.getUTCMonth() + 1).padStart(2, '0')}</text>`;
+    }).join('');
+
+    const lineas = series.map(s => {
+        const d = s.pts.map((q, k) => `${k ? 'L' : 'M'}${x(q.t).toFixed(1)},${y(mmDecimal(q.v)).toFixed(1)}`).join(' ');
+        return `<path d="${d}" fill="none" stroke="${s.info.color}" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/>`;
+    }).join('');
+
+    const puntos = series.map(s => s.pts.map(q => {
+        const cx = x(q.t).toFixed(1), cy = y(mmDecimal(q.v)).toFixed(1);
+        const esMejor = mejor && q.v === mejor.valor;
+        const tip = `${s.casa} · ${mmFormatearHoraCaptura(q.r.capturado_en)}\n${MM_ETIQUETAS_1X2[campo]} ${nombre}: ${mmFormatMomio(q.v)}${esMejor ? '  ★ mejor' : ''}`;
+        return `${esMejor ? `<circle cx="${cx}" cy="${cy}" r="7.5" fill="none" stroke="#fff" stroke-width="1.5"/>` : ''}
+                <circle cx="${cx}" cy="${cy}" r="4" fill="${s.info.color}" stroke="#0b0e17" stroke-width="2"/>
+                <circle class="mm-viz-hit" cx="${cx}" cy="${cy}" r="11" fill="transparent" data-tip="${mmEscapar(tip).replace(/"/g, '&quot;')}"/>`;
+    }).join('')).join('');
+
+    // Logo al final de cada línea (etiqueta directa); se separan si quedan encimados.
+    const finales = series.map(s => {
+        const q = s.pts[s.pts.length - 1];
+        return { s, x: x(q.t), y: y(mmDecimal(q.v)) };
+    }).sort((a, b) => a.y - b.y);
+    finales.forEach((f, k) => { if (k && f.y - finales[k - 1].y < 18) f.y = finales[k - 1].y + 18; });
+    const logos = finales.map(f => {
+        const lx = (f.x + 7).toFixed(1), ly = (f.y - 8).toFixed(1);
+        return f.s.info.logo
+            ? `<rect x="${lx}" y="${ly}" width="16" height="16" rx="4" fill="#fff"/><image href="${f.s.info.logo}" x="${lx}" y="${ly}" width="16" height="16"/>`
+            : `<rect x="${lx}" y="${ly}" width="16" height="16" rx="4" fill="${f.s.info.color}"/><text x="${(f.x + 15).toFixed(1)}" y="${(f.y + 4).toFixed(1)}" text-anchor="middle" font-size="10" font-weight="800" fill="#fff">${mmEscapar(f.s.casa.charAt(0).toUpperCase())}</text>`;
+    }).join('');
+
+    return `<svg viewBox="0 0 ${W} ${H}" role="img" aria-label="Momio ${MM_ETIQUETAS_1X2[campo]} (${mmEscapar(nombre)}) por casa a lo largo del tiempo">
+        ${ejeY}${ejeX}${lineas}${puntos}${logos}
+    </svg>`;
+}
+
+// Tabla "acostada": una fila por día y una columna por casa; cada captura en una
+// mini-rejilla hora | 1 | X | 2, con ▲/▼ contra la captura anterior de esa casa.
+function mmTablaDias(p, casas, mejor) {
+    const previa = new Map();
+    casas.forEach(c => {
+        const asc = p.capturas
+            .filter(r => (r.casa_apuestas || '—') === c)
+            .sort((a, b) => (a.capturado_en || '').localeCompare(b.capturado_en || ''));
+        asc.forEach((r, k) => previa.set(r, asc[k - 1] || null));
+    });
+
+    const porDia = {}; // 'YYYY-MM-DD' -> { casa -> capturas, más reciente primero }
+    [...p.capturas]
+        .sort((a, b) => (b.capturado_en || '').localeCompare(a.capturado_en || ''))
+        .forEach(r => {
+            const dia = (r.capturado_en || r.fecha || '').slice(0, 10);
+            const casa = r.casa_apuestas || '—';
+            porDia[dia] = porDia[dia] || {};
+            (porDia[dia][casa] = porDia[dia][casa] || []).push(r);
+        });
+    const dias = Object.keys(porDia).sort().reverse();
+
+    const valor = (r, campo) => {
+        const v = r[campo];
+        if (v === null || v === undefined) return '<span class="mm-cap-val mm-dia-vacio">—</span>';
+        const esMejor = mejor[campo] && Number(v) === mejor[campo].valor;
+        const ant = previa.get(r);
+        const va = ant ? ant[campo] : null;
+        let flecha = '';
+        if (va !== null && va !== undefined && Number(v) !== Number(va)) {
+            flecha = Number(v) > Number(va)
+                ? `<span class="mm-flecha mm-flecha-sube" title="Subió desde ${mmFormatMomio(va)} (paga más)">▲</span>`
+                : `<span class="mm-flecha mm-flecha-baja" title="Bajó desde ${mmFormatMomio(va)} (paga menos)">▼</span>`;
+        }
+        const txt = mmFormatMomio(v);
+        return `<span class="mm-cap-val">${esMejor ? `<span class="mm-det-momio-mejor" title="Mejor momio registrado para este resultado">${txt}</span>` : txt}${flecha}</span>`;
+    };
+
+    // Los nombres tal cual los escribió cada casa quedan en el tooltip.
+    const celda = caps => caps.map(r => `
+        <div class="mm-cap-grid" title="${mmEscapar(`${r.equipo_local} vs ${r.equipo_visitante}`).replace(/"/g, '&quot;')}">
+            <span class="mm-cap-hora">${r.capturado_en ? r.capturado_en.slice(11, 16) : '—'}</span>
+            ${MM_CAMPOS_1X2.map(c => valor(r, c)).join('')}
+            <button type="button" class="mm-card-del" onclick="mmEliminarRegistro(${r.id})" title="Eliminar">🗑️</button>
+        </div>`).join('');
+
+    const etiquetaDia = dia => {
+        if (!dia) return '—';
+        const [y, m, d] = dia.split('-').map(Number);
+        return `${String(d).padStart(2, '0')}/${String(m).padStart(2, '0')}<small>${MM_DIAS_SEMANA[new Date(y, m - 1, d).getDay()]}</small>`;
+    };
+
+    return `
+        <div class="mm-full-tabla-wrap">
+            <table class="mm-dias-tabla">
+                <thead><tr>
+                    <th>Día</th>
+                    ${casas.map(c => `
+                        <th class="mm-casa-col-head" style="border-top-color:${mmCasaInfo(c).color}">
+                            ${mmCasaTag(c)}
+                            <div class="mm-cap-grid mm-cap-grid-head"><span>Hora</span><span>1</span><span>X</span><span>2</span><span></span></div>
+                        </th>`).join('')}
+                </tr></thead>
+                <tbody>${dias.map(dia => `
+                    <tr>
+                        <th class="mm-dia-label">${etiquetaDia(dia)}</th>
+                        ${casas.map(c => `<td>${porDia[dia][c] ? celda(porDia[dia][c]) : '<span class="mm-dia-vacio">—</span>'}</td>`).join('')}
+                    </tr>`).join('')}
+                </tbody>
+            </table>
+        </div>
+        <p class="mm-full-nota">▲ / ▼ = subió o bajó contra la captura anterior de esa casa · <span class="mm-det-momio-mejor">±000</span> = mejor momio registrado</p>`;
+}
+
+// Tooltip de las gráficas (un solo elemento, se mueve con el mouse).
+function mmVizTip() {
+    let tip = document.getElementById('mm-viz-tip');
+    if (!tip) {
+        tip = document.createElement('div');
+        tip.id = 'mm-viz-tip';
+        tip.className = 'mm-viz-tip';
+        document.body.appendChild(tip);
+    }
+    return tip;
+}
+function mmOcultarVizTip() {
+    const tip = document.getElementById('mm-viz-tip');
+    if (tip) tip.style.display = 'none';
+}
+document.addEventListener('mouseover', e => {
+    const hit = e.target.closest ? e.target.closest('.mm-viz-hit') : null;
+    if (!hit) { mmOcultarVizTip(); return; }
+    const tip = mmVizTip();
+    tip.textContent = hit.getAttribute('data-tip');
+    tip.style.display = 'block';
+});
+document.addEventListener('mousemove', e => {
+    const tip = document.getElementById('mm-viz-tip');
+    if (!tip || tip.style.display !== 'block') return;
+    const w = tip.offsetWidth, h = tip.offsetHeight;
+    const left = e.clientX + 14 + w > window.innerWidth ? e.clientX - w - 14 : e.clientX + 14;
+    const top = e.clientY + 14 + h > window.innerHeight ? e.clientY - h - 14 : e.clientY + 14;
+    tip.style.left = left + 'px';
+    tip.style.top = top + 'px';
+});
 
 function mmEscapar(str) {
     const div = document.createElement('div');

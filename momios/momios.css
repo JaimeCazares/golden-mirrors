@@ -577,28 +577,20 @@
 .mm-resumen-fecha { flex-shrink: 0; color: var(--mm-text-dim); font-size: 0.65rem; }
 .mm-resumen-sin { color: var(--mm-text-dim); font-size: 0.68rem; font-style: italic; }
 
-/* ─ Bloque abierto: ocupa todo el renglón de la lista y se acomoda "acostado" —
-   tarjeta (encabezado + resumen) a la izquierda y la tabla por día a la derecha,
-   para ver todas las capturas sin scroll. Si la tabla no cabe al lado (pantalla
-   angosta), baja completa debajo de la tarjeta (flex-wrap). ─ */
-.mm-partido-grupo.mm-partido-abierto {
-    grid-column: 1 / -1;
-    display: flex;
-    flex-wrap: wrap;
-    align-items: flex-start;
-}
-.mm-partido-abierto .mm-partido-principal { flex: 0 0 330px; max-width: 100%; }
-.mm-partido-abierto .mm-partido-equipos { white-space: normal; } /* abierto sobra espacio: nombres completos */
-
-/* Abierto = pantalla completa, encima de todo el panel (solo uno a la vez, ver mmTogglePartido). */
+/* ─ Bloque abierto = pantalla completa, encima de todo el panel (solo uno a la
+   vez, ver mmTogglePartido). Arriba el encabezado del partido; abajo el tablero:
+   mejores momios, gráficas por resultado y la tabla por día con logos. ─ */
 .mm-partido-grupo.mm-partido-abierto {
     position: fixed;
     inset: 12px;
     z-index: 50;
-    align-content: flex-start;
+    display: flex;
+    flex-direction: column;
     overflow-y: auto;
-    background: rgba(8,11,20,0.97);
-    box-shadow: 0 20px 60px rgba(0,0,0,0.7);
+    background: #0b0e17;
+    border-color: rgba(255,255,255,0.14);
+    box-shadow: 0 20px 60px rgba(0,0,0,0.75);
+    scrollbar-width: thin;
 }
 /* backdrop-filter en un ancestro vuelve "fixed" relativo a ese ancestro y no a la
    pantalla; se apaga mientras haya un partido abierto (el overlay lo tapa igual). */
@@ -606,51 +598,163 @@
     -webkit-backdrop-filter: none;
     backdrop-filter: none;
 }
+.mm-partido-abierto .mm-partido-principal {
+    position: sticky;
+    top: 0;
+    z-index: 2;
+    background: #0b0e17;
+    border-bottom: 1px solid var(--mm-border);
+}
+.mm-partido-abierto .mm-partido-resumen { display: none; } /* las tarjetas de "mejor momio" lo reemplazan */
+.mm-partido-abierto .mm-partido-head { padding: 12px 16px; gap: 14px; }
+.mm-partido-abierto .mm-espejo-badge { font-size: 0.85rem; padding: 6px 12px; }
+.mm-partido-abierto .mm-partido-equipos { white-space: normal; font-size: 1.15rem; }
+.mm-partido-abierto .mm-partido-equipos .mm-vs { font-size: 0.8rem; margin: 0 6px; }
+.mm-partido-abierto .mm-partido-fecha { font-size: 0.75rem; margin-top: 3px; }
 .mm-partido-cerrar {
     display: none;
     flex-shrink: 0;
-    width: 30px; height: 30px;
-    line-height: 30px;
+    width: 36px; height: 36px;
+    line-height: 36px;
     text-align: center;
     border-radius: 50%;
     background: rgba(255,255,255,0.08);
     color: #fff;
-    font-size: 0.9rem;
+    font-size: 1rem;
 }
 .mm-partido-cerrar:hover { background: rgba(239,68,68,0.35); }
 .mm-partido-abierto .mm-partido-cerrar { display: inline-block; }
 .mm-partido-abierto .mm-toggle-flecha { display: none; }
 
 .mm-partido-detalle {
-    flex: 1 1 auto; /* ancho natural de la tabla: si no cabe junto a la tarjeta, se va abajo */
-    min-width: 0;
-    margin: 7px 8px 8px;
-    padding: 2px 4px;
-    background: rgba(0,0,0,0.18);
-    border: 1px solid var(--mm-border);
-    border-radius: 10px;
-    overflow-x: auto; /* último recurso en celular: scroll lateral dentro de la tabla, no de la página */
+    padding: 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
 }
-.mm-dias-tabla { width: 100%; border-collapse: collapse; font-size: 0.72rem; }
-.mm-dias-tabla th,
-.mm-dias-tabla td { padding: 5px 8px; text-align: left; white-space: nowrap; }
-.mm-dias-tabla thead th {
-    font-size: 0.62rem;
+.mm-full-titulo {
+    font-size: 0.68rem;
     font-weight: 800;
     color: var(--mm-text-dim);
     text-transform: uppercase;
-    letter-spacing: 0.04em;
-    border-bottom: 1px solid var(--mm-border);
+    letter-spacing: 0.06em;
+    margin: 0 0 8px;
 }
-.mm-dias-tabla tbody tr + tr > * { border-top: 1px solid rgba(255,255,255,0.04); }
-.mm-dia-label { width: 1%; color: var(--mm-text-mid); font-weight: 700; } /* columna del día lo más angosta posible */
-.mm-dia-captura { display: inline-flex; align-items: center; gap: 6px; }
-.mm-dia-captura + .mm-dia-captura { margin-left: 8px; padding-left: 10px; border-left: 1px solid var(--mm-border); } /* 2 capturas de la misma casa el mismo día */
+.mm-full-panel {
+    background: rgba(255,255,255,0.03);
+    border: 1px solid var(--mm-border);
+    border-radius: 14px;
+    padding: 12px 14px;
+}
+
+/* Logo de casa (o inicial si es una casa sin logo) */
+.mm-casa-logo {
+    width: 20px; height: 20px;
+    border-radius: 5px;
+    object-fit: contain;
+    background: #fff;
+    flex-shrink: 0;
+    vertical-align: middle;
+}
+.mm-casa-logo-ini {
+    display: inline-flex; align-items: center; justify-content: center;
+    color: #fff; font-size: 0.65rem; font-weight: 800;
+}
+.mm-casa-tag { display: inline-flex; align-items: center; gap: 6px; font-weight: 700; color: var(--mm-text-mid); }
+
+/* Tarjetas "mejor momio" por resultado */
+.mm-full-mejores { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 12px; }
+.mm-mejor-card {
+    background: rgba(255,255,255,0.04);
+    border: 1px solid var(--mm-border);
+    border-radius: 14px;
+    padding: 12px 14px;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+.mm-mejor-card-head { display: flex; align-items: center; gap: 8px; font-size: 0.78rem; color: var(--mm-text-mid); font-weight: 700; min-width: 0; }
+.mm-mejor-card-head span:last-child { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.mm-mejor-tag {
+    width: 22px; height: 22px; line-height: 22px;
+    text-align: center;
+    border-radius: 6px;
+    background: rgba(255,255,255,0.1);
+    color: #fff;
+    font-size: 0.72rem;
+    font-weight: 800;
+    flex-shrink: 0;
+}
+.mm-mejor-valor { font-size: 2rem; font-weight: 800; color: #fff; line-height: 1.1; }
+.mm-mejor-meta { display: flex; align-items: center; justify-content: space-between; gap: 8px; font-size: 0.74rem; }
+.mm-mejor-cuando { color: var(--mm-text-dim); font-size: 0.7rem; }
+.mm-mejor-ahora {
+    display: flex; align-items: center; gap: 6px;
+    font-size: 0.72rem; color: var(--mm-text-dim);
+    border-top: 1px solid var(--mm-border);
+    padding-top: 6px;
+}
+.mm-mejor-ahora b { color: #fff; }
+
+/* Gráficas por resultado (1 / X / 2) */
+.mm-full-leyenda { display: flex; flex-wrap: wrap; gap: 14px; margin-bottom: 10px; font-size: 0.74rem; }
+.mm-leyenda-item { display: inline-flex; align-items: center; gap: 6px; color: var(--mm-text-mid); font-weight: 700; }
+.mm-leyenda-linea { width: 18px; height: 3px; border-radius: 2px; }
+.mm-full-graficas { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 12px; }
+.mm-grafica { min-width: 0; }
+.mm-grafica-titulo { display: flex; align-items: center; gap: 8px; font-size: 0.78rem; font-weight: 700; color: var(--mm-text-mid); margin-bottom: 4px; }
+.mm-grafica-titulo small { margin-left: auto; color: var(--mm-text-dim); font-weight: 600; font-size: 0.66rem; }
+.mm-grafica svg { width: 100%; height: auto; display: block; overflow: visible; }
+.mm-grafica-vacia { color: var(--mm-text-dim); font-size: 0.75rem; font-style: italic; padding: 30px 0; text-align: center; }
+.mm-viz-hit { cursor: pointer; }
+.mm-viz-tip {
+    position: fixed;
+    z-index: 100;
+    pointer-events: none;
+    background: #1b2030;
+    border: 1px solid rgba(255,255,255,0.18);
+    border-radius: 8px;
+    padding: 6px 9px;
+    font-family: "Poppins", "Segoe UI", sans-serif;
+    font-size: 0.72rem;
+    line-height: 1.45;
+    color: #fff;
+    white-space: pre-line;
+    box-shadow: 0 8px 24px rgba(0,0,0,0.5);
+    display: none;
+}
+
+/* Tabla por día: una columna por casa, con logo; cada captura en una mini-rejilla
+   hora | 1 | X | 2 para que los valores queden alineados día con día. */
+.mm-full-tabla-wrap { overflow-x: auto; }
+.mm-dias-tabla { width: 100%; border-collapse: collapse; font-size: 0.8rem; }
+.mm-dias-tabla th,
+.mm-dias-tabla td { padding: 7px 10px; text-align: left; white-space: nowrap; vertical-align: top; }
+.mm-dias-tabla thead th { border-bottom: 1px solid var(--mm-border); padding-bottom: 6px; }
+.mm-dias-tabla thead .mm-casa-tag { font-size: 0.82rem; color: #fff; }
+.mm-casa-col-head { border-top: 3px solid transparent; }
+.mm-dias-tabla tbody tr + tr > * { border-top: 1px solid rgba(255,255,255,0.05); }
+.mm-dias-tabla tbody tr:hover > * { background: rgba(255,255,255,0.025); }
+.mm-dia-label { width: 1%; color: #fff; font-weight: 800; font-size: 0.82rem; }
+.mm-dia-label small { display: block; color: var(--mm-text-dim); font-weight: 600; font-size: 0.64rem; }
+.mm-cap-grid {
+    display: grid;
+    grid-template-columns: 40px repeat(3, minmax(58px, 1fr)) 22px;
+    align-items: center;
+    gap: 4px;
+}
+.mm-cap-grid + .mm-cap-grid { margin-top: 4px; padding-top: 4px; border-top: 1px dashed rgba(255,255,255,0.07); }
+.mm-cap-grid-head { color: var(--mm-text-dim); font-size: 0.62rem; font-weight: 800; margin-top: 4px; }
+.mm-cap-hora { color: var(--mm-text-dim); font-size: 0.68rem; }
+.mm-cap-val { font-weight: 700; color: #f2f2f4; font-variant-numeric: tabular-nums; }
+.mm-cap-val .mm-det-momio-mejor { margin: 0; padding: 1px 6px; }
+.mm-flecha { font-size: 0.6rem; margin-left: 3px; }
+.mm-flecha-sube { color: #4ade80; }
+.mm-flecha-baja { color: #f87171; }
 .mm-dia-vacio { color: var(--mm-text-dim); opacity: 0.5; }
-.mm-det-hora { color: var(--mm-text-dim); font-size: 0.64rem; }
-.mm-det-momios { color: var(--mm-accent); font-weight: 700; }
-.mm-dia-captura .mm-card-del { opacity: 0.45; }
-.mm-dia-captura:hover .mm-card-del { opacity: 1; }
+.mm-cap-grid .mm-card-del { opacity: 0.35; font-size: 0.75rem; }
+.mm-cap-grid:hover .mm-card-del { opacity: 1; }
+.mm-full-nota { font-size: 0.68rem; color: var(--mm-text-dim); margin-top: 8px; }
 .mm-det-momio-mejor {
     display: inline-block;
     background: rgba(59,130,246,0.25);
