@@ -295,15 +295,23 @@ function mmDecimalONull($v) {
     return is_numeric($v) ? (float)$v : null;
 }
 
+// Motivo por el que un registro no se puede guardar, o null si está completo.
+function mmMotivoInvalido($r) {
+    if (!is_array($r)) return 'Registro vacío';
+    $faltan = [];
+    if (!mmFechaValida($r['fecha_partido'] ?? '')) $faltan[] = 'fecha del partido';
+    if (trim($r['equipo_local'] ?? '') === '')     $faltan[] = 'equipo local';
+    if (trim($r['equipo_visitante'] ?? '') === '') $faltan[] = 'equipo visitante';
+    return $faltan ? 'Falta ' . implode(', ', $faltan) : null;
+}
+
 // Arma el INSERT de un registro; regresa true/false. Usada por 'guardar' y 'guardar_lote'.
 function mmInsertarRegistro($conexion, $turno, $r) {
+    if (mmMotivoInvalido($r) !== null) return false;
+
     $equipoLocal     = trim($r['equipo_local'] ?? '');
     $equipoVisitante = trim($r['equipo_visitante'] ?? '');
     $fechaPartido    = $r['fecha_partido'] ?? '';
-
-    if (!mmFechaValida($fechaPartido) || $equipoLocal === '' || $equipoVisitante === '') {
-        return false;
-    }
 
     $fechaPartido    = $conexion->real_escape_string($fechaPartido);
     $turnoEsc        = $conexion->real_escape_string($turno);
@@ -548,16 +556,25 @@ if ($accion === 'guardar_lote') {
     }
 
     $guardados = 0;
-    $omitidos  = 0;
-    foreach ($registros as $r) {
-        if (is_array($r) && mmInsertarRegistro($conexion, $turno, $r)) {
+    $omitidos  = [];
+    foreach ($registros as $i => $r) {
+        $motivo = mmMotivoInvalido($r);
+        if ($motivo === null && !mmInsertarRegistro($conexion, $turno, $r)) {
+            $motivo = 'Error de base de datos: ' . $conexion->error;
+        }
+        if ($motivo === null) {
             $guardados++;
         } else {
-            $omitidos++;
+            $omitidos[] = ['indice' => $i, 'motivo' => $motivo];
         }
     }
 
-    echo json_encode(['status' => 'ok', 'guardados' => $guardados, 'omitidos' => $omitidos]);
+    echo json_encode([
+        'status'           => 'ok',
+        'guardados'        => $guardados,
+        'omitidos'         => count($omitidos),
+        'omitidos_detalle' => $omitidos,
+    ]);
     exit;
 }
 

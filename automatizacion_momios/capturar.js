@@ -194,6 +194,10 @@ async function guardarLote(partidos, lineas) {
     let msg = `Guardado: ${json.guardados} guardado(s)`;
     if (json.omitidos) msg += `, ${json.omitidos} omitido(s)`;
     logLinea(lineas, msg);
+    for (const o of json.omitidos_detalle || []) {
+        const p = partidos[o.indice] || {};
+        logLinea(lineas, `  ✗ ${p.equipo_local || '?'} vs ${p.equipo_visitante || '?'} (${p.casa_apuestas || '?'}): ${o.motivo}`);
+    }
 }
 
 async function main() {
