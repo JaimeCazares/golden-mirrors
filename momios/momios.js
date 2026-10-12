@@ -97,20 +97,36 @@ function mmToggleSeccion(bodyId, headEl) {
     headEl?.classList.toggle('mm-head-colapsado', colapsado);
 }
 
-// Abre/cierra el detalle de un partido. Abierto, el bloque ocupa todo el renglón
-// de la lista (.mm-partido-abierto en el CSS) para mostrar la tabla por día
-// "acostada", sin scroll.
+// Abre/cierra el detalle de un partido. Abierto, el bloque sale en pantalla
+// completa (.mm-partido-abierto en el CSS) con la tabla por día "acostada".
+// Solo uno a la vez: abrir otro cierra el anterior.
 function mmTogglePartido(i) {
     const p = mmPartidosRender[i];
+    if (!p) return;
+    const abrir = !mmPartidosAbiertos.has(p.clave);
+    mmPartidosRender.forEach((otro, j) => {
+        if (j !== i && mmPartidosAbiertos.has(otro.clave)) mmMarcarPartidoAbierto(j, false);
+    });
+    mmPartidosAbiertos.clear();
+    if (abrir) mmPartidosAbiertos.add(p.clave);
+    mmMarcarPartidoAbierto(i, abrir);
+}
+
+function mmMarcarPartidoAbierto(i, abierto) {
     const grupo = document.getElementById(`mm-partido-${i}`);
-    if (!p || !grupo) return;
-    const abierto = !mmPartidosAbiertos.has(p.clave);
-    if (abierto) mmPartidosAbiertos.add(p.clave); else mmPartidosAbiertos.delete(p.clave);
+    if (!grupo) return;
     grupo.classList.toggle('mm-partido-abierto', abierto);
     grupo.querySelector('.mm-partido-head')?.classList.toggle('mm-head-colapsado', !abierto);
     grupo.querySelector('.mm-partido-detalle')?.classList.toggle('mm-colapsado', !abierto);
-    if (abierto) grupo.scrollIntoView({ block: 'nearest', behavior: 'smooth' });
+    if (abierto) grupo.scrollTop = 0;
 }
+
+// Esc cierra el partido abierto en pantalla completa.
+document.addEventListener('keydown', e => {
+    if (e.key !== 'Escape' || !mmPartidosAbiertos.size) return;
+    const i = mmPartidosRender.findIndex(p => mmPartidosAbiertos.has(p.clave));
+    if (i >= 0) mmTogglePartido(i);
+});
 
 // Orden de columnas en el detalle por día: casas conocidas primero, otras al final.
 function mmOrdenCasa(casa) {
@@ -604,12 +620,16 @@ function mmRenderFilaExtraido(i) {
     const p = mmPartidosExtraidos[i];
     const val = v => (v === null || v === undefined) ? '' : v;
     const verif = MM_VERIF_INFO[p._verif];
-    const claseFila = verif ? verif.clase : (mmVerificando ? 'mm-ex-row-pendiente' : '');
+    const claseFila = p._motivoOmitido ? 'mm-ex-row-sinverif'
+        : (verif ? verif.clase : (mmVerificando ? 'mm-ex-row-pendiente' : ''));
     const badge = mmVerificando && !verif
         ? '<span class="mm-ex-verif-badge" title="Verificando...">⏳</span>'
         : (verif ? `<span class="mm-ex-verif-badge" title="${mmEscapar(verif.title)}">${verif.emoji}</span>` : '');
     const nota = (p._verif === 'corregido' && p._verifNota)
         ? `<div class="mm-ex-verif-nota">⚠️ Corregido por IA: ${mmEscapar(p._verifNota)}</div>`
+        : '';
+    const notaOmitido = p._motivoOmitido
+        ? `<div class="mm-ex-verif-nota mm-ex-omitido-nota">✗ No se guardó: ${mmEscapar(p._motivoOmitido)}</div>`
         : '';
     return `
         <div class="mm-ex-row ${claseFila}" data-idx="${i}">
@@ -629,7 +649,7 @@ function mmRenderFilaExtraido(i) {
                 <input type="number" step="1" class="mm-ex-momio" value="${val(p.momio_visitante)}" oninput="mmActualizarMomioExtraido(this, ${i}, 'momio_visitante')" title="Momio 2 (Visitante)">
             </span>
             <button type="button" class="mm-ex-del" onclick="mmQuitarExtraido(${i})" title="Quitar">✕</button>
-            ${nota}
+            ${nota}${notaOmitido}
         </div>`;
 }
 
@@ -676,10 +696,13 @@ async function mmGuardarTodosExtraidos() {
         if (json.error) {
             mmExtraerMostrarMsg(json.error, 'error');
         } else {
+            // Los omitidos se quedan en la tabla con su motivo, para corregirlos y volver a guardar.
+            const omitidos = (json.omitidos_detalle || [])
+                .map(o => ({ ...mmPartidosExtraidos[o.indice], _motivoOmitido: o.motivo }));
             let msg = `${json.guardados} partido(s) guardado(s) ✓`;
-            if (json.omitidos) msg += ` (${json.omitidos} con datos incompletos, omitidos)`;
+            if (json.omitidos) msg += ` — ${json.omitidos} omitido(s), quedaron abajo marcados en rojo para corregir`;
             mmExtraerMostrarMsg(msg, 'ok');
-            mmPartidosExtraidos = [];
+            mmPartidosExtraidos = omitidos;
             mmRenderExtraidosTabla();
             await Promise.all([mmCargarRegistros(), mmCargarAnalisisEspejo()]);
             mmRenderAll();
@@ -894,6 +917,7 @@ function mmRenderLista() {
                             <div class="mm-partido-fecha">⚽ ${fecha}${hora ? ' · ' + hora : ''} · ${p.capturas.length} captura(s)</div>
                         </div>
                         <span class="mm-toggle-flecha">▾</span>
+                        <span class="mm-partido-cerrar" title="Cerrar (Esc)">✕</span>
                     </div>
                     ${resumen}
                 </div>

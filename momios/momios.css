@@ -240,6 +240,7 @@
     color: #fbbf24;
     padding-top: 2px;
 }
+.mm-ex-omitido-nota { color: #f87171; }
 
 /* ─ Header ─ */
 .mm-header { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; margin-bottom: 10px; }
@@ -588,6 +589,37 @@
 }
 .mm-partido-abierto .mm-partido-principal { flex: 0 0 330px; max-width: 100%; }
 .mm-partido-abierto .mm-partido-equipos { white-space: normal; } /* abierto sobra espacio: nombres completos */
+
+/* Abierto = pantalla completa, encima de todo el panel (solo uno a la vez, ver mmTogglePartido). */
+.mm-partido-grupo.mm-partido-abierto {
+    position: fixed;
+    inset: 12px;
+    z-index: 50;
+    align-content: flex-start;
+    overflow-y: auto;
+    background: rgba(8,11,20,0.97);
+    box-shadow: 0 20px 60px rgba(0,0,0,0.7);
+}
+/* backdrop-filter en un ancestro vuelve "fixed" relativo a ese ancestro y no a la
+   pantalla; se apaga mientras haya un partido abierto (el overlay lo tapa igual). */
+.mm-lista-section:has(.mm-partido-abierto) {
+    -webkit-backdrop-filter: none;
+    backdrop-filter: none;
+}
+.mm-partido-cerrar {
+    display: none;
+    flex-shrink: 0;
+    width: 30px; height: 30px;
+    line-height: 30px;
+    text-align: center;
+    border-radius: 50%;
+    background: rgba(255,255,255,0.08);
+    color: #fff;
+    font-size: 0.9rem;
+}
+.mm-partido-cerrar:hover { background: rgba(239,68,68,0.35); }
+.mm-partido-abierto .mm-partido-cerrar { display: inline-block; }
+.mm-partido-abierto .mm-toggle-flecha { display: none; }
 
 .mm-partido-detalle {
     flex: 1 1 auto; /* ancho natural de la tabla: si no cabe junto a la tarjeta, se va abajo */
