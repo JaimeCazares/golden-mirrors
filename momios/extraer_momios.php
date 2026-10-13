@@ -6,6 +6,7 @@
 // No guarda nada en BD aquí: solo extrae: api_momios.php (accion=guardar_lote) guarda.
 
 error_reporting(0);
+date_default_timezone_set('America/Mazatlan'); // "hoy"/"mañana" de las capturas se resuelven contra el día local (Culiacán), no el del servidor
 header('Content-Type: application/json');
 
 $configPath = __DIR__ . '/../claude.config.local.php';
@@ -58,8 +59,9 @@ Primero identifica:
 Luego, para cada partido visible extrae:
 - equipo_local: nombre del equipo local
 - equipo_visitante: nombre del equipo visitante
-- dia_partido: día del mes en que se juega (entero 1-31), tal como aparece en la fecha del partido (ej. "14 Oct" -> 14, "13/10" -> 13).
-- mes_partido: mes en que se juega (entero 1-12), tal como aparece (ej. "14 Oct" -> 10).
+- dia_partido: día del mes en que se juega (entero 1-31), tal como aparece en la fecha del partido (ej. "14 Oct" -> 14, "13/10" -> 13). Si la fecha aparece como palabra ("Hoy", "Mañana", "Sáb"...) en vez de número, usa null.
+- mes_partido: mes en que se juega (entero 1-12), tal como aparece (ej. "14 Oct" -> 10). Si la fecha aparece como palabra, usa null.
+- fecha_relativa: SOLO si la fecha del partido aparece como palabra en vez de número, cuál es: "hoy", "manana" (ej. "Mañana (12:00)"), "pasado_manana", o el día de la semana ("lunes", "martes", "miercoles", "jueves", "viernes", "sabado", "domingo"; también abreviado, ej. "Sáb" -> "sabado"). Si la fecha aparece con número (día/mes) o no aparece, usa null.
 - hora_partido: hora del partido tal como aparece, en formato "HH:MM" de 24 horas (ej. "09:45", "12:00"). Si no es visible, usa null.
 - momio_local: número EXACTO tal como aparece en pantalla, conservando el signo (ej. -400 o 135). NO conviertas a decimal ni hagas ningún cálculo, solo transcribe el número.
 - momio_empate: igual que momio_local, para el empate. Si no aparece (deporte sin empate o no visible), usa null.
@@ -83,12 +85,13 @@ $schema = [
                     'equipo_visitante' => ['type' => 'string'],
                     'dia_partido'      => ['type' => ['integer', 'null']],
                     'mes_partido'      => ['type' => ['integer', 'null']],
+                    'fecha_relativa'   => ['type' => ['string', 'null']],
                     'hora_partido'     => ['type' => ['string', 'null']],
                     'momio_local'      => ['type' => ['number', 'null']],
                     'momio_empate'     => ['type' => ['number', 'null']],
                     'momio_visitante'  => ['type' => ['number', 'null']],
                 ],
-                'required' => ['equipo_local', 'equipo_visitante', 'dia_partido', 'mes_partido', 'hora_partido', 'momio_local', 'momio_empate', 'momio_visitante'],
+                'required' => ['equipo_local', 'equipo_visitante', 'dia_partido', 'mes_partido', 'fecha_relativa', 'hora_partido', 'momio_local', 'momio_empate', 'momio_visitante'],
                 'additionalProperties' => false,
             ],
         ],
@@ -129,6 +132,21 @@ function mmResolverFechaPartido($dia, $mes) {
         $ts = mktime(0, 0, 0, $mes, $dia, $anio + 1);
     }
     return $ts !== false ? date('Y-m-d', $ts) : null;
+}
+
+// Fechas escritas como palabra ("Mañana (12:00)" en Draftea) se cuentan desde el
+// día en que se sube la captura. Un día de la semana es su próxima ocurrencia
+// (1 a 7 días adelante: si fuera hoy, la casa diría "Hoy").
+function mmResolverFechaRelativa($relativa) {
+    if (!is_string($relativa)) return null;
+    $relativa = str_replace([' ', 'ñ', 'é', 'á'], ['_', 'n', 'e', 'a'], mb_strtolower(trim($relativa), 'UTF-8'));
+    $desfase = ['hoy' => 0, 'manana' => 1, 'pasado_manana' => 2];
+    if (isset($desfase[$relativa])) return date('Y-m-d', strtotime("+{$desfase[$relativa]} days"));
+
+    $semana = ['domingo' => 0, 'lunes' => 1, 'martes' => 2, 'miercoles' => 3, 'jueves' => 4, 'viernes' => 5, 'sabado' => 6];
+    if (!isset($semana[$relativa])) return null;
+    $dias = ($semana[$relativa] - (int)date('w') + 7) % 7 ?: 7;
+    return date('Y-m-d', strtotime("+{$dias} days"));
 }
 
 function mmNormalizarHora($h) {
@@ -229,9 +247,10 @@ foreach ($handles as $i => $h) {
             $p[$campo] = isset($p[$campo]) && $p[$campo] !== null ? (float)$p[$campo] : null;
         }
         $p['casa_apuestas'] = $casa;
-        $p['fecha_partido'] = mmResolverFechaPartido($p['dia_partido'] ?? null, $p['mes_partido'] ?? null);
+        $p['fecha_partido'] = mmResolverFechaPartido($p['dia_partido'] ?? null, $p['mes_partido'] ?? null)
+            ?? mmResolverFechaRelativa($p['fecha_relativa'] ?? null);
         $p['hora_partido']  = mmNormalizarHora($p['hora_partido'] ?? null);
-        unset($p['dia_partido'], $p['mes_partido']);
+        unset($p['dia_partido'], $p['mes_partido'], $p['fecha_relativa']);
         $p['_img'] = $i; // índice de la imagen de origen (en el mismo orden en que se subieron), para poder re-verificar cada partido contra su imagen después
         $partidosCombinados[] = $p;
     }
