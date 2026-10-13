@@ -112,6 +112,15 @@ function mmTogglePartido(i) {
     mmMarcarPartidoAbierto(i, abrir);
 }
 
+// Cerrado, cualquier parte del recuadro lo abre; abierto (pantalla completa), solo
+// el encabezado lo cierra, para que borrar capturas o ver las gráficas no lo cierre.
+function mmClickPartido(e, i) {
+    const grupo = document.getElementById(`mm-partido-${i}`);
+    if (!grupo) return;
+    if (grupo.classList.contains('mm-partido-abierto') && !e.target.closest('.mm-partido-head')) return;
+    mmTogglePartido(i);
+}
+
 function mmMarcarPartidoAbierto(i, abierto) {
     const grupo = document.getElementById(`mm-partido-${i}`);
     if (!grupo) return;
@@ -865,9 +874,9 @@ function mmRenderLista() {
             </div>`;
 
         return `
-            <div class="mm-partido-grupo${abierto ? ' mm-partido-abierto' : ''}" id="mm-partido-${i}">
+            <div class="mm-partido-grupo${abierto ? ' mm-partido-abierto' : ''}" id="mm-partido-${i}" onclick="mmClickPartido(event, ${i})">
                 <div class="mm-partido-principal">
-                    <div class="mm-partido-head${abierto ? '' : ' mm-head-colapsado'}" onclick="mmTogglePartido(${i})">
+                    <div class="mm-partido-head${abierto ? '' : ' mm-head-colapsado'}">
                         ${espejo ? `<span class="mm-espejo-badge mm-color-${espejo.color}" title="${info.label}">${info.emoji} ${mmFormatPct(espejo.ganancia_garantizada_pct)}</span>` : '<span class="mm-espejo-badge mm-color-gris">—</span>'}
                         <div class="mm-partido-info">
                             <div class="mm-partido-equipos">${mmEscapar(p.equipo_local)} <span class="mm-vs">vs</span> ${mmEscapar(p.equipo_visitante)}</div>

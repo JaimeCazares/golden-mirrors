@@ -528,6 +528,8 @@
     border-radius: 12px;
     overflow: hidden;
 }
+.mm-partido-grupo:not(.mm-partido-abierto) { cursor: pointer; transition: border-color 0.15s, background 0.15s; }
+.mm-partido-grupo:not(.mm-partido-abierto):hover { border-color: rgba(255,255,255,0.25); background: rgba(255,255,255,0.06); }
 .mm-partido-head {
     display: flex;
     align-items: center;
