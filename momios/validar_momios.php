@@ -123,10 +123,11 @@ curl_setopt_array($ch, [
     CURLOPT_RETURNTRANSFER => true,
     CURLOPT_POST => true,
     CURLOPT_POSTFIELDS => json_encode([
-        'model' => 'claude-opus-5',
+        // Haiku 4.5: la verificación es comparar números contra la imagen, no hace
+        // falta un modelo más caro. Sin 'effort' (Haiku lo rechaza) y sin thinking.
+        'model' => 'claude-haiku-4-5',
         'max_tokens' => 4096,
         'output_config' => [
-            'effort' => 'low',
             'format' => ['type' => 'json_schema', 'schema' => $schema],
         ],
         'messages' => [[

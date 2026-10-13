@@ -102,8 +102,12 @@ $schema = [
 
 function mmCuerpoPeticion($mime, $base64, $prompt, $schema) {
     return json_encode([
-        'model' => 'claude-opus-5',
+        // Sonnet 5.5 sin razonamiento extendido ('between_tools' es su nivel más bajo):
+        // transcribir momios no necesita "pensar", y los tokens de razonamiento eran
+        // la mayor parte del costo con Opus.
+        'model' => 'claude-sonnet-5-5',
         'max_tokens' => 4096,
+        'thinking' => ['type' => 'between_tools'],
         'output_config' => [
             'effort' => 'low',
             'format' => ['type' => 'json_schema', 'schema' => $schema],
