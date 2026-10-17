@@ -99,6 +99,9 @@
     <div id="mm-equipos-dup-body"><div id="mm-equipos-dup-lista"></div></div>
   </div>
 
+  <!-- PESTAÑAS POR JORNADA (se calculan solas de las fechas de partido; ver mmCalcularJornadas) -->
+  <div class="mm-jornada-tabs" id="mm-jornada-tabs"></div>
+
   <!-- TOP 5 MEJORES APUESTAS ESPEJO -->
   <div class="mm-lista-section" id="mm-top-espejo-section" style="display:none;">
     <div class="mm-lista-head">
@@ -111,11 +114,6 @@
   <div class="mm-lista-section">
     <div class="mm-lista-head">
       <span>📋 Registros</span>
-      <div class="mm-lista-filtros">
-        <button type="button" class="mm-filtro-btn activo" data-dias="7" onclick="mmFiltrarDias(7, this)">7 días</button>
-        <button type="button" class="mm-filtro-btn" data-dias="30" onclick="mmFiltrarDias(30, this)">30 días</button>
-        <button type="button" class="mm-filtro-btn" data-dias="0" onclick="mmFiltrarDias(0, this)">Todo</button>
-      </div>
     </div>
     <div class="mm-lista" id="mm-lista">
       <p class="mm-lista-vacio">Cargando registros...</p>

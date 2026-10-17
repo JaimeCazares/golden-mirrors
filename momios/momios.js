@@ -15,8 +15,9 @@ const MM_THEMES = [
     { key: 'atardecer', label: 'Atardecer', emoji: '🌅' }
 ];
 
-let mmRegistros   = [];
-let mmDiasFiltro  = 7; // 7, 30 u 0 (todo)
+let mmRegistros   = []; // todos los registros (todas las jornadas)
+let mmJornadas    = []; // [{ clave, nombre, desde, hasta, oficial }] con al menos un partido registrado
+let mmJornadaSel  = null; // clave de la jornada en pantalla (pestaña activa), ej. 'J2'
 let mmTema         = 'lluvia';
 let mmTemaMenuOpen = false;
 let mmEspejos      = {}; // clave "localId-visitanteId-fechaPartido" -> analisis de espejo
@@ -176,7 +177,7 @@ function mmRenderTopEspejos() {
     const cont = document.getElementById('mm-top-espejo-lista');
     if (!sec || !cont) return;
 
-    const top = mmEspejosLista.filter(p => p.ganancia_garantizada_pct > 0).slice(0, 5);
+    const top = mmEspejosLista.filter(p => p.ganancia_garantizada_pct > 0 && mmEnJornada(p.fecha_partido)).slice(0, 5);
     if (!top.length) {
         sec.style.display = 'none';
         return;
@@ -336,7 +337,7 @@ function mmToggleFormManual() {
 }
 
 function mmPoblarFormManual() {
-    mmPartidosConocidos = mmAgruparPorPartido(mmRegistros);
+    mmPartidosConocidos = mmAgruparPorPartido(mmRegistrosJornada());
 
     // El value de cada <option> es la CLAVE del partido (equipos+fecha), no su índice
     // en el arreglo: el arreglo se reconstruye después de cada guardado y el orden
@@ -435,14 +436,7 @@ async function mmGuardarManual() {
 async function mmCargarRegistros() {
     const lista = document.getElementById('mm-lista');
     try {
-        let url = `momios/api_momios.php?accion=listar&_=${Date.now()}`; // cache-busting: que nunca sirva un listado viejo cacheado
-        if (mmDiasFiltro > 0) {
-            const hoy = new Date();
-            const desde = new Date(hoy);
-            desde.setDate(desde.getDate() - mmDiasFiltro);
-            url += `&desde=${mmFmt(desde)}&hasta=${mmFmt(hoy)}`;
-        }
-        const res = await fetch(url);
+        const res = await fetch(`momios/api_momios.php?accion=listar&_=${Date.now()}`); // cache-busting: que nunca sirva un listado viejo cacheado
         mmRegistros = await res.json();
         if (!Array.isArray(mmRegistros)) mmRegistros = [];
     } catch (e) {
@@ -450,14 +444,118 @@ async function mmCargarRegistros() {
         mmRegistros = [];
         if (lista) lista.innerHTML = '<p class="mm-lista-vacio">Error al cargar registros.</p>';
     }
+    mmCalcularJornadas();
 }
 
-async function mmFiltrarDias(dias, btn) {
-    mmDiasFiltro = dias;
-    document.querySelectorAll('.mm-filtro-btn').forEach(b => b.classList.remove('activo'));
-    btn?.classList.add('activo');
-    await mmCargarRegistros();
+// ══════════════════════════════════════════════════════
+// JORNADAS — cada jornada es una pestaña. Cada partido se asigna a su jornada
+// por su fecha, según el calendario oficial de la UEFA Champions League 2026/27
+// (uefa.com, "2026/27 Champions League: Teams, dates, draws, format, final").
+// Los registros siguen todos guardados en la BD: las pestañas solo filtran.
+// No hay que crear nada a mano: al guardar el primer partido de la siguiente
+// jornada aparece su pestaña. Si la UEFA mueve una fecha o un partido cae fuera
+// del calendario, se agrupa solo (huecos de más de MM_JORNADA_HUECO_DIAS días).
+// ══════════════════════════════════════════════════════
+const MM_CALENDARIO_UCL = [
+    { clave: 'J1',    nombre: 'Jornada 1',          desde: '2026-09-08', hasta: '2026-09-10' },
+    { clave: 'J2',    nombre: 'Jornada 2',          desde: '2026-10-13', hasta: '2026-10-14' },
+    { clave: 'J3',    nombre: 'Jornada 3',          desde: '2026-10-20', hasta: '2026-10-21' },
+    { clave: 'J4',    nombre: 'Jornada 4',          desde: '2026-11-03', hasta: '2026-11-04' },
+    { clave: 'J5',    nombre: 'Jornada 5',          desde: '2026-11-24', hasta: '2026-11-25' },
+    { clave: 'J6',    nombre: 'Jornada 6',          desde: '2026-12-08', hasta: '2026-12-09' },
+    { clave: 'J7',    nombre: 'Jornada 7',          desde: '2027-01-19', hasta: '2027-01-20' },
+    { clave: 'J8',    nombre: 'Jornada 8',          desde: '2027-01-27', hasta: '2027-01-27' },
+    { clave: 'PO-1',  nombre: 'Playoffs · ida',     desde: '2027-02-16', hasta: '2027-02-17' },
+    { clave: 'PO-2',  nombre: 'Playoffs · vuelta',  desde: '2027-02-23', hasta: '2027-02-24' },
+    { clave: 'OF-1',  nombre: 'Octavos · ida',      desde: '2027-03-09', hasta: '2027-03-10' },
+    { clave: 'OF-2',  nombre: 'Octavos · vuelta',   desde: '2027-03-16', hasta: '2027-03-17' },
+    { clave: 'CF-1',  nombre: 'Cuartos · ida',      desde: '2027-04-06', hasta: '2027-04-07' },
+    { clave: 'CF-2',  nombre: 'Cuartos · vuelta',   desde: '2027-04-13', hasta: '2027-04-14' },
+    { clave: 'SF-1',  nombre: 'Semifinal · ida',    desde: '2027-04-27', hasta: '2027-04-28' },
+    { clave: 'SF-2',  nombre: 'Semifinal · vuelta', desde: '2027-05-04', hasta: '2027-05-05' },
+    { clave: 'FINAL', nombre: 'Final',              desde: '2027-06-05', hasta: '2027-06-05' },
+];
+const MM_JORNADA_HUECO_DIAS = 3;
+const MM_JORNADA_STORAGE = 'mm-jornada-sel';
+let mmJornadaDeFecha = {}; // 'YYYY-MM-DD' (fecha de partido) -> clave de jornada
+
+const mmSumarDias = (f, n) => mmFmt(new Date(Date.parse(f + 'T12:00:00') + n * 86400000));
+
+function mmCalcularJornadas() {
+    const fechas = [...new Set(mmRegistros.map(r => r.fecha_partido).filter(Boolean))].sort();
+    const clavesAntes = new Set(mmJornadas.map(j => j.clave));
+    const porClave = {};
+    mmJornadaDeFecha = {};
+
+    let suelta = null; // grupo en curso de fechas fuera del calendario
+    fechas.forEach(f => {
+        // ±1 día de tolerancia por si la UEFA recorre un partido o la casa muestra otra zona horaria.
+        const oficial = MM_CALENDARIO_UCL.find(j => f >= mmSumarDias(j.desde, -1) && f <= mmSumarDias(j.hasta, 1));
+        let j;
+        if (oficial) {
+            j = porClave[oficial.clave] || (porClave[oficial.clave] = { ...oficial, oficial: true });
+            suelta = null;
+        } else {
+            const pegada = suelta && (Date.parse(f) - Date.parse(suelta.hasta)) / 86400000 <= MM_JORNADA_HUECO_DIAS;
+            if (!pegada) suelta = porClave[`X-${f}`] = { clave: `X-${f}`, nombre: 'Otra fecha', desde: f, hasta: f, oficial: false };
+            suelta.hasta = f;
+            j = suelta;
+        }
+        mmJornadaDeFecha[f] = j.clave;
+    });
+    mmJornadas = Object.values(porClave).sort((a, b) => a.desde.localeCompare(b.desde));
+
+    // Pestaña a mostrar: la que el usuario dejó abierta; si apareció una jornada
+    // nueva (primer guardado de la siguiente) o no hay elección válida, la más reciente.
+    if (mmJornadaSel === null) {
+        try { mmJornadaSel = localStorage.getItem(MM_JORNADA_STORAGE); } catch (e) {}
+    }
+    const hayNueva = clavesAntes.size > 0 && mmJornadas.some(j => !clavesAntes.has(j.clave));
+    if (hayNueva || !mmJornadas.some(j => j.clave === mmJornadaSel)) {
+        mmJornadaSel = mmJornadas.length ? mmJornadas[mmJornadas.length - 1].clave : null;
+    }
+}
+
+// ¿La fecha de partido cae en la jornada en pantalla? Sin fecha -> la más reciente.
+function mmEnJornada(fechaPartido) {
+    if (!mmJornadaSel) return true;
+    if (!fechaPartido) return mmJornadaSel === mmJornadas[mmJornadas.length - 1].clave;
+    return mmJornadaDeFecha[fechaPartido] === mmJornadaSel;
+}
+
+function mmRegistrosJornada() {
+    return mmRegistros.filter(r => mmEnJornada(r.fecha_partido));
+}
+
+function mmSeleccionarJornada(clave) {
+    mmJornadaSel = clave;
+    try { localStorage.setItem(MM_JORNADA_STORAGE, clave); } catch (e) {}
+    mmPartidosAbiertos.clear();
     mmRenderAll();
+    if (document.getElementById('mm-form-manual')?.style.display !== 'none') mmPoblarFormManual();
+}
+
+function mmRenderJornadas() {
+    const cont = document.getElementById('mm-jornada-tabs');
+    if (!cont) return;
+    if (!mmJornadas.length) { cont.innerHTML = ''; return; }
+
+    const rango = j => {
+        const [, m1, d1] = j.desde.split('-').map(Number);
+        const [, m2, d2] = j.hasta.split('-').map(Number);
+        const mes = m => MM_MESES[m - 1].slice(0, 3).toLowerCase();
+        if (j.desde === j.hasta) return `${d1} ${mes(m1)}`;
+        return m1 === m2 ? `${d1}–${d2} ${mes(m1)}` : `${d1} ${mes(m1)} – ${d2} ${mes(m2)}`;
+    };
+    cont.innerHTML = mmJornadas.map(j => {
+        const partidos = mmAgruparPorPartido(mmRegistros.filter(r => mmJornadaDeFecha[r.fecha_partido] === j.clave)).length;
+        const titulo = j.oficial ? `Calendario UEFA: ${rango(j)}` : 'Fecha fuera del calendario UEFA: revisa si la fecha se leyó bien';
+        return `
+            <button type="button" class="mm-jornada-tab${j.clave === mmJornadaSel ? ' activo' : ''}${j.oficial ? '' : ' mm-jornada-suelta'}" onclick="mmSeleccionarJornada('${j.clave}')" title="${titulo}">
+                <span class="mm-jornada-nombre">${mmEscapar(j.nombre)}</span>
+                <span class="mm-jornada-meta">${rango(j)} · ${partidos} partido${partidos === 1 ? '' : 's'}</span>
+            </button>`;
+    }).join('');
 }
 
 // ══════════════════════════════════════════════════════
@@ -747,6 +845,7 @@ async function mmEliminarRegistro(id) {
 }
 
 function mmRenderAll() {
+    mmRenderJornadas();
     mmRenderStats();
     mmRenderTopEspejos();
     mmRenderLista();
@@ -756,7 +855,7 @@ function mmRenderStats() {
     const cont = document.getElementById('mm-stats');
     if (!cont) return;
 
-    const total    = mmRegistros.length;
+    const total    = mmRegistrosJornada().length; // de la jornada en pantalla; "Hoy" cuenta todas
     const hoyStr   = mmHoyStr();
     const hoyCount = mmRegistros.filter(r => r.fecha === hoyStr).length;
 
@@ -810,12 +909,13 @@ function mmRenderLista() {
     const cont = document.getElementById('mm-lista');
     if (!cont) return;
 
-    if (!mmRegistros.length) {
-        cont.innerHTML = '<p class="mm-lista-vacio">Aún no hay momios registrados en este rango.</p>';
+    const registros = mmRegistrosJornada();
+    if (!registros.length) {
+        cont.innerHTML = '<p class="mm-lista-vacio">Aún no hay momios registrados en esta jornada.</p>';
         return;
     }
 
-    const partidos = mmAgruparPorPartido(mmRegistros);
+    const partidos = mmAgruparPorPartido(registros);
 
     // Del más positivo al más negativo (más cerca de ser espejo real primero); los
     // partidos sin suficientes capturas para calcular el % (sin dato) van al final.
